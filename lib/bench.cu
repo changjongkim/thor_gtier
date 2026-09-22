@@ -43,6 +43,7 @@ struct Opt {
     int pipeline = 0;             // 1 = overlap the next fetch with this GPU batch
     int work = 0;                 // FLOPs per touched byte, to vary GPU time
     int ablate = 0;               // add cuFile's extra copy to gtier
+    int async = 0;                // keep the ring full with submit/wait tickets
 };
 
 // Each pipeline stage gets its own handle, so its window and ring are disjoint
@@ -67,6 +68,8 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
     cfg.slots = o.slots ? o.slots : std::max(o.n, 8);
     if (b == GTIER_BACKEND_GTIER && o.policy >= GTIER_CACHE_HYBRID)
         cfg.slots = std::max(cfg.slots, o.n * 2);
+    if (o.async && b == GTIER_BACKEND_GTIER)
+        cfg.slots = std::max(cfg.slots, o.n * GTIER_MAX_INFLIGHT);
     cfg.queue_depth = cfg.slots;
     cfg.merge_gap = 0;
     cfg.cache_policy = o.policy;
@@ -117,7 +120,29 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
     };
 
     auto t0 = std::chrono::steady_clock::now();
-    if (nstage == 1) {
+    if (o.async && b == GTIER_BACKEND_GTIER && o.policy == GTIER_CACHE_NONE) {
+        // Keep one batch in flight while the previous one is consumed, so the
+        // ring never drains between fetches.
+        Stage &s2 = st[0];
+        gtier_ticket tk[2];
+        gen(s2.rs, 0);
+        std::vector<gtier_range> rs2(s2.rs);
+        if (gtier_submit(s2.g, rs2.data(), o.n, &tk[0]) != 0) goto fail;
+        for (int it = 0; it < o.iters; ++it) {
+            int cur = it & 1, nxt = cur ^ 1;
+            std::vector<gtier_range> rnext(o.n);
+            bool have_next = it + 1 < o.iters;
+            if (have_next) {
+                gen(rnext, it + 1);
+                if (gtier_submit(s2.g, rnext.data(), o.n, &tk[nxt]) != 0) goto fail;
+            }
+            if (gtier_wait(s2.g, &tk[cur], s2.outs.data()) != 0) goto fail;
+            for (int i = 0; i < o.n; ++i) { s2.dp[i] = (const uint8_t *)s2.outs[i]; s2.dl[i] = o.item; }
+            consume<<<o.n, 256, 0, s2.stream>>>(s2.dp, s2.dl, o.n, sink, o.work);
+            if (cudaStreamSynchronize(s2.stream) != cudaSuccess) goto fail;
+            collect(s2);
+        }
+    } else if (nstage == 1) {
         for (int it = 0; it < o.iters; ++it) {
             Stage &s2 = st[0];
             gen(s2.rs, it);
@@ -182,6 +207,7 @@ int main(int argc, char **argv) {
         else if (s == "--pipeline") o.pipeline = atoi(nx());
         else if (s == "--work") o.work = atoi(nx());
         else if (s == "--ablate-copy") o.ablate = atoi(nx());
+        else if (s == "--async") o.async = atoi(nx());
         else if (s == "--reuse") o.reuse = atoi(nx());
         else if (s == "--span") o.span = strtoull(nx(), 0, 10) << 30;
         else if (s == "--only") o.only = atoi(nx());

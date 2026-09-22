@@ -98,29 +98,6 @@ typedef struct {
 gtier *gtier_open(const char *path, const gtier_config *cfg);
 void   gtier_close(gtier *g);
 
-// Asynchronous form.  gtier_fetch submits and then waits for everything, so the
-// ring empties between calls and a client issuing back-to-back batches spends
-// that gap at zero queue depth while the device idles.  Splitting submit from
-// wait lets the next batch go out before the current one is collected, keeping
-// the ring full.
-//
-//   gtier_submit(g, r0, n, &t0);
-//   for (;;) {
-//       gtier_submit(g, r1, n, &t1);   // next batch out first
-//       gtier_wait(g, &t0, dev);       // then collect this one
-//       consume(dev);
-//       swap(t0, t1);
-//   }
-//
-// Tickets own disjoint slots, so each open ticket takes slots/GTIER_MAX_INFLIGHT
-// of the window.
-#define GTIER_MAX_INFLIGHT 4
-
-typedef struct { int id; int n; } gtier_ticket;
-
-int gtier_submit(gtier *g, const gtier_range *r, int n, gtier_ticket *t);
-int gtier_wait(gtier *g, gtier_ticket *t, void **dev_out);
-
 // Fetches n ranges; dev_out[i] receives a device pointer to range i.  Pointers
 // remain valid until the next fetch (or, with a cache, until evicted).
 int  gtier_fetch(gtier *g, const gtier_range *r, int n, void **dev_out);

@@ -17,10 +17,7 @@
 #include <thread>
 #include <unordered_map>
 #include <unordered_set>
-#include <array>
 #include <vector>
-
-struct Plan { uint64_t off; size_t len; std::vector<int> members; };
 
 namespace {
 constexpr size_t kAlign = 4096;
@@ -75,21 +72,6 @@ struct gtier {
     std::vector<std::list<uint64_t>::iterator> slot_lru;
     std::unordered_map<uint64_t, int> seen; // HYBRID: accesses before admission
     int cache_slots = 0;                   // slots reserved for resident blocks
-
-    // Open tickets for the async path.  Each owns a disjoint slot range, and a
-    // completion carries its ticket id alongside the slot so a wait on one
-    // ticket can reap and account another's without dropping it.
-    struct Inflight {
-        bool open = false;
-        int outstanding = 0;
-        int slot_base = 0;
-        std::vector<Plan> plans;
-        // where each caller range ended up: (range index, slot, byte offset)
-        std::vector<std::array<uint64_t, 3>> placement;
-        uint64_t useful = 0, bytes_read = 0;
-    };
-    Inflight fly[GTIER_MAX_INFLIGHT];
-    int ticket_slots = 0;
 
     // ADAPTIVE regime state.  caching = true means blocks are being admitted.
     //
@@ -196,10 +178,6 @@ gtier *gtier_open(const char *path, const gtier_config *user) {
         default: gtier_close(g); return nullptr;
     }
 
-    g->ticket_slots = g->cfg.slots / GTIER_MAX_INFLIGHT;
-    for (int i = 0; i < GTIER_MAX_INFLIGHT; ++i)
-        g->fly[i].slot_base = i * g->ticket_slots;
-
     if (!g->cfg.admit_after) g->cfg.admit_after = 2;
     if (g->cfg.cache_policy != GTIER_CACHE_NONE) {
         // Hybrid keeps a quarter of the window as scratch so a miss always has
@@ -250,6 +228,8 @@ void gtier_reset_stats(gtier *g) { if (g) g->st = gtier_stats{}; }
 // ------------------------------------------------------------------ planning
 
 namespace {
+struct Plan { uint64_t off; size_t len; std::vector<int> members; };
+
 // O_DIRECT needs the length aligned as well as the offset.  A file whose size
 // is not a multiple of the block size therefore cannot have its tail read by
 // clamping to EOF -- that yields an unaligned length and EINVAL.  Reading an
@@ -667,81 +647,4 @@ size_t gtier_calibrate_merge_gap(gtier *g) {
     g->cfg.merge_gap = saved;
     g->cfg.cache_policy = saved_pol;
     return best;
-}
-
-
-// ---------------------------------------------------------------- async path
-
-int gtier_submit(gtier *g, const gtier_range *r, int n, gtier_ticket *t) {
-    if (!g || n <= 0 || !t) return -EINVAL;
-    if (g->cfg.backend != GTIER_BACKEND_GTIER) return -ENOTSUP;
-    if (g->cfg.cache_policy != GTIER_CACHE_NONE) return -ENOTSUP;
-
-    int id = -1;
-    for (int i = 0; i < GTIER_MAX_INFLIGHT; ++i)
-        if (!g->fly[i].open) { id = i; break; }
-    if (id < 0) return -EBUSY;
-
-    auto ps = plan_exact(r, n, g->cfg.merge_gap, g->cfg.slot_bytes, g->file_bytes);
-    if (ps.empty()) return -E2BIG;
-    if ((int)ps.size() > g->ticket_slots) return -ENOSPC;
-
-    gtier::Inflight &f = g->fly[id];
-    for (size_t p = 0; p < ps.size(); ++p) {
-        io_uring_sqe *s = io_uring_get_sqe(&g->ring);
-        if (!s) return -EBUSY;
-        int slot = f.slot_base + (int)p;
-        io_uring_prep_read(s, g->fd, g->host[slot], ps[p].len, (off_t)ps[p].off);
-        // user_data packs the ticket so a wait can route foreign completions
-        io_uring_sqe_set_data64(s, ((uint64_t)id << 32) | (uint32_t)p);
-    }
-    io_uring_submit(&g->ring);
-
-    f.open = true;
-    f.outstanding = (int)ps.size();
-    f.bytes_read = 0;
-    f.useful = 0;
-    f.placement.clear();
-    for (size_t p = 0; p < ps.size(); ++p)
-        for (int m : ps[p].members) {
-            f.placement.push_back({(uint64_t)m,
-                                   (uint64_t)(f.slot_base + (int)p),
-                                   r[m].off - ps[p].off});
-            f.useful += r[m].len;
-        }
-    f.plans = std::move(ps);
-    t->id = id;
-    t->n = n;
-    return 0;
-}
-
-int gtier_wait(gtier *g, gtier_ticket *t, void **dev_out) {
-    if (!g || !t || t->id < 0 || t->id >= GTIER_MAX_INFLIGHT) return -EINVAL;
-    gtier::Inflight &me = g->fly[t->id];
-    if (!me.open) return -EINVAL;
-
-    double t0 = now_s();
-    while (me.outstanding > 0) {
-        io_uring_cqe *c;
-        if (io_uring_wait_cqe(&g->ring, &c) < 0) return -EIO;
-        int id = (int)(io_uring_cqe_get_data64(c) >> 32);
-        int res = c->res;
-        io_uring_cqe_seen(&g->ring, c);
-        if (res < 0) return res;
-        // The completion may belong to another open ticket; credit it there and
-        // keep reaping until this one is done.
-        gtier::Inflight &f = g->fly[id];
-        f.bytes_read += res;
-        --f.outstanding;
-    }
-
-    for (auto &pl : me.placement)
-        dev_out[pl[0]] = g->dev[pl[1]] + pl[2];
-
-    g->st = gtier_stats{(uint64_t)t->n, me.plans.size(), me.useful, me.bytes_read,
-                        0, 0, 0, 0, 0, now_s() - t0};
-    me.open = false;
-    me.plans.clear();
-    me.placement.clear();
-    return 0;
 }

@@ -122,3 +122,54 @@ FlexGen·LLM in a Flash·PowerInfer가 CPU를 쓰는 설계는 **이 체제에�
 - 4 KiB 재앙의 미세 원인 (NVMe 큐잉 vs 커널 블록 계층 vs 폴트 처리 비용 분해)
 - 256 KiB 랜덤 이상치(1.179 GiB/s) 재현 여부
 - 실제 LLM 워크로드에서의 검증 — E2
+
+---
+
+## 7. NVIDIA GDS는 이 플랫폼에서 작동하지 않는다
+
+`cuFileDriverGetProperties`를 직접 조회했다 ([`../gtier/cufile_test.cu`](../gtier/cufile_test.cu)).
+
+```
+cuFile driver: nvfs major=0 minor=0        ← nvidia-fs 드라이버 없음
+dstatusflags=0x0  →  GDS supported = 0     ← POSIX compat 모드
+poll_thresh=4  max_direct_io=16384  device_cache=131072 KiB
+cuFileRead: 4.00 GiB in 0.99s -> 4.037 GiB/s (chunk 16 MiB)
+```
+
+`libcufile.so 1.15.0`은 설치되어 있지만 `nvidia-fs` 커널 드라이버가 없어 **바운스 버퍼를 쓰는
+POSIX compat 경로**로 동작한다. 즉 Thor에서 cuFile은 `NVMe → 바운스 → cudaMemcpy → cudaMalloc 버퍼`
+이며, GPUDirect의 복사 제거 이점이 없다.
+
+## 8. 전체 성적표 (동일 32 GiB 실데이터)
+
+| 경로 | 대역폭 | 장치(5.59 GiB/s) 대비 | 데이터 복사 |
+|---|---:|---:|---:|
+| mmap + GPU fault | 0.220 GiB/s | 3.9% | 0 (단 4 KiB 폴트) |
+| CPU mmap (readahead 작동) | 2.736 GiB/s | 49% | 1 |
+| cuFile / GDS compat | 4.037 GiB/s | 72% | 2 |
+| **gTier** | **5.442 GiB/s** | **97%** | **0** |
+| `dd` O_DIRECT (장치 상한) | 5.59 GiB/s | 100% | — |
+
+gTier의 zero-copy 경로는 `cudaHostAlloc(cudaHostAllocMapped)` 메모리가 **동시에** (a) O_DIRECT로
+NVMe 컨트롤러가 DMA하는 대상이고 (b) GPU가 직접 주소 지정하는 메모리라는 점에 기반한다.
+NVMe가 GPU가 읽을 메모리에 **직접 써넣는다.** discrete GPU에서는 GDS 없이 불가능하고,
+Thor에는 GDS가 없다.
+
+## 9. io_uring 미세 최적화는 기여하지 않는다 (음성 결과)
+
+32 GiB, 1 MiB 슬롯 × 8, depth 8.
+
+| 설정 | 대역폭 |
+|---|---:|
+| baseline | 5.283 GiB/s |
+| `IORING_REGISTER_BUFFERS` | 5.291 (+0.15%) |
+| `+ IORING_REGISTER_FILES` | 5.295 (+0.23%) |
+| `+ IORING_SETUP_SQPOLL` | 5.287 (불변) |
+| `IORING_SETUP_IOPOLL` | **3.739 (−29%)** |
+| `REGISTER_BUFFERS + IOPOLL` | 4.973 (−6%) |
+
+**제거할 소프트웨어 오버헤드가 남아 있지 않다.** 이미 장치 상한의 94~97%이므로 등록 버퍼나
+SQPOLL이 줄일 것이 없고, IOPOLL은 이 큐 깊이에서 코어를 낭비하며 오히려 느리다.
+
+이것은 설계 관점에서 중요하다: **남은 격차는 소프트웨어가 아니라 장치이며, 더 이상의 I/O 튜닝은
+기여가 되지 않는다.** 기여는 입도 통찰과 아키텍처 논거에서 나와야 한다.

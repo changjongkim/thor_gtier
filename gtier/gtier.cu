@@ -67,6 +67,7 @@ struct Args {
   size_t slot_kib = 65536;
   int slots = 8;
   int depth = 8;
+  bool regbuf = false, regfile = false, iopoll = false, sqpoll = false;
   int cpu_load = 0;      // background CPU streaming threads
   size_t load_mib = 256; // private buffer per load thread
   std::string mode = "gtier";  // gtier | mmap
@@ -142,8 +143,33 @@ static int run_gtier(const Args &a, size_t bytes, double *sink) {
     }
   }
 
+  // Registered buffers let the kernel skip get_user_pages on every I/O; the
+  // window is already pinned and long-lived, so it is exactly the case they
+  // exist for.  IOPOLL busy-polls NVMe completions instead of taking an
+  // interrupt; SQPOLL removes the submit syscall.  All three only pay off
+  // because the destination is a fixed, pinned, GPU-addressable window.
   io_uring ring;
-  if (io_uring_queue_init(a.depth, &ring, 0) < 0) { perror("io_uring"); return 1; }
+  io_uring_params params{};
+  if (a.iopoll) params.flags |= IORING_SETUP_IOPOLL;
+  if (a.sqpoll) { params.flags |= IORING_SETUP_SQPOLL; params.sq_thread_idle = 2000; }
+  if (io_uring_queue_init_params(a.depth, &ring, &params) < 0) {
+    perror("io_uring"); return 1;
+  }
+  bool regbuf = a.regbuf, regfile = a.regfile;
+  std::vector<iovec> iovs(a.slots);
+  if (regbuf) {
+    for (int i = 0; i < a.slots; ++i) iovs[i] = {host[i], slot_bytes};
+    if (io_uring_register_buffers(&ring, iovs.data(), a.slots) < 0) {
+      std::fprintf(stderr, "register_buffers failed, continuing unregistered\n");
+      regbuf = false;
+    }
+  }
+  if (regfile) {
+    if (io_uring_register_files(&ring, &fd, 1) < 0) {
+      std::fprintf(stderr, "register_files failed\n");
+      regfile = false;
+    }
+  }
 
   std::vector<cudaEvent_t> ev(a.slots);
   for (auto &e : ev) CK(cudaEventCreate(&e));
@@ -154,7 +180,11 @@ static int run_gtier(const Args &a, size_t bytes, double *sink) {
     size_t off = chunk * slot_bytes;
     size_t len = std::min(slot_bytes, bytes - off);
     len = (len + kPage - 1) / kPage * kPage;  // O_DIRECT length alignment
-    io_uring_prep_read(sqe, fd, host[slot], len, off);
+    if (regbuf)
+      io_uring_prep_read_fixed(sqe, regfile ? 0 : fd, host[slot], len, off, slot);
+    else
+      io_uring_prep_read(sqe, regfile ? 0 : fd, host[slot], len, off);
+    if (regfile) sqe->flags |= IOSQE_FIXED_FILE;
     io_uring_sqe_set_data64(sqe, slot);
     io_uring_submit(&ring);
   };
@@ -211,9 +241,11 @@ static int run_gtier(const Args &a, size_t bytes, double *sink) {
   load_stop = true;
   for (auto &th : load_threads) th.join();
   double cpu_gibs = (load_bytes / (double)(1ull << 30)) / t;
-  std::printf("mode=gtier slot=%zuKiB x%d depth=%d cpu_load=%d  OK  "
+  std::printf("mode=gtier slot=%zuKiB x%d depth=%d%s%s%s%s cpu_load=%d  OK  "
               "%.2fs  gpu=%.3f GiB/s  cpu=%.3f GiB/s  total=%.3f GiB/s\n",
-              a.slot_kib, a.slots, a.depth, a.cpu_load,
+              a.slot_kib, a.slots, a.depth,
+              regbuf ? " regbuf" : "", regfile ? " regfile" : "",
+              a.iopoll ? " iopoll" : "", a.sqpoll ? " sqpoll" : "", a.cpu_load,
               t, a.gib / t, cpu_gibs, a.gib / t + cpu_gibs);
 
   io_uring_queue_exit(&ring);
@@ -233,6 +265,10 @@ int main(int argc, char **argv) {
     else if (s == "--slot-kib") a.slot_kib = strtoull(nxt(), nullptr, 10);
     else if (s == "--slots") a.slots = atoi(nxt());
     else if (s == "--depth") a.depth = atoi(nxt());
+    else if (s == "--regbuf") a.regbuf = true;
+    else if (s == "--regfile") a.regfile = true;
+    else if (s == "--iopoll") a.iopoll = true;
+    else if (s == "--sqpoll") a.sqpoll = true;
     else if (s == "--cpu-load") a.cpu_load = atoi(nxt());
     else if (s == "--load-mib") a.load_mib = strtoull(nxt(), nullptr, 10);
     else if (s == "--mode") a.mode = nxt();

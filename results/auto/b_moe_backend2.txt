@@ -1,0 +1,1 @@
+mmap-cpu    policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  0.567 GiB/s   0.0043 tok/s  hit=0.0% amp=1.00x sw=0

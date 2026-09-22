@@ -1,0 +1,1 @@
+pread+copy  policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  4.450 GiB/s   0.0336 tok/s  hit=0.0% amp=1.00x sw=0

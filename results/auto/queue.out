@@ -14,3 +14,18 @@
        cufile      policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  4.324 GiB/s   0.1333 tok/s  hit=0.0% amp=1.00x sw=0
 [09-23 01:48:16] run  a_dense_backend5
        uvm         policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  2.716 GiB/s   0.0838 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:48:34]   pushed (dense model backend comparison)
+[09-23 01:48:34] run  b_moe_gtier_async
+       gtier       policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  5.516 GiB/s   0.0417 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:49:04] run  b_moe_backend0
+       gtier       policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  5.182 GiB/s   0.0391 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:49:32] run  b_moe_backend1
+       mmap-gpu    policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  0.641 GiB/s   0.0048 tok/s  hit=0.0% amp=0.00x sw=0
+[09-23 01:53:05] run  b_moe_backend2
+       mmap-cpu    policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  0.567 GiB/s   0.0043 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:57:13] run  b_moe_backend3
+       pread+copy  policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  4.450 GiB/s   0.0336 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:57:55] run  b_moe_backend4
+       cufile      policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  4.917 GiB/s   0.0371 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:58:26] run  b_moe_backend5
+       uvm         policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  2.642 GiB/s   0.0200 tok/s  hit=0.0% amp=1.00x sw=0

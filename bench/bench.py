@@ -63,6 +63,20 @@ def drop_caches():
     time.sleep(2)
 
 
+def model_bytes(path):
+    """Split GGUF models are given by their first shard; count every shard."""
+    m = re.match(r"^(.*)-\d{5}-of-(\d{5})\.gguf$", os.path.basename(path))
+    if not m:
+        return os.path.getsize(path) if os.path.exists(path) else 0
+    d, stem, n = os.path.dirname(path), m.group(1), int(m.group(2))
+    total = 0
+    for i in range(1, n + 1):
+        f = os.path.join(d, f"{stem}-{i:05d}-of-{n:05d}.gguf")
+        if os.path.exists(f):
+            total += os.path.getsize(f)
+    return total
+
+
 def run_one(model, ngl, mmap, pp, tg, reps, timeout_s):
     cmd = [str(LLAMA), "-m", model, "-ngl", str(ngl),
            "-p", str(pp), "-n", str(tg), "-r", str(reps), "-o", "json"]
@@ -82,7 +96,7 @@ def run_one(model, ngl, mmap, pp, tg, reps, timeout_s):
 
     res = {
         "model": os.path.basename(os.path.dirname(model)) or os.path.basename(model),
-        "model_bytes": os.path.getsize(model) if os.path.exists(model) else None,
+        "model_bytes": model_bytes(model),
         "ngl": ngl, "mmap": mmap, "pp": pp, "tg": tg,
         "ok": ok, "wall_s": round(wall, 2),
         "major_faults": v1["pgmajfault"] - v0["pgmajfault"],
@@ -119,7 +133,7 @@ def main():
     print(f"DRAM {dram:.1f} GiB\n")
     with open(a.out, "a") as fh:
         for model in a.models:
-            sz = os.path.getsize(model) / 2**30 if os.path.exists(model) else 0
+            sz = model_bytes(model) / 2**30
             for mm in a.mmap:
                 for ngl in a.ngl:
                     print(f"  {os.path.basename(model)[:42]:42s} "

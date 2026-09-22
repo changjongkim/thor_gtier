@@ -73,3 +73,5 @@
        cufile      policy=0 slot=2048KiB window=  1.12 GiB (  0.8% of model) |  4.987 GiB/s   0.0377 tok/s  hit=0.0% amp=1.00x sw=0
 [09-23 02:28:27] run  d_moe_gran_1048576_b1
        mmap-gpu    policy=0 slot=2048KiB window=  1.12 GiB (  0.8% of model) |  0.637 GiB/s   0.0048 tok/s  hit=0.0% amp=0.00x sw=0
+[09-23 02:32:04]   pushed (MoE granularity sweep)
+[09-23 02:32:04] building summary

@@ -14,3 +14,8 @@ bw
 __pycache__/
 gtier/gtier
 gtier/randread
+lib/libgtier.a
+lib/gtier_demo
+lib/*.o
+gtier/sparsefetch
+gtier/cufile_test

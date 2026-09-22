@@ -49,3 +49,8 @@
        gtier       policy=1 slot=16384KiB window= 72.00 GiB ( 54.4% of model) |  5.014 GiB/s   0.0379 tok/s  hit=51.8% amp=1.00x sw=0
 [09-23 02:11:33] run  c_moe_res_4608_pol4
        gtier       policy=4 slot=16384KiB window= 72.00 GiB ( 54.4% of model) |  7.573 GiB/s   0.0572 tok/s  hit=42.8% amp=0.66x sw=0
+[09-23 02:13:26]   pushed (MoE residency at 4608 slots)
+[09-23 02:13:26] run  c_moe_res_6144_pol1
+       gtier       policy=1 slot=16384KiB window= 96.00 GiB ( 72.5% of model) |  5.009 GiB/s   0.0378 tok/s  hit=51.8% amp=1.00x sw=0
+[09-23 02:16:01] run  c_moe_res_6144_pol4
+       gtier       policy=4 slot=16384KiB window= 96.00 GiB ( 72.5% of model) |  9.118 GiB/s   0.0689 tok/s  hit=57.1% amp=0.55x sw=0

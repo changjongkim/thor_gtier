@@ -202,6 +202,11 @@ void gtier_reset_stats(gtier *g) { if (g) g->st = gtier_stats{}; }
 namespace {
 struct Plan { uint64_t off; size_t len; std::vector<int> members; };
 
+// O_DIRECT needs the length aligned as well as the offset.  A file whose size
+// is not a multiple of the block size therefore cannot have its tail read by
+// clamping to EOF -- that yields an unaligned length and EINVAL.  Reading an
+// aligned length past EOF is legal and simply returns short, so the plan keeps
+// the aligned span and lets the short read happen.
 std::vector<Plan> plan_exact(const gtier_range *r, int n, size_t merge_gap,
                              size_t slot_bytes, off_t file_bytes) {
     std::vector<int> idx(n);
@@ -211,7 +216,7 @@ std::vector<Plan> plan_exact(const gtier_range *r, int n, size_t merge_gap,
     for (int k = 0; k < n; ++k) {
         int i = idx[k];
         uint64_t lo = adown(r[i].off);
-        uint64_t hi = std::min<uint64_t>(aup(r[i].off + r[i].len), (uint64_t)file_bytes);
+        uint64_t hi = aup(r[i].off + r[i].len);
         if (!ps.empty()) {
             Plan &p = ps.back();
             uint64_t pend = p.off + p.len;
@@ -222,6 +227,12 @@ std::vector<Plan> plan_exact(const gtier_range *r, int n, size_t merge_gap,
                 continue;
             }
         }
+        // A range must land in one slot: the caller gets a single pointer, so
+        // its bytes have to be contiguous.  O_DIRECT alignment can push a
+        // slot-sized range over the slot, so callers must keep ranges below
+        // slot_bytes minus two alignment units.  Oversized ranges are rejected
+        // rather than silently split across slots.
+        if (hi - lo > slot_bytes) { ps.clear(); return ps; }
         ps.push_back(Plan{lo, (size_t)(hi - lo), {i}});
     }
     return ps;
@@ -238,6 +249,7 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
 
     if (g->cfg.cache_policy == GTIER_CACHE_NONE) {
         auto ps = plan_exact(r, n, g->cfg.merge_gap, blk, g->file_bytes);
+        if (ps.empty()) return -E2BIG;                 // a range exceeds a slot
         if ((int)ps.size() > g->cfg.slots) return -ENOSPC;
         for (size_t p = 0; p < ps.size(); ++p) {
             io_uring_sqe *s = io_uring_get_sqe(&g->ring);
@@ -250,7 +262,7 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
             io_uring_cqe *c;
             if (io_uring_wait_cqe(&g->ring, &c) < 0) return -EIO;
             int res = c->res; io_uring_cqe_seen(&g->ring, c);
-            if (res < 0) return res;
+            if (res < 0) return res;   // a short read at EOF is fine; res >= 0
             bytes_read += res;
         }
         issued = ps.size();
@@ -337,6 +349,10 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
 
     for (int i = 0; i < n; ++i) {
         uint64_t b = r[i].off / blk;
+        // A cached range is served from one block, so it must lie inside one.
+        // Straddling would hand back a pointer whose bytes run off the end of
+        // the slot.  The caller aligns its ranges to the block grid.
+        if ((r[i].off + r[i].len - 1) / blk != b) return -E2BIG;
         auto c = g->cache.find(b);
         if (c != g->cache.end()) {
             ++hits;
@@ -376,7 +392,7 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
             if (scratch >= g->cfg.slots) return -ENOSPC;   // caller must batch smaller
             int slot = scratch++;
             uint64_t lo = adown(r[i].off);
-            uint64_t hi = std::min<uint64_t>(aup(r[i].off + r[i].len), (uint64_t)g->file_bytes);
+            uint64_t hi = aup(r[i].off + r[i].len);
             pend.push_back({lo, (size_t)(hi - lo), slot, false});
             range_slot[i] = slot;
             range_base[i] = lo;
@@ -443,6 +459,7 @@ static int fetch_mmap_cpu(gtier *g, const gtier_range *r, int n, void **out) {
 // offloading system written for a discrete GPU does.
 static int fetch_pread_copy(gtier *g, const gtier_range *r, int n, void **out) {
     auto ps = plan_exact(r, n, 0, g->cfg.slot_bytes, g->file_bytes);
+    if (ps.empty()) return -E2BIG;
     if ((int)ps.size() > g->cfg.slots) return -ENOSPC;
     double t0 = now_s();
     std::vector<ssize_t> got(ps.size());
@@ -473,6 +490,7 @@ static int fetch_pread_copy(gtier *g, const gtier_range *r, int n, void **out) {
 
 static int fetch_cufile(gtier *g, const gtier_range *r, int n, void **out) {
     auto ps = plan_exact(r, n, 0, g->cfg.slot_bytes, g->file_bytes);
+    if (ps.empty()) return -E2BIG;
     if ((int)ps.size() > g->cfg.slots) return -ENOSPC;
     double t0 = now_s();
     std::vector<ssize_t> got(ps.size());
@@ -500,6 +518,7 @@ static int fetch_cufile(gtier *g, const gtier_range *r, int n, void **out) {
 
 static int fetch_uvm(gtier *g, const gtier_range *r, int n, void **out) {
     auto ps = plan_exact(r, n, 0, g->cfg.slot_bytes, g->file_bytes);
+    if (ps.empty()) return -E2BIG;
     if ((int)ps.size() > g->cfg.slots) return -ENOSPC;
     double t0 = now_s();
     uint64_t bytes = 0, useful = 0;

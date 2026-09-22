@@ -1,24 +1,16 @@
-// gTier -- a zero-copy NVMe-to-GPU data path for coherent SoCs.
+// gTier -- a zero-copy NVMe-to-GPU data path for coherent SoCs, plus the
+// baselines it is measured against, behind one interface.
 //
-// On a coherent SoC there is no separate device memory, so host pinned memory
-// obtained with cudaHostAllocMapped is simultaneously (a) a valid O_DIRECT DMA
-// target for the NVMe controller and (b) directly addressable by the GPU.  The
-// drive writes into memory the GPU already reads: no bounce buffer, no
-// cudaMemcpy, no page cache.  That path is unavailable on a discrete GPU
-// without GPUDirect Storage, and GDS is absent on this platform (nvfs 0.0,
-// compat mode).
+// On a coherent SoC there is no separate device memory, so pinned memory from
+// cudaHostAllocMapped is simultaneously (a) a valid O_DIRECT DMA target for the
+// NVMe controller and (b) directly addressable by the GPU.  The drive writes
+// into memory the GPU already reads: no bounce buffer, no cudaMemcpy, no page
+// cache.  That is unavailable on a discrete GPU without GPUDirect Storage, and
+// GDS is absent here (nvfs 0.0, compat mode).
 //
-// The library exists because the alternative the hardware offers -- letting the
-// GPU fault on file-backed mmap -- is serviced a page at a time and reaches
-// only 3-4% of the device.  See results/GRANULARITY.md.
-//
-// Planning follows two measured rules (results/GRANULARITY_FLOOR.md):
-//   1. Never amplify an isolated range.  The device's bandwidth grows
-//      sublinearly in request size, so reading extra bytes always costs more
-//      than the bandwidth it buys.
-//   2. Do coalesce neighbours.  Merging two ranges across a small gap trades
-//      those gap bytes for one fewer request, which pays below a threshold
-//      the library calibrates on the device it is running on.
+// Every backend below answers the same request -- "give me these byte ranges,
+// GPU-addressable" -- so throughput, amplification and request counts compare
+// directly on identical workloads.
 
 #ifndef GTIER_H
 #define GTIER_H
@@ -30,44 +22,59 @@
 extern "C" {
 #endif
 
+typedef enum {
+    GTIER_BACKEND_GTIER = 0,  // pinned window + io_uring + O_DIRECT  (ours)
+    GTIER_BACKEND_MMAP_GPU,   // mmap; the GPU faults                 (the OS path)
+    GTIER_BACKEND_MMAP_CPU,   // mmap; CPU threads fault, GPU then reads
+    GTIER_BACKEND_PREAD_COPY, // pread to host, cudaMemcpy to device  (FlexGen/ZeRO pattern)
+    GTIER_BACKEND_CUFILE,     // cuFile / GPUDirect Storage           (NVIDIA)
+    GTIER_BACKEND_UVM,        // cudaMallocManaged + prefetch         (DeepUM pattern)
+    GTIER_BACKEND_COUNT
+} gtier_backend;
+
+const char *gtier_backend_name(gtier_backend b);
+
 typedef struct {
-    size_t slot_bytes;    // staging granularity; 0 -> 1 MiB (measured optimum)
+    gtier_backend backend;
+    size_t slot_bytes;    // staging granularity; 0 -> 1 MiB
     int    slots;         // window depth in slots; 0 -> 8
     int    queue_depth;   // io_uring depth; 0 -> slots
-    size_t merge_gap;     // coalesce threshold in bytes; SIZE_MAX -> calibrate
+    size_t merge_gap;     // coalesce threshold; SIZE_MAX -> calibrate empirically
+
+    // Residency cache.  Caching needs fixed-size blocks, which means fetching
+    // bytes the caller did not ask for -- exactly what rule 1 forbids for
+    // one-shot access.  With reuse that amplification amortises, so the two
+    // regimes have a crossover this flag lets us measure.
+    int    cache_blocks;  // 0 -> exact fetch, no cache; >0 -> block cache of this many slots
 } gtier_config;
 
 typedef struct gtier gtier;
 
 typedef struct {
-    uint64_t off;         // byte offset in the file
-    size_t   len;         // byte length
+    uint64_t off;
+    size_t   len;
 } gtier_range;
 
-// Opens path with O_DIRECT and allocates the pinned, GPU-mapped window.
 gtier *gtier_open(const char *path, const gtier_config *cfg);
 void   gtier_close(gtier *g);
 
-// Fetches n ranges and returns, in dev_out[i], a device pointer to range i.
-// Pointers stay valid until the next gtier_fetch or gtier_release.
-// Returns 0 on success, negative errno otherwise.
+// Fetches n ranges; dev_out[i] receives a device pointer to range i.  Pointers
+// remain valid until the next fetch (or, with a cache, until evicted).
 int  gtier_fetch(gtier *g, const gtier_range *r, int n, void **dev_out);
-void gtier_release(gtier *g);
 
-// Measures this device's bandwidth-size curve and returns the gap below which
-// merging two requests beats issuing both.  Called automatically when
-// merge_gap is SIZE_MAX.
 size_t gtier_calibrate_merge_gap(gtier *g);
 
-// Statistics for the last fetch.
 typedef struct {
     uint64_t ranges_requested;
-    uint64_t reads_issued;     // after coalescing
-    uint64_t bytes_useful;     // what the caller asked for
-    uint64_t bytes_read;       // what the device delivered
+    uint64_t reads_issued;
+    uint64_t bytes_useful;
+    uint64_t bytes_read;      // what the device actually delivered
+    uint64_t cache_hits;
+    uint64_t cache_misses;
     double   seconds;
 } gtier_stats;
 void gtier_get_stats(const gtier *g, gtier_stats *out);
+void gtier_reset_stats(gtier *g);
 
 #ifdef __cplusplus
 }

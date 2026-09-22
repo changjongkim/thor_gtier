@@ -1,5 +1,16 @@
-[01:29:05] === queue start ===
-[01:29:05] MoE  133G   DRAM 122 GiB
-[01:29:05] run  e2_moe_backend0
-gtier       policy=0 slot=1024KiB window=  0.19 GiB (  0.1% of model) |  4.938 GiB/s   0.0373 tok/s  hit=0.0% amp=1.00x sw=0
-[01:29:35] run  e2_moe_backend1
+[09-23 01:46:51] ================ queue start ================
+[09-23 01:46:51] MoE 133G  dense 33G  DRAM 122 GiB
+[09-23 01:46:51] run  a_dense_gtier_async
+       gtier       policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  5.411 GiB/s   0.1669 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:47:00] run  a_dense_backend0
+       gtier       policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  4.911 GiB/s   0.1515 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:47:10] run  a_dense_backend1
+       mmap-gpu    policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  1.445 GiB/s   0.0446 tok/s  hit=0.0% amp=0.00x sw=0
+[09-23 01:47:36] run  a_dense_backend2
+       mmap-cpu    policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  3.784 GiB/s   0.1167 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:47:51] run  a_dense_backend3
+       pread+copy  policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  3.992 GiB/s   0.1231 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:48:05] run  a_dense_backend4
+       cufile      policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  4.324 GiB/s   0.1333 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:48:16] run  a_dense_backend5
+       uvm         policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  2.716 GiB/s   0.0838 tok/s  hit=0.0% amp=1.00x sw=0

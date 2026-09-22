@@ -1,0 +1,1 @@
+mmap-gpu    policy=0 slot=1024KiB window=  0.56 GiB (  1.7% of model) |  1.445 GiB/s   0.0446 tok/s  hit=0.0% amp=0.00x sw=0

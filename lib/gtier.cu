@@ -118,6 +118,13 @@ gtier *gtier_open(const char *path, const gtier_config *user) {
     switch (g->cfg.backend) {
         case GTIER_BACKEND_GTIER:
             if (!init_window(g)) { gtier_close(g); return nullptr; }
+            if (g->cfg.ablate_copy) {
+                g->devbuf.resize(g->cfg.slots);
+                for (int i = 0; i < g->cfg.slots; ++i)
+                    if (cudaMalloc((void **)&g->devbuf[i], g->cfg.slot_bytes) != cudaSuccess) {
+                        gtier_close(g); return nullptr;
+                    }
+            }
             if (io_uring_queue_init(g->cfg.queue_depth, &g->ring, 0) < 0) {
                 gtier_close(g); return nullptr;
             }
@@ -287,9 +294,16 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
             bytes_read += res;
         }
         issued = ps.size();
+        if (g->cfg.ablate_copy) {
+            for (size_t p = 0; p < ps.size(); ++p)
+                cudaMemcpyAsync(g->devbuf[p], g->host[p], ps[p].len,
+                                cudaMemcpyHostToDevice);
+            cudaDeviceSynchronize();
+        }
         for (size_t p = 0; p < ps.size(); ++p)
             for (int m : ps[p].members) {
-                out[m] = g->dev[p] + (r[m].off - ps[p].off);
+                out[m] = (g->cfg.ablate_copy ? g->devbuf[p] : g->dev[p])
+                         + (r[m].off - ps[p].off);
                 useful += r[m].len;
             }
         g->st = gtier_stats{(uint64_t)n, issued, useful, bytes_read, 0, 0, 0, 0, 0, now_s() - t0};

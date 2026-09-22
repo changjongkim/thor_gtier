@@ -63,6 +63,12 @@ typedef struct {
     // no resident block may be evicted for.  Declare the largest fetch you will
     // issue and the library reserves scratch accordingly.
     int    max_fetch_ranges;  // 0 -> a quarter of the window
+
+    // Ablation: after fetching, copy each slot into a separate device buffer,
+    // which is exactly the extra step cuFile and pread+copy take.  Running
+    // gtier with and without it isolates what that copy costs in situ, instead
+    // of inferring it from a standalone cudaMemcpy microbenchmark.
+    int    ablate_copy;
 } gtier_config;
 
 typedef enum {

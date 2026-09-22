@@ -42,6 +42,7 @@ struct Opt {
                                   // drop caches between them)
     int pipeline = 0;             // 1 = overlap the next fetch with this GPU batch
     int work = 0;                 // FLOPs per touched byte, to vary GPU time
+    int ablate = 0;               // add cuFile's extra copy to gtier
 };
 
 // Each pipeline stage gets its own handle, so its window and ring are disjoint
@@ -71,6 +72,7 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
     cfg.cache_policy = o.policy;
     cfg.admit_after = o.admit;
     cfg.max_fetch_ranges = o.n;
+    cfg.ablate_copy = o.ablate;
 
     std::vector<Stage> st(nstage);
     for (int i = 0; i < nstage; ++i) {
@@ -179,6 +181,7 @@ int main(int argc, char **argv) {
         else if (s == "--admit") o.admit = atoi(nx());
         else if (s == "--pipeline") o.pipeline = atoi(nx());
         else if (s == "--work") o.work = atoi(nx());
+        else if (s == "--ablate-copy") o.ablate = atoi(nx());
         else if (s == "--reuse") o.reuse = atoi(nx());
         else if (s == "--span") o.span = strtoull(nx(), 0, 10) << 30;
         else if (s == "--only") o.only = atoi(nx());

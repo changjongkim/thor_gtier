@@ -92,6 +92,35 @@ static int run_mmap(const Args &a, size_t bytes, double *sink) {
   return 0;
 }
 
+// -------- same mmap, same access pattern, but the CPU touches it -----------
+// The kernel's readahead is what makes sequential mmap tolerable for a CPU.
+// Running the identical walk from CPU threads isolates whether the problem is
+// mmap and 4 KiB pages in general, or specifically the GPU fault path.
+static int run_mmap_cpu(const Args &a, size_t bytes, double *) {
+  int fd = open(a.path.c_str(), O_RDWR);
+  if (fd < 0) { perror("open"); return 1; }
+  void *p = mmap(nullptr, bytes, PROT_READ, MAP_SHARED, fd, 0);
+  if (p == MAP_FAILED) { perror("mmap"); return 1; }
+  size_t pages = bytes / kPage;
+  int nt = a.cpu_load > 0 ? a.cpu_load : 8;
+  std::atomic<uint64_t> sink{0};
+  auto t0 = Clock::now();
+  std::vector<std::thread> ts;
+  for (int t = 0; t < nt; ++t)
+    ts.emplace_back([&, t] {
+      const double *d = (const double *)p;
+      uint64_t acc = 0;
+      for (size_t k = t; k < pages; k += nt) acc += (uint64_t)d[k * (kPage / 8)];
+      sink += acc;
+    });
+  for (auto &t : ts) t.join();
+  double tsec = secs(t0, Clock::now());
+  std::printf("mode=mmap-cpu threads=%d  OK  %.2fs  %.3f GiB/s\n",
+              nt, tsec, a.gib / tsec);
+  munmap(p, bytes); close(fd);
+  return 0;
+}
+
 // -------- gTier: pinned window + io_uring, GPU never faults ----------------
 static int run_gtier(const Args &a, size_t bytes, double *sink) {
   const size_t slot_bytes = a.slot_kib << 10;
@@ -219,5 +248,7 @@ int main(int argc, char **argv) {
 
   std::printf("file=%s  %.1f GiB  ", a.path.c_str(), a.gib);
   std::fflush(stdout);
-  return a.mode == "mmap" ? run_mmap(a, bytes, sink) : run_gtier(a, bytes, sink);
+  if (a.mode == "mmap") return run_mmap(a, bytes, sink);
+  if (a.mode == "mmap-cpu") return run_mmap_cpu(a, bytes, sink);
+  return run_gtier(a, bytes, sink);
 }

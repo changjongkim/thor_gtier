@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define CK(c) do { cudaError_t s_=(c); if (s_!=cudaSuccess) { \
@@ -38,6 +39,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> paths;
     int backend = 0, policy = 0, layers_per_batch = 1, tokens = 8, slots = 64;
     size_t slot = 1u << 20, split = 0;
+    int async_io = 0;
     for (int i = 1; i < argc; ++i) {
         std::string s = argv[i]; auto nx = [&] { return argv[++i]; };
         if (s == "--shard") paths.push_back(nx());
@@ -48,6 +50,7 @@ int main(int argc, char **argv) {
         else if (s == "--slot") slot = strtoull(nx(), 0, 10);
         else if (s == "--slots") slots = atoi(nx());
         else if (s == "--split") split = strtoull(nx(), 0, 10);  // cap per read
+        else if (s == "--async") async_io = atoi(nx());
     }
     if (paths.empty()) { std::fprintf(stderr, "--shard required\n"); return 1; }
 
@@ -92,12 +95,18 @@ int main(int argc, char **argv) {
     // every shard the full window would ask for shards x window bytes.
     int per_shard = (int)(slots / sh.size());
     if (per_shard < 8) per_shard = 8;
+    // Tickets own disjoint slots, so an async handle needs the window split
+    // GTIER_MAX_INFLIGHT ways on top of the per-shard split.
+    if (async_io) per_shard = std::max(per_shard, 16 * GTIER_MAX_INFLIGHT);
     gtier_config cfg{};
     cfg.backend = (gtier_backend)backend;
     cfg.slot_bytes = slot; cfg.slots = per_shard; cfg.queue_depth = per_shard;
     cfg.merge_gap = 0; cfg.cache_policy = policy; cfg.admit_after = 2;
-    cfg.max_fetch_ranges = (policy == 4) ? std::max(8, per_shard / 16)
-                                         : per_shard / 2;
+    // A ticket owns slots/GTIER_MAX_INFLIGHT of the window, so an async batch
+    // can never exceed that.  PIN also needs scratch it reuses across waves.
+    cfg.max_fetch_ranges = async_io ? std::max(4, per_shard / GTIER_MAX_INFLIGHT)
+                          : (policy == 4) ? std::max(8, per_shard / 16)
+                                          : per_shard / 2;
     for (auto &s : sh) {
         s.g = gtier_open(s.path.c_str(), &cfg);
         if (!s.g) { std::fprintf(stderr, "gtier_open failed\n"); return 1; }
@@ -117,15 +126,64 @@ int main(int argc, char **argv) {
             std::vector<Req> batch;
             for (int k = 0; k < layers_per_batch && L + k <= n_layers; ++k)
                 batch.insert(batch.end(), by_layer[L + k].begin(), by_layer[L + k].end());
+            // Split the batch into per-shard runs first, so the async path can
+            // have the next run in flight while this one is consumed.
+            struct Run { int shard; std::vector<gtier_range> rs; };
+            std::vector<Run> runs;
             for (size_t pos = 0; pos < batch.size(); ) {
-                // group a run of same-shard requests, bounded by the window
-                int s = batch[pos].shard;
-                std::vector<gtier_range> rs;
+                int sh_id = batch[pos].shard;
+                Run rn; rn.shard = sh_id;
                 size_t end = pos;
-                while (end < batch.size() && batch[end].shard == s &&
-                       rs.size() < (size_t)cfg.max_fetch_ranges) {
-                    rs.push_back(batch[end].r); ++end;
+                while (end < batch.size() && batch[end].shard == sh_id &&
+                       rn.rs.size() < (size_t)cfg.max_fetch_ranges) {
+                    rn.rs.push_back(batch[end].r); ++end;
                 }
+                runs.push_back(std::move(rn));
+                pos = end;
+            }
+
+            if (async_io) {
+                // One run in flight while the previous one is consumed.
+                std::vector<void *> outs(cfg.max_fetch_ranges);
+                gtier_ticket tk[2];
+                bool live[2] = {false, false};
+                for (size_t i = 0; i <= runs.size(); ++i) {
+                    int cur = (int)(i & 1), nxt = cur ^ 1;
+                    if (i < runs.size()) {
+                        int rc = gtier_submit(sh[runs[i].shard].g, runs[i].rs.data(),
+                                              (int)runs[i].rs.size(), &tk[cur]);
+                        if (rc != 0) {
+                            std::fprintf(stderr, "submit failed: %s (ranges=%zu)\n",
+                                         strerror(-rc), runs[i].rs.size());
+                            return 1;
+                        }
+                        live[cur] = true;
+                    }
+                    if (i == 0) continue;            // nothing to collect yet
+                    size_t done = i - 1;
+                    int slot = (int)(done & 1);
+                    if (!live[slot]) continue;
+                    if (gtier_wait(sh[runs[done].shard].g, &tk[slot], outs.data()) != 0) {
+                        std::fprintf(stderr, "async wait failed\n"); return 1;
+                    }
+                    live[slot] = false;
+                    for (size_t k = 0; k < runs[done].rs.size(); ++k) {
+                        dp[k] = (const uint8_t *)outs[k];
+                        dl[k] = runs[done].rs[k].len;
+                        useful += runs[done].rs[k].len;
+                    }
+                    consume<<<(int)runs[done].rs.size(), 256>>>(
+                        dp, dl, (int)runs[done].rs.size(), sink);
+                    CK(cudaDeviceSynchronize());
+                    gtier_stats x; gtier_get_stats(sh[runs[done].shard].g, &x);
+                    agg.bytes_read += x.bytes_read;
+                }
+                continue;
+            }
+
+            for (size_t ri = 0; ri < runs.size(); ++ri) {
+                int s = runs[ri].shard;
+                std::vector<gtier_range> &rs = runs[ri].rs;
                 std::vector<void *> outs(rs.size());
                 int rc = gtier_fetch(sh[s].g, rs.data(), (int)rs.size(), outs.data());
                 if (rc != 0) {
@@ -149,7 +207,6 @@ int main(int argc, char **argv) {
                 agg.cache_hits += x.cache_hits; agg.cache_misses += x.cache_misses;
                 agg.bytes_read += x.bytes_read; agg.admitted += x.admitted;
                 agg.switches += x.switches;
-                pos = end;
             }
         }
     }

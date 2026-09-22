@@ -1,0 +1,1 @@
+cufile      policy=0 slot=2048KiB window=  1.12 GiB (  0.8% of model) |  3.630 GiB/s   0.0274 tok/s  hit=0.0% amp=1.00x sw=0

@@ -74,6 +74,12 @@ typedef enum {
     // admit but which regime you are in.  ADAPTIVE watches the hit rate and
     // switches, with hysteresis so it does not oscillate at the edge.
     GTIER_CACHE_ADAPTIVE,
+    // Weight streaming sweeps the whole model once per token, which is LRU's
+    // pathological case: with a window smaller than the model every block is
+    // evicted before it comes round again, so partial residency buys nothing.
+    // PIN fills the window once and then stops evicting, turning a window of
+    // W/N of the model into a W/N hit rate instead of zero.
+    GTIER_CACHE_PIN,
 } gtier_cache_policy;
 
 typedef struct gtier gtier;

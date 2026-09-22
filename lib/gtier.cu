@@ -16,6 +16,7 @@
 #include <list>
 #include <thread>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace {
@@ -73,7 +74,15 @@ struct gtier {
     int cache_slots = 0;                   // slots reserved for resident blocks
 
     // ADAPTIVE regime state.  caching = true means blocks are being admitted.
+    //
+    // The detector must not count a first touch against the hit rate.  A cold
+    // start is all compulsory misses and looks exactly like thrashing, so a
+    // naive hit-rate trigger leaves the caching regime during the first pass
+    // over the data and never returns.  `ever` records which blocks have been
+    // seen at least once; only misses on those are capacity misses and evidence
+    // that the working set does not fit.
     bool caching = true;
+    std::unordered_set<uint64_t> ever;
     uint64_t win_hits = 0, win_reqs = 0, switches = 0;
 };
 
@@ -167,10 +176,22 @@ gtier *gtier_open(const char *path, const gtier_config *user) {
         // Hybrid keeps a quarter of the window as scratch so a miss always has
         // somewhere to land without evicting a resident block.
         int want = g->cfg.cache_blocks ? g->cfg.cache_blocks : g->cfg.slots;
+        // Only HYBRID needs scratch: it serves misses with exact fetches that
+        // must not evict a resident block.  ADAPTIVE admits misses to blocks
+        // while caching and uses the slots directly once it stops, so reserving
+        // scratch for it only shrinks the resident set.
         if (g->cfg.cache_policy == GTIER_CACHE_HYBRID ||
-            g->cfg.cache_policy == GTIER_CACHE_ADAPTIVE) {
+            g->cfg.cache_policy == GTIER_CACHE_PIN) {
+            // Scratch holds the exact fetches that serve non-admitted misses.
+            // HYBRID can miss on every range of a fetch, so it needs a full
+            // fetch's worth.  PIN only falls back once the cache is full and
+            // then reuses scratch across waves, so a small reserve suffices --
+            // and taking more would shrink the resident set, which is the whole
+            // point of pinning.
             int scratch_need = g->cfg.max_fetch_ranges ? g->cfg.max_fetch_ranges
                                                        : std::max(1, g->cfg.slots / 4);
+            if (g->cfg.cache_policy == GTIER_CACHE_PIN)
+                scratch_need = std::min(scratch_need, std::max(8, g->cfg.slots / 16));
             scratch_need = std::min(scratch_need, g->cfg.slots - 1);
             want = std::min(want, g->cfg.slots - scratch_need);
             if (want < 1) want = 1;
@@ -316,9 +337,15 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
                     out[m] = g->dev[p] + (r[m].off - ps[p].off);
                     useful += r[m].len;
                 }
-            for (int i = 0; i < n; ++i)
-                if (g->cache.count(r[i].off / blk)) ++g->win_hits;
-            g->win_reqs += n;
+            for (int i = 0; i < n; ++i) {
+                uint64_t b = r[i].off / blk;
+                if (g->ever.count(b)) {
+                    ++g->win_reqs;
+                    if (g->cache.count(b)) ++g->win_hits;
+                } else {
+                    g->ever.insert(b);
+                }
+            }
             g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes_read,
                                 0, (uint64_t)n, 0, ps.size(), g->switches, now_s() - t0};
             return 0;
@@ -331,8 +358,10 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
         g->lru.push_front(b);
         g->slot_lru[slot] = g->lru.begin();
     };
+    const bool pinning = g->cfg.cache_policy == GTIER_CACHE_PIN;
     auto victim_slot = [&]() {
         if ((int)g->cache.size() < g->cache_slots) return (int)g->cache.size();
+        if (pinning) return -1;            // full and pinned: admit nothing more
         uint64_t v = g->lru.back();
         int slot = g->cache[v];
         g->cache.erase(v);
@@ -376,8 +405,9 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
         bool admit = !hybrid;
         if (hybrid && ++g->seen[b] >= g->cfg.admit_after) { admit = true; g->seen.erase(b); }
 
+        int slot = admit ? victim_slot() : -1;
+        if (slot < 0) admit = false;        // pinned cache full: fetch exactly
         if (admit) {
-            int slot = victim_slot();
             g->cache[b] = slot;
             g->slot_block[slot] = b;
             g->lru.push_front(b);
@@ -390,7 +420,7 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
             ++admitted;
         } else {
             if (scratch >= g->cfg.slots) return -ENOSPC;   // caller must batch smaller
-            int slot = scratch++;
+            slot = scratch++;
             uint64_t lo = adown(r[i].off);
             uint64_t hi = aup(r[i].off + r[i].len);
             pend.push_back({lo, (size_t)(hi - lo), slot, false});
@@ -419,7 +449,21 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
         out[i] = g->dev[range_slot[i]] + (r[i].off - range_base[i]);
         useful += r[i].len;
     }
-    g->win_hits += hits; g->win_reqs += n;
+    // Score the window on capacity behaviour only: a first touch is
+    // compulsory and says nothing about whether the set fits.
+    {
+        uint64_t scored = 0, scored_hits = 0;
+        for (int i = 0; i < n; ++i) {
+            uint64_t b = r[i].off / blk;
+            if (g->ever.count(b)) {
+                ++scored;
+                if (g->cache.count(b)) ++scored_hits;
+            } else {
+                g->ever.insert(b);
+            }
+        }
+        g->win_hits += scored_hits; g->win_reqs += scored;
+    }
     g->st = gtier_stats{(uint64_t)n, issued, useful, bytes_read,
                         hits, misses, admitted, exact, g->switches, now_s() - t0};
     return 0;

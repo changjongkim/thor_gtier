@@ -87,11 +87,17 @@ int main(int argc, char **argv) {
             }
         }
 
+    // --slots is the window across the whole model, so split it over the
+    // shards; each shard gets its own handle and a share of the slots.  Giving
+    // every shard the full window would ask for shards x window bytes.
+    int per_shard = (int)(slots / sh.size());
+    if (per_shard < 8) per_shard = 8;
     gtier_config cfg{};
     cfg.backend = (gtier_backend)backend;
-    cfg.slot_bytes = slot; cfg.slots = slots; cfg.queue_depth = slots;
+    cfg.slot_bytes = slot; cfg.slots = per_shard; cfg.queue_depth = per_shard;
     cfg.merge_gap = 0; cfg.cache_policy = policy; cfg.admit_after = 2;
-    cfg.max_fetch_ranges = slots / 2;
+    cfg.max_fetch_ranges = (policy == 4) ? std::max(8, per_shard / 16)
+                                         : per_shard / 2;
     for (auto &s : sh) {
         s.g = gtier_open(s.path.c_str(), &cfg);
         if (!s.g) { std::fprintf(stderr, "gtier_open failed\n"); return 1; }
@@ -100,10 +106,11 @@ int main(int argc, char **argv) {
     unsigned long long *sink; CK(cudaMalloc(&sink, sizeof(*sink)));
     CK(cudaMemset(sink, 0, sizeof(*sink)));
     const uint8_t **dp; size_t *dl;
-    CK(cudaMallocManaged(&dp, slots * sizeof(*dp)));
-    CK(cudaMallocManaged(&dl, slots * sizeof(*dl)));
+    CK(cudaMallocManaged(&dp, per_shard * sizeof(*dp)));
+    CK(cudaMallocManaged(&dl, per_shard * sizeof(*dl)));
 
     uint64_t useful = 0;
+    gtier_stats agg{};
     auto t0 = std::chrono::steady_clock::now();
     for (int tok = 0; tok < tokens; ++tok) {
         for (int L = 0; L <= n_layers; L += layers_per_batch) {
@@ -138,16 +145,25 @@ int main(int argc, char **argv) {
                 }
                 consume<<<(int)rs.size(), 256>>>(dp, dl, (int)rs.size(), sink);
                 CK(cudaDeviceSynchronize());
+                gtier_stats x; gtier_get_stats(sh[s].g, &x);
+                agg.cache_hits += x.cache_hits; agg.cache_misses += x.cache_misses;
+                agg.bytes_read += x.bytes_read; agg.admitted += x.admitted;
+                agg.switches += x.switches;
                 pos = end;
             }
         }
     }
     double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
-    std::printf("%-11s policy=%d slot=%4zuKiB | model=%6.2f GiB shards=%2zu layers=%3d | "
-                "%6.3f GiB/s  %7.4f tok/s\n",
+    double win = (double)per_shard * sh.size() * slot / 1073741824.0;
+    std::printf("%-11s policy=%d slot=%4zuKiB window=%6.2f GiB (%5.1f%% of model) | "
+                "%6.3f GiB/s  %7.4f tok/s  hit=%.1f%% amp=%.2fx sw=%llu\n",
                 gtier_backend_name((gtier_backend)backend), policy, slot >> 10,
-                model_bytes / 1073741824.0, sh.size(), n_layers,
-                (double)useful / (1ull << 30) / t, tokens / t);
+                win, 100.0 * win / (model_bytes / 1073741824.0),
+                (double)useful / (1ull << 30) / t, tokens / t,
+                (agg.cache_hits + agg.cache_misses)
+                    ? 100.0 * agg.cache_hits / (agg.cache_hits + agg.cache_misses) : 0.0,
+                useful ? (double)agg.bytes_read / useful : 0.0,
+                (unsigned long long)agg.switches);
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }
     return 0;
 }

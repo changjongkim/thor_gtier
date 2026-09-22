@@ -1,0 +1,222 @@
+# gTier — Coherent 엣지 SoC의 Out-of-Core LLM 추론 계층
+
+> **한 문장.** 메모리를 초과하는 모델을 돌리는 모든 시스템은 *GPU 메모리 / 호스트 DRAM / 스토리지* 의
+> **3계층**을 전제하지만, coherent 엣지 SoC에서는 1·2계층이 **물리적으로 같은 메모리**다. 설계 공간이
+> **DRAM↔플래시 단일 경계**로 붕괴하고, 하드웨어가 새로 내놓은 답(호스트 페이지테이블 기반 GPU demand
+> paging)은 **장치 대역폭의 4~28%만 내면서 비결정적으로 죽는다.** gTier는 붕괴한 계층 구조가 실제로
+> 필요로 하는 계층을 만든다.
+
+**플랫폼:** NVIDIA Jetson AGX Thor (JetPack 7.2 / L4T R39.2, CUDA 13.0, sm_110, Blackwell CC 11.0)
+· 122.8 GiB 통합 coherent 메모리 · WD SN5000S 1 TB NVMe · **swap 없음**
+
+---
+
+## 1. 배경 — Thor에서 실측한 사실
+
+이 저장소의 모든 주장은 이 장비에서 직접 측정한 값에 기반한다. 전체는 [`docs/PLATFORM_NOTES.md`](docs/PLATFORM_NOTES.md).
+
+| 항목 | 측정값 |
+|---|---:|
+| GPU STREAM-triad | **250.2 GB/s** (이론치 273 GB/s의 91%) |
+| CPU STREAM-triad (12스레드) | 209.2 GB/s |
+| **CPU + GPU 동시** | **230.3 GB/s (0.912x)** |
+| 풀 대역폭시 보드 전력 (VIN) | 67.4 W |
+| 최대 단일 매핑 할당 | 112 GiB |
+| NVMe 순차 읽기 (O_DIRECT) | 4.9 GB/s |
+| **DRAM : NVMe 대역폭 비** | **71 : 1** |
+| Swap | **0 B** |
+
+두 가지가 즉시 따라 나온다.
+
+1. **GPU 혼자 메모리 컨트롤러를 포화시킨다.** CPU를 더하면 총합이 *줄어든다*. 메모리 바운드
+   워크로드에서 coherent CPU-GPU 협업은 대역폭을 늘리지 못하고 경합만 추가한다.
+2. **폴백이 없다.** swap이 0이므로 작업집합이 DRAM을 넘으면 우아한 저하가 아니라 **OOM**이다.
+
+---
+
+## 2. 문제 1 — 3계층 전제의 붕괴
+
+Thor에서 `llama.cpp`는 다음을 보고한다.
+
+```
+Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
+```
+
+**시스템 RAM 전체가 VRAM으로 보고된다.** 선행 시스템들이 설계 예산의 대부분을 쓰는 "GPU 메모리와
+호스트 DRAM 사이에서 무엇을 언제 옮길 것인가"라는 질문이, 이 하드웨어에서는 **물리적 의미가 없다.**
+
+| 시스템 | Venue | 전제 | Coherent SoC에서 |
+|---|---|---|---|
+| ZeRO-Infinity | SC'21 | GPU HBM → CPU DRAM → NVMe 분할 | 1·2계층 동일 → 분할이 **no-op** |
+| FlashNeuron | **FAST'21** | GPUDirect로 GPU↔SSD 직결 | 별도 GPU 메모리 없음; Jetson의 cuFile은 compat 모드 정황 |
+| DeepUM | ASPLOS'23 | UVM 페이지 마이그레이션 + 상관 프리페치 | **마이그레이션 대상지가 없음** |
+| FlexGen | ICML'23 | 3단 GPU/CPU/디스크 블록 스케줄 탐색 | 두 단이 합쳐져 탐색공간 **퇴화** |
+| G10 | MICRO'23 | 통합 GPU+호스트+플래시, 컴파일러 텐서 마이그레이션 | 가장 근접. 단 **tier1을 discrete GPU 메모리로 가정**하고 **시뮬레이션 평가** |
+| PowerInfer | SOSP'24 | hot 뉴런 GPU 상주 / cold CPU | 같은 메모리 → 연산 배치만 바뀜 |
+| InfiniGen | OSDI'24 | 투기적 KV 오프로드 GPU→CPU | 데이터 이동 no-op |
+| NEO | MLSys'25 | attention/KV를 CPU로 오프로드 | 동일 |
+| InstInfer / INF2 | '24–'25 | in-/near-storage 오프로드 | 직교. computational storage 필요 |
+| **LLM in a Flash** | ACL'24 | 플래시→DRAM 윈도잉, 희소성 인지 로딩 | **최근접.** 그러나 CPU측에서 *무엇을* 로드할지 결정할 뿐, **GPU 가시 demand paging을 쓰지도 재지도 않으며** reclaim 실패를 다루지 않음 |
+
+**방어할 경계.** 선행연구는 *물리적으로 분리된* GPU와 호스트 사이에서 **무엇을** 옮길지를 최적화한다.
+여기선 둘이 분리돼 있지 않고, 남은 유일한 경계인 **GPU 가시 페이징 ↔ 플래시**의 **메커니즘**이 열린
+문제다. 그리고 그 메커니즘은 방금 하드웨어에 생겼는데 — 작동하지 않는다.
+
+---
+
+## 3. 문제 2 — 하드웨어의 답이 작동하지 않는다
+
+Thor는 `pageableMemoryAccessUsesHostPageTables = 1` 인 **최초의 Tegra**다 (Orin은 0). 따라서 GPU
+커널이 `mmap`된 파일 백업 메모리를 **직접 역참조**하고 OS가 폴트를 처리한다. 원리적으로는 애플리케이션
+레벨 청킹 없이 out-of-core GPU 연산이 가능하다는 뜻이다. 실측 결과는 [`results/REGIMES.md`](results/REGIMES.md):
+
+| 작업집합 | 결과 | 실효 대역폭 | NVMe(4.9 GB/s) 대비 |
+|---:|---|---:|---:|
+| 8 GiB | OK | 1.35 GiB/s | 28% |
+| 12 GiB | OK | 1.33 GiB/s | 27% |
+| 16 GiB | OK | 1.29 GiB/s | 26% |
+| **20 GiB** | OK | **0.36 GiB/s** | 7% ← **3.6배 절벽** |
+| 24 GiB | OK | 0.23 GiB/s | 5% |
+| 32 GiB | OK | 0.26 GiB/s | 5% |
+| 48 GiB | OK | 0.21 GiB/s | 4% |
+| **64 GiB** | **CRASH** (`illegal memory access`) | — | — |
+| 80 GiB | OK | 0.19 GiB/s | 4% |
+| **100 GiB** | **CRASH** | — | — |
+| **200 GiB** | **CRASH** | — | — |
+
+세 가지 regime이 동시에 존재한다.
+
+1. **16→20 GiB에서 3.6배 성능 절벽** — 문서화되어 있지 않다.
+2. **장치 대역폭의 4~28% 천장** — 되는 구간에서조차 NVMe를 72~96% 낭비한다.
+3. **비결정적 하드 실패** — 64 GiB는 죽고 80 GiB는 살고 100 GiB는 죽는다. 용량 한계가 아니라
+   **reclaim / invalidation 경쟁 조건**이다. 즉 성능 문제가 아니라 **정확성 버그**다.
+
+swap이 없으므로 폴백도 없다. 실패 양상이 최악이다 — **되다가 조용히 죽는다.**
+
+---
+
+## 4. 접근 — gTier
+
+OS의 demand paging 경로 대신, **GPU의 상주 윈도우를 유저스페이스에서 명시적으로 소유**하는 계층.
+세 개의 하위 문제가 곧 연구 내용이다.
+
+### ① 상주 관리 — 정확성
+OS는 GPU 변환이 걸린 페이지를 모른 채 회수하고, 그래서 죽는다. gTier가 **경계 있는 상주 윈도우**를
+직접 소유(`mlock` / `cudaHostRegister`)하여 커널이 GPU 밑에서 회수하지 못하게 하고, 축출을 명시적으로
+수행한다.
+> **연구 질문:** GPU를 멈추지 않으면서 윈도우 크기와 교체를 어떻게 결정하는가?
+
+### ② 폴트 입도와 배칭 — 성능
+4 KiB 폴트를 OS가 한 장씩 처리해 1.35 GiB/s에 머문다. GPU 폴트는 대규모 병렬로 도착하지만 서비스는
+직렬이다. gTier는 **애플리케이션의 접근 구조를 알고**(MoE는 전문가 라우팅으로 흩어진 접근, dense는
+레이어 순차) `io_uring`으로 큰 비동기 읽기를 GPU보다 앞서 발행한다.
+> **연구 질문:** GPU 주도의 흩어진·위상 구조 폴트 스트림에 맞는 프리페치 정책은? 커널 readahead는
+> CPU 순차 접근용이다.
+
+### ③ 쓰기 반환과 대역폭 — 스토리지
+더티 페이지를 소비자 플래시로 되돌려야 한다. 여기에 **(a)** CPU측 I/O가 GPU 메모리 대역폭을 훔치고
+(측정: 0.912x), **(b)** 동시 읽기/쓰기가 NVMe 집계 처리량을 떨어뜨리며, **(c)** 소비자 SSD 수명이
+걸린다.
+> **연구 질문:** 공유 메모리 컨트롤러와 플래시 수명을 동시에 존중하는 writeback 스케줄링은?
+
+---
+
+## 5. 워크로드 설계
+
+양자화를 **크기 손잡이로만** 사용한다. 모델 아키텍처·라우팅·접근 패턴을 고정한 채 오버서브스크립션
+비율만 DRAM 경계를 가로질러 스윕한다.
+
+### 주력 — Qwen3-235B-A22B-Instruct (MoE, 토큰당 22B 활성)
+토큰당 가중치의 **약 9%만**, 전문가 라우팅에 따라 **흩어져서** 읽힌다. 커널의 순차 readahead에는 최악,
+구조 인지 계층에는 최선인 케이스다.
+
+| Quant | 크기 | 122.8 GiB 대비 |
+|---|---:|---:|
+| Q3_K_M | 104.7 GiB | 0.86x (들어감) |
+| IQ4_XS | 116.9 GiB | 0.96x |
+| Q4_0 | 124.0 GiB | 1.02x (막 넘음) |
+| Q4_K_M | 132.4 GiB | 1.09x (초과) |
+| Q5_K_M | 155.4 GiB | 1.27x |
+| Q6_K | 179.8 GiB | 1.47x |
+| Q8_0 | 232.8 GiB | 1.91x |
+
+### 보조 — Qwen2.5 dense 사다리 (Q8_0)
+7B (8 GiB) · 14B (16 GiB) · 32B (35 GiB) · 72B (77 GiB). §3에서 측정한 mmap regime
+(fast / cliff / slow / slow)에 정확히 떨어지며, **dense vs MoE 접근 패턴 대조**를 제공한다.
+
+---
+
+## 6. 실험
+
+**E1 — `-ngl` 스윕 (3계층 전제의 반증).**
+discrete GPU에서 `-ngl K`는 몇 개 레이어가 VRAM에 상주하고 몇 개가 토큰마다 호스트에서 스트리밍되는지를
+결정하며 처리량과 PCIe 트래픽을 지배한다. Thor에서 **읽은 바이트 수와 페이지 폴트가 `-ngl`에 대해
+평평하고 연산 배치만 바뀐다면**, GPU/호스트 계층 구분은 이 하드웨어에서 경험적으로 사망이다.
+
+**E2 — DRAM 경계 통과.** MoE 양자화 사다리를 1.0x를 가로질러 스윕. 처리량, TTFT, major fault,
+NVMe 읽기량, 페이지캐시 증가, 그리고 **완주 여부**를 기록.
+
+**E3 — 메커니즘 비교.** `mmap`(OS demand paging) vs `--no-mmap`(명시적 read) vs gTier 프로토타입.
+`--no-mmap`은 애초에 DRAM을 초과할 수 없다.
+
+**E4 — MoE vs dense.** 같은 바이트, 다른 접근 구조. 전문가 단위로 흩어진 접근에서 커널 readahead는
+도움이 되는가 해가 되는가?
+
+**측정 지표** (전부 [`bench/bench.py`](bench/bench.py)가 포착): 처리량(pp/tg), wall time,
+`pgmajfault`, `pgfault`, NVMe 섹터 읽기/쓰기, 페이지캐시 증가, MemAvailable, 보드 전력.
+
+---
+
+## 7. Go / Kill
+
+논문은 경계 윈도우 계층이 **① 비결정적 실패를 제거하고 ② 1.35 GiB/s를 넘을 때만** 성립한다.
+이상적으로는 장치가 실제로 낼 수 있는 **4.9 GB/s**에 근접해야 한다.
+천장이 하드웨어 한계로 판명되면 이 연구는 characterization 논문으로 축소된다.
+
+---
+
+## 8. 저장소 구조
+
+```
+thor_gtier/
+├── README.md               이 문서 — 노벨티와 주장
+├── docs/
+│   ├── PLATFORM_NOTES.md   Thor 실측 플랫폼 사실 (대역폭·용량·coherence·MIG·소프트웨어 공백)
+│   └── EXPERIMENT_PLAN.md  실험 설계와 베이스라인 상세
+├── mmap_probe/             GPU가 파일 백업 mmap을 역참조할 수 있는가 — §3의 세 regime 측정
+│   ├── mmaptest.cu
+│   └── Makefile
+├── bw_probe/               CPU+GPU 동시 메모리 대역폭 — §1의 0.912x
+│   ├── bw.cu
+│   └── Makefile
+├── bench/
+│   └── bench.py            out-of-core LLM 추론 측정 하네스
+├── scripts/
+│   ├── fetch.sh            Qwen2.5 dense 사다리 다운로드
+│   └── fetch2.sh           Qwen3-235B MoE 사다리 다운로드
+└── results/
+    └── REGIMES.md          mmap regime 원측정값
+```
+
+## 9. 재현
+
+```bash
+# 1) GPU mmap regime 특성화
+cd mmap_probe && make
+./mmaptest /path/to/file.bin 8      # 빠른 경로
+./mmaptest /path/to/file.bin 24     # 절벽 이후
+./mmaptest /path/to/file.bin 100    # 붕괴
+
+# 2) 메모리 대역폭 포화
+cd ../bw_probe && make && ./bw 12
+
+# 3) 모델 준비 후 LLM 측정
+cd .. && ./scripts/fetch.sh
+python3 bench/bench.py \
+  --models models/qwen7b_q8/*-00001-of-*.gguf \
+  --ngl 0 20 40 99 --mmap 1 0 --pp 128 --tg 32 \
+  --out results/e1_ngl_sweep.jsonl
+```
+
+측정 전 `sudo jetson_clocks`로 클럭을 고정하고, `nvpmodel -q`로 전력 모드를 기록할 것.
+`bench.py`는 각 실행 전에 페이지 캐시를 비운다(`drop_caches`).

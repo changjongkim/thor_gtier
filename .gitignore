@@ -1,0 +1,14 @@
+# models and raw data are not versioned
+*.gguf
+*.bin
+*.safetensors
+models/
+results/*.jsonl
+results/*.csv
+*.log
+# build artifacts
+build/
+*.o
+mmaptest
+bw
+__pycache__/

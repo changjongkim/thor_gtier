@@ -62,10 +62,19 @@ struct gtier {
     uint8_t *uvm = nullptr;
 
     // block cache: aligned block index -> slot
+    // Resident blocks.  cache maps a block index to the slot holding it; the
+    // LRU list orders them.  Slots above cache_slots are scratch, used for the
+    // exact fetches that serve misses without amplifying them.
     std::unordered_map<uint64_t, int> cache;
     std::list<uint64_t> lru;               // front = most recent
-    std::vector<uint64_t> slot_block;      // slot -> block index (or UINT64_MAX)
+    std::vector<uint64_t> slot_block;
     std::vector<std::list<uint64_t>::iterator> slot_lru;
+    std::unordered_map<uint64_t, int> seen; // HYBRID: accesses before admission
+    int cache_slots = 0;                   // slots reserved for resident blocks
+
+    // ADAPTIVE regime state.  caching = true means blocks are being admitted.
+    bool caching = true;
+    uint64_t win_hits = 0, win_reqs = 0, switches = 0;
 };
 
 // ---------------------------------------------------------------- open/close
@@ -153,7 +162,20 @@ gtier *gtier_open(const char *path, const gtier_config *user) {
         default: gtier_close(g); return nullptr;
     }
 
-    if (g->cfg.cache_blocks > 0) {
+    if (!g->cfg.admit_after) g->cfg.admit_after = 2;
+    if (g->cfg.cache_policy != GTIER_CACHE_NONE) {
+        // Hybrid keeps a quarter of the window as scratch so a miss always has
+        // somewhere to land without evicting a resident block.
+        int want = g->cfg.cache_blocks ? g->cfg.cache_blocks : g->cfg.slots;
+        if (g->cfg.cache_policy == GTIER_CACHE_HYBRID ||
+            g->cfg.cache_policy == GTIER_CACHE_ADAPTIVE) {
+            int scratch_need = g->cfg.max_fetch_ranges ? g->cfg.max_fetch_ranges
+                                                       : std::max(1, g->cfg.slots / 4);
+            scratch_need = std::min(scratch_need, g->cfg.slots - 1);
+            want = std::min(want, g->cfg.slots - scratch_need);
+            if (want < 1) want = 1;
+        }
+        g->cache_slots = std::min(want, g->cfg.slots);
         g->slot_block.assign(g->cfg.slots, UINT64_MAX);
         g->slot_lru.resize(g->cfg.slots);
     }
@@ -212,65 +234,9 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
     const size_t blk = g->cfg.slot_bytes;
     double t0 = now_s();
     uint64_t bytes_read = 0, useful = 0, issued = 0, hits = 0, misses = 0;
+    uint64_t admitted = 0, exact = 0;
 
-    if (g->cfg.cache_blocks > 0) {
-        // Fixed-size blocks so a block can be reused; amplification is the
-        // price, and reuse is what repays it.
-        std::vector<uint64_t> want;
-        want.reserve(n);
-        for (int i = 0; i < n; ++i) want.push_back(r[i].off / blk);
-        std::sort(want.begin(), want.end());
-        want.erase(std::unique(want.begin(), want.end()), want.end());
-
-        std::vector<std::pair<uint64_t, int>> to_read;
-        for (uint64_t b : want) {
-            auto it = g->cache.find(b);
-            if (it != g->cache.end()) {
-                ++hits;
-                g->lru.erase(g->slot_lru[it->second]);
-                g->lru.push_front(b);
-                g->slot_lru[it->second] = g->lru.begin();
-                continue;
-            }
-            ++misses;
-            int slot;
-            if ((int)g->cache.size() < g->cfg.slots) {
-                slot = (int)g->cache.size();
-            } else {
-                uint64_t victim = g->lru.back();
-                slot = g->cache[victim];
-                g->cache.erase(victim);
-                g->lru.pop_back();
-            }
-            g->cache[b] = slot;
-            g->slot_block[slot] = b;
-            g->lru.push_front(b);
-            g->slot_lru[slot] = g->lru.begin();
-            to_read.emplace_back(b, slot);
-        }
-        for (auto &pr : to_read) {
-            io_uring_sqe *s = io_uring_get_sqe(&g->ring);
-            if (!s) return -EBUSY;
-            size_t len = std::min<size_t>(blk, (size_t)(g->file_bytes - pr.first * blk));
-            len = aup(len);
-            io_uring_prep_read(s, g->fd, g->host[pr.second], len, (off_t)(pr.first * blk));
-            io_uring_sqe_set_data64(s, pr.second);
-        }
-        if (!to_read.empty()) io_uring_submit(&g->ring);
-        for (size_t d = 0; d < to_read.size(); ++d) {
-            io_uring_cqe *c;
-            if (io_uring_wait_cqe(&g->ring, &c) < 0) return -EIO;
-            int res = c->res; io_uring_cqe_seen(&g->ring, c);
-            if (res < 0) return res;
-            bytes_read += res;
-        }
-        issued = to_read.size();
-        for (int i = 0; i < n; ++i) {
-            uint64_t b = r[i].off / blk;
-            out[i] = g->dev[g->cache[b]] + (r[i].off - b * blk);
-            useful += r[i].len;
-        }
-    } else {
+    if (g->cfg.cache_policy == GTIER_CACHE_NONE) {
         auto ps = plan_exact(r, n, g->cfg.merge_gap, blk, g->file_bytes);
         if ((int)ps.size() > g->cfg.slots) return -ENOSPC;
         for (size_t p = 0; p < ps.size(); ++p) {
@@ -293,8 +259,153 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
                 out[m] = g->dev[p] + (r[m].off - ps[p].off);
                 useful += r[m].len;
             }
+        g->st = gtier_stats{(uint64_t)n, issued, useful, bytes_read, 0, 0, 0, 0, 0, now_s() - t0};
+        return 0;
     }
-    g->st = gtier_stats{(uint64_t)n, issued, useful, bytes_read, hits, misses, now_s() - t0};
+
+    // Cached policies.  A block is the unit of residency; whether a miss is
+    // also fetched as a block is what separates BLOCK from HYBRID.
+    //
+    // ADAPTIVE decides per fetch.  While the resident set is serving most
+    // requests, admitting blocks is right and worth its amplification; once the
+    // hit rate falls the working set no longer fits and every admission pays
+    // amplification for a block that will be evicted before reuse, which is 8x
+    // worse than fetching exactly.  Hysteresis (leave below 40%, return above
+    // 70%) keeps it from oscillating at the boundary.
+    bool hybrid = g->cfg.cache_policy == GTIER_CACHE_HYBRID;
+    if (g->cfg.cache_policy == GTIER_CACHE_ADAPTIVE) {
+        if (g->win_reqs >= 512) {
+            double hr = (double)g->win_hits / g->win_reqs;
+            if (g->caching && hr < 0.40) { g->caching = false; ++g->switches; }
+            else if (!g->caching && hr > 0.70) { g->caching = true; ++g->switches; }
+            g->win_hits = g->win_reqs = 0;
+        }
+        if (!g->caching) {
+            // exact fetches only, but keep probing residency so the detector
+            // can notice the working set shrinking again
+            auto ps = plan_exact(r, n, g->cfg.merge_gap, blk, g->file_bytes);
+            if ((int)ps.size() > g->cfg.slots) return -ENOSPC;
+            for (size_t p = 0; p < ps.size(); ++p) {
+                io_uring_sqe *s = io_uring_get_sqe(&g->ring);
+                if (!s) return -EBUSY;
+                io_uring_prep_read(s, g->fd, g->host[p], ps[p].len, (off_t)ps[p].off);
+                io_uring_sqe_set_data64(s, p);
+            }
+            io_uring_submit(&g->ring);
+            for (size_t d = 0; d < ps.size(); ++d) {
+                io_uring_cqe *c;
+                if (io_uring_wait_cqe(&g->ring, &c) < 0) return -EIO;
+                int res = c->res; io_uring_cqe_seen(&g->ring, c);
+                if (res < 0) return res;
+                bytes_read += res;
+            }
+            for (size_t p = 0; p < ps.size(); ++p)
+                for (int m : ps[p].members) {
+                    out[m] = g->dev[p] + (r[m].off - ps[p].off);
+                    useful += r[m].len;
+                }
+            for (int i = 0; i < n; ++i)
+                if (g->cache.count(r[i].off / blk)) ++g->win_hits;
+            g->win_reqs += n;
+            g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes_read,
+                                0, (uint64_t)n, 0, ps.size(), g->switches, now_s() - t0};
+            return 0;
+        }
+        hybrid = false;   // in the caching regime, admit blocks
+    }
+
+    auto touch = [&](uint64_t b, int slot) {
+        g->lru.erase(g->slot_lru[slot]);
+        g->lru.push_front(b);
+        g->slot_lru[slot] = g->lru.begin();
+    };
+    auto victim_slot = [&]() {
+        if ((int)g->cache.size() < g->cache_slots) return (int)g->cache.size();
+        uint64_t v = g->lru.back();
+        int slot = g->cache[v];
+        g->cache.erase(v);
+        g->lru.pop_back();
+        return slot;
+    };
+
+    struct Pending { uint64_t off; size_t len; int slot; bool block; };
+    std::vector<Pending> pend;
+    std::vector<int> range_slot(n, -1);
+    std::vector<uint64_t> range_base(n, 0);
+    std::unordered_map<uint64_t, int> planned;   // block -> slot, this fetch
+    int scratch = g->cache_slots;
+
+    for (int i = 0; i < n; ++i) {
+        uint64_t b = r[i].off / blk;
+        auto c = g->cache.find(b);
+        if (c != g->cache.end()) {
+            ++hits;
+            touch(b, c->second);
+            range_slot[i] = c->second;
+            range_base[i] = b * blk;
+            continue;
+        }
+        auto pl = planned.find(b);
+        if (pl != planned.end()) {           // already being fetched this round
+            range_slot[i] = pl->second;
+            range_base[i] = b * blk;
+            continue;
+        }
+        ++misses;
+
+        // Admit on the configured access count.  A block seen once may never be
+        // seen again; paying block amplification for it is the failure mode
+        // that makes pure BLOCK caching 8x worse than exact fetching when the
+        // working set does not fit.
+        bool admit = !hybrid;
+        if (hybrid && ++g->seen[b] >= g->cfg.admit_after) { admit = true; g->seen.erase(b); }
+
+        if (admit) {
+            int slot = victim_slot();
+            g->cache[b] = slot;
+            g->slot_block[slot] = b;
+            g->lru.push_front(b);
+            g->slot_lru[slot] = g->lru.begin();
+            planned[b] = slot;
+            size_t len = aup(std::min<size_t>(blk, (size_t)(g->file_bytes - b * blk)));
+            pend.push_back({b * blk, len, slot, true});
+            range_slot[i] = slot;
+            range_base[i] = b * blk;
+            ++admitted;
+        } else {
+            if (scratch >= g->cfg.slots) return -ENOSPC;   // caller must batch smaller
+            int slot = scratch++;
+            uint64_t lo = adown(r[i].off);
+            uint64_t hi = std::min<uint64_t>(aup(r[i].off + r[i].len), (uint64_t)g->file_bytes);
+            pend.push_back({lo, (size_t)(hi - lo), slot, false});
+            range_slot[i] = slot;
+            range_base[i] = lo;
+            ++exact;
+        }
+    }
+
+    for (auto &p : pend) {
+        io_uring_sqe *s = io_uring_get_sqe(&g->ring);
+        if (!s) return -EBUSY;
+        io_uring_prep_read(s, g->fd, g->host[p.slot], p.len, (off_t)p.off);
+        io_uring_sqe_set_data64(s, (uint64_t)p.slot);
+    }
+    if (!pend.empty()) io_uring_submit(&g->ring);
+    for (size_t d = 0; d < pend.size(); ++d) {
+        io_uring_cqe *c;
+        if (io_uring_wait_cqe(&g->ring, &c) < 0) return -EIO;
+        int res = c->res; io_uring_cqe_seen(&g->ring, c);
+        if (res < 0) return res;
+        bytes_read += res;
+    }
+    issued = pend.size();
+    for (int i = 0; i < n; ++i) {
+        out[i] = g->dev[range_slot[i]] + (r[i].off - range_base[i]);
+        useful += r[i].len;
+    }
+    g->win_hits += hits; g->win_reqs += n;
+    g->st = gtier_stats{(uint64_t)n, issued, useful, bytes_read,
+                        hits, misses, admitted, exact, g->switches, now_s() - t0};
     return 0;
 }
 
@@ -303,7 +414,7 @@ static int fetch_mmap_gpu(gtier *g, const gtier_range *r, int n, void **out) {
     double t0 = now_s();
     uint64_t useful = 0;
     for (int i = 0; i < n; ++i) { out[i] = g->map_dev + r[i].off; useful += r[i].len; }
-    g->st = gtier_stats{(uint64_t)n, 0, useful, 0, 0, 0, now_s() - t0};
+    g->st = gtier_stats{(uint64_t)n, 0, useful, 0, 0, 0, 0, 0, 0, now_s() - t0};
     return 0;
 }
 
@@ -324,7 +435,7 @@ static int fetch_mmap_cpu(gtier *g, const gtier_range *r, int n, void **out) {
         });
     for (auto &t : ts) t.join();
     for (int i = 0; i < n; ++i) { out[i] = g->map_dev + r[i].off; useful += r[i].len; }
-    g->st = gtier_stats{(uint64_t)n, (uint64_t)n, useful, useful, 0, 0, now_s() - t0};
+    g->st = gtier_stats{(uint64_t)n, (uint64_t)n, useful, useful, 0, 0, 0, 0, 0, now_s() - t0};
     return 0;
 }
 
@@ -356,7 +467,7 @@ static int fetch_pread_copy(gtier *g, const gtier_range *r, int n, void **out) {
             out[m] = g->devbuf[p] + (r[m].off - ps[p].off);
             useful += r[m].len;
         }
-    g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes, 0, 0, now_s() - t0};
+    g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes, 0, 0, 0, 0, 0, now_s() - t0};
     return 0;
 }
 
@@ -383,7 +494,7 @@ static int fetch_cufile(gtier *g, const gtier_range *r, int n, void **out) {
             out[m] = g->devbuf[p] + (r[m].off - ps[p].off);
             useful += r[m].len;
         }
-    g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes, 0, 0, now_s() - t0};
+    g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes, 0, 0, 0, 0, 0, now_s() - t0};
     return 0;
 }
 
@@ -411,7 +522,7 @@ static int fetch_uvm(gtier *g, const gtier_range *r, int n, void **out) {
             out[m] = g->uvm + p * g->cfg.slot_bytes + (r[m].off - ps[p].off);
             useful += r[m].len;
         }
-    g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes, 0, 0, now_s() - t0};
+    g->st = gtier_stats{(uint64_t)n, ps.size(), useful, bytes, 0, 0, 0, 0, 0, now_s() - t0};
     return 0;
 }
 
@@ -440,8 +551,8 @@ size_t gtier_calibrate_merge_gap(gtier *g) {
     size_t best = 0; double best_bw = -1;
     uint64_t seed = 0x243F6A8885A308D3ull;
     const size_t saved = g->cfg.merge_gap;
-    const int saved_cache = g->cfg.cache_blocks;
-    g->cfg.cache_blocks = 0;
+    const int saved_pol = g->cfg.cache_policy;
+    g->cfg.cache_policy = GTIER_CACHE_NONE;
     for (size_t c : cands) {
         if (c > g->cfg.slot_bytes) continue;
         g->cfg.merge_gap = c;
@@ -457,6 +568,6 @@ size_t gtier_calibrate_merge_gap(gtier *g) {
         if (bw > best_bw) { best_bw = bw; best = c; }
     }
     g->cfg.merge_gap = saved;
-    g->cfg.cache_blocks = saved_cache;
+    g->cfg.cache_policy = saved_pol;
     return best;
 }

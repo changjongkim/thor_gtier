@@ -45,8 +45,36 @@ typedef struct {
     // bytes the caller did not ask for -- exactly what rule 1 forbids for
     // one-shot access.  With reuse that amplification amortises, so the two
     // regimes have a crossover this flag lets us measure.
-    int    cache_blocks;  // 0 -> exact fetch, no cache; >0 -> block cache of this many slots
+    // Residency policy.
+    //   GTIER_CACHE_NONE   every range fetched exactly; no reuse, no amplification
+    //   GTIER_CACHE_BLOCK  everything goes through fixed blocks; reuse repays the
+    //                      amplification, and a miss pays it for nothing
+    //   GTIER_CACHE_HYBRID hits served from resident blocks, misses fetched
+    //                      exactly and admitted only once seen twice.  Measured
+    //                      to be the right rule: caching swings 240x on whether
+    //                      the working set fits, and the two failure modes are
+    //                      opposite, so neither pure policy is safe.
+    int    cache_policy;  // gtier_cache_policy
+    int    cache_blocks;  // resident blocks; 0 -> use all slots
+    int    admit_after;   // HYBRID: accesses to a block before admitting it; 0 -> 2
+
+    // The window has to hold the resident set and, at the same time, the misses
+    // one fetch can produce -- a miss under HYBRID lands in a scratch slot that
+    // no resident block may be evicted for.  Declare the largest fetch you will
+    // issue and the library reserves scratch accordingly.
+    int    max_fetch_ranges;  // 0 -> a quarter of the window
 } gtier_config;
+
+typedef enum {
+    GTIER_CACHE_NONE = 0,
+    GTIER_CACHE_BLOCK,
+    GTIER_CACHE_HYBRID,
+    // The two pure policies fail in opposite directions and the boundary
+    // between them is sharp -- 240x -- so what matters is not which block to
+    // admit but which regime you are in.  ADAPTIVE watches the hit rate and
+    // switches, with hysteresis so it does not oscillate at the edge.
+    GTIER_CACHE_ADAPTIVE,
+} gtier_cache_policy;
 
 typedef struct gtier gtier;
 
@@ -71,6 +99,9 @@ typedef struct {
     uint64_t bytes_read;      // what the device actually delivered
     uint64_t cache_hits;
     uint64_t cache_misses;
+    uint64_t admitted;        // blocks promoted into the cache
+    uint64_t exact_fetches;   // misses served without amplification
+    uint64_t switches;        // ADAPTIVE: regime changes
     double   seconds;
 } gtier_stats;
 void gtier_get_stats(const gtier *g, gtier_stats *out);

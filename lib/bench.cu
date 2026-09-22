@@ -26,7 +26,7 @@ __global__ void consume(const uint8_t *const *ptrs, const size_t *lens, int n,
 struct Opt {
     const char *path = "/home/thor/kcj/mmap_gpu/real32.bin";
     size_t item = 65536;
-    int n = 64, iters = 128, cache = 0, slots = 0;
+    int n = 64, iters = 128, slots = 0, policy = 0, admit = 2;
     size_t slot = 1u << 20;
     uint64_t span = 16ull << 30;  // region the ranges are drawn from
     int reuse = 0;                // 0 = fresh offsets; k>0 = cycle over k blocks
@@ -38,10 +38,15 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
     gtier_config cfg{};
     cfg.backend = b;
     cfg.slot_bytes = o.slot;
+    // hybrid needs room for the resident set and a full fetch of misses
     cfg.slots = o.slots ? o.slots : std::max(o.n, 8);
+    if (b == GTIER_BACKEND_GTIER && o.policy >= GTIER_CACHE_HYBRID)
+        cfg.slots = std::max(cfg.slots, o.n * 2);
     cfg.queue_depth = cfg.slots;
     cfg.merge_gap = 0;           // measured: never merge
-    cfg.cache_blocks = o.cache;
+    cfg.cache_policy = o.policy;
+    cfg.admit_after = o.admit;
+    cfg.max_fetch_ranges = o.n;
     gtier *g = gtier_open(o.path, &cfg);
     if (!g) return -1;
 
@@ -83,6 +88,7 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
         tot.reads_issued += s.reads_issued; tot.bytes_useful += s.bytes_useful;
         tot.bytes_read += s.bytes_read; tot.cache_hits += s.cache_hits;
         tot.cache_misses += s.cache_misses;
+        tot.admitted += s.admitted; tot.exact_fetches += s.exact_fetches;
     }
     double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
     tot.seconds = t;
@@ -101,16 +107,17 @@ int main(int argc, char **argv) {
         else if (s == "--n") o.n = atoi(nx());
         else if (s == "--iters") o.iters = atoi(nx());
         else if (s == "--slot") o.slot = strtoull(nx(), 0, 10);
-        else if (s == "--cache") o.cache = atoi(nx());
+        else if (s == "--policy") o.policy = atoi(nx());
+        else if (s == "--admit") o.admit = atoi(nx());
         else if (s == "--reuse") o.reuse = atoi(nx());
         else if (s == "--span") o.span = strtoull(nx(), 0, 10) << 30;
         else if (s == "--only") o.only = atoi(nx());
         else if (s == "--quiet") { /* header suppressed */ }
     }
     if (o.only < 0) {
-        std::printf("file=%s item=%zuB n=%d slot=%zuKiB cache=%d reuse=%d iters=%d\n",
-                    o.path, o.item, o.n, o.slot >> 10, o.cache, o.reuse, o.iters);
-        std::printf("%-12s %10s %8s %8s %10s\n", "backend", "useful", "amp", "reads", "hitrate");
+        std::printf("file=%s item=%zuB n=%d slot=%zuKiB policy=%d reuse=%d iters=%d\n",
+                    o.path, o.item, o.n, o.slot >> 10, o.policy, o.reuse, o.iters);
+        std::printf("%-12s %10s %8s %8s %10s %8s %8s\n", "backend", "useful", "amp", "reads", "hitrate", "admit", "exact");
     }
     for (int b = 0; b < GTIER_BACKEND_COUNT; ++b) {
         if (o.only >= 0 && b != o.only) continue;
@@ -120,9 +127,10 @@ int main(int argc, char **argv) {
         double amp = s.bytes_useful ? (double)s.bytes_read / s.bytes_useful : 0;
         double hr = (s.cache_hits + s.cache_misses)
                         ? 100.0 * s.cache_hits / (s.cache_hits + s.cache_misses) : 0;
-        std::printf("%-12s %7.3f GiB/s %7.2fx %8.1f %9.1f%%\n",
+        std::printf("%-12s %7.3f GiB/s %7.2fx %8.1f %9.1f%% %8.1f %8.1f\n",
                     gtier_backend_name((gtier_backend)b), bw, amp,
-                    (double)s.reads_issued / o.iters, hr);
+                    (double)s.reads_issued / o.iters, hr,
+                    (double)s.admitted / o.iters, (double)s.exact_fetches / o.iters);
     }
     return 0;
 }

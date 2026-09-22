@@ -1,0 +1,1 @@
+gtier       policy=4 slot=16384KiB window= 12.00 GiB (  9.1% of model) |  5.583 GiB/s   0.0422 tok/s  hit=7.1% amp=0.94x sw=0

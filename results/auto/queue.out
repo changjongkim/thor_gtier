@@ -29,3 +29,8 @@
        cufile      policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  4.917 GiB/s   0.0371 tok/s  hit=0.0% amp=1.00x sw=0
 [09-23 01:58:26] run  b_moe_backend5
        uvm         policy=0 slot=1024KiB window=  0.56 GiB (  0.4% of model) |  2.642 GiB/s   0.0200 tok/s  hit=0.0% amp=1.00x sw=0
+[09-23 01:59:22]   pushed (DRAM-exceeding MoE backend comparison)
+[09-23 01:59:22] run  c_moe_res_768_pol1
+       gtier       policy=1 slot=16384KiB window= 12.00 GiB (  9.1% of model) |  5.134 GiB/s   0.0388 tok/s  hit=51.8% amp=1.00x sw=0
+[09-23 02:01:00] run  c_moe_res_768_pol4
+       gtier       policy=4 slot=16384KiB window= 12.00 GiB (  9.1% of model) |  5.583 GiB/s   0.0422 tok/s  hit=7.1% amp=0.94x sw=0

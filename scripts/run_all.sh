@@ -28,6 +28,7 @@ fi
 
 ./scripts/run_serving_queue2.sh >> "$ROOT/results/SERVE_queue2.out" 2>&1
 ./scripts/run_serving_queue3.sh >> "$ROOT/results/SERVE_queue3.out" 2>&1
+./scripts/run_engine_queue.sh   >> "$ROOT/results/ENGINE_queue.out"  2>&1
 
 python3 scripts/summarize_serving.py > "$ROOT/results/SERVE/SUMMARY.md" 2>/dev/null
 cd "$ROOT"

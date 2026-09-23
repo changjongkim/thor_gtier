@@ -14,3 +14,5 @@ lru        | TTFT(io)   5.862 s  prefill   23.52 GiB | TPOT(io)  369.91 ms  deco
 [16:07:33] run  e1_b16_p2
 lru+phase  | TTFT(io)   5.933 s  prefill   23.65 GiB | TPOT(io)  121.45 ms  decode   0.461 GiB/tok | total  164.00 GiB
 [16:08:26] run  e1_b16_p3
+per-layer  | TTFT(io)   5.543 s  prefill   22.20 GiB | TPOT(io)  318.04 ms  decode   1.246 GiB/tok | total  192.98 GiB
+[16:09:26] run  e1_b16_p4

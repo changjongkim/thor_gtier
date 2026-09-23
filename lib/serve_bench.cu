@@ -97,6 +97,10 @@ static const char *policy_name(int p) {
         case SERVE_ONLINE: return "online";
         case SERVE_ONLINE_PREFIX: return "online+prefix";
         case SERVE_MULTIPREFIX: return "multi-prefix";
+        case SERVE_UNIFIED: return "unified";
+        case SERVE_UNIFIED_ONLINE: return "unified-online";
+        case SERVE_MOEINF: return "moe-inf*";
+        case SERVE_MIXTRAL: return "mixtral*";
     }
     return "?";
 }
@@ -130,6 +134,14 @@ int main(int argc, char **argv) {
     double compute_ms_token = 0.89;      // 22B active params at 49.5 TFLOP/s
     double compute_ms_prompt_token = 0.89;
     bool interleave = false;             // mix prefill and decode (sec 3.6 limit)
+    // How many layers ahead the router's choice is known.  This is not a free
+    // parameter: a plain MoE learns layer L's experts only on reaching layer
+    // L, so its fetches serialise with its arithmetic, while Pre-gated MoE
+    // moves the gate one layer earlier precisely to buy one layer of overlap.
+    // The driver defaulted to fetching a whole token's layers in one batch,
+    // which hands every policy full lookahead for nothing; naming it makes
+    // that a measured choice instead of a hidden gift.
+    int lookahead = 0;                   // 0 = all layers at once (full)
 
     for (int i = 1; i < argc; ++i) {
         std::string s = argv[i];
@@ -151,6 +163,7 @@ int main(int argc, char **argv) {
         else if (s=="--compute-ms") compute_ms_token = atof(nx());
         else if (s=="--prompt-compute-ms") compute_ms_prompt_token = atof(nx());
         else if (s=="--interleave") interleave = true;
+        else if (s=="--lookahead") lookahead = atoi(nx());
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
         else if (s=="--verbose") verbose = true;
     }
@@ -228,6 +241,40 @@ int main(int argc, char **argv) {
                     int e = r.decode[((size_t)t*L + l)*K + k];
                     if (e>=0) cnt[(size_t)l*E+e]++;
                 }
+    // What a resident unit is worth is the reads it prevents, and it prevents
+    // them in both phases.  Prefill reads a unit once per request whose prompt
+    // union contains it; decode reads it once per token that routes to it.
+    // Counting both on one scale is what lets prefix value and popularity
+    // value be compared instead of competing.
+    std::vector<uint64_t> pre_hits((size_t)L*E, 0), dec_hits((size_t)L*E, 0);
+    for (auto &r : tr.req) {
+        std::unordered_set<int> u;
+        for (int t=0;t<r.n_prefill;++t)
+            for (int l=0;l<L;++l)
+                for (int k=0;k<K;++k) {
+                    int e = r.prefill[((size_t)t*L+l)*K+k];
+                    if (e>=0) u.insert((int)((size_t)l*E+e));
+                }
+        for (int id : u) pre_hits[id]++;
+        int nd = max_decode ? std::min(max_decode, r.n_decode) : r.n_decode;
+        for (int t=0;t<nd;++t)
+            for (int l=0;l<L;++l)
+                for (int k=0;k<K;++k) {
+                    int e = r.decode[((size_t)t*L+l)*K+k];
+                    if (e>=0) dec_hits[(size_t)l*E+e]++;
+                }
+    }
+    std::vector<int> unified_order;
+    {
+        std::vector<std::pair<double,int>> sc;
+        for (size_t id=0; id<unit.size(); ++id)
+            if (unit[id].bytes)
+                sc.push_back({(double)(pre_hits[id] + dec_hits[id]), (int)id});
+        std::sort(sc.begin(), sc.end(),
+                  [](auto&a,auto&b){ return a.first > b.first; });
+        for (auto &x : sc) unified_order.push_back(x.second);
+    }
+
     std::vector<int> order;                      // unit ids, best first
     {
         std::vector<std::pair<double,int>> sc;
@@ -366,6 +413,8 @@ int main(int argc, char **argv) {
     std::unordered_set<int> pinned;
     if (policy==SERVE_PERLAYER||policy==SERVE_PREFIX)
         admit_static(order);
+    if (policy==SERVE_UNIFIED)
+        admit_static(unified_order);
 
     unsigned long long *sink; CK(cudaMalloc(&sink,sizeof(*sink)));
     CK(cudaMemset(sink,0,sizeof(*sink)));
@@ -428,6 +477,50 @@ int main(int argc, char **argv) {
         arena.at[id] = arena.used; arena.used += unit[id].bytes;
         lru.push_back(id);                       // coldest: decode evicts it first
         lru_at[id] = std::prev(lru.end());
+    };
+
+    // The same value learned online: a running system does not have the
+    // counts above, but it sees the hits as they happen and can keep its own.
+    std::vector<uint64_t> obs_pre((size_t)L*E,0), obs_dec((size_t)L*E,0);
+    std::vector<std::vector<int>> res_by_layer_u(L);
+    auto unified_admit = [&](int id, bool from_prefill) {
+        if (from_prefill) obs_pre[id]++; else obs_dec[id]++;
+        if (!unit[id].bytes) return;
+        double v = (double)(obs_pre[id] + obs_dec[id]);
+        if (arena.has(id)) return;
+        if (arena.put(id, unit[id].bytes)) { res_by_layer_u[id/E].push_back(id); return; }
+        // full: displace the weakest resident anywhere, not just in this layer,
+        // because the value is already comparable across layers.
+        int worst = -1; double wv = 1e18;
+        for (auto &kv : arena.at) {
+            double q = (double)(obs_pre[kv.first] + obs_dec[kv.first]);
+            if (q < wv) { wv = q; worst = kv.first; }
+        }
+        if (worst < 0 || wv >= v) return;
+        uint64_t off = arena.at[worst];
+        arena.at.erase(worst); arena.at[id] = off;
+    };
+
+    // Sequence-level activation matrix, the shape MoE-Infinity's prefetcher
+    // assumes: experts a sequence has already used are the ones it will use
+    // again, so they are retained ahead of anything else.  Implemented as an
+    // LRU whose ordering is overridden by membership in the current
+    // sequence's activation set.
+    std::unordered_set<int> seq_active;
+    auto moeinf_admit = [&](int id) {
+        seq_active.insert(id);
+        if (arena.has(id) || !unit[id].bytes) return;
+        while (arena.used + unit[id].bytes > arena.cap) {
+            int victim = -1;
+            for (auto it2 = lru.rbegin(); it2 != lru.rend(); ++it2)
+                if (!seq_active.count(*it2)) { victim = *it2; break; }
+            if (victim < 0 && !lru.empty()) victim = lru.back();   // all active
+            if (victim < 0) return;
+            lru.erase(lru_at[victim]); lru_at.erase(victim);
+            arena.used -= unit[victim].bytes; arena.at.erase(victim);
+        }
+        arena.at[id] = arena.used; arena.used += unit[id].bytes;
+        lru.push_front(id); lru_at[id] = lru.begin();
     };
 
     // LRU admission: hold what was just used, evicting the least recent.
@@ -540,6 +633,7 @@ int main(int argc, char **argv) {
     };
 
     // --- serve ------------------------------------------------------------
+    std::vector<int> prev_need;              // last token's units, for speculation
     for (auto &st : sched) {
         Request &r = tr.req[st.req];
         if (st.tok < 0) {
@@ -573,6 +667,13 @@ int main(int argc, char **argv) {
             // it first.
             if (policy==SERVE_LRU) for (int id : miss) lru_admit(id);
             if (policy==SERVE_LRU_PHASE) for (int id : miss) lru_admit_free_only(id);
+            // The unified value counts a prefill hit, so it has to see one.
+            if (policy==SERVE_UNIFIED_ONLINE)
+                for (int id : u) if (unit[id].bytes) unified_admit(id, true);
+            // A sequence's activation set belongs to that sequence.
+            if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
+            if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
+            if (policy==SERVE_MIXTRAL) for (int id : miss) lru_admit(id);
         } else {
             std::unordered_set<int> need;
             for (int l=0;l<L;++l)
@@ -580,16 +681,44 @@ int main(int argc, char **argv) {
                     int e = r.decode[((size_t)st.tok*L+l)*K+k];
                     if (e>=0) need.insert((int)((size_t)l*E+e));
                 }
-            std::vector<int> dm;
-            for (int id : need) if (!resident(id) && unit[id].bytes) dm.push_back(id);
-            std::sort(dm.begin(), dm.end());
-            uint64_t db=0; double ddt = fetch_units(dm, db);
+            // With a finite lookahead the token's layers are fetched in
+            // groups, and each group's read cannot start before the previous
+            // group's arithmetic has revealed it.
+            uint64_t db=0; double ddt = 0;
+            int grp = lookahead > 0 ? lookahead : L;
+            for (int l0=0; l0<L; l0+=grp) {
+                std::vector<int> dm;
+                for (int l=l0; l<std::min(L,l0+grp); ++l)
+                    for (int k=0;k<K;++k) {
+                        int e = r.decode[((size_t)st.tok*L+l)*K+k];
+                        if (e<0) continue;
+                        int id = (int)((size_t)l*E+e);
+                        if (!resident(id) && unit[id].bytes) dm.push_back(id);
+                    }
+                std::sort(dm.begin(), dm.end());
+                dm.erase(std::unique(dm.begin(), dm.end()), dm.end());
+                ddt += fetch_units(dm, db);
+            }
             dec_bytes += db; tpot_sum += ddt; ++n_dec;
             double shadow = compute_ms_token * 1e-3;
             stall_sum += std::max(0.0, ddt - shadow);
             shadow_bytes_sum += shadow * BW;
             if (policy==SERVE_LRU || policy==SERVE_LRU_PHASE)
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
+            if (policy==SERVE_UNIFIED_ONLINE)
+                for (int id : need) if (unit[id].bytes) unified_admit(id, false);
+            if (policy==SERVE_MOEINF)
+                for (int id : need) if (unit[id].bytes) moeinf_admit(id);
+            if (policy==SERVE_MIXTRAL) {
+                // LRU plus speculation.  Consecutive decode tokens share 3.30
+                // of 8 experts against 0.50 for independent draws (sec 2.3c),
+                // so "what the last token used" is the predictor this line of
+                // work relies on; it is admitted alongside what is needed now.
+                for (int id : need) if (unit[id].bytes) lru_admit(id);
+                for (int id : prev_need) if (unit[id].bytes && !arena.has(id))
+                    lru_admit(id);
+                prev_need.assign(need.begin(), need.end());
+            }
             if (policy==SERVE_ONLINE || policy==SERVE_ONLINE_PREFIX
                 || policy==SERVE_MULTIPREFIX) {
                 // Admission happens from bytes already in the window, so it is
@@ -606,10 +735,10 @@ int main(int argc, char **argv) {
     }
 
     std::printf("%-13s | TTFT(io) %7.3f s  prefill %7.2f GiB | "
-                "TPOT(io) %7.2f ms  decode %7.3f GiB/tok | stall %7.3f s | "
+                "look=%-3d | TPOT(io) %7.2f ms  decode %7.3f GiB/tok | stall %7.3f s | "
                 "bg %6.2f GiB vs shadow %6.2f GiB | pins %zu evict %llu | total %7.2f GiB\n",
                 policy_name(policy), ttft_sum/n_pre, pre_bytes/1073741824.0/n_pre,
-                tpot_sum/n_dec*1e3, dec_bytes/1073741824.0/n_dec, stall_sum,
+                lookahead, tpot_sum/n_dec*1e3, dec_bytes/1073741824.0/n_dec, stall_sum,
                 bg_bytes_sum/1073741824.0, shadow_bytes_sum/1073741824.0,
                 pinned_fam.size(), (unsigned long long)pin_evictions,
                 (pre_bytes+dec_bytes)/1073741824.0);

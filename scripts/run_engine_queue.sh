@@ -27,12 +27,21 @@ drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 run(){ local name="$1"; shift
   # A file that exists is not a finished run: a killed one leaves a stub, and
   # the io meter's line is the only thing that says the run completed.
-  grep -q IOMETER "$OUT/$name.txt" 2>/dev/null && { say "skip $name"; return; }
+  grep -qE "IOMETER|OUTCOME" "$OUT/$name.txt" 2>/dev/null && { say "skip $name"; return; }
   say "run  $name"; drop
+  local rc=0
   timeout 10800 "$ROOT/scripts/io_meter.py" --label "$name" -- \
       "$BENCH" -m "$MODEL" -p $NP -n $NG -r 1 -o json "$@" \
-      < /dev/null > "$OUT/$name.txt" 2>&1 || say "  rc=$?"
-  grep -E '"avg_ts"|IOMETER' "$OUT/$name.txt" | tail -3 | tee -a "$LOG"
+      < /dev/null >> "$OUT/$name.txt" 2>&1 || rc=$?
+  # A configuration that cannot run is a result, not a gap: -ngl 99 asks for
+  # 132.4 GiB of "VRAM" on a machine with 122.8, and what happens then is
+  # exactly what the comparison is about.  Recorded so the queue does not
+  # retry it forever and the summary can say so.
+  if ! grep -q IOMETER "$OUT/$name.txt"; then
+    echo "OUTCOME failed rc=$rc" >> "$OUT/$name.txt"
+    say "  did not complete (rc=$rc) -- recorded as a failure"
+  fi
+  grep -E '"avg_ts"|IOMETER|OUTCOME' "$OUT/$name.txt" | tail -3 | tee -a "$LOG"
 }
 commit(){ cd "$ROOT"; git add -A results/ENGINE >/dev/null 2>&1
   git diff --cached --quiet && return

@@ -1,0 +1,16 @@
+[16:00:21] === serving queue start  model=/home/thor/kcj/models/qwen3_30b_a3b  max-decode=8 ===
+[16:00:21] run  e1_none
+none       | TTFT(io)   8.241 s  prefill   32.94 GiB | TPOT(io)  862.24 ms  decode   3.375 GiB/tok | total  359.62 GiB
+[16:01:54] run  e1_b12_p1
+lru        | TTFT(io)   6.665 s  prefill   26.45 GiB | TPOT(io)  361.23 ms  decode   1.397 GiB/tok | total  225.74 GiB
+[16:03:00] run  e1_b12_p2
+lru+phase  | TTFT(io)   6.623 s  prefill   26.45 GiB | TPOT(io)  336.62 ms  decode   1.299 GiB/tok | total  221.06 GiB
+[16:04:05] run  e1_b12_p3
+per-layer  | TTFT(io)   6.343 s  prefill   25.45 GiB | TPOT(io)  405.03 ms  decode   1.591 GiB/tok | total  229.08 GiB
+[16:05:11] run  e1_b12_p4
+prefix     | TTFT(io)   6.248 s  prefill   25.15 GiB | TPOT(io)  638.15 ms  decode   2.516 GiB/tok | total  271.63 GiB
+[16:06:28] run  e1_b16_p1
+lru        | TTFT(io)   5.862 s  prefill   23.52 GiB | TPOT(io)  369.91 ms  decode   1.443 GiB/tok | total  210.38 GiB
+[16:07:33] run  e1_b16_p2
+lru+phase  | TTFT(io)   5.933 s  prefill   23.65 GiB | TPOT(io)  121.45 ms  decode   0.461 GiB/tok | total  164.00 GiB
+[16:08:26] run  e1_b16_p3

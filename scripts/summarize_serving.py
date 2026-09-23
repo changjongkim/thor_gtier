@@ -87,6 +87,18 @@ for T in (0,10,20,30,50,65):
               f"**{r['ttft']:.3f}** | {r['tpot']:.2f} |")
 print()
 
+print("## E5. 오라클 없이 온라인으로 배우면\n")
+print("E1의 `per-layer`/`prefix`는 트레이스 전체의 카운트로 순위를 매긴다 — 돌아가는 "
+      "시스템에는 없는 정보다. `online`은 층별 LFU를 관측만으로 배우고, `online+prefix`는 "
+      "공유 프리픽스를 처음 만난 요청에서 합집합을 배워 핀한다. "
+      "오라클과의 간격이 분포를 미리 모르는 비용이다.\n")
+print(H)
+for B in (16,24,32,40):
+    for nm,lab in (("lru","lru"),("online","online"),("onlinep","online+prefix"),("oracle","oracle prefix")):
+        k=f"e5_b{B}_{nm}"
+        if k in runs: print(row(runs[k], f"{lab} 예산 {B}"))
+print()
+
 print("## E4. 서빙 예산 안에서 스테이징 윈도우 크기\n")
 print("윈도우를 키우면 상주가 그만큼 줄어든다. 윈도우는 0.5 GiB 위에서 대역폭을 "
       "더 사주지 않으므로(§4.14) 그 위는 전부 손해여야 한다.\n")

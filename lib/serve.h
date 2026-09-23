@@ -14,6 +14,9 @@ typedef enum {
     SERVE_LRU_PHASE,      // same LRU, but prefill does not admit (sec 3.6)
     SERVE_PERLAYER,       // static, per-layer popularity order (sec 3.4)
     SERVE_PREFIX,         // PERLAYER + the shared prefix's union pinned (sec 3.5)
+    SERVE_ONLINE,         // per-layer LFU learned online -- no oracle
+    SERVE_ONLINE_PREFIX,  // ONLINE + prefix pinned, both learned online
+    SERVE_MULTIPREFIX,    // several prefixes, LRU over prefixes when they do not fit
     SERVE_POLICY_COUNT
 } serve_policy;
 

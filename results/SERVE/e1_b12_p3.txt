@@ -1,0 +1,3 @@
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 12.00 GiB  window 0.50  path-overhead 0.00  residency 8.63 GiB (16.0% of experts)  policy=per-layer  backend=gtier
+per-layer  | TTFT(io)   6.343 s  prefill   25.45 GiB | TPOT(io)  405.03 ms  decode   1.591 GiB/tok | total  229.08 GiB

@@ -1,0 +1,4 @@
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 12.00 GiB  window 0.50  path-overhead 0.00  residency 8.63 GiB (16.0% of experts)  policy=prefix  backend=gtier
+prefix union: 3174 units (27.90 GiB) pinned
+prefix     | TTFT(io)   6.248 s  prefill   25.15 GiB | TPOT(io)  638.15 ms  decode   2.516 GiB/tok | total  271.63 GiB

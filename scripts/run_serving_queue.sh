@@ -24,7 +24,8 @@ run(){ # run <name> <args...>
   if [ -s "$OUT/$name.txt" ]; then say "skip $name"; return; fi
   say "run  $name"
   drop
-  if timeout 5400 "$BIN" $SH "$@" > "$OUT/$name.txt" 2>&1; then
+  if timeout 5400 setsid --wait bash -c 'echo -700 > /proc/self/oom_score_adj 2>/dev/null; exec "$@"' _ \
+        "$BIN" $SH "$@" > "$OUT/$name.txt" 2>&1; then
     tail -1 "$OUT/$name.txt" | tee -a "$LOG"
   else
     say "  FAILED $name (rc=$?)"; tail -2 "$OUT/$name.txt" | tee -a "$LOG"
@@ -39,6 +40,12 @@ commit(){ # commit <message>
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>" 2>&1 | tail -1 | tee -a "$LOG"
   timeout 300 git push -q 2>&1 | tail -1 | tee -a "$LOG"
 }
+
+# Earlier long runs were killed as collateral when an unrelated process on
+# this machine ballooned to 81 GiB and triggered a global OOM.  Lowering this
+# queue's oom_score_adj does not touch that process; it only makes the kernel
+# prefer the runaway over the measurement when it has to choose.
+echo -500 | sudo -n tee /proc/self/oom_score_adj >/dev/null 2>&1 || true
 
 say "=== serving queue start  model=$MODEL  max-decode=$MAXDEC ==="
 

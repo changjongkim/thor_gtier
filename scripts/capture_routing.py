@@ -59,10 +59,24 @@ for i, layer in enumerate(model.model.layers):
         hooks.append(gate.register_forward_hook(mk_hook(i)))
 print(f"hooked {len(hooks)} routers", flush=True)
 
-SHARED = ("You are a careful systems engineer. Answer precisely and briefly. "
-          "Consider the following context about storage hardware: NVMe drives "
-          "deliver high throughput at large block sizes and collapse at small "
-          "ones, and the page cache hides this from most applications. ")
+# Several system prompts, because a deployment runs more than one -- an
+# assistant per product, a tenant per customer -- and the interesting question
+# is not what one prefix pins but what happens when they do not all fit.
+SYSTEMS = {
+    "sysA": ("You are a careful systems engineer. Answer precisely and briefly. "
+             "Consider the following context about storage hardware: NVMe drives "
+             "deliver high throughput at large block sizes and collapse at small "
+             "ones, and the page cache hides this from most applications. "),
+    "sysB": ("You are a patient medical librarian. Cite mechanisms, never dosages. "
+             "Background: the trans-Golgi network sorts secretory cargo, and "
+             "vesicle coat proteins select cargo by recognising cytoplasmic motifs "
+             "on transmembrane receptors before budding. "),
+    "sysC": ("Du bist ein hilfreicher Assistent fuer Finanzanalyse. Antworte knapp. "
+             "Kontext: Die Duration einer Anleihe misst die Preissensitivitaet "
+             "gegenueber Zinsaenderungen, und die Konvexitaet korrigiert die "
+             "lineare Naeherung bei grossen Zinsbewegungen. "),
+}
+SHARED = SYSTEMS["sysA"]
 # A long prompt is needed on its own: the simulation predicted the prefill
 # union reaches all 128 experts by ~256 tokens, and that only shows up if a
 # prompt is actually that long.
@@ -71,14 +85,24 @@ LONG = (SHARED + " ") * 12 + (
     "pread for streaming model weights from NVMe into GPU-addressable memory, "
     "covering queue depth, alignment, and completion handling. ")
 
-PROMPTS = [
-    ("long_prefill", LONG),
-    ("distinct_a", "Explain why merge sort is O(n log n) in the worst case."),
-    ("distinct_b", "Describe the role of the trans-Golgi network in secretion."),
-    ("shared_1", SHARED + "Question: why does random I/O improve with queue depth?"),
-    ("shared_2", SHARED + "Question: what limits sequential read on a DRAM-less SSD?"),
-    ("shared_3", SHARED + "Question: how does O_DIRECT change the read path?"),
-]
+QUESTIONS = {
+    "sysA": ["why does random I/O improve with queue depth?",
+             "what limits sequential read on a DRAM-less SSD?",
+             "how does O_DIRECT change the read path?"],
+    "sysB": ["how does COPI differ from COPII in cargo selection?",
+             "what governs retrograde transport from the Golgi?",
+             "why do secretory granules require acidification?"],
+    "sysC": ["warum steigt die Konvexitaet mit der Laufzeit?",
+             "wie wirkt ein Kupon auf die Duration?",
+             "was unterscheidet Macaulay- von modifizierter Duration?"],
+}
+# Names are <family>_<n>; the driver groups by the part before the last '_'.
+PROMPTS = [("long_prefill", LONG),
+           ("distinct_a", "Explain why merge sort is O(n log n) in the worst case."),
+           ("distinct_b", "Describe the role of the trans-Golgi network in secretion.")]
+for fam, qs in QUESTIONS.items():
+    for i, q in enumerate(qs, 1):
+        PROMPTS.append((f"{fam}_{i}", SYSTEMS[fam] + "Question: " + q))
 
 for tag, text in PROMPTS:
     msgs = [{"role": "user", "content": text}]

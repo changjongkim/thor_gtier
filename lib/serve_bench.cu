@@ -94,6 +94,9 @@ static const char *policy_name(int p) {
         case SERVE_LRU_PHASE: return "lru+phase";
         case SERVE_PERLAYER: return "per-layer";
         case SERVE_PREFIX: return "prefix";
+        case SERVE_ONLINE: return "online";
+        case SERVE_ONLINE_PREFIX: return "online+prefix";
+        case SERVE_MULTIPREFIX: return "multi-prefix";
     }
     return "?";
 }
@@ -112,10 +115,21 @@ int main(int argc, char **argv) {
     double budget_gib = 24.0;        // total memory for residency + window
     double window_gib = 0.5;         // staging window (saturates here, sec 4.14)
     int policy = SERVE_PERLAYER, repeats = 1, prefix_tokens = 30, max_decode = 0;
+    // How much of residency prefixes may take before they start evicting each
+    // other.  Without a cap several system prompts would crowd out everything
+    // popularity-ordered residency needs.
+    double prefix_budget_gib = 0.0;      // 0 = no cap
     size_t slot = 4u << 20;
     bool verbose = false;
     int backend = GTIER_BACKEND_GTIER;
     double path_overhead_gib = 0.0;
+    // Decode is compute-bound once residency is good, so the I/O a token
+    // actually waits on is what is left after the arithmetic hides it.  This
+    // is also the budget a background admission has to fit inside if it is
+    // not to stall the stream.
+    double compute_ms_token = 0.89;      // 22B active params at 49.5 TFLOP/s
+    double compute_ms_prompt_token = 0.89;
+    bool interleave = false;             // mix prefill and decode (sec 3.6 limit)
 
     for (int i = 1; i < argc; ++i) {
         std::string s = argv[i];
@@ -134,6 +148,10 @@ int main(int argc, char **argv) {
         // whatever it holds beyond the declared window is memory residency
         // does not get, which is the whole argument of sec 1.6.
         else if (s=="--path-overhead") path_overhead_gib = atof(nx());
+        else if (s=="--compute-ms") compute_ms_token = atof(nx());
+        else if (s=="--prompt-compute-ms") compute_ms_prompt_token = atof(nx());
+        else if (s=="--interleave") interleave = true;
+        else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
         else if (s=="--verbose") verbose = true;
     }
     if (paths.empty()) { std::fprintf(stderr,"--shard required\n"); return 1; }
@@ -230,16 +248,33 @@ int main(int argc, char **argv) {
     // Routing is a deterministic function of hidden state, so requests that
     // share a prefix select the same experts over it; that union is the same
     // every request and is worth pinning once.
-    std::unordered_set<int> prefix_union;
+    // A request's prefix family is the part of its name before the last '_':
+    // shared_1/2/3 carry one system prompt, and any other family carries its
+    // own.  Real deployments run several -- one per assistant, per tenant --
+    // so the union of one prefix is not the whole story; what matters is what
+    // happens when they do not all fit.
+    auto family_of = [](const std::string &n)->std::string {
+        size_t p = n.rfind('_');
+        return (p==std::string::npos) ? n : n.substr(0,p);
+    };
+    std::map<std::string, std::unordered_set<int>> family_union;
     for (auto &r : tr.req) {
-        if (r.name.rfind("shared", 0) != 0) continue;
+        std::string fam = family_of(r.name);
+        auto &u = family_union[fam];
         for (int t=0;t<std::min(prefix_tokens, r.n_prefill);++t)
             for (int l=0;l<L;++l)
                 for (int k=0;k<K;++k) {
                     int e = r.prefill[((size_t)t*L + l)*K + k];
-                    if (e>=0) prefix_union.insert((int)((size_t)l*E+e));
+                    if (e>=0) u.insert((int)((size_t)l*E+e));
                 }
     }
+    // Only families that actually recur are worth pinning; a family seen once
+    // pays the pin cost and never collects on it.
+    std::map<std::string,int> family_count;
+    for (auto &r : tr.req) family_count[family_of(r.name)]++;
+    std::unordered_set<int> prefix_union;
+    for (auto &kv : family_union)
+        if (family_count[kv.first] > 1) prefix_union.insert(kv.second.begin(), kv.second.end());
 
     // --- gtier handles ----------------------------------------------------
     int per_shard = std::max(32, (int)(W / slot / sh.size()));
@@ -265,6 +300,17 @@ int main(int argc, char **argv) {
     }
     std::list<int> lru; std::unordered_map<int,std::list<int>::iterator> lru_at;
 
+    // Prefix table.  Each family holds its union; a family that no longer fits
+    // evicts the least recently served one, but only the units that family
+    // holds alone -- units another live prefix also needs stay.  Without this
+    // a second system prompt would simply fail to be pinned, or would crowd
+    // out everything popularity-ordered residency needs.
+    struct PinnedFam { std::unordered_set<int> units; uint64_t seq = 0; };
+    std::map<std::string, PinnedFam> pinned_fam;
+    uint64_t pin_bytes = 0, pin_seq = 0, pin_evictions = 0;
+    uint64_t PIN_CAP = prefix_budget_gib > 0
+                     ? (uint64_t)(prefix_budget_gib * (1ull<<30)) : UINT64_MAX;
+
     auto resident = [&](int id)->bool { return arena.has(id); };
     auto admit_static = [&](const std::vector<int> &ids) {
         for (int id : ids) {
@@ -277,6 +323,10 @@ int main(int argc, char **argv) {
         std::sort(pre.begin(), pre.end());
         admit_static(pre);                       // pinned first, never evicted
     }
+    // The online variants learn the prefix union the same way a server would:
+    // from the first request that carries it.  Recorded here so the pin can be
+    // applied when that request is seen, not before.
+    std::unordered_set<int> pinned;
     if (policy==SERVE_PERLAYER||policy==SERVE_PREFIX)
         admit_static(order);
 
@@ -306,6 +356,31 @@ int main(int argc, char **argv) {
             }
         }
         return std::chrono::duration<double>(std::chrono::steady_clock::now()-t0).count();
+    };
+
+    // Per-layer LFU learned online.  The static orderings above are an oracle
+    // -- they rank by counts taken from the whole trace, which a running
+    // system does not have.  This one starts empty, counts what it sees, and
+    // swaps a resident unit out only for one that has been seen more often in
+    // the same layer, so the ordering it converges to is per layer without
+    // anyone being told the distribution.
+    std::vector<uint64_t> seen((size_t)L*E, 0);
+    std::vector<std::vector<int>> res_of_layer(L);
+    auto online_admit = [&](int id) {
+        seen[id]++;
+        if (arena.has(id) || !unit[id].bytes) return;
+        int l = id / E;
+        if (arena.put(id, unit[id].bytes)) { res_of_layer[l].push_back(id); return; }
+        // full: swap out this layer's least-seen resident, if it is worse
+        auto &v = res_of_layer[l];
+        if (v.empty()) return;
+        int worst = v[0];
+        for (int q : v) if (seen[q] < seen[worst]) worst = q;
+        if (seen[worst] >= seen[id]) return;
+        // sizes are uniform per unit, so the slot can be reused in place
+        uint64_t off = arena.at[worst];
+        arena.at.erase(worst); arena.at[id] = off;
+        v.erase(std::find(v.begin(), v.end(), worst)); v.push_back(id);
     };
 
     // LRU admission: hold what was just used, evicting the least recent.
@@ -338,33 +413,106 @@ int main(int argc, char **argv) {
 
     double ttft_sum=0, tpot_sum=0; uint64_t pre_bytes=0, dec_bytes=0;
     int n_pre=0, n_dec=0;
-    for (int rep=0; rep<repeats; ++rep)
-    for (auto &r : tr.req) {
-        // ---- prefill: the union over the prompt ---------------------------
-        std::unordered_set<int> u;
-        for (int t=0;t<r.n_prefill;++t)
-            for (int l=0;l<L;++l)
-                for (int k=0;k<K;++k) {
-                    int e = r.prefill[((size_t)t*L+l)*K+k];
-                    if (e>=0) u.insert((int)((size_t)l*E+e));
-                }
-        std::vector<int> miss;
-        for (int id : u) if (!resident(id) && unit[id].bytes) miss.push_back(id);
-        std::sort(miss.begin(), miss.end());
-        uint64_t b=0; double dt = fetch_units(miss, b);
-        pre_bytes += b; ttft_sum += dt; ++n_pre;
-        // An LRU has no way to know prefill will not reuse these, so it admits
-        // them -- and in doing so evicts what decode needs.  SERVE_PHASE is
-        // exactly the decision not to.
-        if (policy==SERVE_LRU) for (int id : miss) lru_admit(id);
+    // What a token actually waits for.  Decode is compute-bound once residency
+    // is good, so I/O that fits inside the arithmetic costs nothing; only the
+    // excess is a stall.  A background admission has the same budget: it is
+    // free exactly while it fits in that shadow.
+    double stall_sum = 0, shadow_bytes_sum = 0, bg_bytes_sum = 0;
+    const double BW = 5.682 * 1073741824.0;   // measured device ceiling, B/s
+    // --- schedule ---------------------------------------------------------
+    // A step is either a request's prefill (-1) or one of its decoded tokens.
+    // Sequential order is one request at a time, which is what a single user
+    // on an edge device produces.  --interleave round-robins instead, so
+    // prefills and decodes are in flight together the way continuous batching
+    // puts them -- and that is precisely where a global phase switch cannot
+    // be made, so it is measured rather than assumed away.
+    struct Step { int req; int tok; };       // tok = -1 means prefill
+    std::vector<Step> sched;
+    {
+        std::vector<std::vector<Step>> per(tr.req.size());
+        for (size_t i=0;i<tr.req.size();++i) {
+            per[i].push_back({(int)i,-1});
+            int nd = max_decode ? std::min(max_decode, tr.req[i].n_decode)
+                                : tr.req[i].n_decode;
+            for (int t=0;t<nd;++t) per[i].push_back({(int)i,t});
+        }
+        for (int rep=0; rep<repeats; ++rep) {
+            if (!interleave) {
+                for (auto &v : per) for (auto &s : v) sched.push_back(s);
+            } else {
+                size_t mx=0; for (auto &v:per) mx=std::max(mx,v.size());
+                for (size_t k=0;k<mx;++k)
+                    for (auto &v : per) if (k<v.size()) sched.push_back(v[k]);
+            }
+        }
+    }
 
-        // ---- decode -------------------------------------------------------
-        int n_dec_run = max_decode ? std::min(max_decode, r.n_decode) : r.n_decode;
-        for (int t=0;t<n_dec_run;++t) {
+    // Pin a family's union, evicting the least recently served family's
+    // exclusive units if the cap is in the way.
+    auto pin_family = [&](const std::string &fam) {
+        auto it = family_union.find(fam);
+        if (it == family_union.end() || family_count[fam] <= 1) return;
+        auto &pf = pinned_fam[fam];
+        pf.seq = ++pin_seq;
+        if (!pf.units.empty()) return;                 // already pinned
+        uint64_t want = 0;
+        for (int id : it->second) if (unit[id].bytes && !arena.has(id)) want += unit[id].bytes;
+        while (pin_bytes + want > PIN_CAP && pinned_fam.size() > 1) {
+            auto victim = pinned_fam.end();
+            for (auto i2 = pinned_fam.begin(); i2 != pinned_fam.end(); ++i2)
+                if (i2->first != fam && (victim==pinned_fam.end() || i2->second.seq < victim->second.seq))
+                    victim = i2;
+            if (victim == pinned_fam.end()) break;
+            for (int id : victim->second.units) {
+                bool shared_with_live = false;
+                for (auto &kv : pinned_fam)
+                    if (&kv.second != &victim->second && kv.second.units.count(id)) { shared_with_live=true; break; }
+                if (shared_with_live) continue;
+                if (arena.at.count(id)) { arena.used -= unit[id].bytes; arena.at.erase(id); }
+                pin_bytes -= unit[id].bytes;
+            }
+            pinned_fam.erase(victim);
+            ++pin_evictions;
+        }
+        for (int id : it->second) {
+            if (!unit[id].bytes || arena.has(id)) continue;
+            if (pin_bytes + unit[id].bytes > PIN_CAP) break;
+            if (!arena.put(id, unit[id].bytes)) break;
+            pf.units.insert(id); pin_bytes += unit[id].bytes;
+        }
+    };
+
+    // --- serve ------------------------------------------------------------
+    for (auto &st : sched) {
+        Request &r = tr.req[st.req];
+        if (st.tok < 0) {
+            if (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX)
+                pin_family(family_of(r.name));
+            std::unordered_set<int> u;
+            for (int t=0;t<r.n_prefill;++t)
+                for (int l=0;l<L;++l)
+                    for (int k=0;k<K;++k) {
+                        int e = r.prefill[((size_t)t*L+l)*K+k];
+                        if (e>=0) u.insert((int)((size_t)l*E+e));
+                    }
+            std::vector<int> miss;
+            for (int id : u) if (!resident(id) && unit[id].bytes) miss.push_back(id);
+            std::sort(miss.begin(), miss.end());
+            uint64_t b=0; double dt = fetch_units(miss, b);
+            pre_bytes += b; ttft_sum += dt; ++n_pre;
+            // Prefill arithmetic is batched over the prompt, so its shadow is
+            // large; what exceeds it is the wait a user sees.
+            double shadow = r.n_prefill * compute_ms_prompt_token * 1e-3;
+            stall_sum += std::max(0.0, dt - shadow);
+            // Only an LRU admits here, and only because it cannot tell that
+            // prefill will not come back for these.  That is the one line
+            // SERVE_LRU_PHASE removes.
+            if (policy==SERVE_LRU) for (int id : miss) lru_admit(id);
+        } else {
             std::unordered_set<int> need;
             for (int l=0;l<L;++l)
                 for (int k=0;k<K;++k) {
-                    int e = r.decode[((size_t)t*L+l)*K+k];
+                    int e = r.decode[((size_t)st.tok*L+l)*K+k];
                     if (e>=0) need.insert((int)((size_t)l*E+e));
                 }
             std::vector<int> dm;
@@ -372,17 +520,33 @@ int main(int argc, char **argv) {
             std::sort(dm.begin(), dm.end());
             uint64_t db=0; double ddt = fetch_units(dm, db);
             dec_bytes += db; tpot_sum += ddt; ++n_dec;
+            double shadow = compute_ms_token * 1e-3;
+            stall_sum += std::max(0.0, ddt - shadow);
+            shadow_bytes_sum += shadow * BW;
             if (policy==SERVE_LRU || policy==SERVE_LRU_PHASE)
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
+            if (policy==SERVE_ONLINE || policy==SERVE_ONLINE_PREFIX
+                || policy==SERVE_MULTIPREFIX) {
+                // Admission happens from bytes already in the window, so it is
+                // a copy and not a read; the fetch that would make it a read
+                // has already been paid on the critical path above.  What a
+                // background prefetcher would additionally read is counted
+                // separately so it can be checked against the shadow.
+                for (int id : need) if (unit[id].bytes) {
+                    if (!arena.has(id)) bg_bytes_sum += unit[id].bytes;
+                    online_admit(id);
+                }
+            }
         }
-        if (verbose)
-            std::printf("  %-14s prefill miss %4zu/%zu\n", r.name.c_str(), miss.size(), u.size());
     }
 
-    std::printf("%-10s | TTFT(io) %7.3f s  prefill %7.2f GiB | "
-                "TPOT(io) %7.2f ms  decode %7.3f GiB/tok | total %7.2f GiB\n",
+    std::printf("%-13s | TTFT(io) %7.3f s  prefill %7.2f GiB | "
+                "TPOT(io) %7.2f ms  decode %7.3f GiB/tok | stall %7.3f s | "
+                "bg %6.2f GiB vs shadow %6.2f GiB | pins %zu evict %llu | total %7.2f GiB\n",
                 policy_name(policy), ttft_sum/n_pre, pre_bytes/1073741824.0/n_pre,
-                tpot_sum/n_dec*1e3, dec_bytes/1073741824.0/n_dec,
+                tpot_sum/n_dec*1e3, dec_bytes/1073741824.0/n_dec, stall_sum,
+                bg_bytes_sum/1073741824.0, shadow_bytes_sum/1073741824.0,
+                pinned_fam.size(), (unsigned long long)pin_evictions,
                 (pre_bytes+dec_bytes)/1073741824.0);
 
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }

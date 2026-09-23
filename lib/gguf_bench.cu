@@ -14,6 +14,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
@@ -40,6 +42,12 @@ int main(int argc, char **argv) {
     int backend = 0, policy = 0, layers_per_batch = 1, tokens = 8, slots = 64;
     size_t slot = 1u << 20, split = 0;
     int async_io = 0;
+    // MoE routing.  Expert weights are stored stacked -- one tensor per layer
+    // holding all experts -- so a token that activates k of E experts touches
+    // k/E of each stacked tensor, not all of it.  Reading the whole tensor, as
+    // a dense sweep does, overstates the work by E/k.
+    int experts = 0, active = 0;
+    double skew = 0.0;   // Zipf exponent; 0 = uniform routing
     for (int i = 1; i < argc; ++i) {
         std::string s = argv[i]; auto nx = [&] { return argv[++i]; };
         if (s == "--shard") paths.push_back(nx());
@@ -51,6 +59,9 @@ int main(int argc, char **argv) {
         else if (s == "--slots") slots = atoi(nx());
         else if (s == "--split") split = strtoull(nx(), 0, 10);  // cap per read
         else if (s == "--async") async_io = atoi(nx());
+        else if (s == "--experts") experts = atoi(nx());
+        else if (s == "--active") active = atoi(nx());
+        else if (s == "--skew") skew = atof(nx());
     }
     if (paths.empty()) { std::fprintf(stderr, "--shard required\n"); return 1; }
 
@@ -69,6 +80,32 @@ int main(int argc, char **argv) {
     // Trace: layer order, and within a layer the tensors in file order.  A read
     // larger than a slot is split, which is not amplification -- the bytes are
     // all wanted.
+    // Routed expert selection.  Real routing is skewed -- a few experts carry
+    // much of the traffic -- so a Zipf draw is closer than a uniform one, and
+    // the skew is what makes a resident cache worth having.
+    std::mt19937_64 rng(20260923);
+    std::vector<double> zipf;
+    if (experts > 0) {
+        zipf.resize(experts);
+        double sum = 0;
+        for (int i = 0; i < experts; ++i) {
+            zipf[i] = skew > 0 ? 1.0 / std::pow(i + 1, skew) : 1.0;
+            sum += zipf[i];
+        }
+        for (auto &v : zipf) v /= sum;
+        for (int i = 1; i < experts; ++i) zipf[i] += zipf[i - 1];
+    }
+    auto draw_experts = [&](std::vector<int> &out) {
+        out.clear();
+        std::uniform_real_distribution<double> u(0.0, 1.0);
+        while ((int)out.size() < active) {
+            double x = u(rng);
+            int e = (int)(std::lower_bound(zipf.begin(), zipf.end(), x) - zipf.begin());
+            if (e >= experts) e = experts - 1;
+            if (std::find(out.begin(), out.end(), e) == out.end()) out.push_back(e);
+        }
+    };
+
     std::vector<std::vector<Req>> by_layer(n_layers + 1);
     for (size_t i = 0; i < sh.size(); ++i)
         for (int t = 0; t < sh[i].m.n; ++t) {
@@ -81,12 +118,26 @@ int main(int argc, char **argv) {
             // Cut on the block grid as well as at the cap, so every range lies
             // inside one block and one slot -- what both the cached and the
             // exact paths require to return a single contiguous pointer.
-            uint64_t pos = tt.offset, end = tt.offset + tt.size;
-            while (pos < end) {
-                uint64_t block_end = (pos / slot + 1) * slot;
-                uint64_t stop = std::min({end, pos + (uint64_t)cap, block_end});
-                by_layer[L].push_back({(int)i, {pos, (size_t)(stop - pos)}});
-                pos = stop;
+            // A stacked expert tensor contributes only the slices the router
+            // picked; everything else contributes whole.
+            std::vector<std::pair<uint64_t, uint64_t>> spans;
+            if (experts > 0 && active > 0 && tt.expert >= 0) {
+                uint64_t per = tt.size / experts;
+                std::vector<int> picked;
+                draw_experts(picked);
+                for (int e : picked)
+                    spans.emplace_back(tt.offset + (uint64_t)e * per, per);
+            } else {
+                spans.emplace_back(tt.offset, tt.size);
+            }
+            for (auto &sp : spans) {
+                uint64_t pos = sp.first, end = sp.first + sp.second;
+                while (pos < end) {
+                    uint64_t block_end = (pos / slot + 1) * slot;
+                    uint64_t stop = std::min({end, pos + (uint64_t)cap, block_end});
+                    by_layer[L].push_back({(int)i, {pos, (size_t)(stop - pos)}});
+                    pos = stop;
+                }
             }
         }
 

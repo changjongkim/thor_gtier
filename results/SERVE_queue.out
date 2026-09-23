@@ -29,3 +29,5 @@ lru           | TTFT(io)   4.485 s  prefill   17.99 GiB | TPOT(io)  306.69 ms  d
 [16:12:12] skip e1_b16_p1
 [16:12:12] skip e1_b16_p2
 [16:12:12] run  e1_b16_p3
+per-layer     | TTFT(io)   5.748 s  prefill   22.20 GiB | TPOT(io)  318.04 ms  decode   1.246 GiB/tok | stall  48.947 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  192.98 GiB
+[16:13:13] run  e1_b16_p4

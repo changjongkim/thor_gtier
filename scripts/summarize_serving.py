@@ -7,27 +7,29 @@ import glob, os, re, sys
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "results", "SERVE")
 
-RE_HEAD = re.compile(r"budget\s+([\d.]+) GiB\s+window\s+([\d.]+)\s+path-overhead\s+([\d.]+)\s+"
-                     r"residency\s+([\d.]+) GiB \(([\d.]+)% of experts\)\s+policy=(\S+)\s+backend=(\S+)")
-RE_PIN  = re.compile(r"prefix union: (\d+) units \(([\d.]+) GiB\)")
-RE_RES  = re.compile(r"^(\S+)\s+\| TTFT\(io\)\s+([\d.]+) s\s+prefill\s+([\d.]+) GiB \| "
-                     r"TPOT\(io\)\s+([\d.]+) ms\s+decode\s+([\d.]+) GiB/tok \| total\s+([\d.]+) GiB")
+RE_HEAD = re.compile(r"budget\s+(?P<budget>[\d.]+) GiB\s+window\s+(?P<window>[\d.]+)\s+"
+                     r"path-overhead\s+(?P<overhead>[\d.]+)\s+residency\s+(?P<resident>[\d.]+) GiB "
+                     r"\((?P<res_pct>[\d.]+)% of experts\)\s+policy=(?P<policy>\S+)\s+backend=(?P<backend>\S+)")
+RE_PIN  = re.compile(r"prefix union: (?P<pin_units>\d+) units \((?P<pin_gib>[\d.]+) GiB\)")
+RE_FAM  = re.compile(r"prefix families:(?P<families>.*)")
+RE_EV   = re.compile(r"pins (?P<pins>\d+) evict (?P<evict>\d+)")
+RE_STALL= re.compile(r"stall\s+(?P<stall>[\d.]+) s\s+\| bg\s+(?P<bg>[\d.]+) GiB vs shadow\s+(?P<shadow>[\d.]+) GiB")
+RE_RES  = re.compile(r"^\S+\s+\| TTFT\(io\)\s+(?P<ttft>[\d.]+) s\s+prefill\s+(?P<prefill_gib>[\d.]+) GiB \| "
+                     r"TPOT\(io\)\s+(?P<tpot>[\d.]+) ms\s+decode\s+(?P<dec_gib>[\d.]+) GiB/tok")
+RE_TOT  = re.compile(r"total\s+(?P<total_gib>[\d.]+) GiB")
+FLOATS  = {"budget","window","overhead","resident","res_pct","pin_gib","ttft",
+           "prefill_gib","tpot","dec_gib","stall","bg","shadow","total_gib"}
+INTS    = {"pin_units","pins","evict"}
 
 def parse(path):
     d = {"name": os.path.basename(path)[:-4]}
     for line in open(path):
-        m = RE_HEAD.search(line)
-        if m:
-            d.update(budget=float(m.group(1)), window=float(m.group(2)),
-                     overhead=float(m.group(3)), resident=float(m.group(4)),
-                     res_pct=float(m.group(5)), policy=m.group(6), backend=m.group(7))
-        m = RE_PIN.search(line)
-        if m: d.update(pin_units=int(m.group(1)), pin_gib=float(m.group(2)))
-        m = RE_RES.match(line)
-        if m:
-            d.update(ttft=float(m.group(2)), prefill_gib=float(m.group(3)),
-                     tpot=float(m.group(4)), dec_gib=float(m.group(5)),
-                     total_gib=float(m.group(6)))
+        for rx in (RE_HEAD, RE_PIN, RE_FAM, RE_EV, RE_STALL, RE_RES, RE_TOT):
+            m = rx.search(line)
+            if not m: continue
+            for k, v in m.groupdict().items():
+                if v is None: continue
+                d[k] = float(v) if k in FLOATS else int(v) if k in INTS else v.strip()
     return d if "ttft" in d else None
 
 runs = {}
@@ -97,6 +99,53 @@ for B in (16,24,32,40):
     for nm,lab in (("lru","lru"),("online","online"),("onlinep","online+prefix"),("oracle","oracle prefix")):
         k=f"e5_b{B}_{nm}"
         if k in runs: print(row(runs[k], f"{lab} 예산 {B}"))
+print()
+
+print("## E6. 시스템 프롬프트가 여럿일 때 — 핀 예산과 축출\n")
+print("배포는 시스템 프롬프트를 하나만 쓰지 않는다. 패밀리는 이름이 아니라 "
+      "**프리픽스 구간 라우팅 일치율 90% 이상**으로 판정한다. "
+      "`--prefix-budget`이 핀 상한이고 0은 무제한이다.\n")
+print("| 설정 | 핀 상한 GiB | 핀된 패밀리 | 축출 | **TTFT(io) s** | TPOT(io) ms |")
+print("|---|---:|---:|---:|---:|---:|")
+for B in (24,40):
+    for k,lab in ((f"e6_b{B}_noprefix","프리픽스 없음"),(f"e6_b{B}_single","단일(정적)")):
+        if k in runs:
+            r=runs[k]
+            print(f"| {lab} 예산 {B} | - | {r.get('pins','-')} | {r.get('evict','-')} | "
+                  f"**{r['ttft']:.3f}** | {r['tpot']:.2f} |")
+    for CAP in (0,4,8,16):
+        k=f"e6_b{B}_multi_cap{CAP}"
+        if k in runs:
+            r=runs[k]
+            print(f"| 다중 예산 {B} | {'무제한' if CAP==0 else CAP} | {r.get('pins','-')} | "
+                  f"{r.get('evict','-')} | **{r['ttft']:.3f}** | {r['tpot']:.2f} |")
+print()
+
+print("## E7. 순차 요청 대 연속 배치\n")
+print("위상별 재분할(§3.6)은 시스템이 한 번에 한 위상에 있다고 가정한다. "
+      "연속 배치에서는 프리필과 디코드가 동시에 진행되어 전역 전환이 불가능하다. "
+      "같은 정책을 순차·교차로 돌린 차이가 그 전제의 값이다.\n")
+print("| 정책 | 예산 | 순차 TTFT | 교차 TTFT | 순차 TPOT | 교차 TPOT |")
+print("|---|---:|---:|---:|---:|---:|")
+for B in (24,40):
+    for P,lab in ((1,"lru"),(2,"per-layer"),(4,"prefix"),(7,"multi-prefix")):
+        a,b = runs.get(f"e7_b{B}_p{P}_seq"), runs.get(f"e7_b{B}_p{P}_intl")
+        if a and b:
+            print(f"| {lab} | {B} | {a['ttft']:.3f} | {b['ttft']:.3f} | "
+                  f"{a['tpot']:.2f} | {b['tpot']:.2f} |")
+print()
+
+print("## E8. 연산이 가릴 수 있는 I/O\n")
+print("디코드가 연산 바운드이면 연산 안에 들어가는 I/O는 비용이 아니다. "
+      "가정하는 연산 시간을 쓸어 남은 I/O 중 얼마가 실제 스톨인지 본다.\n")
+print("| 토큰당 연산 ms | TPOT(io) ms | **스톨 s** | 배경 GiB | 그림자 용량 GiB |")
+print("|---:|---:|---:|---:|---:|")
+for C in ("0.0","0.89","5","20"):
+    k=f"e8_cms{C}"
+    if k in runs:
+        r=runs[k]
+        print(f"| {C} | {r['tpot']:.2f} | **{r.get('stall',0):.2f}** | "
+              f"{r.get('bg',0):.2f} | {r.get('shadow',0):.2f} |")
 print()
 
 print("## E4. 서빙 예산 안에서 스테이징 윈도우 크기\n")

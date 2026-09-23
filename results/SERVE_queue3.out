@@ -63,3 +63,4 @@ multi-prefix  | TTFT(io)   2.232 s  prefill    8.90 GiB | TPOT(io)   44.54 ms  d
 multi-prefix  | TTFT(io)   2.236 s  prefill    8.90 GiB | TPOT(io)   44.67 ms  decode   0.171 GiB/tok | stall  24.041 s | bg  16.40 GiB vs shadow   2.73 GiB | pins 3 evict 0 | total  123.16 GiB
 [17:47:19] run  e8_cms20
 multi-prefix  | TTFT(io)   2.233 s  prefill    8.90 GiB | TPOT(io)   44.57 ms  decode   0.171 GiB/tok | stall  14.103 s | bg  16.40 GiB vs shadow  10.91 GiB | pins 3 evict 0 | total  123.16 GiB
+[17:48:15] === queue 3 done ===

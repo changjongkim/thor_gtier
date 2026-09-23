@@ -40,6 +40,11 @@ struct Req { int shard; gtier_range r; };
 int main(int argc, char **argv) {
     std::vector<std::string> paths;
     int backend = 0, policy = 0, layers_per_batch = 1, tokens = 8, slots = 64;
+    // Decode steps serve `batch` sequences at once.  Each draws its own
+    // experts, but a layer reads their union once -- which is the whole reason
+    // batching helps a routed model: the bytes per token fall as the draws
+    // start overlapping.
+    int batch = 1;
     size_t slot = 1u << 20, split = 0;
     int async_io = 0;
     // MoE routing.  Expert weights are stored stacked -- one tensor per layer
@@ -54,6 +59,7 @@ int main(int argc, char **argv) {
         else if (s == "--backend") backend = atoi(nx());
         else if (s == "--policy") policy = atoi(nx());
         else if (s == "--tokens") tokens = atoi(nx());
+        else if (s == "--batch") batch = atoi(nx());
         else if (s == "--layers") layers_per_batch = atoi(nx());
         else if (s == "--slot") slot = strtoull(nx(), 0, 10);
         else if (s == "--slots") slots = atoi(nx());
@@ -111,15 +117,29 @@ int main(int argc, char **argv) {
     // token, because that is what a router does -- holding one draw for the
     // whole run would let the page cache serve every token after the first,
     // which measures RAM rather than storage.
-    std::vector<std::vector<std::vector<int>>> picked(tokens);
-    for (int tk = 0; tk < tokens; ++tk) {
+    if (batch < 1) batch = 1;
+    int steps = (tokens + batch - 1) / batch;
+    std::vector<std::vector<std::vector<int>>> picked(steps);
+    uint64_t union_sum = 0;
+    for (int tk = 0; tk < steps; ++tk) {
         picked[tk].resize(n_layers + 1);
         if (experts > 0 && active > 0)
-            for (int L = 0; L <= n_layers; ++L) draw_experts(picked[tk][L]);
+            for (int L = 0; L <= n_layers; ++L) {
+                std::vector<int> u, one;
+                for (int s2 = 0; s2 < batch; ++s2) {
+                    draw_experts(one);
+                    for (int e : one)
+                        if (std::find(u.begin(), u.end(), e) == u.end())
+                            u.push_back(e);
+                }
+                std::sort(u.begin(), u.end());
+                union_sum += u.size();
+                picked[tk][L] = u;
+            }
     }
 
-    std::vector<std::vector<std::vector<Req>>> by_tok_layer(tokens);
-    for (int tk = 0; tk < tokens; ++tk) {
+    std::vector<std::vector<std::vector<Req>>> by_tok_layer(steps);
+    for (int tk = 0; tk < steps; ++tk) {
     std::vector<std::vector<Req>> &by_layer = by_tok_layer[tk];
     by_layer.resize(n_layers + 1);
     for (size_t i = 0; i < sh.size(); ++i)
@@ -197,7 +217,7 @@ int main(int argc, char **argv) {
     uint64_t useful = 0;
     gtier_stats agg{};
     auto t0 = std::chrono::steady_clock::now();
-    for (int tok = 0; tok < tokens; ++tok) {
+    for (int tok = 0; tok < steps; ++tok) {
         for (int L = 0; L <= n_layers; L += layers_per_batch) {
             std::vector<Req> batch;
             for (int k = 0; k < layers_per_batch && L + k <= n_layers; ++k)
@@ -289,15 +309,19 @@ int main(int argc, char **argv) {
     }
     double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
     double win = (double)per_shard * sh.size() * slot / 1073741824.0;
-    std::printf("%-11s policy=%d slot=%4zuKiB window=%6.2f GiB (%5.1f%% of model) | "
-                "%6.3f GiB/s  %7.4f tok/s  hit=%.1f%% amp=%.2fx sw=%llu\n",
+    // uniq is the mean number of distinct experts a layer had to read per
+    // step: it is 'active' at batch 1 and climbs toward 'experts' as the draws
+    // of a larger batch overlap, so bytes/token falls by batch/uniq.
+    double uniq = (experts > 0 && steps) ? (double)union_sum / steps / (n_layers + 1) : 0;
+    std::printf("%-11s pol=%d slot=%4zuKiB win=%6.2f GiB b=%-3d uniq=%5.1f | "
+                "%6.3f GiB/s %7.4f tok/s %6.1f MiB/tok hit=%.1f%% amp=%.2fx\n",
                 gtier_backend_name((gtier_backend)backend), policy, slot >> 10,
-                win, 100.0 * win / (model_bytes / 1073741824.0),
-                (double)useful / (1ull << 30) / t, tokens / t,
+                win, batch, uniq,
+                (double)useful / (1ull << 30) / t, (steps * batch) / t,
+                (double)useful / (1ull << 20) / (steps * batch),
                 (agg.cache_hits + agg.cache_misses)
                     ? 100.0 * agg.cache_hits / (agg.cache_hits + agg.cache_misses) : 0.0,
-                useful ? (double)agg.bytes_read / useful : 0.0,
-                (unsigned long long)agg.switches);
+                useful ? (double)agg.bytes_read / useful : 0.0);
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }
     return 0;
 }

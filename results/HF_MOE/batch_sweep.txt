@@ -1,0 +1,6 @@
+gtier       pol=0 slot=4096KiB win=  2.00 GiB b=1   uniq=  8.0 |  4.680 GiB/s  0.7493 tok/s 6395.4 MiB/tok hit=0.0% amp=1.00x
+gtier       pol=0 slot=4096KiB win=  2.00 GiB b=2   uniq= 14.7 |  4.709 GiB/s  1.0370 tok/s 4650.1 MiB/tok hit=0.0% amp=1.00x
+gtier       pol=0 slot=4096KiB win=  2.00 GiB b=4   uniq= 25.6 |  4.687 GiB/s  1.3709 tok/s 3501.2 MiB/tok hit=0.0% amp=1.00x
+gtier       pol=0 slot=4096KiB win=  2.00 GiB b=8   uniq= 42.2 |  4.719 GiB/s  1.8256 tok/s 2646.7 MiB/tok hit=0.0% amp=1.00x
+gtier       pol=0 slot=4096KiB win=  2.00 GiB b=16  uniq= 65.4 |  4.749 GiB/s  2.4929 tok/s 1950.5 MiB/tok hit=0.0% amp=1.00x
+gtier       pol=0 slot=4096KiB win=  2.00 GiB b=32  uniq= 91.9 |  4.780 GiB/s  3.6745 tok/s 1332.1 MiB/tok hit=0.0% amp=1.00x

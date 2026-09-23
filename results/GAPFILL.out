@@ -12,3 +12,4 @@ online        | TTFT(io)   8.793 s  prefill   17.87 GiB | TPOT(io)   19.73 ms  d
 online        | TTFT(io)   4.528 s  prefill   17.87 GiB | TPOT(io)   17.85 ms  decode   0.068 GiB/tok | stall 164.428 s | bg  19.53 GiB vs shadow   1.46 GiB | pins 0 evict 0 | total  662.83 GiB
 [18:56:10] run  e6_b40_onlinep
 online+prefix | TTFT(io)   1.344 s  prefill    5.28 GiB | TPOT(io)   15.71 ms  decode   0.060 GiB/tok | stall  49.163 s | bg  17.34 GiB vs shadow   1.46 GiB | pins 3 evict 0 | total  207.25 GiB
+[18:57:28] === gapfill done ===

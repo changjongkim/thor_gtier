@@ -1,0 +1,10 @@
+backend0                   gtier       policy=0 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  4.321 GiB/s   0.6919 tok/s  hit=0.0% amp=1.00x sw=0
+backend3                   pread+copy  policy=0 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  3.701 GiB/s   0.5926 tok/s  hit=0.0% amp=1.00x sw=0
+backend4                   ./scripts/run_hf_moe.sh: line 26: 1057327 Killed                  sudo systemd-run --scope -q -p MemoryMax=$BUDGET --slice=gtierbench.slice -- "$@"
+backend5                   uvm         policy=0 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  2.554 GiB/s   0.4089 tok/s  hit=0.0% amp=1.00x sw=0
+backend1                   mmap-gpu    policy=0 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  3.873 GiB/s   0.6201 tok/s  hit=0.0% amp=0.00x sw=0
+backend2                   mmap-cpu    policy=0 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  0.607 GiB/s   0.0971 tok/s  hit=0.0% amp=1.00x sw=0
+gtier+async                gtier       policy=0 slot=4096KiB window=  4.00 GiB (  7.0% of model) |  4.789 GiB/s   0.7668 tok/s  hit=0.0% amp=1.00x sw=0
+gtier+pin                  gtier       policy=4 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  4.133 GiB/s   0.6617 tok/s  hit=5.4% amp=0.97x sw=0
+gtier+block                gtier       policy=1 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  3.547 GiB/s   0.5680 tok/s  hit=47.2% amp=1.24x sw=0
+gtier+adaptive             gtier       policy=3 slot=4096KiB window=  2.00 GiB (  3.5% of model) |  3.562 GiB/s   0.5704 tok/s  hit=47.2% amp=1.24x sw=0

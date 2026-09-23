@@ -67,7 +67,14 @@ int gguf_load(const char *path, gguf_model *m) {
     m->file_bytes = lseek(fd, 0, SEEK_END); lseek(fd, 0, SEEK_SET);
 
     uint32_t magic, version; uint64_t n_tensors, n_kv;
-    if (rd_u32(fd,&magic) || magic != GGUF_MAGIC) { close(fd); return -1; }
+    // Not GGUF: try safetensors, so one entry point serves both formats and
+    // the same trace driver can run over whichever file the comparison needs.
+    if (rd_u32(fd,&magic) || magic != GGUF_MAGIC) {
+        close(fd);
+        int r = safetensors_load(path, m);
+        if (!r) m->stacked_experts = 0;
+        return r;
+    }
     if (rd_u32(fd,&version) || rd_u64(fd,&n_tensors) || rd_u64(fd,&n_kv)) { close(fd); return -1; }
 
     uint32_t alignment = 32;
@@ -101,6 +108,7 @@ int gguf_load(const char *path, gguf_model *m) {
         if (e) t->expert = 0;   // stacked expert tensor; sliced at trace time
         if (t->layer + 1 > m->n_layers) m->n_layers = t->layer + 1;
     }
+    m->stacked_experts = 1;
     uint64_t pos = lseek(fd, 0, SEEK_CUR);
     m->data_offset = (pos + alignment - 1) / alignment * alignment;
     for (int i = 0; i < m->n; ++i) m->t[i].offset += m->data_offset;

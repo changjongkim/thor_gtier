@@ -24,9 +24,14 @@ typedef struct {
     uint64_t data_offset;
     uint64_t file_bytes;
     int n_layers;
+    // GGUF stacks a layer's experts into one tensor, so a routed read is a
+    // slice of it; safetensors stores one tensor per expert, so a routed read
+    // is a whole tensor.  The trace has to know which.
+    int stacked_experts;
 } gguf_model;
 
 int  gguf_load(const char *path, gguf_model *m);
+int  safetensors_load(const char *path, gguf_model *m);
 void gguf_free(gguf_model *m);
 
 #ifdef __cplusplus

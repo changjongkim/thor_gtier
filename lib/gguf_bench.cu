@@ -106,7 +106,22 @@ int main(int argc, char **argv) {
         }
     };
 
-    std::vector<std::vector<Req>> by_layer(n_layers + 1);
+    // Routing is per layer, not per tensor: a layer's gate/up/down for one
+    // expert are read together or not at all.  And it is redrawn for every
+    // token, because that is what a router does -- holding one draw for the
+    // whole run would let the page cache serve every token after the first,
+    // which measures RAM rather than storage.
+    std::vector<std::vector<std::vector<int>>> picked(tokens);
+    for (int tk = 0; tk < tokens; ++tk) {
+        picked[tk].resize(n_layers + 1);
+        if (experts > 0 && active > 0)
+            for (int L = 0; L <= n_layers; ++L) draw_experts(picked[tk][L]);
+    }
+
+    std::vector<std::vector<std::vector<Req>>> by_tok_layer(tokens);
+    for (int tk = 0; tk < tokens; ++tk) {
+    std::vector<std::vector<Req>> &by_layer = by_tok_layer[tk];
+    by_layer.resize(n_layers + 1);
     for (size_t i = 0; i < sh.size(); ++i)
         for (int t = 0; t < sh[i].m.n; ++t) {
             const gguf_tensor &tt = sh[i].m.t[t];
@@ -121,12 +136,18 @@ int main(int argc, char **argv) {
             // A stacked expert tensor contributes only the slices the router
             // picked; everything else contributes whole.
             std::vector<std::pair<uint64_t, uint64_t>> spans;
+            const std::vector<int> &pick = picked[tk][L];
             if (experts > 0 && active > 0 && tt.expert >= 0) {
-                uint64_t per = tt.size / experts;
-                std::vector<int> picked;
-                draw_experts(picked);
-                for (int e : picked)
-                    spans.emplace_back(tt.offset + (uint64_t)e * per, per);
+                if (sh[i].m.stacked_experts) {
+                    // one tensor holds every expert; read the routed slices
+                    uint64_t per = tt.size / experts;
+                    for (int e : pick)
+                        spans.emplace_back(tt.offset + (uint64_t)e * per, per);
+                } else if (std::find(pick.begin(), pick.end(), tt.expert)
+                           != pick.end()) {
+                    // one tensor per expert; read it whole, or not at all
+                    spans.emplace_back(tt.offset, tt.size);
+                }
             } else {
                 spans.emplace_back(tt.offset, tt.size);
             }
@@ -140,15 +161,19 @@ int main(int argc, char **argv) {
                 }
             }
         }
+    }
 
     // --slots is the window across the whole model, so split it over the
     // shards; each shard gets its own handle and a share of the slots.  Giving
     // every shard the full window would ask for shards x window bytes.
     int per_shard = (int)(slots / sh.size());
-    if (per_shard < 8) per_shard = 8;
+    if (per_shard < 32) per_shard = 32;
     // Tickets own disjoint slots, so an async handle needs the window split
     // GTIER_MAX_INFLIGHT ways on top of the per-shard split.
-    if (async_io) per_shard = std::max(per_shard, 16 * GTIER_MAX_INFLIGHT);
+    // A ticket owns slots/GTIER_MAX_INFLIGHT of the window, so the async path
+    // needs enough slots to divide; it must not silently enlarge the window,
+    // or it would be compared against the other backends at more memory.
+    if (async_io) per_shard = std::max(per_shard, 8 * GTIER_MAX_INFLIGHT);
     gtier_config cfg{};
     cfg.backend = (gtier_backend)backend;
     cfg.slot_bytes = slot; cfg.slots = per_shard; cfg.queue_depth = per_shard;
@@ -176,7 +201,8 @@ int main(int argc, char **argv) {
         for (int L = 0; L <= n_layers; L += layers_per_batch) {
             std::vector<Req> batch;
             for (int k = 0; k < layers_per_batch && L + k <= n_layers; ++k)
-                batch.insert(batch.end(), by_layer[L + k].begin(), by_layer[L + k].end());
+                batch.insert(batch.end(), by_tok_layer[tok][L + k].begin(),
+                             by_tok_layer[tok][L + k].end());
             // Split the batch into per-shard runs first, so the async path can
             // have the next run in flight while this one is consumed.
             struct Run { int shard; std::vector<gtier_range> rs; };

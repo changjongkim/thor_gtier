@@ -91,3 +91,57 @@ prefix        | TTFT(io)   1.406 s  prefill    5.52 GiB | TPOT(io)    4.31 ms  d
 [16:33:26] run  e4_w0.25
 prefix        | TTFT(io)   0.840 s  prefill    3.29 GiB | TPOT(io)    6.91 ms  decode   0.025 GiB/tok | stall   4.576 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   20.94 GiB
 [16:33:54] run  e4_w0.5
+prefix        | TTFT(io)   0.867 s  prefill    3.36 GiB | TPOT(io)    7.41 ms  decode   0.026 GiB/tok | stall   4.762 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   21.43 GiB
+[16:34:21] run  e4_w1
+prefix        | TTFT(io)   0.904 s  prefill    3.52 GiB | TPOT(io)    9.64 ms  decode   0.036 GiB/tok | stall   5.091 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   22.84 GiB
+[16:34:49] run  e4_w2
+prefix        | TTFT(io)   1.019 s  prefill    3.98 GiB | TPOT(io)   22.25 ms  decode   0.082 GiB/tok | stall   6.384 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   27.82 GiB
+[16:35:18] run  e4_w4
+prefix        | TTFT(io)   1.176 s  prefill    4.90 GiB | TPOT(io)   39.38 ms  decode   0.157 GiB/tok | stall   8.144 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   36.92 GiB
+[16:35:51] === queue done, summarising ===
+[16:35:54] === all done ===
+[16:43:51] === serving queue start  model=/home/thor/kcj/models/qwen3_30b_a3b  max-decode=8 ===
+[16:43:51] skip e1_none
+[16:43:51] skip e1_b12_p1
+[16:43:51] skip e1_b12_p2
+[16:43:51] skip e1_b12_p3
+[16:43:51] skip e1_b12_p4
+[16:43:51] skip e1_b16_p1
+[16:43:51] skip e1_b16_p2
+[16:43:51] skip e1_b16_p3
+[16:43:51] skip e1_b16_p4
+[16:43:51] skip e1_b24_p1
+[16:43:51] skip e1_b24_p2
+[16:43:51] skip e1_b24_p3
+[16:43:51] skip e1_b24_p4
+[16:43:51] skip e1_b32_p1
+[16:43:51] skip e1_b32_p2
+[16:43:51] skip e1_b32_p3
+[16:43:51] skip e1_b32_p4
+[16:43:51] skip e1_b40_p1
+[16:43:51] skip e1_b40_p2
+[16:43:51] skip e1_b40_p3
+[16:43:51] skip e1_b40_p4
+[16:43:51] skip e1_b48_p1
+[16:43:51] skip e1_b48_p2
+[16:43:51] skip e1_b48_p3
+[16:43:51] skip e1_b48_p4
+[16:43:51] skip e2_b24_gtier
+[16:43:51] skip e2_b24_pread
+[16:43:51] skip e2_b24_cufile
+[16:43:51] skip e2_b40_gtier
+[16:43:51] skip e2_b40_pread
+[16:43:51] skip e2_b40_cufile
+[16:43:51] skip e3_prefix0
+[16:43:51] skip e3_prefix10
+[16:43:51] skip e3_prefix20
+[16:43:51] skip e3_prefix30
+[16:43:51] skip e3_prefix50
+[16:43:51] skip e3_prefix65
+[16:43:51] skip e4_w0.25
+[16:43:51] skip e4_w0.5
+[16:43:51] skip e4_w1
+[16:43:51] skip e4_w2
+[16:43:51] skip e4_w4
+[16:43:51] === queue done, summarising ===
+[16:43:51] === all done ===

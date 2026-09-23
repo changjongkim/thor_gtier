@@ -420,6 +420,16 @@ int main(int argc, char **argv) {
         v.erase(std::find(v.begin(), v.end(), worst)); v.push_back(id);
     };
 
+    // Admission into free space only: fill what nobody holds, evict nothing.
+    // This is what a phase that will not reuse its own reads is entitled to.
+    auto lru_admit_free_only = [&](int id) {
+        if (arena.has(id) || !unit[id].bytes) return;
+        if (arena.used + unit[id].bytes > arena.cap) return;
+        arena.at[id] = arena.used; arena.used += unit[id].bytes;
+        lru.push_back(id);                       // coldest: decode evicts it first
+        lru_at[id] = std::prev(lru.end());
+    };
+
     // LRU admission: hold what was just used, evicting the least recent.
     auto lru_admit = [&](int id) {
         if (arena.has(id)) {
@@ -551,10 +561,18 @@ int main(int argc, char **argv) {
             // large; what exceeds it is the wait a user sees.
             double shadow = r.n_prefill * compute_ms_prompt_token * 1e-3;
             stall_sum += std::max(0.0, dt - shadow);
-            // Only an LRU admits here, and only because it cannot tell that
-            // prefill will not come back for these.  That is the one line
-            // SERVE_LRU_PHASE removes.
+            // An LRU admits here because it cannot tell that prefill will not
+            // come back for these, and in doing so evicts what decode needs.
+            // Refusing outright is worse, though: a policy that never admits
+            // from prefill leaves the arena mostly empty, because the decode
+            // working set alone does not fill it -- measured, its prefill I/O
+            // stayed flat at 5.46 s from a 24 GiB budget to 48 while plain LRU
+            // fell to 2.07.  The rule that survives both is narrower than
+            // either: prefill may take free space and may not take anyone
+            // else's, and what it takes goes in coldest so decode can reclaim
+            // it first.
             if (policy==SERVE_LRU) for (int id : miss) lru_admit(id);
+            if (policy==SERVE_LRU_PHASE) for (int id : miss) lru_admit_free_only(id);
         } else {
             std::unordered_set<int> need;
             for (int l=0;l<L;++l)

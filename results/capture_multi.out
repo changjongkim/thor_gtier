@@ -1,0 +1,30 @@
+Loading weights:   0%|          | 0/531 [00:00<?, ?it/s]Loading weights:   1%|          | 4/531 [00:00<01:32,  5.70it/s]Loading weights:   3%|▎         | 15/531 [00:01<00:48, 10.58it/s]Loading weights:   5%|▍         | 26/531 [00:02<00:43, 11.58it/s]Loading weights:   7%|▋         | 37/531 [00:03<00:40, 12.24it/s]Loading weights:   9%|▉         | 48/531 [00:04<00:38, 12.54it/s]Loading weights:  11%|█         | 59/531 [00:04<00:37, 12.66it/s]Loading weights:  13%|█▎        | 70/531 [00:05<00:36, 12.79it/s]Loading weights:  15%|█▌        | 81/531 [00:06<00:35, 12.69it/s]Loading weights:  17%|█▋        | 92/531 [00:07<00:34, 12.82it/s]Loading weights:  19%|█▉        | 103/531 [00:08<00:33, 12.83it/s]Loading weights:  21%|██▏       | 114/531 [00:09<00:32, 12.88it/s]Loading weights:  24%|██▎       | 125/531 [00:10<00:31, 12.92it/s]Loading weights:  26%|██▌       | 136/531 [00:10<00:30, 12.93it/s]Loading weights:  28%|██▊       | 147/531 [00:11<00:29, 13.07it/s]Loading weights:  30%|██▉       | 158/531 [00:12<00:28, 12.96it/s]Loading weights:  32%|███▏      | 169/531 [00:13<00:28, 12.93it/s]Loading weights:  34%|███▍      | 180/531 [00:14<00:27, 12.94it/s]Loading weights:  36%|███▌      | 191/531 [00:15<00:26, 12.91it/s]Loading weights:  38%|███▊      | 202/531 [00:15<00:25, 12.96it/s]Loading weights:  40%|████      | 213/531 [00:16<00:24, 12.93it/s]Loading weights:  42%|████▏     | 224/531 [00:17<00:23, 12.84it/s]Loading weights:  44%|████▍     | 235/531 [00:18<00:23, 12.81it/s]Loading weights:  46%|████▋     | 246/531 [00:19<00:22, 12.87it/s]Loading weights:  48%|████▊     | 257/531 [00:20<00:21, 12.82it/s]Loading weights:  50%|█████     | 268/531 [00:21<00:22, 11.46it/s]Loading weights:  53%|█████▎    | 279/531 [00:22<00:21, 11.76it/s]Loading weights:  55%|█████▍    | 290/531 [00:23<00:20, 11.84it/s]Loading weights:  57%|█████▋    | 301/531 [00:24<00:19, 12.04it/s]Loading weights:  59%|█████▉    | 312/531 [00:25<00:17, 12.18it/s]Loading weights:  61%|██████    | 323/531 [00:25<00:16, 12.36it/s]Loading weights:  63%|██████▎   | 334/531 [00:26<00:15, 12.41it/s]Loading weights:  65%|██████▍   | 345/531 [00:27<00:14, 12.60it/s]Loading weights:  67%|██████▋   | 356/531 [00:28<00:13, 12.72it/s]Loading weights:  69%|██████▉   | 367/531 [00:29<00:13, 12.16it/s]Loading weights:  71%|███████   | 378/531 [00:30<00:12, 12.28it/s]Loading weights:  73%|███████▎  | 389/531 [00:31<00:11, 12.44it/s]Loading weights:  75%|███████▌  | 400/531 [00:32<00:10, 12.53it/s]Loading weights:  77%|███████▋  | 411/531 [00:32<00:09, 12.55it/s]Loading weights:  79%|███████▉  | 422/531 [00:33<00:08, 12.69it/s]Loading weights:  82%|████████▏ | 433/531 [00:34<00:07, 12.76it/s]Loading weights:  84%|████████▎ | 444/531 [00:35<00:06, 12.62it/s]Loading weights:  86%|████████▌ | 455/531 [00:36<00:06, 12.61it/s]Loading weights:  88%|████████▊ | 466/531 [00:37<00:05, 12.74it/s]Loading weights:  90%|████████▉ | 477/531 [00:38<00:04, 12.56it/s]Loading weights:  92%|█████████▏| 488/531 [00:38<00:03, 12.60it/s]Loading weights:  94%|█████████▍| 499/531 [00:39<00:02, 12.53it/s]Loading weights:  96%|█████████▌| 510/531 [00:40<00:01, 12.27it/s]Loading weights:  96%|█████████▋| 512/531 [00:41<00:01, 11.79it/s]Loading weights:  98%|█████████▊| 521/531 [00:41<00:00, 10.99it/s]Loading weights:  98%|█████████▊| 523/531 [00:42<00:00,  8.14it/s]Loading weights: 100%|██████████| 531/531 [00:42<00:00, 12.38it/s]
+loaded in 50.9s
+layers=48 experts=128 topk=8
+hooked 48 routers
+long_prefill: prompt 613 tok, +64 decoded
+distinct_a: prompt 24 tok, +64 decoded
+distinct_b: prompt 21 tok, +64 decoded
+sysA_1: prompt 66 tok, +64 decoded
+sysA_2: prompt 67 tok, +64 decoded
+sysA_3: prompt 65 tok, +64 decoded
+sysB_1: prompt 74 tok, +64 decoded
+sysB_2: prompt 72 tok, +64 decoded
+sysB_3: prompt 71 tok, +64 decoded
+sysC_1: prompt 100 tok, +64 decoded
+sysC_2: prompt 94 tok, +64 decoded
+sysC_3: prompt 100 tok, +64 decoded
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/routing_multi.npz: 102480 routing decisions
+distinct_a: prefill 24 decode 64
+distinct_b: prefill 21 decode 64
+long_prefill: prefill 613 decode 64
+sysA_1: prefill 66 decode 64
+sysA_2: prefill 67 decode 64
+sysA_3: prefill 65 decode 64
+sysB_1: prefill 74 decode 64
+sysB_2: prefill 72 decode 64
+sysB_3: prefill 71 decode 64
+sysC_1: prefill 100 decode 64
+sysC_2: prefill 94 decode 64
+sysC_3: prefill 100 decode 64
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/routing_multi.bin (1.6 MiB)

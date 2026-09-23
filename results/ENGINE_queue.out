@@ -21,3 +21,7 @@ IOMETER {"label": "e9_ngl0_mmap", "returncode": 0, "wall_s": 461.75, "read_GiB":
   model 132.4 GiB vs 122.8 GiB of memory
 [22:45:12] skip e9_ngl0_mmap
 [22:45:12] run  e9_ngl99_mmap
+[01:22:26] === engine queue: Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf  pp=512 tg=32 ===
+  model 132.4 GiB vs 122.8 GiB of memory
+[01:22:26] skip e9_ngl0_mmap
+[01:22:26] run  e9_ngl99_mmap

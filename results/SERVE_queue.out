@@ -145,3 +145,7 @@ prefix        | TTFT(io)   1.176 s  prefill    4.90 GiB | TPOT(io)   39.38 ms  d
 [16:43:51] skip e4_w4
 [16:43:51] === queue done, summarising ===
 [16:43:51] === all done ===
+[17:55:27] === serving queue start  model=/home/thor/kcj/models/qwen3_30b_a3b  max-decode=8 ===
+[17:55:27] skip e1_none
+[17:55:27] skip e1_b12_p1
+[17:55:27] run  e1_b12_p2

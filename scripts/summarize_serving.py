@@ -111,11 +111,13 @@ print("배포는 시스템 프롬프트를 하나만 쓰지 않는다. 패밀리
 print("| 설정 | 핀 상한 GiB | 핀된 패밀리 | 축출 | **TTFT(io) s** | TPOT(io) ms |")
 print("|---|---:|---:|---:|---:|---:|")
 for B in (24,40):
-    for k,lab in ((f"e6_b{B}_noprefix","프리픽스 없음"),(f"e6_b{B}_single","단일(정적)")):
+    for k,lab in ((f"e6_b{B}_noprefix","기준선"),(f"e6_b{B}_perlayer","per-layer"),
+                  (f"e6_b{B}_online","online"),(f"e6_b{B}_onlinep","online+prefix"),
+                  (f"e6_b{B}_single","단일 프리픽스(정적, 전부 미리 앎)")):
         if k in runs:
             r=runs[k]
-            print(f"| {lab} 예산 {B} | - | {r.get('pins','-')} | {r.get('evict','-')} | "
-                  f"**{r['ttft']:.3f}** | {r['tpot']:.2f} |")
+            print(f"| {lab} [{r.get('policy','?')}] 예산 {B} | - | {r.get('pins','-')} | "
+                  f"{r.get('evict','-')} | **{r['ttft']:.3f}** | {r['tpot']:.2f} |")
     for CAP in (0,4,8,16):
         k=f"e6_b{B}_multi_cap{CAP}"
         if k in runs:
@@ -128,14 +130,17 @@ print("## E7. 순차 요청 대 연속 배치\n")
 print("위상별 재분할(§3.6)은 시스템이 한 번에 한 위상에 있다고 가정한다. "
       "연속 배치에서는 프리필과 디코드가 동시에 진행되어 전역 전환이 불가능하다. "
       "같은 정책을 순차·교차로 돌린 차이가 그 전제의 값이다.\n")
-print("| 정책 | 예산 | 순차 TTFT | 교차 TTFT | 순차 TPOT | 교차 TPOT |")
-print("|---|---:|---:|---:|---:|---:|")
+print("| 정책 | 예산 | 순차 TTFT | 교차 TTFT | 순차 TPOT | 교차 TPOT | TPOT 배수 |")
+print("|---|---:|---:|---:|---:|---:|---:|")
 for B in (24,40):
-    for P,lab in ((1,"lru"),(2,"per-layer"),(4,"prefix"),(7,"multi-prefix")):
+    for P in (1,2,4,7):
         a,b = runs.get(f"e7_b{B}_p{P}_seq"), runs.get(f"e7_b{B}_p{P}_intl")
         if a and b:
-            print(f"| {lab} | {B} | {a['ttft']:.3f} | {b['ttft']:.3f} | "
-                  f"{a['tpot']:.2f} | {b['tpot']:.2f} |")
+            # The policy name comes from the run, not from the number: the
+            # enum shifted when the phase policy was inserted into it.
+            print(f"| {a.get('policy',P)} | {B} | {a['ttft']:.3f} | {b['ttft']:.3f} | "
+                  f"{a['tpot']:.2f} | {b['tpot']:.2f} | "
+                  f"{(b['tpot']/a['tpot'] if a['tpot'] else 0):.2f}x |")
 print()
 
 print("## E8. 연산이 가릴 수 있는 I/O\n")

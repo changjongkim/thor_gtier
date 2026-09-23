@@ -1,2 +1,34 @@
 [16:46:11] === queue 2: online policies, repeats=3 ===
 [16:46:11] run  e5_b16_online
+online        | TTFT(io)   5.663 s  prefill   22.45 GiB | TPOT(io)   79.85 ms  decode   0.304 GiB/tok | stall 111.011 s | bg  44.03 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  447.88 GiB
+[16:48:17] run  e5_b16_onlinep
+online+prefix | TTFT(io)   5.660 s  prefill   22.45 GiB | TPOT(io)   80.09 ms  decode   0.304 GiB/tok | stall 111.005 s | bg  44.03 GiB vs shadow   0.73 GiB | pins 1 evict 0 | total  447.88 GiB
+[16:50:23] run  e5_b16_oracle
+prefix        | TTFT(io)   5.315 s  prefill   21.56 GiB | TPOT(io)  530.06 ms  decode   2.088 GiB/tok | stall 169.594 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  688.66 GiB
+[16:53:27] run  e5_b16_lru
+lru           | TTFT(io)   5.629 s  prefill   22.38 GiB | TPOT(io)  382.28 ms  decode   1.476 GiB/tok | stall 153.962 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  615.34 GiB
+[16:56:15] run  e5_b24_online
+online        | TTFT(io)   4.790 s  prefill   19.03 GiB | TPOT(io)   32.64 ms  decode   0.125 GiB/tok | stall  88.587 s | bg  18.04 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  360.64 GiB
+[16:58:00] run  e5_b24_onlinep
+online+prefix | TTFT(io)   4.237 s  prefill   16.84 GiB | TPOT(io)   45.54 ms  decode   0.173 GiB/tok | stall  80.424 s | bg  25.08 GiB vs shadow   0.73 GiB | pins 1 evict 0 | total  327.95 GiB
+[16:59:36] run  e5_b24_oracle
+prefix        | TTFT(io)   3.557 s  prefill   14.28 GiB | TPOT(io)  324.45 ms  decode   1.247 GiB/tok | stall 108.329 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  436.69 GiB
+[17:01:40] run  e5_b24_lru
+lru           | TTFT(io)   4.149 s  prefill   16.41 GiB | TPOT(io)  324.55 ms  decode   1.250 GiB/tok | stall 119.011 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  475.43 GiB
+[17:03:56] run  e5_b32_online
+online        | TTFT(io)   4.798 s  prefill   19.03 GiB | TPOT(io)   32.71 ms  decode   0.125 GiB/tok | stall  88.745 s | bg  18.04 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  360.64 GiB
+[17:05:44] run  e5_b32_onlinep
+online+prefix | TTFT(io)   2.699 s  prefill   10.72 GiB | TPOT(io)   35.06 ms  decode   0.134 GiB/tok | stall  51.255 s | bg  19.69 GiB vs shadow   0.73 GiB | pins 1 evict 0 | total  212.28 GiB
+[17:06:56] run  e5_b32_oracle
+prefix        | TTFT(io)   1.821 s  prefill    7.15 GiB | TPOT(io)   77.65 ms  decode   0.292 GiB/tok | stall  41.539 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  170.81 GiB
+[17:07:58] run  e5_b32_lru
+lru           | TTFT(io)   2.817 s  prefill   11.14 GiB | TPOT(io)   38.62 ms  decode   0.144 GiB/tok | stall  53.860 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  221.29 GiB
+[17:09:12] run  e5_b40_online
+online        | TTFT(io)   4.803 s  prefill   19.03 GiB | TPOT(io)   32.80 ms  decode   0.125 GiB/tok | stall  88.852 s | bg  18.04 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  360.64 GiB
+[17:11:05] run  e5_b40_onlinep
+online+prefix | TTFT(io)   2.153 s  prefill    8.51 GiB | TPOT(io)   28.94 ms  decode   0.111 GiB/tok | stall  40.609 s | bg  15.93 GiB vs shadow   0.73 GiB | pins 1 evict 0 | total  169.12 GiB
+[17:12:10] run  e5_b40_oracle
+prefix        | TTFT(io)   0.868 s  prefill    3.36 GiB | TPOT(io)    7.42 ms  decode   0.026 GiB/tok | stall  14.321 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total   64.28 GiB
+[17:12:49] run  e5_b40_lru
+lru           | TTFT(io)   1.820 s  prefill    7.17 GiB | TPOT(io)   17.50 ms  decode   0.066 GiB/tok | stall  32.892 s | bg   0.00 GiB vs shadow   0.73 GiB | pins 0 evict 0 | total  138.45 GiB
+[17:13:51] === queue 2 done ===

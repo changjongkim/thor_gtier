@@ -8,3 +8,6 @@
     "avg_ts": 0.368679,
 IOMETER {"label": "e9_ngl0_mmap", "returncode": 0, "wall_s": 1105.882, "read_GiB": 280.507, "read_GiB_s": 0.2537, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "0"]}
 [18:25:47] run  e9_ngl99_mmap
+[19:05:17] === engine queue: Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf  pp=512 tg=32 ===
+  model 132.4 GiB vs 122.8 GiB of memory
+[19:05:17] run  e9_ngl0_mmap

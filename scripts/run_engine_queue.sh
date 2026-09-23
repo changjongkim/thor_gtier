@@ -25,7 +25,9 @@ MODEL=$(ls "$BIG"/*-00001-of-*.gguf 2>/dev/null | head -1)
 say(){ echo "[$(date +%H:%M:%S)] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 run(){ local name="$1"; shift
-  [ -s "$OUT/$name.txt" ] && { say "skip $name"; return; }
+  # A file that exists is not a finished run: a killed one leaves a stub, and
+  # the io meter's line is the only thing that says the run completed.
+  grep -q IOMETER "$OUT/$name.txt" 2>/dev/null && { say "skip $name"; return; }
   say "run  $name"; drop
   timeout 10800 "$ROOT/scripts/io_meter.py" --label "$name" -- \
       "$BENCH" -m "$MODEL" -p $NP -n $NG -r 1 -o json "$@" \

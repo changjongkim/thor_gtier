@@ -67,3 +67,25 @@ unified-online | TTFT(io)   2.685 s  prefill    9.70 GiB | look=0   | TPOT(io)  
 moe-inf*      | TTFT(io)   3.343 s  prefill   12.01 GiB | look=0   | TPOT(io)   27.72 ms  decode   0.090 GiB/tok | stall  41.488 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  152.71 GiB
 [00:52:57] run  f_b32_p11
 mixtral*      | TTFT(io)   2.998 s  prefill   10.78 GiB | look=0   | TPOT(io)   34.72 ms  decode   0.117 GiB/tok | stall  38.016 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  140.58 GiB
+[00:53:59] run  f_b40_p1
+lru           | TTFT(io)   1.904 s  prefill    6.84 GiB | look=0   | TPOT(io)   14.49 ms  decode   0.048 GiB/tok | stall  22.964 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   86.63 GiB
+[00:54:47] run  f_b40_p2
+lru+phase     | TTFT(io)   2.053 s  prefill    7.38 GiB | look=0   | TPOT(io)   12.68 ms  decode   0.042 GiB/tok | stall  24.576 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   92.55 GiB
+[00:55:36] run  f_b40_p3
+per-layer     | TTFT(io)   1.525 s  prefill    5.46 GiB | look=0   | TPOT(io)    6.92 ms  decode   0.023 GiB/tok | stall  17.684 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   67.67 GiB
+[00:56:19] run  f_b40_p4
+prefix        | TTFT(io)   0.997 s  prefill    3.52 GiB | look=0   | TPOT(io)   36.90 ms  decode   0.124 GiB/tok | stall  14.216 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   54.18 GiB
+[00:56:58] run  f_b40_p5
+online        | TTFT(io)   5.455 s  prefill   19.73 GiB | look=0   | TPOT(io)   59.16 ms  decode   0.203 GiB/tok | stall  69.853 s | bg  19.53 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  256.33 GiB
+[00:58:33] run  f_b40_p6
+online+prefix | TTFT(io)   2.461 s  prefill    8.90 GiB | look=0   | TPOT(io)   49.21 ms  decode   0.171 GiB/tok | stall  32.988 s | bg  16.40 GiB vs shadow   0.49 GiB | pins 3 evict 0 | total  123.16 GiB
+[00:59:31] run  f_b40_p7
+multi-prefix  | TTFT(io)   2.462 s  prefill    8.90 GiB | look=0   | TPOT(io)   49.22 ms  decode   0.171 GiB/tok | stall  33.008 s | bg  16.40 GiB vs shadow   0.49 GiB | pins 3 evict 0 | total  123.16 GiB
+[01:00:29] run  f_b40_p8
+unified       | TTFT(io)   0.670 s  prefill    2.36 GiB | look=0   | TPOT(io)    2.67 ms  decode   0.009 GiB/tok | stall   7.039 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   29.13 GiB
+[01:01:01] run  f_b40_p9
+unified-online | TTFT(io)   1.624 s  prefill    5.82 GiB | look=0   | TPOT(io)   14.20 ms  decode   0.047 GiB/tok | stall  19.573 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   74.41 GiB
+[01:01:45] run  f_b40_p10
+moe-inf*      | TTFT(io)   2.053 s  prefill    7.37 GiB | look=0   | TPOT(io)   12.99 ms  decode   0.043 GiB/tok | stall  24.613 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   92.56 GiB
+[01:02:35] run  f_b40_p11
+mixtral*      | TTFT(io)   1.912 s  prefill    6.84 GiB | look=0   | TPOT(io)   14.37 ms  decode   0.048 GiB/tok | stall  23.044 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total   86.63 GiB

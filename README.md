@@ -398,15 +398,29 @@ mmap-gpu 0.0946 tok/s.
   ([`results/REGIMES.md`](results/REGIMES.md)).
 - **정정: zero-copy는 대역폭이 아니라 지연 이득이다.** 복사는 전송당 고정비 ~20 µs이고
   coherent SoC에서 복사 대역폭(127 GB/s)은 스토리지보다 23배 빠르다.
-- **탑티어 베이스라인 실행 환경은 확보했으나 아직 비교 측정은 하지 않았다.** 앞서 "sm_110
-  PyTorch가 없어 불가능"이라고 적은 것은 틀렸다. 두 가지가 해결됐다.
-  **PowerInfer는 PyTorch를 쓰지 않는다** — llama.cpp 포크라
-  `-DCMAKE_CUDA_ARCHITECTURES=110`으로 그대로 빌드된다(CUDA 13, `libcublas.so.13` 링크 확인).
-  **PyTorch도 된다** — PyPI aarch64 휠이 CPU 전용인 것은 맞지만 NVIDIA Jetson AI Lab 인덱스에
-  CUDA 빌드가 있고, `--no-deps`로 그 인덱스에서만 받은 뒤 NVPL과 cuDSS를 `LD_LIBRARY_PATH`에
-  얹으면 동작한다(`torch 2.11.0`, `arch_list ['sm_110','sm_121']`, bf16 49.5 TFLOP/s).
-  절차는 [`scripts/torch_env.sh`](scripts/torch_env.sh)에 있다. FlexGen과 MoE-Infinity 비교는
-  이제 모델만 준비하면 된다.
+- **탑티어 베이스라인 세 개를 모두 빌드했으나 아직 비교 측정은 하지 않았다.** 앞서
+  "sm_110 PyTorch가 없어 불가능"이라고 적은 것은 틀렸다. 넷 다 패키징 문제였고 전부 해결됐다.
+  절차는 [`scripts/baselines_setup.sh`](scripts/baselines_setup.sh)와
+  [`scripts/torch_env.sh`](scripts/torch_env.sh)에 기록했다.
+  - **PowerInfer**는 PyTorch를 쓰지 않는다 — llama.cpp 포크이고
+    `-DCMAKE_CUDA_ARCHITECTURES=110`이면 그대로 빌드된다(CMakeLists 기본값이 52/61/70이라
+    명시가 필요하다). CUDA 13, `libcublas.so.13` 링크 확인.
+  - **PyTorch**: PyPI aarch64 휠이 CPU 전용인 것은 맞지만 NVIDIA Jetson AI Lab 인덱스에 CUDA
+    빌드가 있다. `--extra-index-url`을 같이 주면 pip이 버전이 같은 PyPI 휠을 고르므로
+    `--no-deps`로 그 인덱스에서만 받아야 한다. SBSA 휠이 NVPL과 cuDSS를 선언 없이 링크하므로
+    둘을 `LD_LIBRARY_PATH`에 얹어야 한다. 결과: `torch 2.11.0`,
+    `arch_list ['sm_110','sm_121']`, bf16 49.5 TFLOP/s.
+  - **FlexGen**: 임포트 이름이 `flexgen`이 아니라 `flexllmgen`이다.
+  - **MoE-Infinity**: `moe-store`가 별도 저장소(PyPI에 없음)이고 버전 핀이 어긋나며
+    (`~=0.2.1` 요구, main은 `0.0.0` 빌드), CUTLASS 헤더가 번들되어 있지 않고,
+    `/usr/local/cuda` 심링크가 13.2를 가리키는데 거기엔 `lib64/libcublas`가 없어
+    `cannot find -lcublas`로 링크가 깨진다. 네 가지를 모두 고치면 C++/CUDA 확장 6개
+    (`_store`, `_engine`, `_marlin`, `_kv_cache`, `_paged_attn`, `_v4_fp4`)가 정상 빌드된다.
+- **PowerInfer는 out-of-core 체제에서 비교할 수 없다.** PowerInfer 형식 모델이 7B(14.11 GiB)와
+  70B q4(39.28 GiB)뿐이고 둘 다 122.8 GiB DRAM에 들어간다. 다만 그 희소성 단위가 KiB급이라는
+  것은 코드에서 확인된다 — `gpu_idx`/`gpu_bucket`과 `dequantize_mul_mat_*_sparse` 커널이
+  FFN 가중치 행렬의 **행 단위**로 접근하며, LLaMA-7B는 모델 차원 4096이므로 한 행이 q4에서
+  약 2 KiB다. §4.4의 입도 바닥(64 KiB)보다 한참 아래다.
 - **MoE 라우팅이 실행당 한 번만 뽑힌다.** 모든 토큰이 같은 전문가를 읽으므로 캐시에 최선인
   경우다. 토큰별 재라우팅 하에서 상주 정책이 얼마나 버티는지는 미측정이다.
 - **`gtier_fetch`의 동기 경로는 여전히 큐를 비운다.** 비동기 API가 있지만 캐시 정책과는 아직

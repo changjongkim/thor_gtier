@@ -16,3 +16,16 @@ lru+phase  | TTFT(io)   5.933 s  prefill   23.65 GiB | TPOT(io)  121.45 ms  deco
 [16:08:26] run  e1_b16_p3
 per-layer  | TTFT(io)   5.543 s  prefill   22.20 GiB | TPOT(io)  318.04 ms  decode   1.246 GiB/tok | total  192.98 GiB
 [16:09:26] run  e1_b16_p4
+prefix        | TTFT(io)   5.588 s  prefill   22.79 GiB | TPOT(io)  594.77 ms  decode   2.364 GiB/tok | stall  61.271 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  250.25 GiB
+[16:10:40] run  e1_b24_p1
+lru           | TTFT(io)   4.485 s  prefill   17.99 GiB | TPOT(io)  306.69 ms  decode   1.191 GiB/tok | stall  40.827 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  165.10 GiB
+[16:11:35] run  e1_b24_p2
+[16:12:12] === serving queue start  model=/home/thor/kcj/models/qwen3_30b_a3b  max-decode=8 ===
+[16:12:12] skip e1_none
+[16:12:12] skip e1_b12_p1
+[16:12:12] skip e1_b12_p2
+[16:12:12] skip e1_b12_p3
+[16:12:12] skip e1_b12_p4
+[16:12:12] skip e1_b16_p1
+[16:12:12] skip e1_b16_p2
+[16:12:12] run  e1_b16_p3

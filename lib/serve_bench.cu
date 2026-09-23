@@ -268,13 +268,50 @@ int main(int argc, char **argv) {
                     if (e>=0) u.insert((int)((size_t)l*E+e));
                 }
     }
-    // Only families that actually recur are worth pinning; a family seen once
-    // pays the pin cost and never collects on it.
+    // A name is not evidence.  Two requests belong to the same prefix family
+    // only if they route the same way over the prefix window -- which they do
+    // when they really share the text, because routing is a deterministic
+    // function of hidden state.  Grouping by name alone would pin the union of
+    // requests that merely sort together.
+    std::map<std::string,std::vector<int>> family_members;   // fam -> req idx
+    for (size_t i=0;i<tr.req.size();++i) family_members[family_of(tr.req[i].name)].push_back((int)i);
+    std::map<std::string,double> family_agree;
     std::map<std::string,int> family_count;
-    for (auto &r : tr.req) family_count[family_of(r.name)]++;
+    for (auto &kv : family_members) {
+        auto &v = kv.second;
+        family_count[kv.first] = (int)v.size();
+        if (v.size() < 2) { family_agree[kv.first] = 0.0; continue; }
+        long same = 0, tot = 0;
+        for (int t=0;t<prefix_tokens;++t)
+            for (int l=0;l<L;++l) {
+                std::unordered_set<int> a;
+                bool ok = true;
+                for (size_t m=0;m<v.size();++m) {
+                    Request &rr = tr.req[v[m]];
+                    if (t >= rr.n_prefill) { ok = false; break; }
+                    std::unordered_set<int> s;
+                    for (int k=0;k<K;++k) {
+                        int e = rr.prefill[((size_t)t*L+l)*K+k];
+                        if (e>=0) s.insert(e);
+                    }
+                    if (!m) a = s;
+                    else { std::unordered_set<int> in; for (int e:s) if (a.count(e)) in.insert(e); a = in; }
+                }
+                if (!ok) continue;
+                same += (long)a.size(); tot += K;
+            }
+        family_agree[kv.first] = tot ? (double)same/tot : 0.0;
+    }
+    // A family qualifies when its members agree on nearly every expert over
+    // the window; below that the shared text is not shared after all.
+    const double AGREE_MIN = 0.90;
     std::unordered_set<int> prefix_union;
+    std::vector<std::string> pin_families;
     for (auto &kv : family_union)
-        if (family_count[kv.first] > 1) prefix_union.insert(kv.second.begin(), kv.second.end());
+        if (family_count[kv.first] > 1 && family_agree[kv.first] >= AGREE_MIN) {
+            prefix_union.insert(kv.second.begin(), kv.second.end());
+            pin_families.push_back(kv.first);
+        }
 
     // --- gtier handles ----------------------------------------------------
     int per_shard = std::max(32, (int)(W / slot / sh.size()));
@@ -407,9 +444,18 @@ int main(int argc, char **argv) {
                 B/1073741824.0, W/1073741824.0, OV/1073741824.0, R/1073741824.0,
                 R ? 100.0*R/unit_bytes : 0.0, policy_name(policy),
                 gtier_backend_name((gtier_backend)backend));
-    if (policy==SERVE_PREFIX)
-        std::printf("prefix union: %zu units (%.2f GiB) pinned\n",
-                    prefix_union.size(), prefix_union.size()*per_unit/1073741824.0);
+    if (policy==SERVE_PREFIX || policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX) {
+        std::printf("prefix families:");
+        for (auto &kv : family_agree)
+            if (family_count[kv.first] > 1)
+                std::printf(" %s(n=%d,agree=%.2f%s)", kv.first.c_str(),
+                            family_count[kv.first], kv.second,
+                            kv.second>=AGREE_MIN ? ",pin" : "");
+        std::printf("\n");
+        std::printf("prefix union: %zu units (%.2f GiB) over %zu families\n",
+                    prefix_union.size(), prefix_union.size()*per_unit/1073741824.0,
+                    pin_families.size());
+    }
 
     double ttft_sum=0, tpot_sum=0; uint64_t pre_bytes=0, dec_bytes=0;
     int n_pre=0, n_dec=0;
@@ -451,7 +497,8 @@ int main(int argc, char **argv) {
     // exclusive units if the cap is in the way.
     auto pin_family = [&](const std::string &fam) {
         auto it = family_union.find(fam);
-        if (it == family_union.end() || family_count[fam] <= 1) return;
+        if (it == family_union.end() || family_count[fam] <= 1
+            || family_agree[fam] < AGREE_MIN) return;
         auto &pf = pinned_fam[fam];
         pf.seq = ++pin_seq;
         if (!pf.units.empty()) return;                 // already pinned

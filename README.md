@@ -398,8 +398,15 @@ mmap-gpu 0.0946 tok/s.
   ([`results/REGIMES.md`](results/REGIMES.md)).
 - **정정: zero-copy는 대역폭이 아니라 지연 이득이다.** 복사는 전송당 고정비 ~20 µs이고
   coherent SoC에서 복사 대역폭(127 GB/s)은 스토리지보다 23배 빠르다.
-- **탑티어 베이스라인을 실제로 돌리지 못했다.** MoE-Infinity, PowerInfer, FlexGen 비교에는
-  sm_110용 PyTorch가 필요한데 PyPI aarch64 휠은 CPU 전용이다(`2.9.1+cpu`).
+- **탑티어 베이스라인 실행 환경은 확보했으나 아직 비교 측정은 하지 않았다.** 앞서 "sm_110
+  PyTorch가 없어 불가능"이라고 적은 것은 틀렸다. 두 가지가 해결됐다.
+  **PowerInfer는 PyTorch를 쓰지 않는다** — llama.cpp 포크라
+  `-DCMAKE_CUDA_ARCHITECTURES=110`으로 그대로 빌드된다(CUDA 13, `libcublas.so.13` 링크 확인).
+  **PyTorch도 된다** — PyPI aarch64 휠이 CPU 전용인 것은 맞지만 NVIDIA Jetson AI Lab 인덱스에
+  CUDA 빌드가 있고, `--no-deps`로 그 인덱스에서만 받은 뒤 NVPL과 cuDSS를 `LD_LIBRARY_PATH`에
+  얹으면 동작한다(`torch 2.11.0`, `arch_list ['sm_110','sm_121']`, bf16 49.5 TFLOP/s).
+  절차는 [`scripts/torch_env.sh`](scripts/torch_env.sh)에 있다. FlexGen과 MoE-Infinity 비교는
+  이제 모델만 준비하면 된다.
 - **MoE 라우팅이 실행당 한 번만 뽑힌다.** 모든 토큰이 같은 전문가를 읽으므로 캐시에 최선인
   경우다. 토큰별 재라우팅 하에서 상주 정책이 얼마나 버티는지는 미측정이다.
 - **`gtier_fetch`의 동기 경로는 여전히 큐를 비운다.** 비동기 API가 있지만 캐시 정책과는 아직

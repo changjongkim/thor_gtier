@@ -1,0 +1,25 @@
+[00:03:22] === final queue: all policies x budgets, one trace, one binary ===
+[00:03:22] run  f_none
+none          | TTFT(io)   9.075 s  prefill   33.40 GiB | look=0   | TPOT(io)  941.14 ms  decode   3.375 GiB/tok | stall 197.953 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  724.84 GiB
+[00:06:44] run  f_b16_p1
+lru           | TTFT(io)   6.256 s  prefill   22.88 GiB | look=0   | TPOT(io)  418.33 ms  decode   1.484 GiB/tok | stall 113.936 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  417.00 GiB
+[00:08:51] run  f_b16_p2
+lru+phase     | TTFT(io)   6.276 s  prefill   22.89 GiB | look=0   | TPOT(io)  103.43 ms  decode   0.357 GiB/tok | stall  83.945 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  308.98 GiB
+[00:10:29] run  f_b16_p3
+per-layer     | TTFT(io)   6.208 s  prefill   22.67 GiB | look=0   | TPOT(io)  363.73 ms  decode   1.290 GiB/tok | stall 108.109 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  395.87 GiB
+[00:12:31] run  f_b16_p4
+prefix        | TTFT(io)   6.150 s  prefill   22.81 GiB | look=0   | TPOT(io)  635.16 ms  decode   2.308 GiB/tok | stall 133.479 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  495.20 GiB
+[00:14:58] run  f_b16_p5
+online        | TTFT(io)   6.314 s  prefill   23.07 GiB | look=0   | TPOT(io)  108.28 ms  decode   0.375 GiB/tok | stall  84.864 s | bg  36.24 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  312.93 GiB
+[00:16:36] run  f_b16_p6
+online+prefix | TTFT(io)   6.312 s  prefill   23.07 GiB | look=0   | TPOT(io)  108.51 ms  decode   0.375 GiB/tok | stall  84.856 s | bg  36.24 GiB vs shadow   0.49 GiB | pins 3 evict 0 | total  312.93 GiB
+[00:18:15] run  f_b16_p7
+multi-prefix  | TTFT(io)   6.314 s  prefill   23.07 GiB | look=0   | TPOT(io)  108.73 ms  decode   0.375 GiB/tok | stall  84.903 s | bg  36.24 GiB vs shadow   0.49 GiB | pins 3 evict 0 | total  312.93 GiB
+[00:19:53] run  f_b16_p8
+unified       | TTFT(io)   5.942 s  prefill   21.67 GiB | look=0   | TPOT(io)   65.87 ms  decode   0.221 GiB/tok | stall  76.331 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  281.28 GiB
+[00:21:23] run  f_b16_p9
+unified-online | TTFT(io)   6.189 s  prefill   22.61 GiB | look=0   | TPOT(io)  109.39 ms  decode   0.374 GiB/tok | stall  83.469 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  307.19 GiB
+[00:23:01] run  f_b16_p10
+moe-inf*      | TTFT(io)   6.290 s  prefill   22.91 GiB | look=0   | TPOT(io)  125.59 ms  decode   0.434 GiB/tok | stall  86.230 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  316.49 GiB
+[00:24:41] run  f_b16_p11
+mixtral*      | TTFT(io)   6.263 s  prefill   22.87 GiB | look=0   | TPOT(io)  327.69 ms  decode   1.157 GiB/tok | stall 105.317 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  385.48 GiB

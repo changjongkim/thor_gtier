@@ -1,0 +1,3 @@
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 16.00 GiB  window 0.50  path-overhead 0.00  residency 12.63 GiB (23.4% of experts)  policy=unified-online  backend=gtier
+unified-online | TTFT(io)   6.189 s  prefill   22.61 GiB | look=0   | TPOT(io)  109.39 ms  decode   0.374 GiB/tok | stall  83.469 s | bg   0.00 GiB vs shadow   0.49 GiB | pins 0 evict 0 | total  307.19 GiB

@@ -4,9 +4,10 @@
 · 122.8 GiB 통합 coherent 메모리 · WD SN5000S 1 TB NVMe (PCIe Gen4 x4) · **swap 없음**
 
 > **한 문장.** Coherent SoC에서는 GPU 메모리와 호스트 DRAM이 같은 물리 메모리라 기존 오프로딩
-> 시스템이 최적화하는 계층이 사라진다. 남는 **DRAM↔플래시** 경계에서 성능을 결정하는 것은
-> **읽는 바이트 수**와 **무엇을 상주시키느냐**이며, 전송 메커니즘은 장치 상한에 막혀 좁은 차이만
-> 남긴다.
+> 시스템이 최적화하는 계층이 사라진다. 남는 **DRAM↔플래시** 경계에서 전송 메커니즘은 장치
+> 상한에 막혀 좁은 차이만 남기고, 실제로 성능을 결정하는 것은 **읽는 바이트 수**(배치),
+> **무엇을 상주시키느냐**, 그리고 **약속한 메모리를 실제로 지키는가**이다 — 마지막 항목은
+> 그 자체로 성능 논증이다. 초과분은 배치가 쓸 메모리에서 나오기 때문이다.
 
 ---
 
@@ -37,11 +38,18 @@ Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
 |---|---:|---|
 | 전송 메커니즘 (gTier vs cuFile) | 1.12x (1 MiB) ~ 2.80x (16 KiB) | **SSD 5.682 GiB/s — 이미 97%** |
 | 읽기 입도 | 10~20x | 장치 특성 |
-| **라우팅 인지 (덜 읽기)** | **10.0x** | 활성 전문가 비율 |
+| **배치 (덜 읽기)** | **4.9x** | 전문가 합집합의 포화 |
 | **상주 정책 (안 읽기)** | **최대 14x** | 메모리 대역폭 |
+| **선언한 예산을 지키기** | gTier 1.17x 대 cuFile **5.31x** | — |
+| 스테이징 윈도우 크기 | **1.00x** (0.5 GiB 위에서) | 장치 상한 |
+| 스테이징 슬롯 크기 | **1.00x** (256 KiB~16 MiB) | 입도 바닥 위 |
 | 중복 제거 | **1.00x** | 모델 내 중복 0.02% |
 | CPU 작업량 | **1.00x** | 스토리지 바운드 |
 | GPU/IO 중첩 | **1.00x** | 교차점보다 세 자릿수 아래 |
+
+전송 경로에서 남은 것은 좁다. 넓은 것은 **토큰당 바이트 수를 줄이는 것**(배치)과
+**약속한 메모리를 실제로 지키는 것**이며, 후자는 그 자체로 성능 논증이다 —
+초과분은 배치가 쓸 메모리에서 나온다.
 
 ---
 
@@ -385,6 +393,153 @@ mmap-gpu 0.0946 tok/s.
 
 ---
 
+### 4.13 같은 파일 위에서 — MoE-Infinity가 읽는 바로 그 safetensors
+
+gTier는 바이트 범위를 읽으므로 포맷을 보지 않는다. 그래서 safetensors 파서
+([`lib/safetensors.c`](lib/safetensors.c))를 붙이면 **모델을 변환하지 않고** 추론 엔진이
+실제로 여는 파일에 같은 트레이스를 겨눌 수 있다. GGUF 리더와 같은 테이블을 채우므로
+드라이버는 그대로다. HF는 전문가를 텐서 하나씩 저장하고 GGUF는 층별로 stack하므로
+트레이스가 두 배치를 모두 다룬다.
+
+| 항목 | 값 |
+|---|---|
+| 모델 | `Qwen/Qwen3-30B-A3B` (`Qwen3MoeForCausalLM`) |
+| 파일 | safetensors 16 샤드, 57 GiB, bf16 |
+| 층 · 전문가 | 48층 · 층당 128개 중 **8개 활성** (6.25%) |
+| 전문가 텐서 | `gate/up/down_proj` 각 3 MiB → 전문가당 9 MiB |
+| 토큰당 가중치 | 전문가 3.375 GiB + 어텐션·임베딩 3.0 GiB = **6.4 GiB** |
+
+#### 측정 프로토콜에서 먼저 고친 두 가지
+
+이 둘을 고치기 전 숫자는 저장장치가 아니라 RAM을 재고 있었다.
+
+**(a) 토큰마다 재라우팅.** 라우팅을 실행당 한 번만 뽑으면 토큰 1이 읽은 전문가를 나머지
+토큰이 그대로 다시 읽는다. 그 결과는 페이지 캐시에서 나오므로 mmap 백엔드가 장치 상한
+5.682를 넘는 **12.59 GiB/s**를 기록했다. 층마다 토큰마다 다시 뽑게 하자 5.81로 내려왔다.
+
+**(b) 메모리 예산 동일화.** mmap과 pread는 페이지 캐시 전체를 공짜 캐시로 쓴다. 모든 실행을
+같은 `memory.max` cgroup에 넣었다. 같은 mmap-cpu가 예산 하나로 **0.607 ↔ 5.289 GiB/s
+(8.7배)** 움직인다 — 예산을 고정하지 않은 스토리지 비교는 이 축만으로 결론이 뒤집힌다.
+
+#### 결과 — 예산 8 GiB, 윈도우 2 GiB, 8 토큰
+
+| 백엔드 | 대응 선행연구 | GiB/s | gTier 대비 |
+|---|---|---:|---:|
+| **gTier + async** | — | **4.748** | — |
+| gTier | — | 4.321 | 0.91x |
+| mmap-gpu | — | 3.873 | 0.82x |
+| pread+copy | FlexGen, ZeRO-Infinity | 3.701 | 0.78x |
+| UVM | DeepUM | 2.554 | 0.54x |
+| mmap-cpu | — | 0.607 | 0.13x |
+| cuFile | NVIDIA GDS | **실행 불가 (OOM)** | — |
+
+cuFile만 cgroup OOM으로 죽는다. 경계는 **8 GiB 실패 / 9 GiB 성공**이고, 9~12 GiB에서
+3.815~3.839 GiB/s로 평평하다. cuFile에게 필요한 12 GiB를 다 주고 비교해도 gTier+async가
+4.794 대 3.839로 **+24.9%** 앞선다.
+
+[`results/HF_MOE/README.md`](results/HF_MOE/README.md)
+
+---
+
+### 4.14 스테이징 윈도우는 캐시가 아니다
+
+윈도우는 읽기가 착륙하는 고정 버퍼의 링이고, 소비 즉시 재사용된다. 다음 토큰에서 라우터가
+다른 전문가를 고르므로 남겨둘 이유가 없다. 따라서 모델 크기를 따라갈 이유도 없다.
+
+**윈도우 스윕** (배치 8, 32 토큰):
+
+| 윈도우 | 모델 대비 | GiB/s |
+|---:|---:|---:|
+| 0.12 GiB | 0.2% | 3.669 |
+| 0.25 GiB | 0.4% | 4.484 |
+| **0.50 GiB** | **0.9%** | **4.741** |
+| 1.00 GiB | 1.8% | 4.804 |
+| 2.00 GiB | 3.5% | 4.830 |
+| 4.00 GiB | 7.0% | 4.766 |
+| 8.00 GiB | 14.0% | 4.772 |
+| 16.00 GiB | 28.1% | 4.748 |
+
+**0.5 GiB(모델의 0.9%)에서 포화한다. 16 GiB를 줘도 2 GiB와 같다.**
+
+**슬롯 크기 스윕** (윈도우 2 GiB 고정): 256 KiB 4.830 · 1 MiB 4.863 · 4 MiB 4.730 ·
+16 MiB 4.750 — 전부 오차 범위다. 64 KiB 위에서 랜덤 ≈ 순차이기 때문이다(§4.3).
+
+#### 스루풋은 배치에서 나온다
+
+```
+tok/s = 대역폭 / 토큰당 바이트
+```
+
+윈도우는 왼쪽 항을 정하고 즉시 포화한다. 오른쪽 항을 줄이는 것은 배치다. 배치 B는 층마다
+B번 뽑은 전문가의 **합집합**을 한 번 읽으므로, 뽑기가 겹치기 시작하면 토큰당 바이트가 준다.
+**윈도우 2.00 GiB 고정**, 예산 8 GiB 고정:
+
+| 배치 | 층당 고유 전문가 | GiB/s | tok/s | 토큰당 바이트 |
+|---:|---:|---:|---:|---:|
+| 1 | 8.0 | 4.680 | 0.749 | 6395 MiB |
+| 2 | 14.7 | 4.709 | 1.037 | 4650 MiB |
+| 4 | 25.6 | 4.687 | 1.371 | 3501 MiB |
+| 8 | 42.2 | 4.719 | 1.826 | 2647 MiB |
+| 16 | 65.4 | 4.749 | 2.493 | 1951 MiB |
+| 32 | 91.9 | 4.780 | **3.675** | **1332 MiB** |
+
+**대역폭은 4.68~4.78로 평평한데 tok/s는 4.9배 오른다.** 배치 32에서 한 층이 읽는 고유
+전문가는 91.9개로 배치 1의 11.5배지만 32개 토큰이 나눠 쓰므로 토큰당 2.9개다.
+
+[`results/HF_MOE/SIZING.md`](results/HF_MOE/SIZING.md)
+
+---
+
+### 4.15 통합 메모리에서 발자국을 재는 법
+
+`window`는 설정값이지 상한이 아니다. 같은 2.00 GiB를 주어도 백엔드마다 다르게 쓰고,
+설정을 읽지 않는 백엔드도 있다.
+
+| 백엔드 | 실제 할당 | 윈도우 배수 |
+|---|---|---|
+| gtier | `cudaHostAlloc(Mapped)` slots×slot | 1배 |
+| pread+copy | `cudaHostAlloc` **+ `cudaMalloc`** slots×slot | **2배** |
+| cufile | `cudaMalloc` + `cuFileBufRegister` | 1배 + cuFile 내부 |
+| uvm | `cudaMallocManaged` slots×slot | 1배 |
+| **mmap-gpu / mmap-cpu** | `mmap(file_bytes)` — **파일 전체** | **설정을 안 씀** |
+
+그리고 세 계수기가 각각 다른 것을 센다. 6 GiB를 할당하고 전 페이지를 건드려 직접 측정했다.
+
+| 할당 | cgroup `memory.max` | RSS | `cudaMemGetInfo` |
+|---|---|---|---|
+| `malloc` | 예 (OOM kill) | 예 | 아니오 |
+| `cudaHostAlloc(Mapped)` | 예 (OOM kill) | 예 | **예 — 중복** |
+| `cudaMallocManaged` | 예 (OOM kill) | 예 | 예 |
+| **`cudaMalloc`** | **아니오** | **아니오** | 예 |
+| `mmap` 파일 페이지 | 예, 단 **회수 가능** | 예 | 아니오 |
+
+**4 GiB cgroup 안에서 `cudaMalloc` 6 GiB가 성공한다**(RSS 0.07 GiB). 같은 조건에서
+`malloc`·`cudaHostAlloc`·`cudaMallocManaged` 6 GiB는 OOM kill된다. 결과적으로 RSS는
+디바이스 버퍼를 빠뜨리고, `cudaMemGetInfo`는 매핑된 호스트 메모리를 중복 계수하여 합산이
+불가능하며, cgroup 예산은 디바이스 메모리를 과금하지 않아 **디바이스를 쓰는 베이스라인에게
+유리하게** 편향돼 있다.
+
+`MemAvailable`은 회수 가능한 페이지 캐시를 이미 할인하므로, 그 하락폭이 곧 회수 불가능한
+발자국이다([`scripts/memfoot.sh`](scripts/memfoot.sh)). 배치 8, 16 토큰, 선언 윈도우 2.00 GiB:
+
+| 백엔드 | 선언 윈도우 | **실제 점유** | 배수 | GiB/s |
+|---|---:|---:|---:|---:|
+| **gTier + async** | 2.00 GiB | **2.33 GiB** | **1.17x** | **4.710** |
+| gTier | 2.00 GiB | 2.35 GiB | 1.18x | 4.262 |
+| pread+copy | 2.00 GiB | 4.35 GiB | 2.18x | 3.724 |
+| cuFile | 2.00 GiB | **10.62 GiB** | **5.31x** | 3.820 |
+| UVM | 2.00 GiB | 1.29 GiB | 0.65x | 2.542 |
+| mmap-gpu | (해당 없음) | 0.54 GiB | — | 2.274 |
+| mmap-cpu | (해당 없음) | 0.35 GiB | — | 4.535 |
+
+Thor에는 GDS 커널 경로가 없어(§2.3) cuFile은 POSIX 호환 모드의 바운스 버퍼로 내려가는데,
+그 버퍼는 호출자가 선언한 윈도우에 계산되지 않는다. **대역폭 1위이면서 선언한 예산을
+지키는 것은 gTier뿐이다.**
+
+[`results/HF_MOE/FOOTPRINT.md`](results/HF_MOE/FOOTPRINT.md)
+
+---
+
 ## 5. 정직한 한계와 철회
 
 - **전송 메커니즘의 우위는 큰 입도에서 좁다.** 1 MiB에서 cuFile 대비 1.28배, 4 MiB에서 1.16배다.
@@ -398,7 +553,31 @@ mmap-gpu 0.0946 tok/s.
   ([`results/REGIMES.md`](results/REGIMES.md)).
 - **정정: zero-copy는 대역폭이 아니라 지연 이득이다.** 복사는 전송당 고정비 ~20 µs이고
   coherent SoC에서 복사 대역폭(127 GB/s)은 스토리지보다 23배 빠르다.
-- **탑티어 베이스라인 세 개를 모두 빌드했으나 아직 비교 측정은 하지 않았다.** 앞서
+- **철회: "mmap이 선언 윈도우의 6배를 쓴다".** RSS만 본 결과였다. 그 11.98 GiB는 **회수 가능한
+  페이지 캐시**이고 커널이 압박받으면 돌려준다. 회수 불가능한 점유는 0.35~0.54 GiB로 전 백엔드
+  중 가장 작다. mmap의 실제 약점은 메모리가 아니라, 예산이 조이면 대역폭이 4.535 → **0.607
+  GiB/s**로 무너지는 것이다(§4.15).
+- **정정: pread+copy는 2.08이 아니라 4.35 GiB**(윈도우의 2.18배). 호스트 스테이징과 디바이스
+  버퍼를 둘 다 잡는데 RSS가 후자를 못 본다. **cuFile은 4.04배가 아니라 5.31배**,
+  **gTier는 1.04배가 아니라 1.17배**다 — 차이는 CUDA 컨텍스트 비용이고 모든 백엔드가 똑같이 낸다.
+- **이 저장소의 벤치마크는 연산을 하지 않는다.** GPU 커널(`consume`)은 64바이트마다 한 바이트를
+  더할 뿐 행렬곱도 어텐션도 KV 캐시도 없다. 따라서 보고하는 `tok/s`는 **"이 속도면 토큰당
+  가중치를 이만큼 자주 댈 수 있다"**는 뜻이지 실제 추론 처리량이 아니다. 실제 추론은 여기에
+  연산 시간이 더 붙는다.
+- **탑티어 베이스라인 세 개를 모두 빌드했으나 아직 end-to-end 비교 측정은 하지 못했다.**
+  MoE-Infinity는 `Qwen3MoeForCausalLM`을 지원하고 오프로드 저장소까지 구축되지만, 실행이
+  네 번 죽었다. 원인은 순서대로 (1) `triton` 부재, (2) **sm_110 커널 부재** — `setup.py`가
+  아키텍처를 sm_80/sm_90/sm_120으로 하드코딩해 `_store.so`에 sm_110 큐빈도 PTX도 없었고
+  CUTLASS GEMM이 `Error Internal`로 실패했다(`MOE_CUDA_ARCHS` 환경변수를 받도록 패치하고
+  PTX 폴백을 넣어 재빌드), (3) **이 기계의 IDE 언어 서버가 반복적으로 81 GB까지 부풀어
+  전역 OOM을 일으킴** — 커널 로그의 OOM 네 건 중 세 건이 그것이고 벤치마크는 부수 피해였다,
+  (4) cgroup 안에서 CUDA 컨텍스트가 `std::bad_alloc`. (3)을 막기 전에는 재실행해도 같은
+  일이 난다.
+- **PowerInfer와 FlexGen은 같은 모델로 비교할 수 없다.** 둘 다 Qwen3-MoE를 지원하지 않는다
+  (PowerInfer는 자체 ReLU-sparsified GGUF, FlexGen은 OPT 계열만). 같은 파일 비교가 가능한
+  것은 MoE-Infinity뿐이고, 나머지 둘은 각자의 네이티브 모델 위에서 돌리되 gTier를 그 동일
+  파일에 겨누어야 한다. 모델은 받아두었다(PowerInfer-7B 15 GB, OPT-6.7B 38 GB).
+- 빌드 절차와 네 가지 패키징 문제: 앞서
   "sm_110 PyTorch가 없어 불가능"이라고 적은 것은 틀렸다. 넷 다 패키징 문제였고 전부 해결됐다.
   절차는 [`scripts/baselines_setup.sh`](scripts/baselines_setup.sh)와
   [`scripts/torch_env.sh`](scripts/torch_env.sh)에 기록했다.
@@ -421,8 +600,9 @@ mmap-gpu 0.0946 tok/s.
   것은 코드에서 확인된다 — `gpu_idx`/`gpu_bucket`과 `dequantize_mul_mat_*_sparse` 커널이
   FFN 가중치 행렬의 **행 단위**로 접근하며, LLaMA-7B는 모델 차원 4096이므로 한 행이 q4에서
   약 2 KiB다. §4.4의 입도 바닥(64 KiB)보다 한참 아래다.
-- **MoE 라우팅이 실행당 한 번만 뽑힌다.** 모든 토큰이 같은 전문가를 읽으므로 캐시에 최선인
-  경우다. 토큰별 재라우팅 하에서 상주 정책이 얼마나 버티는지는 미측정이다.
+- **MoE 라우팅은 이제 토큰마다 다시 뽑는다**(§4.13). 고치기 전 숫자는 페이지 캐시를 재고
+  있었다. 다만 그 체제에서 캐시 정책은 **손해**다 — 적중률 47.2%인데 4 MiB 블록에 3 MiB
+  전문가 텐서가 정렬되지 않아 증폭 1.24x가 붙고, 4.321 → 3.547 GiB/s로 느려진다.
 - **`gtier_fetch`의 동기 경로는 여전히 큐를 비운다.** 비동기 API가 있지만 캐시 정책과는 아직
   결합되지 않았다(`gtier_submit`은 `GTIER_CACHE_NONE`만 지원).
 
@@ -438,7 +618,8 @@ thor_gtier/
 │   └── EXPERIMENT_PLAN.md       실험 설계와 베이스라인 상세
 ├── lib/                         gTier 라이브러리 + 다섯 베이스라인
 │   ├── gtier.h / gtier.cu       범위 인출 API, planner, 상주 정책, 백엔드
-│   ├── gguf.h / gguf.c          GGUF 파서
+│   ├── gguf.h / gguf.c          GGUF 파서 (포맷 디스패치 진입점)
+│   ├── safetensors.c            safetensors 파서 — 같은 테이블을 채운다
 │   ├── bench.cu                 합성 워크로드 드라이버
 │   ├── gguf_bench.cu            실제 가중치 트레이스 (MoE 라우팅 포함)
 │   ├── run_bench.sh             백엔드별 캐시 비움 드라이버
@@ -455,7 +636,13 @@ thor_gtier/
 ├── scripts/
 │   ├── fetch.sh / fetch2.sh     모델 다운로드
 │   ├── run_queue.sh             무인 실험 큐 (끊겨도 계속, 단계별 커밋)
-│   └── summarize.py             큐 결과 요약 생성
+│   ├── summarize.py             큐 결과 요약 생성
+│   ├── baselines_setup.sh       PowerInfer / FlexGen / MoE-Infinity 재현 빌드
+│   ├── torch_env.sh             sm_110 PyTorch + NVPL + cuDSS 환경
+│   ├── run_hf_moe.sh            같은 safetensors 위 전 백엔드 스윕 (예산 고정)
+│   ├── memfoot.sh               MemAvailable 기반 회수 불가 발자국 측정
+│   ├── io_meter.py              /proc/<pid>/io 기반 read_bytes 계측
+│   └── moe_infinity_run.py      MoE-Infinity 실행 + I/O 계정
 └── results/                     모든 측정 결과
     ├── GRANULARITY.md           §4.2~4.3
     ├── GRANULARITY_FLOOR.md     §4.4
@@ -468,6 +655,9 @@ thor_gtier/
     ├── E2_PARTIAL.md            cgroup 에뮬레이션의 방법론적 한계
     ├── LIBRARY.md               planner 설계 기록
     ├── REGIMES.md               철회된 초기 측정
+    ├── HF_MOE/README.md         §4.13 같은 파일 비교
+    ├── HF_MOE/SIZING.md         §4.14 윈도우·슬롯·배치 스윕
+    ├── HF_MOE/FOOTPRINT.md      §4.15 발자국 계측 방법과 정정
     └── auto/SUMMARY.md          무인 큐 자동 요약
 ```
 
@@ -579,8 +769,45 @@ cd lib
 
 `--backend` 0=gtier, 1=mmap-gpu, 2=mmap-cpu, 3=pread+copy, 4=cufile, 5=uvm.
 `--policy` 0=NONE, 1=BLOCK, 2=HYBRID, 3=ADAPTIVE, 4=PIN.
+`--batch` 한 스텝이 동시에 처리하는 시퀀스 수. 층마다 그만큼 라우팅을 뽑고 **합집합**을 한 번
+읽으므로 토큰당 바이트가 준다(§4.14). `--experts`/`--active`/`--skew`는 라우팅 분포다.
 
-### 7.5 무인 실험 큐
+**safetensors도 같은 드라이버로 읽는다.** `--shard`에 `.safetensors`를 주면 된다 —
+`gguf_load`가 매직을 보고 [`lib/safetensors.c`](lib/safetensors.c)로 위임한다. 모델을
+변환하지 않고 추론 엔진이 실제로 여는 파일을 그대로 겨눌 수 있다.
+
+```bash
+M=/path/to/Qwen3-30B-A3B
+SH=$(for f in $M/model-*.safetensors; do echo --shard $f; done)
+./lib/gguf_bench $SH --backend 0 --async 1 --batch 8 --tokens 32 \
+  --experts 128 --active 8 --skew 0.8 --slot $((4*1024*1024)) --slots 512
+```
+
+### 7.5 공정한 비교를 위한 두 가지 계측
+
+**메모리 예산 고정.** 페이지 캐시를 쓰는 백엔드는 예산을 묶지 않으면 캐시 크기로 이긴다.
+
+```bash
+./scripts/run_hf_moe.sh                      # 전 백엔드, cgroup 예산 고정
+BUDGET=12G TOKENS=8 ./scripts/run_hf_moe.sh  # 예산을 바꿔가며
+```
+
+**회수 불가능한 발자국.** RSS는 `cudaMalloc`을 빠뜨리고 `cudaMemGetInfo`는 매핑된 호스트
+메모리를 중복 계수한다(§4.15). `MemAvailable` 하락폭이 유일하게 일관된 값이다.
+
+```bash
+./scripts/memfoot.sh ./lib/gguf_bench $SH --backend 4 --batch 8 --tokens 16 ...
+# -> MEMFOOT_GIB=10.62
+```
+
+**추론 엔진과의 비교.** `/proc/<pid>/io`의 `read_bytes`는 페이지 캐시 적중을 세지 않으므로,
+트레이스 드라이버·추론 엔진·llama.cpp 포크에서 모두 같은 뜻을 갖는 유일한 숫자다.
+
+```bash
+./scripts/io_meter.py --label moe-infinity --drop-caches -- <command>
+```
+
+### 7.6 무인 실험 큐
 
 연결이 끊겨도 계속 돌고 단계마다 커밋·푸시한다. 재실행하면 완료된 단계는 건너뛴다.
 

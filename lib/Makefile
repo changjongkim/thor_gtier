@@ -6,11 +6,14 @@ NVCCFLAGS += -I/usr/local/cuda-13.0/targets/sbsa-linux/include -L/usr/local/cuda
 
 all: libgtier.a gtier_bench gguf_bench
 
-libgtier.a: gtier.o gguf.o
+libgtier.a: gtier.o gguf.o safetensors.o
 	ar rcs $@ $^
 
 gtier.o: gtier.cu gtier.h
 	$(NVCC) $(NVCCFLAGS) -c -o $@ $<
+
+safetensors.o: safetensors.c gguf.h
+	gcc -O2 -fPIC -c -o $@ safetensors.c
 
 gguf.o: gguf.c gguf.h
 	gcc -O2 -fPIC -c -o $@ $<

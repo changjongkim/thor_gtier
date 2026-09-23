@@ -149,3 +149,50 @@ prefix        | TTFT(io)   1.176 s  prefill    4.90 GiB | TPOT(io)   39.38 ms  d
 [17:55:27] skip e1_none
 [17:55:27] skip e1_b12_p1
 [17:55:27] run  e1_b12_p2
+lru+phase     | TTFT(io)   7.895 s  prefill   26.45 GiB | TPOT(io)  391.71 ms  decode   1.265 GiB/tok | stall  65.370 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  219.40 GiB
+[18:00:00] skip e1_b12_p3
+[18:00:00] skip e1_b12_p4
+[18:00:00] skip e1_b16_p1
+[18:00:00] run  e1_b16_p2
+lru+phase     | TTFT(io)   7.189 s  prefill   23.53 GiB | TPOT(io)  127.15 ms  decode   0.392 GiB/tok | stall  48.433 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  160.03 GiB
+[18:01:23] skip e1_b16_p3
+[18:01:23] skip e1_b16_p4
+[18:01:23] skip e1_b24_p1
+[18:01:23] run  e1_b24_p2
+lru+phase     | TTFT(io)   4.897 s  prefill   18.44 GiB | TPOT(io)   60.09 ms  decode   0.216 GiB/tok | stall  31.467 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  121.00 GiB
+[18:02:41] skip e1_b24_p3
+[18:02:41] skip e1_b24_p4
+[18:02:41] skip e1_b32_p1
+[18:02:41] run  e1_b32_p2
+lru+phase     | TTFT(io)   3.618 s  prefill   13.43 GiB | TPOT(io)   34.74 ms  decode   0.120 GiB/tok | stall  22.579 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   86.34 GiB
+[18:03:55] skip e1_b32_p3
+[18:03:55] skip e1_b32_p4
+[18:03:55] skip e1_b40_p1
+[18:03:55] run  e1_b40_p2
+lru+phase     | TTFT(io)   2.682 s  prefill    9.84 GiB | TPOT(io)   20.54 ms  decode   0.069 GiB/tok | stall  16.282 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   62.35 GiB
+[18:05:26] skip e1_b40_p3
+[18:05:26] skip e1_b40_p4
+[18:05:26] skip e1_b48_p1
+[18:05:26] run  e1_b48_p2
+lru+phase     | TTFT(io)   2.136 s  prefill    7.93 GiB | TPOT(io)   15.79 ms  decode   0.056 GiB/tok | stall  12.778 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   50.25 GiB
+[18:06:34] skip e1_b48_p3
+[18:06:34] skip e1_b48_p4
+[18:06:37] skip e2_b24_gtier
+[18:06:37] skip e2_b24_pread
+[18:06:37] skip e2_b24_cufile
+[18:06:37] skip e2_b40_gtier
+[18:06:37] skip e2_b40_pread
+[18:06:37] skip e2_b40_cufile
+[18:06:37] skip e3_prefix0
+[18:06:37] skip e3_prefix10
+[18:06:37] skip e3_prefix20
+[18:06:37] skip e3_prefix30
+[18:06:37] skip e3_prefix50
+[18:06:37] skip e3_prefix65
+[18:06:37] skip e4_w0.25
+[18:06:37] skip e4_w0.5
+[18:06:37] skip e4_w1
+[18:06:37] skip e4_w2
+[18:06:37] skip e4_w4
+[18:06:37] === queue done, summarising ===
+[18:06:41] === all done ===

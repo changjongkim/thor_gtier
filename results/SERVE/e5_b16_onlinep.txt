@@ -1,0 +1,5 @@
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 16.00 GiB  window 0.50  path-overhead 0.00  residency 12.63 GiB (23.4% of experts)  policy=online+prefix  backend=gtier
+prefix families: distinct(n=2,agree=0.31) shared(n=3,agree=1.00,pin)
+prefix union: 3174 units (27.90 GiB) over 1 families
+online+prefix | TTFT(io)   5.660 s  prefill   22.45 GiB | TPOT(io)   80.09 ms  decode   0.304 GiB/tok | stall 111.005 s | bg  44.03 GiB vs shadow   0.73 GiB | pins 1 evict 0 | total  447.88 GiB

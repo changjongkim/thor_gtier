@@ -203,11 +203,17 @@ int main(int argc, char **argv) {
     cfg.max_fetch_ranges = async_io ? std::max(4, per_shard / GTIER_MAX_INFLIGHT)
                           : (policy == 4) ? std::max(8, per_shard / 16)
                                           : per_shard / 2;
+    size_t dev_free0 = 0, dev_tot0 = 0;
+    cudaMemGetInfo(&dev_free0, &dev_tot0);
     for (auto &s : sh) {
         s.g = gtier_open(s.path.c_str(), &cfg);
         if (!s.g) { std::fprintf(stderr, "gtier_open failed\n"); return 1; }
     }
 
+    size_t dev_free1 = 0, dev_tot1 = 0;
+    cudaMemGetInfo(&dev_free1, &dev_tot1);
+    double dev_gib = dev_free0 > dev_free1
+                   ? (double)(dev_free0 - dev_free1) / 1073741824.0 : 0.0;
     unsigned long long *sink; CK(cudaMalloc(&sink, sizeof(*sink)));
     CK(cudaMemset(sink, 0, sizeof(*sink)));
     const uint8_t **dp; size_t *dl;
@@ -313,10 +319,10 @@ int main(int argc, char **argv) {
     // step: it is 'active' at batch 1 and climbs toward 'experts' as the draws
     // of a larger batch overlap, so bytes/token falls by batch/uniq.
     double uniq = (experts > 0 && steps) ? (double)union_sum / steps / (n_layers + 1) : 0;
-    std::printf("%-11s pol=%d slot=%4zuKiB win=%6.2f GiB b=%-3d uniq=%5.1f | "
+    std::printf("%-11s pol=%d slot=%4zuKiB win=%6.2f GiB dev=%5.2f GiB b=%-3d uniq=%5.1f | "
                 "%6.3f GiB/s %7.4f tok/s %6.1f MiB/tok hit=%.1f%% amp=%.2fx\n",
                 gtier_backend_name((gtier_backend)backend), policy, slot >> 10,
-                win, batch, uniq,
+                win, dev_gib, batch, uniq,
                 (double)useful / (1ull << 30) / t, (steps * batch) / t,
                 (double)useful / (1ull << 20) / (steps * batch),
                 (agg.cache_hits + agg.cache_misses)

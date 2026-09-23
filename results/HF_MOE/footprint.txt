@@ -1,0 +1,7 @@
+gtier         선언윈도우=2.00 GiB  실제점유=  2.35 GiB  4.262 GiB/s
+gtier+async   선언윈도우=2.00 GiB  실제점유=  2.33 GiB  4.710 GiB/s
+pread+copy    선언윈도우=2.00 GiB  실제점유=  4.35 GiB  3.724 GiB/s
+cufile        선언윈도우=2.00 GiB  실제점유= 10.62 GiB  3.820 GiB/s
+uvm           선언윈도우=2.00 GiB  실제점유=  1.29 GiB  2.542 GiB/s
+mmap-gpu      선언윈도우=2.00 GiB  실제점유=   .54 GiB  2.274 GiB/s
+mmap-cpu      선언윈도우=2.00 GiB  실제점유=   .35 GiB  4.535 GiB/s

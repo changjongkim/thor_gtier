@@ -1,7 +1,0 @@
-gtier          window=2.00GiB  maxRSS=  2.08 GiB  4.353 GiB/s
-gtier+async    window=2.00GiB  maxRSS=  2.08 GiB  4.792 GiB/s
-pread+copy     window=2.00GiB  maxRSS=  2.08 GiB  3.711 GiB/s
-cufile         window=2.00GiB  maxRSS=  8.09 GiB  3.852 GiB/s
-uvm            window=2.00GiB  maxRSS=  0.69 GiB  2.752 GiB/s
-mmap-gpu       window=2.00GiB  maxRSS= 11.98 GiB  2.670 GiB/s
-mmap-cpu       window=2.00GiB  maxRSS= 11.62 GiB  5.289 GiB/s

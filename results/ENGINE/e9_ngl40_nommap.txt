@@ -1,0 +1,3 @@
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
+  Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
+IOMETER {"label": "e9_ngl40_nommap", "returncode": -9, "wall_s": 33.508, "read_GiB": 0.271, "read_GiB_s": 0.0081, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "40", "-mmp", "0"]}

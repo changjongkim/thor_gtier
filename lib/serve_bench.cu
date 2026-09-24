@@ -11,6 +11,7 @@
 #include "gtier.h"
 #include "gguf.h"
 #include "serve.h"
+#include "moe_ffn.h"
 #include <cuda_runtime.h>
 #include <algorithm>
 #include <chrono>
@@ -66,9 +67,15 @@ static bool load_trace(const char *path, Trace &t) {
 // ------------------------------------------------------------------- model
 // One routed unit = one (layer, expert): the three projections are read
 // together or not at all, so they are held together too.
+// A routed unit is one (layer, expert), and the arithmetic needs to know
+// which of its three matrices is which, so they are kept apart rather than
+// flattened into a list of ranges.
+struct Proj { int shard = -1; gtier_range r{0,0}; };
 struct Unit {
-    std::vector<std::pair<int, gtier_range>> parts;   // (shard, range)
+    Proj gate, up, down;
+    std::vector<std::pair<int, gtier_range>> parts;   // (shard, range), all three
     uint64_t bytes = 0;
+    bool complete() const { return gate.shard>=0 && up.shard>=0 && down.shard>=0; }
 };
 struct Shard { std::string path; gguf_model m; gtier *g = nullptr; };
 
@@ -194,6 +201,12 @@ int main(int argc, char **argv) {
             if (!tt.size) continue;
             if (tt.layer>=0 && tt.layer<L && tt.expert>=0 && tt.expert<E) {
                 Unit &u = unit[(size_t)tt.layer*E + tt.expert];
+                // One projection must land in one slot for the GEMM to see it
+                // as a single matrix; at 3 MiB against a 4 MiB slot it does.
+                Proj *pj = std::strstr(tt.name,"gate_proj") ? &u.gate
+                         : std::strstr(tt.name,"up_proj")   ? &u.up
+                         : std::strstr(tt.name,"down_proj") ? &u.down : nullptr;
+                if (pj) { pj->shard = (int)i; pj->r = {tt.offset, (size_t)tt.size}; }
                 // split on the slot grid so every piece fits one slot
                 uint64_t pos = tt.offset, end = tt.offset + tt.size;
                 size_t cap = slot - 2*4096;

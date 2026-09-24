@@ -164,13 +164,14 @@ for m in qwen30b mixtral8x7b qwen235b; do
   for w in longbench sharegpt mmlu; do
     [ "$m" = qwen235b ] && [ "$w" != longbench ] && continue
     sb $m $w "abl_noasync"   0.45 --policy 12 --no-async
-    sb $m $w "abl_noprofile" 0.45 --policy 12 --profile-weight 0
+    sb $m $w "abl_mix0"      0.45 --policy 12 --mix 0
+    sb $m $w "abl_mix1"      0.45 --policy 12 --mix 1
+    sb $m $w "abl_norec"     0.45 --policy 12 --w-rec 0
+    sb $m $w "abl_nosel"     0.45 --policy 12 --selective 0
+    sb $m $w "abl_count"     0.45 --policy 12 --mix off
+    sb $m $w "abl_profile"   0.45 --policy 12 --profile-weight 1
     sb $m $w "abl_noprefix"  0.45 --policy 12 --no-prefix-pin
     sb $m $w "abl_nolive"    0.45 --policy 12 --no-live-set
-    sb $m $w "abl_w1"        0.45 --policy 12 --decode-weight 1
-    sb $m $w "abl_w16"       0.45 --policy 12 --decode-weight 16
-    sb $m $w "abl_wauto"     0.45 --policy 12 --decode-weight auto
-    sb $m $w "abl_pw025"     0.45 --policy 12 --profile-weight 0.25
     sb $m $w "abl_pread"     0.45 --policy 12 --backend 3
     sb $m $w "ref_none"      0.45 --policy 0
   done

@@ -146,6 +146,19 @@ int main(int argc, char **argv) {
     // single request; a unit the prompt merely touches once reaches it only
     // across requests, which is the distinction the counts are for.
     int admit_after = 1;
+    double half_life = 0;    // serving steps; 0 = no decay (pure frequency)
+    // Prediction mode (default).  The value of a resident unit is the
+    // probability that the coming decode routes to it, estimated from two
+    // sources: this request's own prefill routing (how often its prompt chose
+    // the unit) and the decode routing seen so far.  mix is the weight of the
+    // first.  "--mix off" restores the count utility above.
+    bool use_pred = true; double mix = 0.5; bool selective = true;
+    // Terms of the estimate, each scaled to [0,1]:
+    //   w_rec * 2^-(age/H)        recency, age in serving steps
+    //   mix * pf / max pf         this request's prompt routing
+    //   (1-mix) * hist / max      decode routing seen so far
+    //   w_req * creq / max        this request's own decode routing
+    double rec_half = 8, w_rec = 1.0, w_req = 0.0;
     // A prefill hit and a decode hit are both one prevented read, but they are
     // not equally predictive: a prompt touches a unit once and moves on, while
     // a decode-hot unit is touched again on the next token and the one after.
@@ -161,7 +174,7 @@ int main(int argc, char **argv) {
     // How much the profile's counts are trusted relative to what is observed.
     // One means a profiled hit and an observed hit weigh the same; zero means
     // there is no profile and everything is learned.
-    double profile_weight = 1.0;
+    double profile_weight = 0.0;
     size_t slot = 4u << 20;
     bool verbose = false;
     int backend = GTIER_BACKEND_GTIER;
@@ -227,6 +240,13 @@ int main(int argc, char **argv) {
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
         else if (s=="--margin") displace_margin = atof(nx());
         else if (s=="--admit-after") admit_after = atoi(nx());
+        else if (s=="--half-life") half_life = atof(nx());
+        else if (s=="--mix") { const char *v = nx();
+            if (!std::strcmp(v,"off")) use_pred = false; else mix = atof(v); }
+        else if (s=="--selective") selective = atoi(nx()) != 0;
+        else if (s=="--rec-half") rec_half = atof(nx());
+        else if (s=="--w-rec") w_rec = atof(nx());
+        else if (s=="--w-req") w_req = atof(nx());
         else if (s=="--decode-weight") {
             const char *v = nx();
             if (!std::strcmp(v,"auto")) decode_weight_auto = true; else decode_weight = atof(v);
@@ -376,6 +396,33 @@ int main(int argc, char **argv) {
     // keeps adding to them.  Declared here because residency is filled from
     // them before the first request.
     std::vector<uint64_t> obs_pre((size_t)L*E,0), obs_dec((size_t)L*E,0);
+    // The utility LEDGER ranks by.  A plain count is frequency only, and a
+    // cache ranked by frequency alone keeps what was popular in the profile
+    // and evicts what was just admitted before it can be reused -- decode
+    // reuses recent units (consecutive tokens share 3.30 of 8), so that loses
+    // to LRU once the counts stop describing the future.  Each hit therefore
+    // decays with a half-life measured in serving steps (one per decode token,
+    // one per prefill), as in LRFU: a short half-life ranks by recency, an
+    // infinite one by frequency.  The two phases add into the same value.
+    std::vector<double> uval((size_t)L*E, 0.0), ut((size_t)L*E, 0.0);
+    double clk = 0.0;
+    auto udecayed = [&](int id) -> double {
+        if (half_life <= 0) return uval[id];
+        return uval[id] * std::exp2(-(clk - ut[id]) / half_life);
+    };
+    auto uhit = [&](int id, double w) { uval[id] = udecayed(id) + w; ut[id] = clk; };
+    std::vector<double> cur_pf((size_t)L*E, 0.0), hist((size_t)L*E, 0.0);
+    std::vector<double> last_use((size_t)L*E, -1e9), creq((size_t)L*E, 0.0);
+    double cur_pf_sum = 0, cur_pf_max = 0, hist_sum = 0, hist_max = 0, creq_max = 0;
+    int pf_known_layer = -1;      // prefill routing is known layer by layer
+    auto pscore = [&](int id) -> double {
+        if (!use_pred) return udecayed(id);
+        double a = (id / E <= pf_known_layer && cur_pf_max > 0) ? cur_pf[id] / cur_pf_max : 0.0;
+        double h = hist_max > 0 ? hist[id] / hist_max : 0.0;
+        double c = creq_max > 0 ? creq[id] / creq_max : 0.0;
+        double rc = std::exp2(-(clk - last_use[id]) / rec_half);
+        return w_rec * rc + mix * a + (1.0 - mix) * h + w_req * c;
+    };
     std::vector<int> unified_order;
     {
         std::vector<std::pair<double,int>> sc;
@@ -538,6 +585,9 @@ int main(int argc, char **argv) {
         for (size_t id=0; id<unit.size(); ++id) {
             obs_pre[id] = (uint64_t)(pre_hits[id] * profile_weight);
             obs_dec[id] = (uint64_t)(dec_hits[id] * profile_weight);
+            uval[id] = ((double)pre_hits[id] + decode_weight * (double)dec_hits[id]) * profile_weight;
+            hist[id] = (double)dec_hits[id] * profile_weight; hist_sum += hist[id];
+            hist_max = std::max(hist_max, hist[id]);
         }
         admit_static(unified_order);
     }
@@ -845,9 +895,15 @@ int main(int argc, char **argv) {
     // Counters, because three guesses at why the hit rate was low were all
     // wrong and the policy needs to say what it is actually doing.
     uint64_t adm_free=0, adm_swap=0, adm_blocked_pin=0, adm_blocked_live=0,
-             adm_blocked_none=0, adm_already=0;
+             adm_blocked_none=0, adm_already=0, adm_reject=0;
     auto full_admit = [&](int id, bool from_prefill) {
         if (from_prefill) obs_pre[id]++; else obs_dec[id]++;
+        uhit(id, from_prefill ? 1.0 : decode_weight);
+        last_use[id] = clk;
+        if (!from_prefill) {
+            hist[id] += 1.0; hist_sum += 1.0; hist_max = std::max(hist_max, hist[id]);
+            creq[id] += 1.0; creq_max = std::max(creq_max, creq[id]);
+        }
         if (!unit[id].bytes) return;
         if (arena.has(id)) { adm_already++; return; }
         if (obs_pre[id] + obs_dec[id] < (uint64_t)admit_after) return;
@@ -866,8 +922,7 @@ int main(int argc, char **argv) {
         for (auto &kv : arena.at) {
             if (pinned_units.count(kv.first)) { n_pin++; continue; }
             if (use_live_set && live_set.count(kv.first)) { n_live++; continue; }
-            double q = (double)obs_pre[kv.first]
-                     + decode_weight * (double)obs_dec[kv.first];
+            double q = pscore(kv.first);
             if (q < wv) { wv = q; worst = kv.first; }
         }
         if (worst < 0) {
@@ -876,6 +931,10 @@ int main(int argc, char **argv) {
             else                                          adm_blocked_none++;
             return;
         }
+        // The bytes are already in the window, so taking the unit in costs a
+        // copy and nothing else; the only question is whether it is worth
+        // more than what it would displace.
+        if (use_pred && selective && pscore(id) <= wv) { adm_reject++; return; }
         adm_swap++;
         uint64_t off = arena.at[worst];
         arena.at.erase(worst); arena.at[id] = off;
@@ -1029,6 +1088,7 @@ int main(int argc, char **argv) {
     std::vector<int> prev_need;              // last token's units, for speculation
     for (auto &st : sched) {
         Request &r = tr.req[st.req];
+        clk += 1.0;
         if (st.tok < 0) {
             if ((policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
                  || policy==SERVE_FULL) && use_prefix_pin)
@@ -1074,7 +1134,24 @@ int main(int argc, char **argv) {
                 // Prefill reads the union once and does not return to it, so
                 // none of it is "in use" beyond its own read.
                 live_set.clear();
-                for (int id : u) if (unit[id].bytes) full_admit(id, true);
+                std::fill(cur_pf.begin(), cur_pf.end(), 0.0); cur_pf_sum = 0; cur_pf_max = 0;
+                std::fill(creq.begin(), creq.end(), 0.0); creq_max = 0;
+                for (int t=0;t<r.n_prefill;++t)
+                    for (int l=0;l<L;++l)
+                        for (int k=0;k<K;++k) {
+                            int e = r.prefill[((size_t)t*L+l)*K+k];
+                            if (e>=0) { cur_pf[(size_t)l*E+e] += 1.0; cur_pf_sum += 1.0; }
+                        }
+                for (double v : cur_pf) cur_pf_max = std::max(cur_pf_max, v);
+                // In layer order: when layer l's experts pass through the
+                // window, the prompt's routing is known up to layer l only.
+                std::vector<int> us(u.begin(), u.end());
+                std::sort(us.begin(), us.end());
+                for (int id : us) {
+                    pf_known_layer = id / E;
+                    if (unit[id].bytes) full_admit(id, true);
+                }
+                pf_known_layer = L - 1;
             }
             // A sequence's activation set belongs to that sequence.
             if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
@@ -1169,13 +1246,13 @@ int main(int argc, char **argv) {
     if (policy == SERVE_FULL)
         std::printf("%-13s | admissions: free %llu swap %llu already %llu | "
                     "blocked: all-pinned %llu all-live %llu other %llu | "
-                    "resident %zu of %d units\n", policy_name(policy),
+                    "resident %zu of %d units | rejected %llu\n", policy_name(policy),
                     (unsigned long long)adm_free, (unsigned long long)adm_swap,
                     (unsigned long long)adm_already,
                     (unsigned long long)adm_blocked_pin,
                     (unsigned long long)adm_blocked_live,
                     (unsigned long long)adm_blocked_none,
-                    arena.at.size(), n_units);
+                    arena.at.size(), n_units, (unsigned long long)adm_reject);
     if (do_compute) {
         // A token's cost is its I/O plus its arithmetic, and the reciprocal is
         // the rate the engine literature reports.
@@ -1215,8 +1292,9 @@ int main(int argc, char **argv) {
     // policy on a model, so the policies differ only in what they read.  The
     // phases are charged serially, which is the conservative reading.
     if (policy == SERVE_FULL)
-        std::printf("decode weight: %.2f (%s)\n", decode_weight,
-                    decode_weight_auto ? "measured cost ratio" : "fixed");
+        std::printf("value: %s  mix %.2f  selective %d | count mode: W %.2f (%s) half-life %g\n",
+                    use_pred ? "decode-probability estimate" : "counts", mix, (int)selective,
+                    decode_weight, decode_weight_auto ? "measured cost ratio" : "fixed", half_life);
     if (n_pre && n_dec) {
         double c_d = do_compute ? compute_sum / n_dec : compute_ms_token * 1e-3;
         double c_p = compute_ms_prompt_token * 1e-3;

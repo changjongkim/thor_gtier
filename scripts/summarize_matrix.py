@@ -8,10 +8,12 @@ WL = ["longbench", "sharegpt", "mmlu"]
 POL = [("lru", "LRU"), ("moeinf", "MoE-Infinity*"), ("mixtral", "Mixtral-offloading*"),
        ("moeinf_real", "MoE-Infinity (real system)"), ("ledger", "LEDGER")]
 ABL = [("ledger_0.45", "LEDGER (full)"), ("abl_noasync", "- async submission"),
-       ("abl_noprofile", "- initial counts"), ("abl_pw025", "initial counts x0.25"),
+       ("abl_mix0", "- prompt routing term (history only)"),
+       ("abl_mix1", "- decode history term (prompt only)"),
+       ("abl_norec", "- recency term"), ("abl_nosel", "- selective admission"),
+       ("abl_count", "count utility instead of estimate"),
+       ("abl_profile", "+ held-out initial counts"),
        ("abl_noprefix", "- prefix pin"), ("abl_nolive", "- live-set guard"),
-       ("abl_w1", "decode weight 1"), ("abl_w16", "decode weight 16"),
-       ("abl_wauto", "decode weight = measured cost ratio"),
        ("abl_pread", "pread+copy data path"), ("ref_none", "no residency")]
 
 def res(path):

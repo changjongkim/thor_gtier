@@ -146,6 +146,10 @@ int main(int argc, char **argv) {
     // a decode-hot unit is touched again on the next token and the one after.
     // The weight is how much more a decode hit says about the future.
     double decode_weight = 4.0;
+    // How much the profile's counts are trusted relative to what is observed.
+    // One means a profiled hit and an observed hit weigh the same; zero means
+    // there is no profile and everything is learned.
+    double profile_weight = 1.0;
     size_t slot = 4u << 20;
     bool verbose = false;
     int backend = GTIER_BACKEND_GTIER;
@@ -199,6 +203,7 @@ int main(int argc, char **argv) {
         else if (s=="--margin") displace_margin = atof(nx());
         else if (s=="--admit-after") admit_after = atoi(nx());
         else if (s=="--decode-weight") decode_weight = atof(nx());
+        else if (s=="--profile-weight") profile_weight = atof(nx());
         else if (s=="--verbose") verbose = true;
     }
     if (paths.empty()) { std::fprintf(stderr,"--shard required\n"); return 1; }
@@ -304,6 +309,10 @@ int main(int argc, char **argv) {
                     if (e>=0) dec_hits[(size_t)l*E+e]++;
                 }
     }
+    // The counts the value is computed from.  A profile seeds them; the run
+    // keeps adding to them.  Declared here because residency is filled from
+    // them before the first request.
+    std::vector<uint64_t> obs_pre((size_t)L*E,0), obs_dec((size_t)L*E,0);
     std::vector<int> unified_order;
     {
         std::vector<std::pair<double,int>> sc;
@@ -455,6 +464,19 @@ int main(int argc, char **argv) {
         admit_static(order);
     if (policy==SERVE_UNIFIED)
         admit_static(unified_order);
+    // The scheme is one policy with one value.  A profile is not a different
+    // policy; it is where the counts start.  Given one, the counts begin at
+    // its numbers and residency is filled by them before the first request;
+    // without one they begin at zero and the first requests fill it.  Either
+    // way the same counts keep accumulating from then on, so a profile that
+    // turns out to be wrong is corrected rather than obeyed.
+    if (policy==SERVE_FULL && profile_weight > 0) {
+        for (size_t id=0; id<unit.size(); ++id) {
+            obs_pre[id] = (uint64_t)(pre_hits[id] * profile_weight);
+            obs_dec[id] = (uint64_t)(dec_hits[id] * profile_weight);
+        }
+        admit_static(unified_order);
+    }
 
     // Until now the arena recorded offsets and held nothing, which was enough
     // to say which reads a policy avoids.  Running the arithmetic needs the
@@ -657,7 +679,6 @@ int main(int argc, char **argv) {
 
     // The same value learned online: a running system does not have the
     // counts above, but it sees the hits as they happen and can keep its own.
-    std::vector<uint64_t> obs_pre((size_t)L*E,0), obs_dec((size_t)L*E,0);
     std::vector<std::vector<int>> res_by_layer_u(L);
     auto unified_admit = [&](int id, bool from_prefill) {
         if (from_prefill) obs_pre[id]++; else obs_dec[id]++;

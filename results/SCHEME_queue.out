@@ -1,2 +1,5 @@
-[21:21:52] === scheme queue ===
-[21:21:52] run  sc_b24_r1_p1
+[21:33:26] === scheme queue ===
+[21:33:26] run  sc_b24_r1_p1
+lru           | io  309.97 ms/tok | compute   28.83 ms (floor  14.27) -> **  2.952 tok/s** (ceiling   3.084) | prefill I/O   3.649 s
+lru           | request seconds  n=4   5.004  n=32  14.490  n=64  25.332  n=256  90.381
+[21:34:40] run  sc_b24_r1_p10

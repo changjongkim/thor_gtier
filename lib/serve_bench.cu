@@ -177,6 +177,11 @@ int main(int argc, char **argv) {
     // measurements are of the whole stack, and leaving it off measured a data
     // path this work does not propose.
     bool use_async = true;
+    // Toggles for the audit: a component that cannot be turned off cannot be
+    // shown to be doing anything, and three of them turned out to be inert
+    // before anyone checked.
+    bool use_live_set = true;
+    bool use_prefix_pin = true;
     int dim_hidden = 2048, dim_inter = 768;
 
     for (int i = 1; i < argc; ++i) {
@@ -202,6 +207,8 @@ int main(int argc, char **argv) {
         else if (s=="--lookahead") lookahead = atoi(nx());
         else if (s=="--compute") do_compute = true;
         else if (s=="--no-async") use_async = false;
+        else if (s=="--no-live-set") use_live_set = false;
+        else if (s=="--no-prefix-pin") use_prefix_pin = false;
         else if (s=="--hidden") dim_hidden = atoi(nx());
         else if (s=="--inter") dim_inter = atoi(nx());
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
@@ -807,7 +814,7 @@ int main(int argc, char **argv) {
         uint64_t n_pin = 0, n_live = 0;
         for (auto &kv : arena.at) {
             if (pinned_units.count(kv.first)) { n_pin++; continue; }
-            if (live_set.count(kv.first))     { n_live++; continue; }
+            if (use_live_set && live_set.count(kv.first)) { n_live++; continue; }
             double q = (double)obs_pre[kv.first]
                      + decode_weight * (double)obs_dec[kv.first];
             if (q < wv) { wv = q; worst = kv.first; }
@@ -939,8 +946,8 @@ int main(int argc, char **argv) {
     for (auto &st : sched) {
         Request &r = tr.req[st.req];
         if (st.tok < 0) {
-            if (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
-                || policy==SERVE_FULL)
+            if ((policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
+                 || policy==SERVE_FULL) && use_prefix_pin)
                 pin_family(family_of(r.name));
             std::unordered_set<int> u;
             for (int t=0;t<r.n_prefill;++t)

@@ -1,114 +1,107 @@
-# Out-of-core LLM inference on coherent edge SoCs
+# 실험 계획
 
-**Platform:** Jetson AGX Thor, JetPack 7.2 / L4T R39.2, CUDA 13.0, sm_110,
-122.8 GiB unified coherent memory, WD SN5000S 1 TB NVMe (4.9 GB/s read), no swap.
+## 0. 무엇이 LEDGER인가 — 측정 대상의 고정
 
-## 1. The claim
+LEDGER는 **모든 컴포넌트가 켜진 하나의 설정**이다. 컴포넌트를 끄는 스위치는 기여를
+분해하기 위한 것이지 선택지가 아니다.
 
-Every system for running a model larger than memory assumes **three distinct
-tiers** — GPU device memory, host DRAM, and storage — and spends its design
-budget scheduling movement between tiers 1 and 2. On a coherent edge SoC tiers 1
-and 2 are *the same physical memory*: `llama.cpp` on this device reports
-`Total VRAM: 125748 MiB`, which is all of system RAM. The GPU/host split that
-those systems optimize has no physical meaning here, and the entire design space
-collapses onto a single DRAM↔flash boundary that none of them targets.
+```
+층 1 — gTier 데이터 경로
+   복사 0회 스테이징        cudaHostAlloc(Mapped), 착륙지가 곧 GPU 포인터
+   정확 인출                증폭 없음, 병합 없음
+   연속 제출                gtier_submit / gtier_wait  (기본 ON)
 
-The hardware's own answer to that boundary is new: Thor is the first Tegra with
-`pageableMemoryAccessUsesHostPageTables=1`, so a GPU kernel can dereference
-file-backed `mmap` memory and the OS services the faults. We measured that path
-(`../mmap_gpu/`) and it is not usable:
+층 2 — 효용 기반 상주
+   U(u) = h_prefill(u) + W · h_decode(u)     관측으로 누적
+   승인은 수요가 결정        접근되는 것은 막지 않는다
+   축출은 효용이 결정        단, 현재 토큰이 쓰는 것과 핀된 프리픽스는 제외
+   프리픽스 식별            라우팅 일치율 >= 0.90, 패밀리 LRU 축출
+   프로파일                 카운트의 초기값 (있으면 사용, 없으면 0에서 시작)
+```
 
-| Working set | Result | Effective BW | % of NVMe |
-|---:|---|---:|---:|
-| 8–16 GiB | OK | 1.29–1.35 GiB/s | 26–28% |
-| 20–48 GiB | OK | 0.21–0.36 GiB/s | 4–7% |
-| 64 GiB | **crash** (`illegal memory access`) | — | — |
-| 80 GiB | OK | 0.19 GiB/s | 4% |
-| 100, 200 GiB | **crash** | — | — |
+기본값은 감사(`scripts/audit.sh`)에서 고른다 — 각 손잡이를 껐다 켜서 숫자가 움직이는
+쪽으로 고정하고, 움직이지 않는 컴포넌트는 스킴에서 뺀다.
 
-Three regimes: a 3.6× performance cliff at 16→20 GiB, a ceiling at 4–28% of
-device bandwidth, and **nondeterministic hard failure** (64 GiB fails, 80 GiB
-succeeds) — a race in reclaim/invalidation, not a capacity limit. With no swap,
-there is no fallback. The failure mode is the worst kind: it works, then dies.
+## 1. E1 — 주 결과: 베이스라인과 SOTA 대비
 
-## 2. Baselines — all top-tier, and what each assumes
+**무엇을 묻나.** 같은 데이터 경로 위에서 상주 정책만 바꿨을 때 LEDGER가 얼마나 앞서는가.
 
-| System | Venue | Premise | Status on a coherent SoC |
-|---|---|---|---|
-| ZeRO-Infinity | SC'21 | GPU HBM → CPU DRAM → NVMe partitioning | tiers 1–2 identical; the partition is a no-op |
-| FlashNeuron | **FAST'21** | GPU memory ↔ SSD via GPUDirect, bypassing CPU | no separate GPU memory; cuFile on Jetson appears to run in POSIX compat mode |
-| DeepUM | ASPLOS'23 | UVM page migration + correlation prefetch | there is nowhere to migrate *to* |
-| FlexGen | ICML'23 | search over a 3-level GPU/CPU/disk block schedule | two of three levels merge; the search space degenerates |
-| G10 | MICRO'23 | unified GPU+host+flash space, compiler-guided tensor migration | closest in spirit; assumes discrete GPU memory as tier 1, and is evaluated in simulation |
-| PowerInfer | SOSP'24 | hot neurons resident on GPU, cold on CPU | same memory → the split changes only where compute runs |
-| InfiniGen | OSDI'24 | speculative KV offload GPU→CPU | data movement is a no-op |
-| NEO | MLSys'25 | offload attention/KV to CPU | same |
-| InstInfer / INF2 | 2024–25 | in-/near-storage attention offload | orthogonal; requires computational storage |
-| LLM in a Flash | ACL'24 | flash→DRAM windowing, row-column bundling, sparsity-aware loading | **nearest work.** Unified memory, flash-aware. But it decides *what* to load on the CPU side; it does not use or measure GPU-visible demand paging, and does not address the reclaim failure |
+| 분류 | 정책 | 대응 |
+|---|---|---|
+| 기본 | `lru` | 오라클 없는 캐시 |
+| SOTA | `moe-inf*` | MoE-Infinity — 시퀀스 활성 집합 보존 |
+| SOTA | `mixtral*` | Mixtral-offloading — LRU + 투기적 적재 |
+| SOTA | `--lookahead` 스윕 | Pre-gated MoE — 게이트를 앞당김 |
+| **본 연구** | `ledger` | 전 컴포넌트 ON |
 
-The boundary to defend: prior work optimizes **what** to move between a GPU and a
-host that are physically distinct. Here they are not, and the open problem is the
-**mechanism** of the one remaining boundary — GPU-visible paging against flash —
-which the hardware now exposes and which does not work.
+**조건**: 예산 {16, 24, 32, 40, 48} GiB × 도착 {cold(1회), steady(6회)}
+**주 지표**: **요청 총 시간** n = {4, 32, 64, 256}
+**부 지표**: 프리필 I/O(TTFT의 I/O 성분) · 토큰당 I/O(TPOT) · tok/s
 
-## 3. Workload design
+> 요청 총 시간이 주 지표인 이유: tok/s는 프리필을 숨기는데, **프리필이 병목**이라는 것이
+> 이 연구의 주장이다. tok/s만 쓰면 자기모순이고, 실제로 `moe-inf*`가 tok/s는 높으면서
+> 요청은 느린 경우가 관측된다.
 
-Quantization is used purely as a **size knob**, so the model architecture,
-routing and access pattern stay fixed while the oversubscription ratio sweeps
-across the DRAM boundary.
+## 2. E2 — 어블레이션: 이득이 어디서 오는가
 
-**Primary — Qwen3-235B-A22B-Instruct (MoE, 22B active per token).**
-Only ~9% of weights are read per token, scattered by expert routing. This is the
-worst case for the kernel's sequential readahead and the best case for a
-structure-aware tier.
+한 번에 하나씩 끈다. 예산 24, steady 고정.
 
-| Quant | Size | vs 122.8 GiB |
-|---|---:|---:|
-| Q3_K_M | 104.7 GiB | 0.86× (fits) |
-| Q4_K_M | 132.4 GiB | 1.09× (exceeds) |
-| Q5_K_M | 155.4 GiB | 1.27× |
-| Q6_K | 179.8 GiB | 1.47× |
-| Q8_0 | 232.8 GiB | 1.91× |
+| 끄는 것 | 확인하는 것 |
+|---|---|
+| 연속 제출 (`--no-async`) | §3.3 |
+| 현재 토큰 보호 (`--no-live-set`) | 축출이 작업집합을 건드리지 않는 것 |
+| 프리픽스 식별 (`--no-prefix-pin`) | §3.5 |
+| 프로파일 (`--profile-weight 0`) | 웜스타트 |
+| `h_prefill` 항 (`--policy 3`) | 효용의 프리필 항 |
+| `h_decode` 항 (`--policy 4`) | 효용의 디코드 항 |
+| 효용 전체 (`--policy 1`) | 층 2 전체 |
 
-**Secondary — Qwen2.5 dense ladder, Q8_0:** 7B (8 GiB), 14B (16 GiB), 32B
-(35 GiB), 72B (77 GiB). These land on the measured mmap regimes (fast / cliff /
-slow / slow) and give a dense-vs-MoE access-pattern contrast.
+## 3. E3 — 민감도: 손잡이
 
-## 4. Experiments
+예산 24/40 × steady. `W` {1, 4, 16, 64} · `--profile-weight` {0, 0.25, 0.5, 1} ·
+`--prefix-budget` {무제한, 2, 5, 10} · 윈도우 {0.25, 0.5, 1, 2} GiB.
 
-**E1 — the `-ngl` sweep (falsifies the three-tier premise).**
-On a discrete GPU, `-ngl K` decides how many layers sit in VRAM versus streaming
-from host memory per token, and dominates both throughput and PCIe traffic. On
-Thor, if bytes-read and page-fault counts are flat across `-ngl` while only
-compute placement changes, the GPU/host tier distinction is empirically dead on
-this hardware.
+## 4. E4 — 층 1 분리: 정책 고정, 경로만 변경
 
-**E2 — crossing the DRAM boundary.** Sweep the MoE quant ladder through 1.0×.
-Report throughput, TTFT, major faults, NVMe read volume, page-cache growth, and
-whether it completes at all.
+정책을 `ledger`로 고정하고 데이터 경로만 바꾼다 — 층 1의 기여가 **완성된 시스템 안에서**
+얼마인지 본다.
 
-**E3 — mechanism comparison.** `mmap` (OS demand paging) vs `--no-mmap`
-(explicit read) vs a bounded-window prototype. `mmap` is the path characterized
-in §1; `--no-mmap` cannot exceed DRAM at all.
+| 경로 | 대응 |
+|---|---|
+| `gtier` | 본 연구 |
+| `pread+copy` | FlexGen, ZeRO-Infinity |
+| `cuFile` | NVIDIA GDS |
+| `uvm` | DeepUM |
+| `mmap-gpu` / `mmap-cpu` | OS demand paging |
 
-**E4 — MoE vs dense.** Same bytes, different access structure. Does the kernel's
-readahead help or hurt when the access is expert-scattered?
+발자국이 예산에서 나가는 것도 함께 과금한다(`--path-overhead`).
 
-**Metrics** (all captured by `bench.py`): throughput (pp/tg), wall time,
-`pgmajfault`, `pgfault`, NVMe sectors read/written, page-cache growth,
-MemAvailable, board power.
+## 5. E5 — 규모: DRAM을 넘는 모델
 
-## 5. Status
+Qwen3-235B-A22B Q4_K_M, 132.4 GiB 대 122.8 GiB (M/B = 1.08). **하드웨어가 out-of-core를
+강제하는 유일한 설정**이다. 라우팅 트레이스가 없으므로 30B의 분포를 94층에 맞춰 쓰거나,
+층 수를 맞춘 합성 라우팅을 쓴다 — 어느 쪽이든 한계로 명시한다.
 
-- `bench.py` written and validated end-to-end on TinyLlama-1.1B.
-- llama.cpp built for sm_110, confirmed working on Thor (TinyLlama: pp64 4175 t/s,
-  tg32 226 t/s at `-ngl 99`).
-- Downloads running: Qwen2.5 7B/14B/32B/72B Q8_0, then Qwen3-235B Q3_K_M and
-  Q4_K_M. ~23.8 MB/s from HF; several hours total.
+## 6. E6 — 외부 기준점: 실제 엔진
 
-## 6. Go/kill
+llama.cpp on 235B. 자체 경로(mmap · `--direct-io` · `-ncmoe`)를 재고, 우리 수치와
+**전달률**이라는 공통 축에서 비교한다. `-ngl 99`는 **호스트를 5회 재부팅**시켰으므로
+영구 제외하고 결과로 기록한다.
 
-The paper exists only if a bounded-window userspace tier both (a) removes the
-nondeterministic failure and (b) beats 1.35 GiB/s — ideally approaching the
-4.9 GB/s the device can actually deliver. If the ceiling turns out to be
-hardware, this reduces to a characterization paper.
+배치 민감도(`-ot`로 같은 층수를 앞/뒤/격층 선택)도 여기서 답한다 — 엔진의 배치가
+층 선택에 민감하지 않다면, 효용 기반 순서가 그 인터페이스로는 작동할 자리가 없다는
+뜻이고 그 자체가 결과다.
+
+## 7. 실행 순서와 전제
+
+1. **감사**로 기본값 확정 (진행 중)
+2. E2 어블레이션 — 스킴 구성을 확정
+3. E1 주 결과
+4. E3 민감도
+5. E4 층 1 분리
+6. E6 외부 기준점
+7. E5 규모 (가장 오래 걸림)
+
+**전제.** 모든 실행은 페이지 캐시를 비우고, 한 번에 하나만 돌린다(NVMe 경합이 측정을
+서로에 대한 것으로 만든다). 상주는 실제로 할당한다. 연산은 실제로 실행하고, 커널이
+튜닝되지 않았으므로 측정값과 메모리 바운드 하한을 함께 보고한다.

@@ -21,6 +21,7 @@
 #include <array>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -125,6 +126,10 @@ __global__ void touch(const uint8_t *const *p, const size_t *l, int n,
 int main(int argc, char **argv) {
     std::vector<std::string> paths;
     const char *trace_path = "results/SCOPE/routing.bin";
+    // Where the initial counts come from.  They must not come from the trace
+    // being served: counts taken from the requests under test tell the policy
+    // their future.  Given no profile trace, the run is labelled in-sample.
+    std::vector<const char*> profile_paths;
     double budget_gib = 24.0;        // total memory for residency + window
     double window_gib = 0.5;         // staging window (saturates here, sec 4.14)
     int policy = SERVE_PERLAYER, repeats = 1, prefix_tokens = 30, max_decode = 0;
@@ -146,6 +151,13 @@ int main(int argc, char **argv) {
     // a decode-hot unit is touched again on the next token and the one after.
     // The weight is how much more a decode hit says about the future.
     double decode_weight = 4.0;
+    // With --decode-weight auto the weight is what it should mean: how much
+    // more a byte read at decode costs than a byte read at prefill.  Prefill
+    // reads a whole union at depth and runs near the device's bandwidth;
+    // decode reads a few units per layer and pays latency.  Both are measured
+    // as the run goes, so the weight is the ratio of observed seconds per byte.
+    bool decode_weight_auto = false;
+    double pre_io_s = 0, pre_io_b = 0, dec_io_s = 0, dec_io_b = 0;
     // How much the profile's counts are trusted relative to what is observed.
     // One means a profiled hit and an observed hit weigh the same; zero means
     // there is no profile and everything is learned.
@@ -189,6 +201,7 @@ int main(int argc, char **argv) {
         auto nx = [&]{ return argv[++i]; };
         if (s=="--shard") paths.push_back(nx());
         else if (s=="--trace") trace_path = nx();
+        else if (s=="--profile-trace") profile_paths.push_back(nx());
         else if (s=="--budget") budget_gib = atof(nx());
         else if (s=="--window") window_gib = atof(nx());
         else if (s=="--policy") policy = atoi(nx());
@@ -214,7 +227,10 @@ int main(int argc, char **argv) {
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
         else if (s=="--margin") displace_margin = atof(nx());
         else if (s=="--admit-after") admit_after = atoi(nx());
-        else if (s=="--decode-weight") decode_weight = atof(nx());
+        else if (s=="--decode-weight") {
+            const char *v = nx();
+            if (!std::strcmp(v,"auto")) decode_weight_auto = true; else decode_weight = atof(v);
+        }
         else if (s=="--profile-weight") profile_weight = atof(nx());
         else if (s=="--verbose") verbose = true;
     }
@@ -222,6 +238,18 @@ int main(int argc, char **argv) {
 
     Trace tr;
     if (!load_trace(trace_path, tr)) { std::fprintf(stderr,"trace load failed\n"); return 1; }
+    std::vector<Request> prof_req;
+    for (auto pp : profile_paths) {
+        Trace pt;
+        if (!load_trace(pp, pt)) { std::fprintf(stderr,"profile trace load failed: %s\n", pp); return 1; }
+        if (pt.n_layers!=tr.n_layers || pt.n_experts!=tr.n_experts || pt.topk!=tr.topk) {
+            std::fprintf(stderr,"profile trace %s has a different model shape\n", pp); return 1;
+        }
+        for (auto &r : pt.req) prof_req.push_back(std::move(r));
+    }
+    const std::vector<Request> &preq = profile_paths.empty() ? tr.req : prof_req;
+    std::printf("profile: %s (%zu requests)\n",
+                profile_paths.empty() ? "IN-SAMPLE (served trace)" : "held-out trace", preq.size());
 
     std::vector<Shard> sh(paths.size());
     uint64_t model_bytes = 0;
@@ -243,16 +271,29 @@ int main(int argc, char **argv) {
         for (int t=0;t<sh[i].m.n;++t) {
             const gguf_tensor &tt = sh[i].m.t[t];
             if (!tt.size) continue;
-            if (tt.layer>=0 && tt.layer<L && tt.expert>=0 && tt.expert<E) {
-                Unit &u = unit[(size_t)tt.layer*E + tt.expert];
+            // GGUF stores a layer's experts stacked in one tensor per
+            // projection (ffn_{gate,up,down}_exps); expert e is the e-th of
+            // E equal contiguous slices.  safetensors has one tensor each.
+            bool stacked = std::strstr(tt.name,"_exps") != nullptr;
+            int e_lo = tt.expert, e_hi = tt.expert + 1;
+            if (stacked) { e_lo = 0; e_hi = E; }
+            if (stacked && tt.size % E) {
+                std::fprintf(stderr,"%s: size %llu not divisible by %d experts\n",
+                             tt.name,(unsigned long long)tt.size,E); return 1;
+            }
+            if (tt.layer>=0 && tt.layer<L && tt.expert>=0 && tt.expert<E)
+            for (int ex = e_lo; ex < e_hi; ++ex) {
+                uint64_t sz  = stacked ? tt.size / E : tt.size;
+                uint64_t off = tt.offset + (stacked ? (uint64_t)ex * sz : 0);
+                Unit &u = unit[(size_t)tt.layer*E + ex];
                 // One projection must land in one slot for the GEMM to see it
                 // as a single matrix; at 3 MiB against a 4 MiB slot it does.
-                Proj *pj = std::strstr(tt.name,"gate_proj") ? &u.gate
-                         : std::strstr(tt.name,"up_proj")   ? &u.up
-                         : std::strstr(tt.name,"down_proj") ? &u.down : nullptr;
-                if (pj) { pj->shard = (int)i; pj->r = {tt.offset, (size_t)tt.size}; }
+                Proj *pj = (std::strstr(tt.name,"gate_proj") || std::strstr(tt.name,"ffn_gate_exps")) ? &u.gate
+                         : (std::strstr(tt.name,"up_proj")   || std::strstr(tt.name,"ffn_up_exps"))   ? &u.up
+                         : (std::strstr(tt.name,"down_proj") || std::strstr(tt.name,"ffn_down_exps")) ? &u.down : nullptr;
+                if (pj) { pj->shard = (int)i; pj->r = {off, (size_t)sz}; }
                 // split on the slot grid so every piece fits one slot
-                uint64_t pos = tt.offset, end = tt.offset + tt.size;
+                uint64_t pos = off, end = off + sz;
                 size_t cap = slot - 2*4096;
                 while (pos < end) {
                     uint64_t blk = (pos/slot + 1)*slot;
@@ -260,11 +301,21 @@ int main(int argc, char **argv) {
                     u.parts.push_back({(int)i, {pos, (size_t)(stop-pos)}});
                     pos = stop;
                 }
-                u.bytes += tt.size;
-            } else {
+                u.bytes += sz;
+            }
+            else {
                 always_bytes += tt.size;
             }
         }
+    // The FFN kernels read bf16; quantised GGUF blocks need a dequantising
+    // kernel, so on those models compute stays the per-token model.
+    bool any_stacked = false;
+    for (auto &x : sh) any_stacked |= x.m.stacked_experts != 0;
+    if (do_compute && any_stacked) {
+        std::fprintf(stderr,"--compute needs bf16 per-expert tensors; "
+                            "use --compute-ms for GGUF models\n");
+        return 1;
+    }
     uint64_t unit_bytes = 0; int n_units = 0;
     for (auto &u : unit) if (u.bytes) { unit_bytes += u.bytes; ++n_units; }
     if (!n_units) { std::fprintf(stderr,"no expert units found\n"); return 1; }
@@ -291,7 +342,7 @@ int main(int argc, char **argv) {
     // traffic while the same fraction aggregated across layers carries ~58%,
     // so a global order cannot see the structure (sec 2.3a).
     std::vector<uint64_t> cnt((size_t)L*E, 0);
-    for (auto &r : tr.req)
+    for (auto &r : preq)
         for (int t=0;t<r.n_decode;++t)
             for (int l=0;l<L;++l)
                 for (int k=0;k<K;++k) {
@@ -304,7 +355,7 @@ int main(int argc, char **argv) {
     // Counting both on one scale is what lets prefix value and popularity
     // value be compared instead of competing.
     std::vector<uint64_t> pre_hits((size_t)L*E, 0), dec_hits((size_t)L*E, 0);
-    for (auto &r : tr.req) {
+    for (auto &r : preq) {
         std::unordered_set<int> u;
         for (int t=0;t<r.n_prefill;++t)
             for (int l=0;l<L;++l)
@@ -862,13 +913,14 @@ int main(int argc, char **argv) {
                             family_count[kv.first], kv.second,
                             kv.second>=AGREE_MIN ? ",pin" : "");
         std::printf("\n");
-        std::printf("prefix union: %zu units (%.2f GiB) over %zu families\n",
+        std::printf("prefix union (whole-trace reference; online policies learn their own): %zu units (%.2f GiB) over %zu families\n",
                     prefix_union.size(), prefix_union.size()*per_unit/1073741824.0,
                     pin_families.size());
     }
 
     double ttft_sum=0, tpot_sum=0; uint64_t pre_bytes=0, dec_bytes=0;
     int n_pre=0, n_dec=0;
+    uint64_t prompt_tok_sum = 0;
     // What a token actually waits for.  Decode is compute-bound once residency
     // is good, so I/O that fits inside the arithmetic costs nothing; only the
     // excess is a stall.  A background admission has the same budget: it is
@@ -906,10 +958,42 @@ int main(int argc, char **argv) {
 
     // Pin a family's union, evicting the least recently served family's
     // exclusive units if the cap is in the way.
+    // A family is learned as a server would learn it: the first member's
+    // routing over the prefix window is kept; a later member that agrees with
+    // it on at least AGREE_MIN of the experts qualifies the family, and only
+    // then is the first member's union pinned.  Nothing about requests not yet
+    // served is used.
+    std::map<std::string, std::vector<int16_t>> fam_first;   // [t][l][k]
+    std::map<std::string, std::unordered_set<int>> fam_learned;
+    std::set<std::string> fam_ok;
+    auto learn_family = [&](const std::string &fam, const Request &r) -> bool {
+        int T = std::min(prefix_tokens, r.n_prefill);
+        auto f = fam_first.find(fam);
+        if (f == fam_first.end()) {
+            std::vector<int16_t> v(r.prefill.begin(), r.prefill.begin() + (size_t)T*L*K);
+            auto &u = fam_learned[fam];
+            for (int t=0;t<T;++t) for (int l=0;l<L;++l) for (int k=0;k<K;++k) {
+                int e = v[((size_t)t*L+l)*K+k];
+                if (e>=0) u.insert((int)((size_t)l*E+e));
+            }
+            fam_first[fam] = std::move(v);
+            return false;
+        }
+        if (fam_ok.count(fam)) return false;
+        int T0 = (int)(f->second.size() / ((size_t)L*K)), Tm = std::min(T, T0);
+        long same = 0, tot = 0;
+        for (int t=0;t<Tm;++t) for (int l=0;l<L;++l) {
+            std::unordered_set<int> a;
+            for (int k=0;k<K;++k) { int e = f->second[((size_t)t*L+l)*K+k]; if (e>=0) a.insert(e); }
+            for (int k=0;k<K;++k) { int e = r.prefill[((size_t)t*L+l)*K+k]; if (e>=0 && a.count(e)) ++same; }
+            tot += K;
+        }
+        if (tot && (double)same/tot >= AGREE_MIN) { fam_ok.insert(fam); return true; }
+        return false;
+    };
     auto pin_family = [&](const std::string &fam) {
-        auto it = family_union.find(fam);
-        if (it == family_union.end() || family_count[fam] <= 1
-            || family_agree[fam] < AGREE_MIN) return;
+        if (!fam_ok.count(fam)) return;
+        auto it = fam_learned.find(fam);
         auto &pf = pinned_fam[fam];
         pf.seq = ++pin_seq;
         if (!pf.units.empty()) return;                 // already pinned
@@ -949,6 +1033,8 @@ int main(int argc, char **argv) {
             if ((policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
                  || policy==SERVE_FULL) && use_prefix_pin)
                 pin_family(family_of(r.name));
+            bool learn = (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
+                          || policy==SERVE_FULL) && use_prefix_pin;
             std::unordered_set<int> u;
             for (int t=0;t<r.n_prefill;++t)
                 for (int l=0;l<L;++l)
@@ -960,7 +1046,11 @@ int main(int argc, char **argv) {
             for (int id : u) if (!resident(id) && unit[id].bytes) miss.push_back(id);
             std::sort(miss.begin(), miss.end());
             uint64_t b=0; double dt = fetch_units(miss, b);
-            pre_bytes += b; ttft_sum += dt; ++n_pre;
+            pre_bytes += b; ttft_sum += dt; ++n_pre; prompt_tok_sum += r.n_prefill;
+            if (b) { pre_io_s += dt; pre_io_b += b; }
+            // The prefix's routing is known once prefill has run; a family it
+            // qualifies is pinned now, for this request's decode and the next.
+            if (learn && learn_family(family_of(r.name), r)) pin_family(family_of(r.name));
             // Prefill arithmetic is batched over the prompt, so its shadow is
             // large; what exceeds it is the wait a user sees.
             double shadow = r.n_prefill * compute_ms_prompt_token * 1e-3;
@@ -1025,6 +1115,10 @@ int main(int argc, char **argv) {
             }
             compute_sum += dct;
             dec_bytes += db; tpot_sum += ddt; ++n_dec;
+            if (db) { dec_io_s += ddt; dec_io_b += db; }
+            if (decode_weight_auto && pre_io_b > 0 && dec_io_b > 0)
+                decode_weight = std::min(64.0, std::max(1.0,
+                    (dec_io_s / dec_io_b) / (pre_io_s / pre_io_b)));
             double shadow = compute_ms_token * 1e-3;
             stall_sum += std::max(0.0, ddt - shadow);
             shadow_bytes_sum += shadow * BW;
@@ -1113,6 +1207,32 @@ int main(int argc, char **argv) {
         std::printf("%-13s | request seconds  n=4 %7.3f  n=32 %7.3f  "
                     "n=64 %7.3f  n=256 %7.3f\n", policy_name(policy),
                     pre+4*per, pre+32*per, pre+64*per, pre+256*per);
+    }
+
+    // One line per run for the tables.  I/O is measured; the arithmetic is
+    // the measured kernels under --compute and the calibrated per-token cost
+    // otherwise (--compute-ms, --prompt-compute-ms).  It is the same for every
+    // policy on a model, so the policies differ only in what they read.  The
+    // phases are charged serially, which is the conservative reading.
+    if (policy == SERVE_FULL)
+        std::printf("decode weight: %.2f (%s)\n", decode_weight,
+                    decode_weight_auto ? "measured cost ratio" : "fixed");
+    if (n_pre && n_dec) {
+        double c_d = do_compute ? compute_sum / n_dec : compute_ms_token * 1e-3;
+        double c_p = compute_ms_prompt_token * 1e-3;
+        double ttft = (ttft_sum + prompt_tok_sum * c_p) / n_pre;
+        double tpot = tpot_sum / n_dec + c_d;
+        double req  = (ttft_sum + prompt_tok_sum * c_p + tpot_sum + n_dec * c_d) / n_pre;
+        std::printf("RESULT policy=%s budget=%.2f window=%.2f requests=%d prompt_tok=%.1f "
+                    "decode_tok=%.1f ttft_s=%.4f tpot_ms=%.3f request_s=%.4f "
+                    "decode_tok_s=%.3f e2e_tok_s=%.4f prefill_io_s=%.4f decode_io_ms=%.3f "
+                    "prefill_gib=%.3f decode_gib_tok=%.4f compute=%s\n",
+                    policy_name(policy), budget_gib, window_gib, n_pre,
+                    (double)prompt_tok_sum / n_pre, (double)n_dec / n_pre,
+                    ttft, tpot * 1e3, req, 1.0 / tpot, (double)n_dec / (req * n_pre),
+                    ttft_sum / n_pre, tpot_sum / n_dec * 1e3,
+                    pre_bytes / 1073741824.0 / n_pre, dec_bytes / 1073741824.0 / n_dec,
+                    do_compute ? "measured" : "calibrated");
     }
 
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }

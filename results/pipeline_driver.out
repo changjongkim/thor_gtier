@@ -1,5 +1,9 @@
-[09-24 22:22:40] === pipeline start ===
-[09-24 22:22:40] run  cap_qwen30b_longbench
-/home/thor/kcj/thor_gtier/scripts/pipeline.sh: line 20: 2118328 Killed                  "$@" >> "$ST/$name.out" 2>&1
-[09-24 22:23:37]   FAILED cap_qwen30b_longbench (rc=137)
-[09-24 22:23:37] run  cap_qwen30b_sharegpt
+[09-24 22:25:29] === pipeline start ===
+[09-24 22:25:29] run  cap_qwen30b_longbench
+./scripts/pipeline.sh: line 20: 2119013 Killed                  "$@" >> "$ST/$name.out" 2>&1
+[09-24 22:26:26]   FAILED cap_qwen30b_longbench (rc=137)
+[09-24 22:26:26] run  cap_qwen30b_sharegpt
+[09-24 22:28:57]   FAILED cap_qwen30b_sharegpt (rc=1)
+[09-24 22:28:57] run  cap_qwen30b_mmlu
+[09-24 22:30:32]   FAILED cap_qwen30b_mmlu (rc=1)
+[09-24 22:30:32] run  cap_mixtral8x7b_longbench

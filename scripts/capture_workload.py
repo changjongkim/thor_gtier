@@ -46,9 +46,18 @@ if not TOPK or not NEXP:
 records, state = [], {"tag": "", "base": 0}
 def mk_hook(layer):
     def hook(_m, _i, out):
-        logits = out if isinstance(out, torch.Tensor) else out[0]
-        logits = logits.reshape(-1, logits.shape[-1]).float()
-        idx = torch.topk(logits, TOPK, dim=-1).indices.cpu().numpy()
+        # Recent transformers route through a TopKRouter module that returns
+        # (router_logits, router_scores, router_indices).  The indices are the
+        # experts the model actually uses, so they are read directly; only a
+        # router that returns bare logits falls back to taking the top-k
+        # here, which picks the same experts since softmax is monotone.
+        if isinstance(out, (tuple, list)) and len(out) >= 3 and \
+           isinstance(out[2], torch.Tensor) and out[2].dtype in (torch.int64, torch.int32):
+            idx = out[2].reshape(-1, out[2].shape[-1]).cpu().numpy()
+        else:
+            logits = out if isinstance(out, torch.Tensor) else out[0]
+            logits = logits.reshape(-1, logits.shape[-1]).float()
+            idx = torch.topk(logits, TOPK, dim=-1).indices.cpu().numpy()
         for t in range(idx.shape[0]):
             records.append((state["tag"], layer, state["base"] + t, idx[t]))
     return hook
@@ -57,9 +66,14 @@ hooks = []
 for i, layer in enumerate(model.model.layers):
     mlp = getattr(layer, "mlp", None)
     gate = getattr(mlp, "gate", None) if mlp is not None else None
-    if gate is not None and isinstance(gate, torch.nn.Linear):
+    # Any module named gate under the MoE block: a plain Linear in older
+    # transformers, a TopKRouter in newer ones.  Requiring nn.Linear hooked
+    # nothing on the installed version and every capture came back empty.
+    if gate is not None and isinstance(gate, torch.nn.Module):
         hooks.append(gate.register_forward_hook(mk_hook(i)))
 print(f"hooked {len(hooks)} routers", flush=True)
+if not hooks:
+    raise SystemExit("no router modules found -- refusing to write an empty trace")
 
 for r in rows:
     ids = tok.encode(r["prompt"], return_tensors="pt")

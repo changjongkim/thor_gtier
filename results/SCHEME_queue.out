@@ -18,3 +18,6 @@ prefix        | request seconds  n=4   5.636  n=32  17.615  n=64  31.304  n=256 
 value+prefix  | io   56.20 ms/tok | compute   28.32 ms (floor  14.27) -> ** 11.832 tok/s** (ceiling  14.191) | prefill I/O   3.879 s
 value+prefix  | request seconds  n=4   4.217  n=32   6.584  n=64   9.288  n=256  25.516
 [19:27:57] run  sc_b24_r1_ours0.25
+value+prefix  | io   40.92 ms/tok | compute   29.01 ms (floor  14.27) -> ** 14.299 tok/s** (ceiling  18.121) | prefill I/O   3.366 s
+value+prefix  | request seconds  n=4   3.645  n=32   5.603  n=64   7.841  n=256  21.268
+[19:29:04] run  sc_b24_r1_ours1

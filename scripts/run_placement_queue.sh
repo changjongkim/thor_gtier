@@ -49,7 +49,15 @@ echo -500 | sudo -n tee /proc/self/oom_score_adj >/dev/null 2>&1 || true
 say "=== placement queue: $(basename "$MODEL") pp=$NP tg=$NG ==="
 
 # How much the engine gets as more of the model is pushed off the GPU.
-for N in 0 24 47 70 94; do
+#
+# N is not swept from zero.  The model is 132.4 GiB and the device has 122.8,
+# so leaving every layer's experts on the GPU is an overcommit, and measured,
+# that configuration does not fail the process -- it restarts the host, five
+# times out of five, eighteen to thirty-nine minutes in.  The experts are
+# 96.6% of the model across 94 layers, about 1.36 GiB each, so roughly a dozen
+# layers have to come off before it fits at all; the sweep starts at 24 to
+# leave room for the KV cache and activations on top.
+for N in 24 47 70 94; do
   run "p_ncmoe$N" -ngl 99 -ncmoe $N
 done
 commit "Placement queue: llama.cpp's own residency control swept"

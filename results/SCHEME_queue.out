@@ -1,0 +1,14 @@
+[19:20:05] === scheme queue ===
+[19:20:05] run  sc_b24_r1_p1
+lru           | io  341.86 ms/tok | compute   28.33 ms (floor  14.27) -> **  2.701 tok/s** (ceiling   2.808) | prefill I/O   4.137 s
+lru           | request seconds  n=4   5.618  n=32  15.983  n=64  27.829  n=256  98.905
+[19:21:27] run  sc_b24_r1_p10
+moe-inf*      | io   39.36 ms/tok | compute   28.00 ms (floor  14.27) -> ** 14.846 tok/s** (ceiling  18.648) | prefill I/O   4.363 s
+moe-inf*      | request seconds  n=4   4.632  n=32   6.518  n=64   8.674  n=256  21.606
+[19:22:37] run  sc_b24_r1_p11
+mixtral*      | io  283.27 ms/tok | compute   28.14 ms (floor  14.27) -> **  3.211 tok/s** (ceiling   3.361) | prefill I/O   4.125 s
+mixtral*      | request seconds  n=4   5.371  n=32  14.090  n=64  24.055  n=256  83.846
+[19:23:56] run  sc_b24_r1_p3
+per-layer     | io  297.50 ms/tok | compute   29.03 ms (floor  14.27) -> **  3.062 tok/s** (ceiling   3.208) | prefill I/O   4.001 s
+per-layer     | request seconds  n=4   5.307  n=32  14.450  n=64  24.899  n=256  87.594
+[19:25:22] run  sc_b24_r1_p4

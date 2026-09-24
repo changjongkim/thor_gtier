@@ -45,7 +45,7 @@ typedef enum {
     //   a shared prefix is recognised from routing agreement and its union is
     //              pinned, with the least recently served family evicted when
     //              the pin budget is in the way.
-    SERVE_FULL,
+    SERVE_FULL,           // LEDGER: the value ledger (sec 3.4)
     SERVE_POLICY_COUNT
 } serve_policy;
 

@@ -1,0 +1,5 @@
+profile: IN-SAMPLE (served trace) (24 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 4.35 GiB  window 0.50  path-overhead 0.00  residency 2.92 GiB (17.9% of experts)  policy=lru  backend=gtier
+lru           | TTFT(io)   1.836 s  prefill    9.94 GiB | look=0   | TPOT(io)  128.27 ms  decode   0.440 GiB/tok | stall 110.485 s | bg   0.00 GiB vs shadow  29.34 GiB | pins 0 evict 0 | total  646.11 GiB
+RESULT policy=lru budget=4.35 window=0.50 requests=48 prompt_tok=555.2 decode_tok=8.0 ttft_s=2.2880 tpot_ms=141.714 request_s=3.4217 decode_tok_s=7.056 e2e_tok_s=2.3380 prefill_io_s=1.8356 decode_io_ms=128.268 prefill_gib=9.940 decode_gib_tok=0.4401 compute=calibrated

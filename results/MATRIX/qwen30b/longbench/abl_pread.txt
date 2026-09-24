@@ -1,0 +1,4 @@
+submit failed (n=32)
+profile: held-out trace (48 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 7.78 GiB  window 0.50  path-overhead 0.00  residency 6.35 GiB (38.8% of experts)  policy=ledger  backend=pread+copy

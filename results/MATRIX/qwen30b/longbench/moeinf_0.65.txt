@@ -1,0 +1,5 @@
+profile: held-out trace (48 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 11.23 GiB  window 0.50  path-overhead 0.00  residency 9.80 GiB (60.0% of experts)  policy=moe-inf*  backend=gtier
+moe-inf*      | TTFT(io)   0.950 s  prefill    5.09 GiB | look=0   | TPOT(io)   24.97 ms  decode   0.070 GiB/tok | stall  17.786 s | bg   0.00 GiB vs shadow 102.69 GiB | pins 0 evict 0 | total  307.47 GiB
+RESULT policy=moe-inf* budget=11.23 window=0.50 requests=42 prompt_tok=6346.0 decode_tok=32.0 ttft_s=6.1206 tpot_ms=38.420 request_s=7.3501 decode_tok_s=26.028 e2e_tok_s=4.3537 prefill_io_s=0.9496 decode_io_ms=24.973 prefill_gib=5.088 decode_gib_tok=0.0698 compute=calibrated

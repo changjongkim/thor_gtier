@@ -1,0 +1,5 @@
+profile: held-out trace (45 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 4.32 GiB  window 0.50  path-overhead 0.00  residency 2.89 GiB (17.7% of experts)  policy=lru  backend=gtier
+lru           | TTFT(io)   1.822 s  prefill    9.97 GiB | look=0   | TPOT(io)  121.95 ms  decode   0.439 GiB/tok | stall 107.396 s | bg   0.00 GiB vs shadow  29.34 GiB | pins 0 evict 0 | total  647.17 GiB
+RESULT policy=lru budget=4.32 window=0.50 requests=48 prompt_tok=555.2 decode_tok=8.0 ttft_s=2.2742 tpot_ms=135.393 request_s=3.3573 decode_tok_s=7.386 e2e_tok_s=2.3828 prefill_io_s=1.8218 decode_io_ms=121.946 prefill_gib=9.969 decode_gib_tok=0.4392 compute=calibrated

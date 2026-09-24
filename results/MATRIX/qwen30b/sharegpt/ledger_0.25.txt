@@ -1,0 +1,7 @@
+profile: held-out trace (45 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 4.32 GiB  window 0.50  path-overhead 0.00  residency 2.89 GiB (17.7% of experts)  policy=ledger  backend=gtier
+ledger        | TTFT(io)   1.680 s  prefill    9.23 GiB | look=0   | TPOT(io)   96.96 ms  decode   0.321 GiB/tok | stall 183.608 s | bg   0.00 GiB vs shadow 117.36 GiB | pins 13 evict 0 | total  937.01 GiB
+ledger        | admissions: free 1059 swap 284298 already 417133 | blocked: all-pinned 0 all-live 0 other 0 | resident 1059 of 6144 units | rejected 101874
+value: decode-probability estimate  mix 0.50  selective 1 | count mode: W 4.00 (fixed) half-life 0
+RESULT policy=ledger budget=4.32 window=0.50 requests=48 prompt_tok=647.5 decode_tok=32.0 ttft_s=2.2080 tpot_ms=110.408 request_s=5.7411 decode_tok_s=9.057 e2e_tok_s=5.5739 prefill_io_s=1.6804 decode_io_ms=96.961 prefill_gib=9.234 decode_gib_tok=0.3215 compute=calibrated

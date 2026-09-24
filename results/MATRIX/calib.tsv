@@ -1,0 +1,4 @@
+model	decode_ms	prompt_ms	source
+qwen30b	13.4466	0.81486	llama-bench ngl99
+mixtral8x7b	38.6528	1.68858	llama-bench ngl99
+qwen235b	86.2574	5.22716	qwen30b x 6.415 (bytes/token 1.344e+10/2.095e+09)

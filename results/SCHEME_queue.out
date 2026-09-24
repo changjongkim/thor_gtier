@@ -21,3 +21,29 @@ value+prefix  | request seconds  n=4   4.217  n=32   6.584  n=64   9.288  n=256 
 value+prefix  | io   40.92 ms/tok | compute   29.01 ms (floor  14.27) -> ** 14.299 tok/s** (ceiling  18.121) | prefill I/O   3.366 s
 value+prefix  | request seconds  n=4   3.645  n=32   5.603  n=64   7.841  n=256  21.268
 [19:29:04] run  sc_b24_r1_ours1
+value+prefix  | io   34.35 ms/tok | compute   28.42 ms (floor  14.27) -> ** 15.932 tok/s** (ceiling  20.569) | prefill I/O   3.381 s
+value+prefix  | request seconds  n=4   3.633  n=32   5.390  n=64   7.399  n=256  19.450
+[19:30:11] run  sc_b24_r6_p1
+lru           | io  350.51 ms/tok | compute   28.77 ms (floor  14.27) -> **  2.637 tok/s** (ceiling   2.741) | prefill I/O   3.892 s
+lru           | request seconds  n=4   5.409  n=32  16.029  n=64  28.166  n=256 100.987
+[19:36:55] run  sc_b24_r6_p10
+moe-inf*      | io    6.76 ms/tok | compute   27.00 ms (floor  14.27) -> ** 29.623 tok/s** (ceiling  47.558) | prefill I/O   4.096 s
+moe-inf*      | request seconds  n=4   4.231  n=32   5.176  n=64   6.256  n=256  12.738
+[19:42:14] run  sc_b24_r6_p11
+mixtral*      | io  283.78 ms/tok | compute   27.94 ms (floor  14.27) -> **  3.208 tok/s** (ceiling   3.355) | prefill I/O   3.902 s
+mixtral*      | request seconds  n=4   5.149  n=32  13.877  n=64  23.852  n=256  83.702
+[19:48:39] run  sc_b24_r6_p3
+per-layer     | io  297.44 ms/tok | compute   29.42 ms (floor  14.27) -> **  3.059 tok/s** (ceiling   3.208) | prefill I/O   4.001 s
+per-layer     | request seconds  n=4   5.309  n=32  14.461  n=64  24.920  n=256  87.677
+[19:55:24] run  sc_b24_r6_p4
+prefix        | io  396.75 ms/tok | compute   30.20 ms (floor  14.27) -> **  2.342 tok/s** (ceiling   2.433) | prefill I/O   3.911 s
+prefix        | request seconds  n=4   5.619  n=32  17.574  n=64  31.236  n=256 113.209
+[20:02:32] run  sc_b24_r6_ours0
+value+prefix  | io   35.79 ms/tok | compute   28.38 ms (floor  14.27) -> ** 15.584 tok/s** (ceiling  19.978) | prefill I/O   3.408 s
+value+prefix  | request seconds  n=4   3.665  n=32   5.462  n=64   7.515  n=256  19.835
+[20:07:11] run  sc_b24_r6_ours0.25
+value+prefix  | io   34.30 ms/tok | compute   28.06 ms (floor  14.27) -> ** 16.035 tok/s** (ceiling  20.589) | prefill I/O   3.336 s
+value+prefix  | request seconds  n=4   3.585  n=32   5.331  n=64   7.327  n=256  19.300
+[20:11:54] run  sc_b24_r6_ours1
+value+prefix  | io   32.64 ms/tok | compute   28.34 ms (floor  14.27) -> ** 16.398 tok/s** (ceiling  21.317) | prefill I/O   3.383 s
+value+prefix  | request seconds  n=4   3.627  n=32   5.335  n=64   7.286  n=256  18.995

@@ -14,3 +14,5 @@ ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
   Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
 ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
   Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
+  Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB

@@ -4,7 +4,7 @@ NVCCFLAGS ?= -O3 -std=c++17 -arch=$(ARCH) -Xcompiler -fPIC
 LDLIBS ?= -luring -lcufile
 NVCCFLAGS += -I/usr/local/cuda-13.0/targets/sbsa-linux/include -L/usr/local/cuda-13.0/targets/sbsa-linux/lib
 
-all: libgtier.a gtier_bench gguf_bench
+all: libgtier.a gtier_bench gguf_bench serve_bench
 
 libgtier.a: gtier.o gguf.o safetensors.o
 	ar rcs $@ $^
@@ -24,5 +24,8 @@ gtier_bench: bench.cu libgtier.a
 gguf_bench: gguf_bench.cu libgtier.a
 	$(NVCC) $(NVCCFLAGS) -o $@ gguf_bench.cu libgtier.a $(LDLIBS)
 
+serve_bench: serve_bench.cu moe_ffn.cu libgtier.a serve.h moe_ffn.h
+	$(NVCC) $(NVCCFLAGS) -diag-suppress 550 -o $@ serve_bench.cu moe_ffn.cu libgtier.a $(LDLIBS) -lcublas
+
 clean:
-	rm -f *.o libgtier.a gtier_bench gguf_bench gguf_dump
+	rm -f *.o libgtier.a gtier_bench gguf_bench serve_bench gguf_dump

@@ -18,6 +18,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <array>
 #include <list>
 #include <map>
 #include <string>
@@ -149,6 +150,11 @@ int main(int argc, char **argv) {
     // which hands every policy full lookahead for nothing; naming it makes
     // that a measured choice instead of a hidden gift.
     int lookahead = 0;                   // 0 = all layers at once (full)
+    // With this on the driver stops reporting transfer seconds and reports
+    // token times instead: the routed experts' feed-forward is actually run,
+    // out of whatever memory the weights happen to be in.
+    bool do_compute = false;
+    int dim_hidden = 2048, dim_inter = 768;
 
     for (int i = 1; i < argc; ++i) {
         std::string s = argv[i];
@@ -171,6 +177,9 @@ int main(int argc, char **argv) {
         else if (s=="--prompt-compute-ms") compute_ms_prompt_token = atof(nx());
         else if (s=="--interleave") interleave = true;
         else if (s=="--lookahead") lookahead = atoi(nx());
+        else if (s=="--compute") do_compute = true;
+        else if (s=="--hidden") dim_hidden = atoi(nx());
+        else if (s=="--inter") dim_inter = atoi(nx());
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
         else if (s=="--verbose") verbose = true;
     }
@@ -429,17 +438,76 @@ int main(int argc, char **argv) {
     if (policy==SERVE_UNIFIED)
         admit_static(unified_order);
 
+    // Until now the arena recorded offsets and held nothing, which was enough
+    // to say which reads a policy avoids.  Running the arithmetic needs the
+    // bytes to be there, so the admitted set is read in once, and a unit's
+    // three projections are laid out back to back so the GEMMs can find them.
+    cublasHandle_t blas = nullptr;
+    moe_dims dims{dim_hidden, dim_inter};
+    void *d_x=nullptr, *d_g=nullptr, *d_u=nullptr, *d_h=nullptr, *d_y=nullptr;
+    if (do_compute) {
+        if (cublasCreate(&blas) != CUBLAS_STATUS_SUCCESS) {
+            std::fprintf(stderr,"cublasCreate failed\n"); return 1;
+        }
+        size_t hb = (size_t)dim_hidden*2, ib = (size_t)dim_inter*2;
+        CK(cudaMalloc(&d_x, hb)); CK(cudaMalloc(&d_y, hb));
+        CK(cudaMalloc(&d_g, ib)); CK(cudaMalloc(&d_u, ib)); CK(cudaMalloc(&d_h, ib));
+        CK(cudaMemset(d_x, 0x3c, hb));      // a plausible bf16 pattern near 1.0
+        CK(cudaMemset(d_y, 0, hb));
+        auto tf = std::chrono::steady_clock::now();
+        uint64_t filled = 0;
+        for (auto &kv : arena.at) {
+            Unit &un = unit[kv.first];
+            if (!un.complete()) continue;
+            const Proj *ps[3] = {&un.gate, &un.up, &un.down};
+            uint64_t off = kv.second;
+            for (int q=0;q<3;++q) {
+                void *out = nullptr; gtier_range rr = ps[q]->r;
+                if (gtier_fetch(sh[ps[q]->shard].g, &rr, 1, &out)) {
+                    std::fprintf(stderr,"arena fill failed\n"); return 1;
+                }
+                CK(cudaMemcpy(arena.base+off, out, rr.len, cudaMemcpyDefault));
+                off += rr.len; filled += rr.len;
+            }
+        }
+        std::printf("arena filled: %.2f GiB in %.1f s\n", filled/1073741824.0,
+                    std::chrono::duration<double>(
+                        std::chrono::steady_clock::now()-tf).count());
+    }
+
     unsigned long long *sink; CK(cudaMalloc(&sink,sizeof(*sink)));
     CK(cudaMemset(sink,0,sizeof(*sink)));
     const uint8_t **dp; size_t *dl;
     CK(cudaMallocManaged(&dp, cfg.max_fetch_ranges*sizeof(*dp)));
     CK(cudaMallocManaged(&dl, cfg.max_fetch_ranges*sizeof(*dl)));
 
+    // Where a unit's three matrices are right now: the arena if it is
+    // resident, or the slot it just landed in.  The arithmetic reads from
+    // whichever without copying, which is what the staging plane promised.
+    std::unordered_map<int, std::array<const void*,3>> where;
+
     // Fetch a set of units that are not resident, through the window.
     auto fetch_units = [&](const std::vector<int> &ids, uint64_t &bytes)->double {
+        // Ranges are grouped by shard for the queue's sake, so a note of which
+        // unit and which projection each one belongs to travels alongside.
+        struct Tag { int unit; int proj; };
         std::vector<std::vector<gtier_range>> byshard(sh.size());
-        for (int id : ids)
-            for (auto &pr : unit[id].parts) byshard[pr.first].push_back(pr.second);
+        std::vector<std::vector<Tag>> tags(sh.size());
+        for (int id : ids) {
+            const Unit &un = unit[id];
+            const Proj *ps[3] = {&un.gate, &un.up, &un.down};
+            if (do_compute && un.complete()) {
+                for (int q=0;q<3;++q) {
+                    byshard[ps[q]->shard].push_back(ps[q]->r);
+                    tags[ps[q]->shard].push_back({id,q});
+                }
+            } else {
+                for (auto &pr : un.parts) {
+                    byshard[pr.first].push_back(pr.second);
+                    tags[pr.first].push_back({id,-1});
+                }
+            }
+        }
         auto t0 = std::chrono::steady_clock::now();
         for (size_t s=0; s<sh.size(); ++s) {
             auto &v = byshard[s];
@@ -449,11 +517,47 @@ int main(int argc, char **argv) {
                 if (gtier_fetch(sh[s].g, v.data()+o, n, outs.data())) {
                     std::fprintf(stderr,"fetch failed (n=%d)\n", n); exit(1);
                 }
-                for (int k=0;k<n;++k){ dp[k]=(const uint8_t*)outs[k]; dl[k]=v[o+k].len; bytes+=v[o+k].len; }
-                touch<<<n,256>>>(dp,dl,n,sink);
-                CK(cudaDeviceSynchronize());
+                for (int k=0;k<n;++k){
+                    dp[k]=(const uint8_t*)outs[k]; dl[k]=v[o+k].len; bytes+=v[o+k].len;
+                    const Tag &tg = tags[s][o+k];
+                    if (tg.proj >= 0) where[tg.unit][tg.proj] = outs[k];
+                }
+                if (!do_compute) {           // the arithmetic is the touch
+                    touch<<<n,256>>>(dp,dl,n,sink);
+                    CK(cudaDeviceSynchronize());
+                }
             }
         }
+        if (do_compute) CK(cudaDeviceSynchronize());
+        return std::chrono::duration<double>(std::chrono::steady_clock::now()-t0).count();
+    };
+
+    // Run the routed experts' feed-forward for one token's worth of units.
+    auto run_ffn = [&](const std::vector<int> &ids)->double {
+        if (!do_compute) return 0.0;
+        auto t0 = std::chrono::steady_clock::now();
+        for (int id : ids) {
+            const Unit &un = unit[id];
+            if (!un.complete()) continue;
+            const void *w[3];
+            auto it2 = arena.at.find(id);
+            if (it2 != arena.at.end()) {
+                uint64_t off = it2->second;
+                w[0] = arena.base + off;
+                w[1] = arena.base + off + un.gate.r.len;
+                w[2] = arena.base + off + un.gate.r.len + un.up.r.len;
+            } else {
+                auto wit = where.find(id);
+                if (wit == where.end()) continue;
+                for (int q=0;q<3;++q) w[q] = wit->second[q];
+                if (!w[0] || !w[1] || !w[2]) continue;
+            }
+            if (moe_expert_ffn(blas, dims, w[0], w[1], w[2],
+                               d_x, d_g, d_u, d_h, d_y, 0)) {
+                std::fprintf(stderr,"expert ffn failed\n"); exit(1);
+            }
+        }
+        CK(cudaDeviceSynchronize());
         return std::chrono::duration<double>(std::chrono::steady_clock::now()-t0).count();
     };
 
@@ -580,6 +684,7 @@ int main(int argc, char **argv) {
     // excess is a stall.  A background admission has the same budget: it is
     // free exactly while it fits in that shadow.
     double stall_sum = 0, shadow_bytes_sum = 0, bg_bytes_sum = 0;
+    double compute_sum = 0;          // real arithmetic, when --compute is on
     const double BW = 5.682 * 1073741824.0;   // measured device ceiling, B/s
     // --- schedule ---------------------------------------------------------
     // A step is either a request's prefill (-1) or one of its decoded tokens.
@@ -697,21 +802,30 @@ int main(int argc, char **argv) {
             // With a finite lookahead the token's layers are fetched in
             // groups, and each group's read cannot start before the previous
             // group's arithmetic has revealed it.
-            uint64_t db=0; double ddt = 0;
+            uint64_t db=0; double ddt = 0, dct = 0;
             int grp = lookahead > 0 ? lookahead : L;
             for (int l0=0; l0<L; l0+=grp) {
-                std::vector<int> dm;
+                std::vector<int> dm, all;
                 for (int l=l0; l<std::min(L,l0+grp); ++l)
                     for (int k=0;k<K;++k) {
                         int e = r.decode[((size_t)st.tok*L+l)*K+k];
                         if (e<0) continue;
                         int id = (int)((size_t)l*E+e);
-                        if (!resident(id) && unit[id].bytes) dm.push_back(id);
+                        if (!unit[id].bytes) continue;
+                        all.push_back(id);
+                        if (!resident(id)) dm.push_back(id);
                     }
-                std::sort(dm.begin(), dm.end());
-                dm.erase(std::unique(dm.begin(), dm.end()), dm.end());
+                for (auto *v : {&dm,&all}) {
+                    std::sort(v->begin(), v->end());
+                    v->erase(std::unique(v->begin(), v->end()), v->end());
+                }
                 ddt += fetch_units(dm, db);
+                // The arithmetic runs over every routed expert in the group,
+                // resident or just arrived, which is what makes the reported
+                // rate a token rate rather than a transfer rate.
+                dct += run_ffn(all);
             }
+            compute_sum += dct;
             dec_bytes += db; tpot_sum += ddt; ++n_dec;
             double shadow = compute_ms_token * 1e-3;
             stall_sum += std::max(0.0, ddt - shadow);
@@ -755,6 +869,17 @@ int main(int argc, char **argv) {
                 bg_bytes_sum/1073741824.0, shadow_bytes_sum/1073741824.0,
                 pinned_fam.size(), (unsigned long long)pin_evictions,
                 (pre_bytes+dec_bytes)/1073741824.0);
+    if (do_compute) {
+        // With the feed-forward actually run, a token's cost is its I/O plus
+        // its arithmetic, and the reciprocal is a rate the engine literature
+        // reports rather than one this repository invented.
+        double per_tok = (tpot_sum + compute_sum) / n_dec;
+        std::printf("%-13s | compute %7.2f ms/tok  io %7.2f ms/tok  -> "
+                    "**%7.3f tok/s** | prefill I/O %7.3f s\n",
+                    policy_name(policy), compute_sum/n_dec*1e3,
+                    tpot_sum/n_dec*1e3, per_tok>0 ? 1.0/per_tok : 0.0,
+                    ttft_sum/n_pre);
+    }
 
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }
     if (arena.base) cudaFreeHost(arena.base);

@@ -255,6 +255,9 @@ int main(int argc, char **argv) {
         else if (s=="--verbose") verbose = true;
     }
     if (paths.empty()) { std::fprintf(stderr,"--shard required\n"); return 1; }
+    // Continuous submission is part of the gTier path; the other backends
+    // answer each fetch synchronously, which is what they are compared as.
+    if (backend != GTIER_BACKEND_GTIER) use_async = false;
 
     Trace tr;
     if (!load_trace(trace_path, tr)) { std::fprintf(stderr,"trace load failed\n"); return 1; }

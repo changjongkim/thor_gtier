@@ -1,0 +1,4 @@
+submit failed (n=8)
+arena filled: 20.63 GiB in 9.6 s
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 24.00 GiB  window 0.50  path-overhead 0.00  residency 20.63 GiB (38.2% of experts)  policy=ledger  backend=pread+copy

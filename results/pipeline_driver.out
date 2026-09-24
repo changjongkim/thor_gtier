@@ -1,0 +1,5 @@
+[09-24 22:22:40] === pipeline start ===
+[09-24 22:22:40] run  cap_qwen30b_longbench
+/home/thor/kcj/thor_gtier/scripts/pipeline.sh: line 20: 2118328 Killed                  "$@" >> "$ST/$name.out" 2>&1
+[09-24 22:23:37]   FAILED cap_qwen30b_longbench (rc=137)
+[09-24 22:23:37] run  cap_qwen30b_sharegpt

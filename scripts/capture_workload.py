@@ -27,8 +27,13 @@ a = ap.parse_args()
 rows = json.load(open(a.workload))
 tok = AutoTokenizer.from_pretrained(a.model)
 t0 = time.time()
+# sdpa rather than eager: the hooks sit on mlp.gate and do not need the
+# attention weights materialised, and eager keeps an n-by-n matrix per head
+# per layer -- at 8192 tokens that is several gigabytes a layer, which is
+# what killed the long-prompt captures.
 model = AutoModelForCausalLM.from_pretrained(
-    a.model, dtype=torch.bfloat16, device_map=a.device, attn_implementation="eager")
+    a.model, dtype=torch.bfloat16, device_map=a.device,
+    attn_implementation="sdpa", low_cpu_mem_usage=True)
 model.eval()
 cfg = model.config
 TOPK = getattr(cfg, "num_experts_per_tok", None)
@@ -66,12 +71,15 @@ for r in rows:
     with torch.no_grad():
         out = model(ids, use_cache=True)
     past, nxt = out.past_key_values, out.logits[:, -1:].argmax(-1)
+    del out
     state["tag"] = r["name"] + "/decode"
     for s in range(nd):
         state["base"] = s
         with torch.no_grad():
             o = model(nxt, past_key_values=past, use_cache=True)
         past, nxt = o.past_key_values, o.logits[:, -1:].argmax(-1)
+    del past, nxt
+    torch.cuda.empty_cache()
     print(f"  {r['name']}: {ids.shape[1]} prompt tok, +{nd}", flush=True)
 
 for h in hooks: h.remove()

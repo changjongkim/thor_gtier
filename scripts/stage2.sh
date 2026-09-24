@@ -29,6 +29,10 @@ drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 step(){
   local name=$1 need=$2; shift 2; [ "${1:-}" = "--" ] && shift
   if [ -f "$ST/$name.done" ]; then return 0; fi
+  # A step that failed twice is left for a person: retrying it on every
+  # restart would turn one bad configuration into an endless loop.
+  local fails=$(cat "$ST/$name.fail" 2>/dev/null || echo 0)
+  if [ "$fails" -ge 2 ]; then say "give up $name (failed $fails times)"; return 0; fi
   if ! mg_check "$need" >>"$LOG" 2>&1; then
     say "REFUSED $name (needs $need GiB)"; echo refused > "$ST/$name.refused"; return 0
   fi
@@ -37,14 +41,16 @@ step(){
   if "$@" >> "$ST/$name.out" 2>&1; then
     touch "$ST/$name.done"; say "  ok $name"
   else
-    say "  FAILED $name (rc=$?)"
+    local rc=$?
+    echo $((fails+1)) > "$ST/$name.fail"
+    say "  FAILED $name (rc=$rc)"
   fi
 }
 commit(){
   git add -A results scripts lib/*.cu lib/*.h >/dev/null 2>&1
   git diff --cached --quiet || { git commit -q -m "$1
 
-Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>"; timeout 300 git push -q github-cjk HEAD 2>/dev/null || timeout 300 git push -q; }
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>"; timeout 300 git push -q origin HEAD; }
 }
 
 exec 9>/tmp/gtier_pipeline.lock
@@ -201,4 +207,5 @@ for w in longbench sharegpt mmlu; do
 done
 $TORCH_VENV/bin/python "$R/scripts/summarize_matrix.py" > "$OUT/SUMMARY.md" 2>>"$LOG"
 commit "Serving matrix: bf16 track with MoE-Infinity"
+touch "$ST/STAGE2.complete"
 say "=== stage 2 done ==="

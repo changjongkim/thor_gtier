@@ -109,6 +109,7 @@ static const char *policy_name(int p) {
         case SERVE_UNIFIED_ONLINE: return "unified-online";
         case SERVE_MOEINF: return "moe-inf*";
         case SERVE_MIXTRAL: return "mixtral*";
+        case SERVE_FULL: return "gtier";
     }
     return "?";
 }
@@ -131,6 +132,20 @@ int main(int argc, char **argv) {
     // other.  Without a cap several system prompts would crowd out everything
     // popularity-ordered residency needs.
     double prefix_budget_gib = 0.0;      // 0 = no cap
+    // How much better a candidate has to be before it displaces a resident.
+    double displace_margin = 0.0;
+    // How many times a unit must be seen before it may become resident.  At
+    // one, every count is one on the first pass, ties are everywhere, and the
+    // arena fills with whatever arrived first -- which is prefill, since it
+    // comes first in every request.  A decode-hot unit reaches two within a
+    // single request; a unit the prompt merely touches once reaches it only
+    // across requests, which is the distinction the counts are for.
+    int admit_after = 1;
+    // A prefill hit and a decode hit are both one prevented read, but they are
+    // not equally predictive: a prompt touches a unit once and moves on, while
+    // a decode-hot unit is touched again on the next token and the one after.
+    // The weight is how much more a decode hit says about the future.
+    double decode_weight = 4.0;
     size_t slot = 4u << 20;
     bool verbose = false;
     int backend = GTIER_BACKEND_GTIER;
@@ -181,6 +196,9 @@ int main(int argc, char **argv) {
         else if (s=="--hidden") dim_hidden = atoi(nx());
         else if (s=="--inter") dim_inter = atoi(nx());
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
+        else if (s=="--margin") displace_margin = atof(nx());
+        else if (s=="--admit-after") admit_after = atoi(nx());
+        else if (s=="--decode-weight") decode_weight = atof(nx());
         else if (s=="--verbose") verbose = true;
     }
     if (paths.empty()) { std::fprintf(stderr,"--shard required\n"); return 1; }
@@ -681,6 +699,43 @@ int main(int argc, char **argv) {
         lru.push_front(id); lru_at[id] = lru.begin();
     };
 
+    // The whole scheme's admission.  One value per unit, learned rather than
+    // given, and both phases admit by it.
+    //
+    // An earlier version kept the rule that prefill may take free space and
+    // may not displace anything, which is right when there is no value to
+    // compare against -- a prefill reads the union once and does not return,
+    // so an LRU that admits from it evicts what decode needs.  With a value
+    // function that rule becomes harmful: it counts a prefill hit and then
+    // forbids it from acting, so units the prompt keeps returning to can never
+    // become resident.  Measured, it left prefill I/O at 1.343 s against the
+    // oracle's 0.574 while per-token I/O was already at the oracle's level.
+    // The value already knows a prefill unit is worth one hit and a hot decode
+    // unit many; the rule was a substitute for not knowing that.
+    std::unordered_set<int> pinned_units;      // prefix families, never displaced
+    auto full_admit = [&](int id, bool from_prefill) {
+        if (from_prefill) obs_pre[id]++; else obs_dec[id]++;
+        if (!unit[id].bytes || arena.has(id)) return;
+        double v = (double)obs_pre[id] + decode_weight * (double)obs_dec[id];
+        if (obs_pre[id] + obs_dec[id] < (uint64_t)admit_after) return;
+        if (arena.put(id, unit[id].bytes)) return;        // free space: take it
+        int worst = -1; double wv = 1e18;
+        for (auto &kv : arena.at) {
+            if (pinned_units.count(kv.first)) continue;
+            double q = (double)(obs_pre[kv.first] + obs_dec[kv.first]);
+            if (q < wv) { wv = q; worst = kv.first; }
+        }
+        // Displace only for a clear margin.  Without one the two phases push
+        // each other out and back: a prefill admits a unit, the next decode
+        // displaces it, the next prefill admits it again, and every round trip
+        // is a read.  Measured, letting prefill displace freely halved prefill
+        // I/O and more than doubled per-token I/O; the churn is what the
+        // margin removes.
+        if (worst < 0 || wv * (1.0 + displace_margin) >= v) return;
+        uint64_t off = arena.at[worst];
+        arena.at.erase(worst); arena.at[id] = off;
+    };
+
     // LRU admission: hold what was just used, evicting the least recent.
     auto lru_admit = [&](int id) {
         if (arena.has(id)) {
@@ -788,6 +843,7 @@ int main(int argc, char **argv) {
             if (pin_bytes + unit[id].bytes > PIN_CAP) break;
             if (!arena.put(id, unit[id].bytes)) break;
             pf.units.insert(id); pin_bytes += unit[id].bytes;
+            pinned_units.insert(id);
         }
     };
 
@@ -796,7 +852,8 @@ int main(int argc, char **argv) {
     for (auto &st : sched) {
         Request &r = tr.req[st.req];
         if (st.tok < 0) {
-            if (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX)
+            if (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
+                || policy==SERVE_FULL)
                 pin_family(family_of(r.name));
             std::unordered_set<int> u;
             for (int t=0;t<r.n_prefill;++t)
@@ -829,6 +886,8 @@ int main(int argc, char **argv) {
             // The unified value counts a prefill hit, so it has to see one.
             if (policy==SERVE_UNIFIED_ONLINE)
                 for (int id : u) if (unit[id].bytes) unified_admit(id, true);
+            if (policy==SERVE_FULL)
+                for (int id : u) if (unit[id].bytes) full_admit(id, true);
             // A sequence's activation set belongs to that sequence.
             if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
             if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
@@ -875,6 +934,8 @@ int main(int argc, char **argv) {
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
             if (policy==SERVE_UNIFIED_ONLINE)
                 for (int id : need) if (unit[id].bytes) unified_admit(id, false);
+            if (policy==SERVE_FULL)
+                for (int id : need) if (unit[id].bytes) full_admit(id, false);
             if (policy==SERVE_MOEINF)
                 for (int id : need) if (unit[id].bytes) moeinf_admit(id);
             if (policy==SERVE_MIXTRAL) {
@@ -933,6 +994,14 @@ int main(int argc, char **argv) {
                     "-> **%7.3f tok/s** (ceiling %7.3f) | prefill I/O %7.3f s\n",
                     policy_name(policy), io_tok*1e3, cp_tok*1e3, floor_tok*1e3,
                     rate(cp_tok), rate(floor_tok), ttft_sum/n_pre);
+        // tok/s alone hides the prefill, and prefill is where the I/O is: a
+        // policy can win the rate and still take longer to answer.  What a
+        // user waits for is the whole request, so it is reported at several
+        // generation lengths.
+        double pre = ttft_sum / n_pre, per = io_tok + cp_tok;
+        std::printf("%-13s | request seconds  n=4 %7.3f  n=32 %7.3f  "
+                    "n=64 %7.3f  n=256 %7.3f\n", policy_name(policy),
+                    pre+4*per, pre+32*per, pre+64*per, pre+256*per);
     }
 
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }

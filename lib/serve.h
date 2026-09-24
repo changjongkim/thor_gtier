@@ -30,6 +30,18 @@ typedef enum {
     // budget.  They are the ideas, not the systems.
     SERVE_MOEINF,         // sequence-level activation matrix + LRU
     SERVE_MIXTRAL,        // LRU + speculative next-layer load
+    // The whole scheme, and the only one of these meant to be deployed.
+    // Everything above it is either a baseline or one piece of this with the
+    // others removed, kept so the table can say where the value comes from.
+    //
+    //   value(u) = prefill_hits(u) + decode_hits(u), learned from what is
+    //              observed rather than taken from the trace;
+    //   prefill may take free space and may not displace anything, because
+    //              it reads the union once and does not come back for it;
+    //   a shared prefix is recognised from routing agreement and its union is
+    //              pinned, with the least recently served family evicted when
+    //              the pin budget is in the way.
+    SERVE_FULL,
     SERVE_POLICY_COUNT
 } serve_policy;
 

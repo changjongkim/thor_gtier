@@ -61,12 +61,12 @@ say "=== stage 2 start ==="
 # ---- 0. Qwen3-30B as Q4_K_M, so all three models share precision and path --
 Q30=$MD/qwen3_30b_q4km
 step conv_qwen30b_q4km 40 -- bash -c "
-  mkdir -p '$Q30' && \
+  set -o pipefail; mkdir -p '$Q30' && \
   $TORCH_VENV/bin/python '$LL/convert_hf_to_gguf.py' '$MD/qwen3_30b_a3b' --outtype q8_0 \
       --outfile '$Q30/qwen3-30b-a3b-q8_0.gguf' 2>&1 | tail -2 && \
   '$LL/build/bin/llama-quantize' --allow-requantize '$Q30/qwen3-30b-a3b-q8_0.gguf' \
       '$Q30/qwen3-30b-a3b-Q4_K_M.gguf' Q4_K_M 2>&1 | tail -2 && \
-  rm -f '$Q30/qwen3-30b-a3b-q8_0.gguf'"
+  rm -f '$Q30/qwen3-30b-a3b-q8_0.gguf' && test -s '$Q30/qwen3-30b-a3b-Q4_K_M.gguf'"
 
 declare -A MDIR=( [qwen30b]=$Q30 [mixtral8x7b]=$MD/mixtral8x7b_q4km [qwen235b]=$MD/moe235b_q4km )
 declare -A NLAY=( [qwen30b]=48 [mixtral8x7b]=32 [qwen235b]=94 )
@@ -84,7 +84,9 @@ for m in qwen30b mixtral8x7b; do
     '$LL/build/bin/llama-bench' -m '$g' -ngl 99 -fa 1 -p 4096 -n 32 -r 3 -o json \
       > '$OUT/calib_$m.json'"
 done
-if [ -f "$ST/calib_qwen30b.done" ] && [ ! -s "$CAL" ]; then
+# Rebuilt whenever a calibration is newer, so a missing model does not hold
+# back the others.
+if ls "$ST"/calib_*.done >/dev/null 2>&1; then
   $TORCH_VENV/bin/python - "$OUT" > "$CAL" <<'PY'
 import json, sys, subprocess
 out = sys.argv[1]
@@ -101,16 +103,19 @@ import glob
 g = lambda d: sorted(p for p in glob.glob(d + "/*.gguf") if "q8_0" not in p)
 M = "/home/thor/kcj/models"
 print("model\tdecode_ms\tprompt_ms\tsource")
-d30, p30 = ms("qwen30b")
-print(f"qwen30b\t{d30:.4f}\t{p30:.5f}\tllama-bench ngl99")
-try:
-    dm, pm = ms("mixtral8x7b")
-    print(f"mixtral8x7b\t{dm:.4f}\t{pm:.5f}\tllama-bench ngl99")
-except Exception: pass
-a30 = act(8, 128, g(M + "/qwen3_30b_q4km"))
-a235 = act(8, 128, g(M + "/moe235b_q4km"))
-r = a235 / a30
-print(f"qwen235b\t{d30*r:.4f}\t{p30*r:.5f}\tqwen30b x {r:.3f} (bytes/token {a235:.3e}/{a30:.3e})")
+got = {}
+for m in ("qwen30b", "mixtral8x7b"):
+    try:
+        got[m] = ms(m)
+        print(f"{m}\t{got[m][0]:.4f}\t{got[m][1]:.5f}\tllama-bench ngl99")
+    except Exception:
+        pass
+if "qwen30b" in got:
+    d30, p30 = got["qwen30b"]
+    a30 = act(8, 128, g(M + "/qwen3_30b_q4km"))
+    a235 = act(8, 128, g(M + "/moe235b_q4km"))
+    r = a235 / a30
+    print(f"qwen235b\t{d30*r:.4f}\t{p30*r:.5f}\tqwen30b x {r:.3f} (bytes/token {a235:.3e}/{a30:.3e})")
 PY
 fi
 cal(){ awk -v m="$1" -v c="$2" '$1==m{print $c}' "$CAL" 2>/dev/null; }

@@ -1,0 +1,1 @@
+mmap-cpu    pol=0 slot=1024KiB win=  0.50 GiB dev= 0.00 GiB b=1   uniq=  8.0 |  4.232 GiB/s  0.3381 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x

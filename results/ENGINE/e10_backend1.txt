@@ -1,0 +1,1 @@
+mmap-gpu    pol=0 slot=1024KiB win=  0.50 GiB dev= 0.00 GiB b=1   uniq=  8.0 |  1.550 GiB/s  0.1238 tok/s 12814.2 MiB/tok hit=0.0% amp=0.00x

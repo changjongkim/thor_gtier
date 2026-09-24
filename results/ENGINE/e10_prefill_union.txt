@@ -1,0 +1,1 @@
+gtier       pol=0 slot=1024KiB win=  0.50 GiB dev= 0.52 GiB b=32  uniq= 73.1 |  5.493 GiB/s  2.2662 tok/s 2482.0 MiB/tok hit=0.0% amp=1.00x

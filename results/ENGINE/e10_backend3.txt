@@ -1,0 +1,1 @@
+pread+copy  pol=0 slot=1024KiB win=  0.50 GiB dev= 1.03 GiB b=1   uniq=  8.0 |  4.033 GiB/s  0.3223 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x

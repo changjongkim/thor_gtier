@@ -12,3 +12,9 @@ mixtral*      | request seconds  n=4   5.371  n=32  14.090  n=64  24.055  n=256 
 per-layer     | io  297.50 ms/tok | compute   29.03 ms (floor  14.27) -> **  3.062 tok/s** (ceiling   3.208) | prefill I/O   4.001 s
 per-layer     | request seconds  n=4   5.307  n=32  14.450  n=64  24.899  n=256  87.594
 [19:25:22] run  sc_b24_r1_p4
+prefix        | io  398.05 ms/tok | compute   29.75 ms (floor  14.27) -> **  2.338 tok/s** (ceiling   2.425) | prefill I/O   3.925 s
+prefix        | request seconds  n=4   5.636  n=32  17.615  n=64  31.304  n=256 113.442
+[19:26:52] run  sc_b24_r1_ours0
+value+prefix  | io   56.20 ms/tok | compute   28.32 ms (floor  14.27) -> ** 11.832 tok/s** (ceiling  14.191) | prefill I/O   3.879 s
+value+prefix  | request seconds  n=4   4.217  n=32   6.584  n=64   9.288  n=256  25.516
+[19:27:57] run  sc_b24_r1_ours0.25

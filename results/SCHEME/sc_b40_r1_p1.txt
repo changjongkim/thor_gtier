@@ -1,0 +1,6 @@
+arena filled: 0.00 GiB in 0.0 s
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 40.00 GiB  window 0.50  path-overhead 0.00  residency 36.63 GiB (67.8% of experts)  policy=lru  backend=gtier
+lru           | TTFT(io)   1.776 s  prefill    7.05 GiB | look=0   | TPOT(io)   12.93 ms  decode   0.047 GiB/tok | stall  20.679 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total   86.93 GiB
+lru           | io   12.93 ms/tok | compute   23.91 ms (floor  14.27) -> ** 27.142 tok/s** (ceiling  36.766) | prefill I/O   1.776 s
+lru           | request seconds  n=4   1.923  n=32   2.955  n=64   4.134  n=256  11.208

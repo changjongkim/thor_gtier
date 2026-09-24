@@ -734,25 +734,55 @@ int main(int argc, char **argv) {
     // The value already knows a prefill unit is worth one hit and a hot decode
     // unit many; the rule was a substitute for not knowing that.
     std::unordered_set<int> pinned_units;      // prefix families, never displaced
+    // Units this request has already touched.  The utility is a count of past
+    // use, which says how often a unit is wanted but not when it is wanted
+    // next -- and eviction is a question about when.  Sequence locality gives
+    // the missing evidence: consecutive decode tokens share 3.30 of 8 experts
+    // against 0.50 for independent draws (sec 2.3c), so a unit this request
+    // has just used is very likely wanted again before the counts catch up.
+    // Excluding those from displacement is what stops a token's own working
+    // set being evicted and re-read a token later.
+    // What is in use *now*.  Scoped to the current token, not the request:
+    // a request's prefill union is 79% of the experts, so holding that for the
+    // whole request leaves nothing evictable -- measured, 150,312 admissions
+    // blocked with every non-pinned resident marked live.  A token's own 384
+    // units are what must not be evicted out from under it.
+    std::unordered_set<int> live_set;
+    // Counters, because three guesses at why the hit rate was low were all
+    // wrong and the policy needs to say what it is actually doing.
+    uint64_t adm_free=0, adm_swap=0, adm_blocked_pin=0, adm_blocked_live=0,
+             adm_blocked_none=0, adm_already=0;
     auto full_admit = [&](int id, bool from_prefill) {
         if (from_prefill) obs_pre[id]++; else obs_dec[id]++;
-        if (!unit[id].bytes || arena.has(id)) return;
-        double v = (double)obs_pre[id] + decode_weight * (double)obs_dec[id];
+        if (!unit[id].bytes) return;
+        if (arena.has(id)) { adm_already++; return; }
         if (obs_pre[id] + obs_dec[id] < (uint64_t)admit_after) return;
-        if (arena.put(id, unit[id].bytes)) return;        // free space: take it
+        if (arena.put(id, unit[id].bytes)) { adm_free++; return; }   // free space
+
+        // Admission is driven by demand and eviction by the utility.  Being
+        // accessed now is evidence the counts cannot carry: a unit routed to
+        // rarely still has to be read when it is routed to, and refusing it
+        // because its count is low pays that read on every occurrence.  What
+        // the utility decides is not whether to take something in but which
+        // resident to give up for it -- and never one this request is still
+        // using, since sequence locality says it is wanted again shortly
+        // (3.30 of 8 experts shared between consecutive tokens, sec 2.3c).
         int worst = -1; double wv = 1e18;
+        uint64_t n_pin = 0, n_live = 0;
         for (auto &kv : arena.at) {
-            if (pinned_units.count(kv.first)) continue;
-            double q = (double)(obs_pre[kv.first] + obs_dec[kv.first]);
+            if (pinned_units.count(kv.first)) { n_pin++; continue; }
+            if (live_set.count(kv.first))     { n_live++; continue; }
+            double q = (double)obs_pre[kv.first]
+                     + decode_weight * (double)obs_dec[kv.first];
             if (q < wv) { wv = q; worst = kv.first; }
         }
-        // Displace only for a clear margin.  Without one the two phases push
-        // each other out and back: a prefill admits a unit, the next decode
-        // displaces it, the next prefill admits it again, and every round trip
-        // is a read.  Measured, letting prefill displace freely halved prefill
-        // I/O and more than doubled per-token I/O; the churn is what the
-        // margin removes.
-        if (worst < 0 || wv * (1.0 + displace_margin) >= v) return;
+        if (worst < 0) {
+            if (n_pin >= arena.at.size())                 adm_blocked_pin++;
+            else if (n_live >= arena.at.size() - n_pin)   adm_blocked_live++;
+            else                                          adm_blocked_none++;
+            return;
+        }
+        adm_swap++;
         uint64_t off = arena.at[worst];
         arena.at.erase(worst); arena.at[id] = off;
     };
@@ -907,8 +937,12 @@ int main(int argc, char **argv) {
             // The unified value counts a prefill hit, so it has to see one.
             if (policy==SERVE_UNIFIED_ONLINE)
                 for (int id : u) if (unit[id].bytes) unified_admit(id, true);
-            if (policy==SERVE_FULL)
+            if (policy==SERVE_FULL) {
+                // Prefill reads the union once and does not return to it, so
+                // none of it is "in use" beyond its own read.
+                live_set.clear();
                 for (int id : u) if (unit[id].bytes) full_admit(id, true);
+            }
             // A sequence's activation set belongs to that sequence.
             if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
             if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
@@ -955,8 +989,11 @@ int main(int argc, char **argv) {
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
             if (policy==SERVE_UNIFIED_ONLINE)
                 for (int id : need) if (unit[id].bytes) unified_admit(id, false);
-            if (policy==SERVE_FULL)
+            if (policy==SERVE_FULL) {
+                live_set.clear();
+                for (int id : need) if (unit[id].bytes) live_set.insert(id);
                 for (int id : need) if (unit[id].bytes) full_admit(id, false);
+            }
             if (policy==SERVE_MOEINF)
                 for (int id : need) if (unit[id].bytes) moeinf_admit(id);
             if (policy==SERVE_MIXTRAL) {
@@ -992,6 +1029,16 @@ int main(int argc, char **argv) {
                 bg_bytes_sum/1073741824.0, shadow_bytes_sum/1073741824.0,
                 pinned_fam.size(), (unsigned long long)pin_evictions,
                 (pre_bytes+dec_bytes)/1073741824.0);
+    if (policy == SERVE_FULL)
+        std::printf("%-13s | admissions: free %llu swap %llu already %llu | "
+                    "blocked: all-pinned %llu all-live %llu other %llu | "
+                    "resident %zu of %d units\n", policy_name(policy),
+                    (unsigned long long)adm_free, (unsigned long long)adm_swap,
+                    (unsigned long long)adm_already,
+                    (unsigned long long)adm_blocked_pin,
+                    (unsigned long long)adm_blocked_live,
+                    (unsigned long long)adm_blocked_none,
+                    arena.at.size(), n_units);
     if (do_compute) {
         // A token's cost is its I/O plus its arithmetic, and the reciprocal is
         // the rate the engine literature reports.

@@ -1,0 +1,23 @@
+[17:48:21] === token rate queue: max-decode=4 ===
+[17:48:21] run  t_b24_p1
+lru           | io  338.06 ms/tok | compute   28.87 ms (floor  14.27) -> **  2.725 tok/s** (ceiling   2.838) | prefill I/O   4.085 s
+[17:49:42] run  t_b24_p10
+moe-inf*      | io   38.49 ms/tok | compute   27.60 ms (floor  14.27) -> ** 15.130 tok/s** (ceiling  18.953) | prefill I/O   4.309 s
+[17:50:51] run  t_b24_p11
+mixtral*      | io  276.73 ms/tok | compute   28.10 ms (floor  14.27) -> **  3.281 tok/s** (ceiling   3.437) | prefill I/O   4.072 s
+[17:52:09] run  t_b24_p2
+lru+phase     | io   34.55 ms/tok | compute   27.87 ms (floor  14.27) -> ** 16.022 tok/s** (ceiling  20.485) | prefill I/O   4.317 s
+[17:53:18] run  t_b24_p3
+per-layer     | io  290.86 ms/tok | compute   28.90 ms (floor  14.27) -> **  3.127 tok/s** (ceiling   3.277) | prefill I/O   3.942 s
+[17:54:44] run  t_b24_p4
+prefix        | io  392.43 ms/tok | compute   30.08 ms (floor  14.27) -> **  2.367 tok/s** (ceiling   2.459) | prefill I/O   3.882 s
+[17:56:13] run  t_b24_p7
+multi-prefix  | io   70.82 ms/tok | compute   28.95 ms (floor  14.27) -> ** 10.023 tok/s** (ceiling  11.753) | prefill I/O   4.540 s
+[17:57:27] run  t_b24_p5
+online        | io   67.20 ms/tok | compute   28.83 ms (floor  14.27) -> ** 10.413 tok/s** (ceiling  12.275) | prefill I/O   6.013 s
+[17:58:58] run  t_b24_p6
+online+prefix | io   70.65 ms/tok | compute   28.67 ms (floor  14.27) -> ** 10.069 tok/s** (ceiling  11.776) | prefill I/O   4.533 s
+[18:00:11] run  t_b24_p8
+unified       | io   25.78 ms/tok | compute   27.92 ms (floor  14.27) -> ** 18.622 tok/s** (ceiling  24.969) | prefill I/O   3.339 s
+[18:01:17] run  t_b24_p9
+unified-online | io   55.55 ms/tok | compute   28.71 ms (floor  14.27) -> ** 11.867 tok/s** (ceiling  14.323) | prefill I/O   3.792 s

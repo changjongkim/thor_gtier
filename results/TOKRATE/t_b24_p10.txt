@@ -1,0 +1,5 @@
+arena filled: 0.00 GiB in 0.0 s
+model 56.9 GiB  units 6144 x 9.00 MiB  always-resident 2.87 GiB
+budget 24.00 GiB  window 0.50  path-overhead 0.00  residency 20.63 GiB (38.2% of experts)  policy=moe-inf*  backend=gtier
+moe-inf*      | TTFT(io)   4.309 s  prefill   17.67 GiB | look=0   | TPOT(io)   38.49 ms  decode   0.152 GiB/tok | stall  52.296 s | bg   0.00 GiB vs shadow   0.24 GiB | pins 0 evict 0 | total  219.36 GiB
+moe-inf*      | io   38.49 ms/tok | compute   27.60 ms (floor  14.27) -> ** 15.130 tok/s** (ceiling  18.953) | prefill I/O   4.309 s

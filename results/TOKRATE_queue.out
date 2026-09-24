@@ -21,3 +21,25 @@ online+prefix | io   70.65 ms/tok | compute   28.67 ms (floor  14.27) -> ** 10.0
 unified       | io   25.78 ms/tok | compute   27.92 ms (floor  14.27) -> ** 18.622 tok/s** (ceiling  24.969) | prefill I/O   3.339 s
 [18:01:17] run  t_b24_p9
 unified-online | io   55.55 ms/tok | compute   28.71 ms (floor  14.27) -> ** 11.867 tok/s** (ceiling  14.323) | prefill I/O   3.792 s
+[18:02:24] run  t_b40_p1
+lru           | io   12.61 ms/tok | compute   23.34 ms (floor  14.27) -> ** 27.813 tok/s** (ceiling  37.201) | prefill I/O   1.747 s
+[18:03:11] run  t_b40_p10
+moe-inf*      | io   11.91 ms/tok | compute   24.03 ms (floor  14.27) -> ** 27.820 tok/s** (ceiling  38.200) | prefill I/O   1.861 s
+[18:03:58] run  t_b40_p11
+mixtral*      | io   12.67 ms/tok | compute   24.15 ms (floor  14.27) -> ** 27.162 tok/s** (ceiling  37.123) | prefill I/O   1.732 s
+[18:04:44] run  t_b40_p2
+lru+phase     | io   11.99 ms/tok | compute   24.39 ms (floor  14.27) -> ** 27.485 tok/s** (ceiling  38.083) | prefill I/O   1.858 s
+[18:05:32] run  t_b40_p3
+per-layer     | io    8.78 ms/tok | compute   24.30 ms (floor  14.27) -> ** 30.225 tok/s** (ceiling  43.386) | prefill I/O   1.346 s
+[18:06:27] run  t_b40_p4
+prefix        | io   58.38 ms/tok | compute   25.27 ms (floor  14.27) -> ** 11.954 tok/s** (ceiling  13.765) | prefill I/O   0.868 s
+[18:07:20] run  t_b40_p7
+multi-prefix  | io   60.06 ms/tok | compute   23.99 ms (floor  14.27) -> ** 11.897 tok/s** (ceiling  13.453) | prefill I/O   2.317 s
+[18:08:15] run  t_b40_p5
+online        | io   66.98 ms/tok | compute   28.85 ms (floor  14.27) -> ** 10.435 tok/s** (ceiling  12.309) | prefill I/O   5.963 s
+[18:09:54] run  t_b40_p6
+online+prefix | io   59.10 ms/tok | compute   24.10 ms (floor  14.27) -> ** 12.020 tok/s** (ceiling  13.631) | prefill I/O   2.302 s
+[18:10:49] run  t_b40_p8
+unified       | io    3.13 ms/tok | compute   21.22 ms (floor  14.27) -> ** 41.082 tok/s** (ceiling  57.497) | prefill I/O   0.563 s
+[18:11:35] run  t_b40_p9
+unified-online | io   15.53 ms/tok | compute   23.28 ms (floor  14.27) -> ** 25.766 tok/s** (ceiling  33.560) | prefill I/O   1.461 s

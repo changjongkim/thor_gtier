@@ -109,7 +109,7 @@ static const char *policy_name(int p) {
         case SERVE_UNIFIED_ONLINE: return "unified-online";
         case SERVE_MOEINF: return "moe-inf*";
         case SERVE_MIXTRAL: return "mixtral*";
-        case SERVE_FULL: return "gtier";
+        case SERVE_FULL: return "value+prefix";
     }
     return "?";
 }

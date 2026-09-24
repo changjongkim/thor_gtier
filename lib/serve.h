@@ -30,7 +30,11 @@ typedef enum {
     // budget.  They are the ideas, not the systems.
     SERVE_MOEINF,         // sequence-level activation matrix + LRU
     SERVE_MIXTRAL,        // LRU + speculative next-layer load
-    // The whole scheme, and the only one of these meant to be deployed.
+    // The residency policy this work proposes, and the only one of these
+    // meant to be deployed.  It sits *on top of* the gTier data path, as do
+    // all the baselines above it -- the data path is held fixed here so that
+    // what the rows compare is the policy, exactly as the backend comparisons
+    // elsewhere hold the policy fixed to compare data paths.
     // Everything above it is either a baseline or one piece of this with the
     // others removed, kept so the table can say where the value comes from.
     //

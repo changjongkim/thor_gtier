@@ -1,0 +1,9 @@
+lb_gov_report_0: prefill 6571 decode 32
+lb_hotpotqa_6: prefill 8192 decode 32
+lb_multi_news_1: prefill 5205 decode 32
+lb_musique_7: prefill 8192 decode 32
+lb_passage_count_2: prefill 8192 decode 32
+lb_qasper_5: prefill 5635 decode 32
+lb_repobench-p_4: prefill 8192 decode 32
+lb_vcsum_3: prefill 5530 decode 32
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/rt_qwen235b_longbench.bin (80.3 MiB)

@@ -1,0 +1,22 @@
+lb_2wikimqa_20: prefill 8192 decode 32
+lb_dureader_16: prefill 8192 decode 32
+lb_gov_report_0: prefill 7386 decode 32
+lb_hotpotqa_6: prefill 8192 decode 32
+lb_lcc_18: prefill 2707 decode 32
+lb_lsht_13: prefill 8192 decode 32
+lb_multi_news_1: prefill 5959 decode 32
+lb_multifieldqa_en_10: prefill 1396 decode 32
+lb_multifieldqa_zh_9: prefill 2953 decode 32
+lb_musique_7: prefill 8192 decode 32
+lb_narrativeqa_11: prefill 8192 decode 32
+lb_passage_count_2: prefill 8192 decode 32
+lb_passage_retrieval_en_12: prefill 8192 decode 32
+lb_passage_retrieval_zh_15: prefill 7216 decode 32
+lb_qasper_5: prefill 6180 decode 32
+lb_qmsum_8: prefill 8192 decode 32
+lb_repobench-p_4: prefill 8192 decode 32
+lb_samsum_19: prefill 8192 decode 32
+lb_trec_14: prefill 6821 decode 32
+lb_triviaqa_17: prefill 5385 decode 32
+lb_vcsum_3: prefill 8192 decode 32
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/rt_mixtral8x7b_longbench.bin (17.7 MiB)

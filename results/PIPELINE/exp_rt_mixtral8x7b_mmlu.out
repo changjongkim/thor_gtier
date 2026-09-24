@@ -1,0 +1,25 @@
+mmlu_abstract_algebra_4: prefill 426 decode 8
+mmlu_abstract_algebra_5: prefill 468 decode 8
+mmlu_abstract_algebra_6: prefill 421 decode 8
+mmlu_abstract_algebra_7: prefill 463 decode 8
+mmlu_computer_security_16: prefill 451 decode 8
+mmlu_computer_security_17: prefill 483 decode 8
+mmlu_computer_security_18: prefill 671 decode 8
+mmlu_computer_security_19: prefill 578 decode 8
+mmlu_high_school_psychology_20: prefill 381 decode 8
+mmlu_high_school_psychology_21: prefill 433 decode 8
+mmlu_high_school_psychology_22: prefill 432 decode 8
+mmlu_high_school_psychology_23: prefill 492 decode 8
+mmlu_machine_learning_10: prefill 499 decode 8
+mmlu_machine_learning_11: prefill 508 decode 8
+mmlu_machine_learning_8: prefill 706 decode 8
+mmlu_machine_learning_9: prefill 500 decode 8
+mmlu_professional_medicine_12: prefill 968 decode 8
+mmlu_professional_medicine_13: prefill 1271 decode 8
+mmlu_professional_medicine_14: prefill 1092 decode 8
+mmlu_professional_medicine_15: prefill 1079 decode 8
+mmlu_professional_psychology_0: prefill 694 decode 8
+mmlu_professional_psychology_1: prefill 682 decode 8
+mmlu_professional_psychology_2: prefill 690 decode 8
+mmlu_professional_psychology_3: prefill 740 decode 8
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/rt_mixtral8x7b_mmlu.bin (1.9 MiB)

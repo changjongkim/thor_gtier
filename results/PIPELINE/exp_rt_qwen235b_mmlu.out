@@ -1,0 +1,9 @@
+mmlu_abstract_algebra_4: prefill 391 decode 8
+mmlu_abstract_algebra_5: prefill 434 decode 8
+mmlu_abstract_algebra_6: prefill 386 decode 8
+mmlu_abstract_algebra_7: prefill 425 decode 8
+mmlu_professional_psychology_0: prefill 601 decode 8
+mmlu_professional_psychology_1: prefill 589 decode 8
+mmlu_professional_psychology_2: prefill 600 decode 8
+mmlu_professional_psychology_3: prefill 637 decode 8
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/rt_qwen235b_mmlu.bin (5.9 MiB)

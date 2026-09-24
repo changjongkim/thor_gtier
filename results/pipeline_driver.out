@@ -1,8 +1,32 @@
-[09-24 22:42:57] === pipeline start ===
-[09-24 22:42:57] skip cap_qwen30b_longbench
-[09-24 22:42:57] skip cap_qwen30b_sharegpt
-[09-24 22:42:57] skip cap_qwen30b_mmlu
-[09-24 22:42:57] run  cap_mixtral8x7b_longbench
-./scripts/pipeline.sh: line 20: 2682381 Killed                  "$@" >> "$ST/$name.out" 2>&1
-[09-24 22:44:05]   FAILED cap_mixtral8x7b_longbench (rc=137)
-[09-24 22:44:05] run  cap_mixtral8x7b_sharegpt
+[09-24 23:00:00] === pipeline start ===
+[09-24 23:00:00] skip cap_qwen30b_longbench
+[09-24 23:00:00] skip cap_qwen30b_sharegpt
+[09-24 23:00:00] skip cap_qwen30b_mmlu
+[09-24 23:00:00] run  capg_mixtral8x7b_longbench
+[09-24 23:04:21]   ok capg_mixtral8x7b_longbench
+[09-24 23:04:21] run  capg_mixtral8x7b_sharegpt
+[09-24 23:05:42]   ok capg_mixtral8x7b_sharegpt
+[09-24 23:05:42] run  capg_mixtral8x7b_mmlu
+[09-24 23:06:35]   ok capg_mixtral8x7b_mmlu
+[09-24 23:06:35] run  capg_qwen235b_longbench
+[09-24 23:56:45]   ok capg_qwen235b_longbench
+[09-24 23:56:45] run  capg_qwen235b_sharegpt
+[09-25 00:36:55]   ok capg_qwen235b_sharegpt
+[09-25 00:36:55] run  capg_qwen235b_mmlu
+[09-25 01:17:26]   ok capg_qwen235b_mmlu
+[09-25 01:17:26] run  exp_rt_mixtral8x7b_longbench
+[09-25 01:17:41]   ok exp_rt_mixtral8x7b_longbench
+[09-25 01:17:41] run  exp_rt_mixtral8x7b_mmlu
+[09-25 01:17:42]   ok exp_rt_mixtral8x7b_mmlu
+[09-25 01:17:42] run  exp_rt_mixtral8x7b_sharegpt
+[09-25 01:17:42]   ok exp_rt_mixtral8x7b_sharegpt
+[09-25 01:17:42] run  exp_rt_qwen235b_longbench
+[09-25 01:17:44]   ok exp_rt_qwen235b_longbench
+[09-25 01:17:44] run  exp_rt_qwen235b_mmlu
+[09-25 01:17:44]   ok exp_rt_qwen235b_mmlu
+[09-25 01:17:44] run  exp_rt_qwen235b_sharegpt
+[09-25 01:17:45]   ok exp_rt_qwen235b_sharegpt
+[09-25 01:17:45] skip exp_rt_qwen30b_longbench
+[09-25 01:17:45] skip exp_rt_qwen30b_mmlu
+[09-25 01:17:45] skip exp_rt_qwen30b_sharegpt
+[09-25 01:17:45] === pipeline stage 1 done ===

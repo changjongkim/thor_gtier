@@ -1,0 +1,25 @@
+sg_3O3k7Ni_0_t2: prefill 260 decode 32
+sg_3O3k7Ni_0_t3: prefill 798 decode 32
+sg_5cVpTKS_0_t2: prefill 246 decode 32
+sg_9EM9xb8_25_t2: prefill 379 decode 32
+sg_9EM9xb8_25_t3: prefill 1853 decode 32
+sg_CcQ9JCK_25_t2: prefill 823 decode 32
+sg_MuZDUct_0_t2: prefill 109 decode 32
+sg_MuZDUct_0_t3: prefill 377 decode 32
+sg_RtCgJK2_47_t2: prefill 415 decode 32
+sg_RtCgJK2_47_t3: prefill 684 decode 32
+sg_V4wpuJu_0_t2: prefill 614 decode 32
+sg_V4wpuJu_0_t3: prefill 1240 decode 32
+sg_cSz8Ik6_0_t2: prefill 67 decode 32
+sg_cSz8Ik6_0_t3: prefill 391 decode 32
+sg_f9XBWSi_15_t2: prefill 442 decode 32
+sg_f9XBWSi_15_t3: prefill 759 decode 32
+sg_jKqNBVf_0_t2: prefill 1059 decode 32
+sg_jKqNBVf_0_t3: prefill 1237 decode 32
+sg_k7ymHcr_21_t2: prefill 1012 decode 32
+sg_k7ymHcr_21_t3: prefill 1797 decode 32
+sg_zZRzzTy_16_t2: prefill 199 decode 32
+sg_zZRzzTy_16_t3: prefill 393 decode 32
+sg_zcq8Evp_0_t2: prefill 164 decode 32
+sg_zcq8Evp_0_t3: prefill 223 decode 32
+wrote /home/thor/kcj/thor_gtier/results/SCOPE/rt_qwen30b_sharegpt.bin (11.9 MiB)

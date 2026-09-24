@@ -47,9 +47,17 @@ except Exception as e: print('hqq FAILED:', type(e).__name__, e)
 say "pregated"
 if [ -d "$S/Pregated_MoE" ]; then
   mkdir -p "$S/Pregated_MoE/build"
+  # The variable is SM, not SM_NUM, and it is only honoured if it appears in
+  # a hard-coded SM_SETS list that stops at 90.  An arch that is not listed
+  # does not fail -- it silently falls through to a default of 70/75/80/86,
+  # which is a binary with no kernel for this device.  110 is added to the
+  # set, and to the list of archs that enable WMMA, which Blackwell has.
+  CM="$S/Pregated_MoE/CMakeLists.txt"
+  [ -f "$CM.orig" ] || cp "$CM" "$CM.orig"
+  sed -i 's/^set(SM_SETS 52 60 61 70 75 80 86 89 90)$/set(SM_SETS 52 60 61 70 75 80 86 89 90 110)/' "$CM"
+  sed -i 's/SM_NUM STREQUAL 89 OR SM_NUM STREQUAL 90)/SM_NUM STREQUAL 89 OR SM_NUM STREQUAL 90 OR SM_NUM STREQUAL 110)/' "$CM"
   ( cd "$S/Pregated_MoE/build" && \
-    cmake -DSM_NUM=110 -DCMAKE_CUDA_ARCHITECTURES=110 \
-          -DCMAKE_BUILD_TYPE=Release .. 2>&1 | tail -6 ) | tee -a "$LOG"
+    cmake -DSM=110 -DCMAKE_BUILD_TYPE=Release .. 2>&1 | grep -E "Assign GPU|WMMA" ) | tee -a "$LOG"
 fi
 
 say "=== sota build done ==="

@@ -1,0 +1,48 @@
+[22:46:53] make start
+  548 | typedef __device_builtin__ struct longlong4 __VECTOR_TYPE_DEPRECATED__("use longlong4_16a or longlong4_32a") longlong4;
+      |                                                                                                              ^~~~~~~~~
+/home/thor/kcj/Pregated_MoE/3rdparty/cutlass/include/cutlass/platform/platform.h:654:21: warning: ‘ulonglong4’ is deprecated: use ulonglong4_16a or ulonglong4_32a [-Wdeprecated-declarations]
+  654 | struct alignment_of<ulonglong4> {
+      |                     ^~~~~~~~~~
+/usr/local/cuda-13.0/include/vector_types.h:549:113: note: declared here
+  549 | typedef __device_builtin__ struct ulonglong4 __VECTOR_TYPE_DEPRECATED__("use ulonglong4_16a or ulonglong4_32a") ulonglong4;
+      |                                                                                                                 ^~~~~~~~~~
+/home/thor/kcj/Pregated_MoE/3rdparty/cutlass/include/cutlass/platform/platform.h:658:21: warning: ‘double4’ is deprecated: use double4_16a or double4_32a [-Wdeprecated-declarations]
+  658 | struct alignment_of<double4> {
+      |                     ^~~~~~~
+/usr/local/cuda-13.0/include/vector_types.h:559:104: note: declared here
+  559 | typedef __device_builtin__ struct double4 __VECTOR_TYPE_DEPRECATED__("use double4_16a or double4_32a") double4;
+      |                                                                                                        ^~~~~~~
+[  1%] Built target mpi_utils
+[  1%] Linking CUDA device code CMakeFiles/logger.dir/cmake_device_link.o
+[  2%] Linking CXX static library ../../../lib/liblogger.a
+[  2%] Linking CUDA device code CMakeFiles/word_list.dir/cmake_device_link.o
+[  2%] Built target logger
+[  2%] Linking CXX static library ../../../lib/libword_list.a
+[  2%] Built target word_list
+[  2%] Linking CUDA device code CMakeFiles/cuda_utils.dir/cmake_device_link.o
+[  2%] Linking CXX static library ../../../../lib/libcutlass_preprocessors.a
+[  2%] Linking CXX static library ../../../lib/libcuda_utils.a
+[  2%] Built target cutlass_preprocessors
+[  2%] Built target cuda_utils
+[  3%] Linking CUDA device code CMakeFiles/nccl_utils.dir/cmake_device_link.o
+[  3%] Linking CXX static library ../../../lib/libnccl_utils.a
+[  3%] Built target nccl_utils
+make: *** [Makefile:136: all] Error 2
+[22:46:56] make rc=0
+bin/:
+total 8
+drwxrwxr-x 2 thor thor 4096 Sep 24 22:46 .
+drwxrwxr-x 8 thor thor 4096 Sep 24 22:46 ..
+
+lib/:
+total 556
+drwxrwxr-x 2 thor thor   4096 Sep 24 22:46 .
+drwxrwxr-x 8 thor thor   4096 Sep 24 22:46 ..
+-rw-rw-r-- 1 thor thor  10032 Sep 24 22:46 libcuda_driver_wrapper.a
+-rw-rw-r-- 1 thor thor 137206 Sep 24 22:46 libcuda_utils.a
+-rw-rw-r-- 1 thor thor  96584 Sep 24 22:46 libcutlass_preprocessors.a
+-rw-rw-r-- 1 thor thor  27266 Sep 24 22:46 liblogger.a
+-rw-rw-r-- 1 thor thor   6162 Sep 24 22:46 libmpi_utils.a
+-rw-rw-r-- 1 thor thor 256246 Sep 24 22:46 libnccl_utils.a
+-rw-rw-r-- 1 thor thor  15596 Sep 24 22:46 libword_list.a

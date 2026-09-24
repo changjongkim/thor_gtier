@@ -1,0 +1,7 @@
+[22:14:08] capture qwen30b / longbench
+./scripts/run_capture_queue.sh: line 26: 2114277 Killed                  timeout 14400 $TORCH_VENV/bin/python scripts/capture_workload.py --model "$mpath" --workload "$R/results/WORKLOADS/$w.json" --out "$o" >> "$OUT/capture_${mname}_${w}.out" 2>&1
+[22:17:44]   FAILED qwen30b/longbench
+[22:17:44] capture qwen30b / sharegpt
+./scripts/run_capture_queue.sh: line 26: 2115662 Killed                  timeout 14400 $TORCH_VENV/bin/python scripts/capture_workload.py --model "$mpath" --workload "$R/results/WORKLOADS/$w.json" --out "$o" >> "$OUT/capture_${mname}_${w}.out" 2>&1
+[22:19:06]   FAILED qwen30b/sharegpt
+[22:19:06] capture qwen30b / mmlu

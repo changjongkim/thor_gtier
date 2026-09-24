@@ -3,13 +3,16 @@
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 
-// One layer's shapes; Qwen3-30B-A3B is hidden 2048, inter 768.
+// One layer's shapes; Qwen3-30B-A3B is hidden 2048, intermediate 768.
 struct moe_dims { int hidden; int inter; };
 
-// Runs one routed expert's SwiGLU feed-forward straight out of whatever
-// memory the weights already live in, accumulating into y_accum.
-int moe_expert_ffn(cublasHandle_t h, const moe_dims &d,
-                   const void *gate_w, const void *up_w, const void *down_w,
-                   const void *x, void *g_buf, void *u_buf, void *h_buf,
-                   void *y_accum, cudaStream_t stream);
+// Runs a layer's routed experts' SwiGLU feed-forward, reading the weights
+// wherever they already are.  dev_ptrs is device memory holding the pointer
+// arrays laid out as gate[n] up[n] down[n] ... ; only the first three are
+// read.  The cublasHandle_t is unused and kept so callers need not change.
+int moe_layer_ffn(cublasHandle_t h, const moe_dims &d, int n_exp,
+                  const void *const *gate_w, const void *const *up_w,
+                  const void *const *down_w, const void *x,
+                  void *g_buf, void *u_buf, void *h_buf, void *y_accum,
+                  const void **dev_ptrs, cudaStream_t stream);
 #endif

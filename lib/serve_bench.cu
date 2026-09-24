@@ -445,15 +445,22 @@ int main(int argc, char **argv) {
     cublasHandle_t blas = nullptr;
     moe_dims dims{dim_hidden, dim_inter};
     void *d_x=nullptr, *d_g=nullptr, *d_u=nullptr, *d_h=nullptr, *d_y=nullptr;
+    const void **d_ptrs = nullptr;        // gate,up,down,x,g,u,h,y arrays
+    std::vector<const void*> h_ptrs;
+    size_t ptr_cap = 0;
     if (do_compute) {
         if (cublasCreate(&blas) != CUBLAS_STATUS_SUCCESS) {
             std::fprintf(stderr,"cublasCreate failed\n"); return 1;
         }
+        // A layer's experts run in one batched call, so every buffer holds K
+        // slices rather than one.
         size_t hb = (size_t)dim_hidden*2, ib = (size_t)dim_inter*2;
-        CK(cudaMalloc(&d_x, hb)); CK(cudaMalloc(&d_y, hb));
-        CK(cudaMalloc(&d_g, ib)); CK(cudaMalloc(&d_u, ib)); CK(cudaMalloc(&d_h, ib));
+        CK(cudaMalloc(&d_x, hb)); CK(cudaMalloc(&d_y, hb*K));
+        CK(cudaMalloc(&d_g, ib*K)); CK(cudaMalloc(&d_u, ib*K)); CK(cudaMalloc(&d_h, ib*K));
         CK(cudaMemset(d_x, 0x3c, hb));      // a plausible bf16 pattern near 1.0
-        CK(cudaMemset(d_y, 0, hb));
+        CK(cudaMemset(d_y, 0, hb*K));
+        ptr_cap = (size_t)8*K*L;                 // a whole token's layers
+        CK(cudaMalloc(&d_ptrs, sizeof(void*) * ptr_cap));
         auto tf = std::chrono::steady_clock::now();
         uint64_t filled = 0;
         for (auto &kv : arena.at) {
@@ -532,30 +539,64 @@ int main(int argc, char **argv) {
         return std::chrono::duration<double>(std::chrono::steady_clock::now()-t0).count();
     };
 
-    // Run the routed experts' feed-forward for one token's worth of units.
+    // Run the routed experts' feed-forward for a group of units, a layer at a
+    // time.  The pointer arrays for every layer in the group are staged and
+    // uploaded once: a copy per layer meant 48 synchronous transfers per
+    // token, which cost more than the arithmetic they were describing.
     auto run_ffn = [&](const std::vector<int> &ids)->double {
-        if (!do_compute) return 0.0;
+        if (!do_compute || ids.empty()) return 0.0;
         auto t0 = std::chrono::steady_clock::now();
-        for (int id : ids) {
-            const Unit &un = unit[id];
-            if (!un.complete()) continue;
-            const void *w[3];
-            auto it2 = arena.at.find(id);
-            if (it2 != arena.at.end()) {
-                uint64_t off = it2->second;
-                w[0] = arena.base + off;
-                w[1] = arena.base + off + un.gate.r.len;
-                w[2] = arena.base + off + un.gate.r.len + un.up.r.len;
-            } else {
-                auto wit = where.find(id);
-                if (wit == where.end()) continue;
-                for (int q=0;q<3;++q) w[q] = wit->second[q];
-                if (!w[0] || !w[1] || !w[2]) continue;
+        std::map<int, std::vector<int>> by_layer;
+        for (int id : ids) if (unit[id].complete()) by_layer[id / E].push_back(id);
+        if (by_layer.empty()) return 0.0;
+
+        struct Job { int n; size_t base; };     // base = index into h_ptrs
+        std::vector<Job> jobs;
+        h_ptrs.clear();
+        for (auto &kv : by_layer) {
+            auto &v = kv.second;
+            int n = (int)std::min<size_t>(v.size(), (size_t)K);
+            std::array<std::vector<const void*>,8> col;
+            for (auto &cvec : col) cvec.reserve(n);
+            for (int j2=0;j2<n;++j2) {
+                const Unit &un = unit[v[j2]];
+                const void *w[3];
+                auto it2 = arena.at.find(v[j2]);
+                if (it2 != arena.at.end()) {
+                    uint64_t off = it2->second;
+                    w[0] = arena.base + off;
+                    w[1] = arena.base + off + un.gate.r.len;
+                    w[2] = arena.base + off + un.gate.r.len + un.up.r.len;
+                } else {
+                    auto wit = where.find(v[j2]);
+                    if (wit == where.end() || !wit->second[0]) break;
+                    for (int q=0;q<3;++q) w[q] = wit->second[q];
+                }
+                size_t slot = col[0].size();
+                col[0].push_back(w[0]); col[1].push_back(w[1]); col[2].push_back(w[2]);
+                col[3].push_back(d_x);
+                col[4].push_back((const uint8_t*)d_g + slot*dim_inter*2);
+                col[5].push_back((const uint8_t*)d_u + slot*dim_inter*2);
+                col[6].push_back((const uint8_t*)d_h + slot*dim_inter*2);
+                col[7].push_back((const uint8_t*)d_y + slot*dim_hidden*2);
             }
-            if (moe_expert_ffn(blas, dims, w[0], w[1], w[2],
-                               d_x, d_g, d_u, d_h, d_y, 0)) {
-                std::fprintf(stderr,"expert ffn failed\n"); exit(1);
-            }
+            int have = (int)col[0].size();
+            if (!have) continue;
+            jobs.push_back({have, h_ptrs.size()});
+            for (auto &cvec : col) h_ptrs.insert(h_ptrs.end(), cvec.begin(), cvec.end());
+        }
+        if (jobs.empty()) return 0.0;
+        if (h_ptrs.size() > ptr_cap) {
+            if (d_ptrs) cudaFree(d_ptrs);
+            ptr_cap = h_ptrs.size() * 2;
+            CK(cudaMalloc(&d_ptrs, sizeof(void*) * ptr_cap));
+        }
+        CK(cudaMemcpy(d_ptrs, h_ptrs.data(), sizeof(void*)*h_ptrs.size(),
+                      cudaMemcpyHostToDevice));
+        for (auto &jb : jobs) {
+            int rc = moe_layer_ffn(blas, dims, jb.n, nullptr, nullptr, nullptr,
+                                   d_x, d_g, d_u, d_h, d_y, d_ptrs + jb.base, 0);
+            if (rc) { std::fprintf(stderr,"layer ffn failed rc=%d\n", rc); exit(1); }
         }
         CK(cudaDeviceSynchronize());
         return std::chrono::duration<double>(std::chrono::steady_clock::now()-t0).count();
@@ -870,15 +911,28 @@ int main(int argc, char **argv) {
                 pinned_fam.size(), (unsigned long long)pin_evictions,
                 (pre_bytes+dec_bytes)/1073741824.0);
     if (do_compute) {
-        // With the feed-forward actually run, a token's cost is its I/O plus
-        // its arithmetic, and the reciprocal is a rate the engine literature
-        // reports rather than one this repository invented.
-        double per_tok = (tpot_sum + compute_sum) / n_dec;
-        std::printf("%-13s | compute %7.2f ms/tok  io %7.2f ms/tok  -> "
-                    "**%7.3f tok/s** | prefill I/O %7.3f s\n",
-                    policy_name(policy), compute_sum/n_dec*1e3,
-                    tpot_sum/n_dec*1e3, per_tok>0 ? 1.0/per_tok : 0.0,
-                    ttft_sum/n_pre);
+        // A token's cost is its I/O plus its arithmetic, and the reciprocal is
+        // the rate the engine literature reports.
+        //
+        // The arithmetic is reported twice, because the kernels here are a
+        // straightforward implementation rather than a tuned one.  A decode
+        // token reads every routed weight once and reuses none, so the work is
+        // bound by memory and its floor is (bytes touched) / 254 GB/s, the
+        // measured GPU read bandwidth (gtier/mapped_read_bw.cu, and the same
+        // whether the bytes sit in cudaMalloc'd or mapped memory).  The
+        // measured kernels run about three and a half times that.  Since the
+        // same kernels run under every policy, the comparison between policies
+        // is unaffected; what the gap moves is the absolute rate, so both ends
+        // are given and the truth is between them.
+        double io_tok = tpot_sum / n_dec;
+        double cp_tok = compute_sum / n_dec;
+        double touched = (double)K * L * per_unit;          // bytes per token
+        double floor_tok = touched / (254.0e9);
+        auto rate = [&](double c){ double t = io_tok + c; return t>0 ? 1.0/t : 0.0; };
+        std::printf("%-13s | io %7.2f ms/tok | compute %7.2f ms (floor %6.2f) "
+                    "-> **%7.3f tok/s** (ceiling %7.3f) | prefill I/O %7.3f s\n",
+                    policy_name(policy), io_tok*1e3, cp_tok*1e3, floor_tok*1e3,
+                    rate(cp_tok), rate(floor_tok), ttft_sum/n_pre);
     }
 
     for (auto &s : sh) { gtier_close(s.g); gguf_free(&s.m); }

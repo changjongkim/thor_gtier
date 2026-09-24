@@ -173,6 +173,10 @@ int main(int argc, char **argv) {
     // token times instead: the routed experts' feed-forward is actually run,
     // out of whatever memory the weights happen to be in.
     bool do_compute = false;
+    // The continuous-submission path (sec 3.3).  On by default: the serving
+    // measurements are of the whole stack, and leaving it off measured a data
+    // path this work does not propose.
+    bool use_async = true;
     int dim_hidden = 2048, dim_inter = 768;
 
     for (int i = 1; i < argc; ++i) {
@@ -197,6 +201,7 @@ int main(int argc, char **argv) {
         else if (s=="--interleave") interleave = true;
         else if (s=="--lookahead") lookahead = atoi(nx());
         else if (s=="--compute") do_compute = true;
+        else if (s=="--no-async") use_async = false;
         else if (s=="--hidden") dim_hidden = atoi(nx());
         else if (s=="--inter") dim_inter = atoi(nx());
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
@@ -411,6 +416,7 @@ int main(int argc, char **argv) {
 
     // --- gtier handles ----------------------------------------------------
     int per_shard = std::max(32, (int)(W / slot / sh.size()));
+    if (use_async) per_shard = std::max(per_shard, 8 * GTIER_MAX_INFLIGHT);
     gtier_config cfg{};
     cfg.backend = (gtier_backend)backend;
     cfg.slot_bytes = slot; cfg.slots = per_shard; cfg.queue_depth = per_shard;
@@ -558,10 +564,40 @@ int main(int argc, char **argv) {
         auto t0 = std::chrono::steady_clock::now();
         for (size_t s=0; s<sh.size(); ++s) {
             auto &v = byshard[s];
-            for (size_t o=0; o<v.size(); o += cfg.max_fetch_ranges) {
+            // Continuous submission: the next batch goes to the ring before
+            // this one is collected, so the queue is never drained between
+            // them.  gtier_fetch submits and waits for everything, which
+            // empties the ring at every boundary and costs up to 31.7% at
+            // shallow depth (sec 4.6).  The tickets own disjoint slots, so
+            // two can be outstanding at once.
+            size_t nb = (v.size() + cfg.max_fetch_ranges - 1) / cfg.max_fetch_ranges;
+            gtier_ticket tk[2]; bool live_tk[2] = {false,false};
+            std::vector<void*> outs(cfg.max_fetch_ranges);
+            for (size_t b = 0; b <= nb; ++b) {
+                if (b < nb) {
+                    size_t o = b * cfg.max_fetch_ranges;
+                    int n = (int)std::min((size_t)cfg.max_fetch_ranges, v.size()-o);
+                    int cur = (int)(b & 1);
+                    if (use_async) {
+                        if (gtier_submit(sh[s].g, v.data()+o, n, &tk[cur])) {
+                            std::fprintf(stderr,"submit failed (n=%d)\n", n); exit(1);
+                        }
+                        live_tk[cur] = true;
+                    }
+                }
+                if (b == 0 && use_async) continue;        // nothing to collect yet
+                size_t done = use_async ? b - 1 : b;
+                if (done >= nb) break;
+                size_t o = done * cfg.max_fetch_ranges;
                 int n = (int)std::min((size_t)cfg.max_fetch_ranges, v.size()-o);
-                std::vector<void*> outs(n);
-                if (gtier_fetch(sh[s].g, v.data()+o, n, outs.data())) {
+                int slot_i = (int)(done & 1);
+                if (use_async) {
+                    if (!live_tk[slot_i]) continue;
+                    if (gtier_wait(sh[s].g, &tk[slot_i], outs.data())) {
+                        std::fprintf(stderr,"wait failed\n"); exit(1);
+                    }
+                    live_tk[slot_i] = false;
+                } else if (gtier_fetch(sh[s].g, v.data()+o, n, outs.data())) {
                     std::fprintf(stderr,"fetch failed (n=%d)\n", n); exit(1);
                 }
                 for (int k=0;k<n;++k){

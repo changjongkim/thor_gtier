@@ -1,23 +1,8 @@
-[09-24 22:32:32] === pipeline start ===
-[09-24 22:32:32] run  cap_qwen30b_longbench
-[09-24 22:36:00]   ok cap_qwen30b_longbench
-[09-24 22:36:00] run  cap_qwen30b_sharegpt
-[09-24 22:38:35]   ok cap_qwen30b_sharegpt
-[09-24 22:38:35] run  cap_qwen30b_mmlu
-[09-24 22:40:13]   ok cap_qwen30b_mmlu
-[09-24 22:40:13] run  cap_mixtral8x7b_longbench
-./scripts/pipeline.sh: line 20: 2605458 Killed                  "$@" >> "$ST/$name.out" 2>&1
-[09-24 22:41:03]   FAILED cap_mixtral8x7b_longbench (rc=137)
-[09-24 22:41:03] run  cap_mixtral8x7b_sharegpt
-./scripts/pipeline.sh: line 20: 2637197 Killed                  "$@" >> "$ST/$name.out" 2>&1
-[09-24 22:41:43]   FAILED cap_mixtral8x7b_sharegpt (rc=137)
-[09-24 22:41:43] run  cap_mixtral8x7b_mmlu
-./scripts/pipeline.sh: line 20: 2664269 Killed                  "$@" >> "$ST/$name.out" 2>&1
-[09-24 22:42:24]   FAILED cap_mixtral8x7b_mmlu (rc=137)
-[09-24 22:42:24] run  exp_rt_qwen30b_longbench
-[09-24 22:42:26]   ok exp_rt_qwen30b_longbench
-[09-24 22:42:26] run  exp_rt_qwen30b_mmlu
-[09-24 22:42:27]   ok exp_rt_qwen30b_mmlu
-[09-24 22:42:27] run  exp_rt_qwen30b_sharegpt
-[09-24 22:42:28]   ok exp_rt_qwen30b_sharegpt
-[09-24 22:42:28] === pipeline stage 1 done ===
+[09-24 22:42:57] === pipeline start ===
+[09-24 22:42:57] skip cap_qwen30b_longbench
+[09-24 22:42:57] skip cap_qwen30b_sharegpt
+[09-24 22:42:57] skip cap_qwen30b_mmlu
+[09-24 22:42:57] run  cap_mixtral8x7b_longbench
+./scripts/pipeline.sh: line 20: 2682381 Killed                  "$@" >> "$ST/$name.out" 2>&1
+[09-24 22:44:05]   FAILED cap_mixtral8x7b_longbench (rc=137)
+[09-24 22:44:05] run  cap_mixtral8x7b_sharegpt

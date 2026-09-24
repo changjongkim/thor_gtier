@@ -39,15 +39,18 @@ echo -500 | sudo -n tee /proc/self/oom_score_adj >/dev/null 2>&1 || true
 say "=== pipeline start ==="
 
 # ---- 1. routing captures: every model over every workload ----------------
-for spec in "qwen30b:/home/thor/kcj/models/qwen3_30b_a3b:65" \
-            "mixtral8x7b:/home/thor/kcj/models/mixtral8x7b_bf16:95"; do
-  mn=${spec%%:*}; rest=${spec#*:}; mp=${rest%%:*}; msz=${rest##*:}
+# name:path:resident-GiB:gpu-cap-GiB (0 = load whole)
+# Mixtral is capped: its 87 GiB checkpoint cannot be loaded whole here.
+for spec in "qwen30b:/home/thor/kcj/models/qwen3_30b_a3b:65:0" \
+            "mixtral8x7b:/home/thor/kcj/models/mixtral8x7b_bf16:72:60"; do
+  mn=${spec%%:*}; rest=${spec#*:}; mp=${rest%%:*}; rest=${rest#*:}
+  msz=${rest%%:*}; cap=${rest##*:}
   [ -d "$mp" ] || { say "skip $mn (absent)"; continue; }
   for w in longbench sharegpt mmlu; do
     step "cap_${mn}_${w}" "$msz" -- \
       $TORCH_VENV/bin/python scripts/capture_workload.py \
         --model "$mp" --workload "$R/results/WORKLOADS/$w.json" \
-        --out "$R/results/SCOPE/rt_${mn}_${w}.npz"
+        --out "$R/results/SCOPE/rt_${mn}_${w}.npz" --max-gpu-gib "$cap"
   done
 done
 

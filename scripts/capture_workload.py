@@ -22,6 +22,13 @@ ap.add_argument("--out", required=True)
 ap.add_argument("--max-prompt-tokens", type=int, default=8192)
 ap.add_argument("--decode", type=int, default=0, help="0 = use each prompt's max_new")
 ap.add_argument("--device", default="cuda:0")
+# A checkpoint near the size of memory cannot be loaded whole: the load
+# transient exceeds the checkpoint, and Mixtral-8x7B's 87 GiB of bf16 was
+# OOM-killed on a 122 GiB machine at every attempt.  With a cap, accelerate
+# keeps what fits resident and serves the rest from disk, so the peak is
+# bounded and the routing is still the exact bf16 routing -- only slower.
+ap.add_argument("--max-gpu-gib", type=float, default=0.0)
+ap.add_argument("--offload-dir", default="/home/thor/kcj/offload_tmp")
 a = ap.parse_args()
 
 rows = json.load(open(a.workload))
@@ -31,9 +38,18 @@ t0 = time.time()
 # attention weights materialised, and eager keeps an n-by-n matrix per head
 # per layer -- at 8192 tokens that is several gigabytes a layer, which is
 # what killed the long-prompt captures.
-model = AutoModelForCausalLM.from_pretrained(
-    a.model, dtype=torch.bfloat16, device_map=a.device,
-    attn_implementation="sdpa", low_cpu_mem_usage=True)
+if a.max_gpu_gib > 0:
+    os.makedirs(a.offload_dir, exist_ok=True)
+    model = AutoModelForCausalLM.from_pretrained(
+        a.model, dtype=torch.bfloat16, device_map="auto",
+        max_memory={0: f"{a.max_gpu_gib}GiB", "cpu": "4GiB"},
+        offload_folder=a.offload_dir, offload_state_dict=True,
+        attn_implementation="sdpa", low_cpu_mem_usage=True)
+    a.device = "cuda:0"
+else:
+    model = AutoModelForCausalLM.from_pretrained(
+        a.model, dtype=torch.bfloat16, device_map=a.device,
+        attn_implementation="sdpa", low_cpu_mem_usage=True)
 model.eval()
 cfg = model.config
 TOPK = getattr(cfg, "num_experts_per_tok", None)

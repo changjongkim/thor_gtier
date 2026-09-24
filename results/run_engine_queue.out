@@ -36,3 +36,20 @@ OUTCOME failed rc=143
 [16:03:53] run  e9_ngl40_mmap
 IOMETER {"label": "e9_ngl40_mmap", "returncode": -9, "wall_s": 577.96, "read_GiB": 0.096, "read_GiB_s": 0.0002, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "40"]}
 [16:13:35] run  e9_ngl99_dio
+[16:26:23] === engine queue: Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf  pp=512 tg=32 ===
+  model 132.4 GiB vs 122.8 GiB of memory
+[16:26:23] skip e9_ngl0_mmap
+[16:26:23] skip e9_ngl40_mmap
+[16:26:23] run  e9_ngl40_dio
+IOMETER {"label": "e9_ngl40_dio", "returncode": -9, "wall_s": 33.654, "read_GiB": 0.217, "read_GiB_s": 0.0064, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "40", "-dio", "1"]}
+[16:26:57] run  e9_ngl40_nommap
+IOMETER {"label": "e9_ngl40_nommap", "returncode": -9, "wall_s": 33.508, "read_GiB": 0.271, "read_GiB_s": 0.0081, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "40", "-mmp", "0"]}
+[16:27:31] run  e9_ncmoe47
+    "avg_ts": 2.795165,
+    "avg_ts": 0.967732,
+IOMETER {"label": "e9_ncmoe47", "returncode": 0, "wall_s": 1258.829, "read_GiB": 287.428, "read_GiB_s": 0.2283, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "99", "-ncmoe", "47"]}
+[16:48:30] run  e9_ncmoe70
+    "avg_ts": 4.142939,
+    "avg_ts": 2.322263,
+IOMETER {"label": "e9_ncmoe70", "returncode": 0, "wall_s": 706.01, "read_GiB": 225.496, "read_GiB_s": 0.3194, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "99", "-ncmoe", "70"]}
+[17:00:26] === engine queue done ===

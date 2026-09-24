@@ -58,10 +58,17 @@ ls -la "$BIG"/*.gguf | awk '{s+=$5} END {printf "  model %.1f GiB vs 122.8 GiB o
 # so a high ngl is the case that cannot fit.  -ncmoe keeps that many layers'
 # experts on the CPU, which is llama.cpp's own answer to a MoE too big to hold.
 run "e9_ngl0_mmap"    -ngl 0
-run "e9_ngl99_mmap"   -ngl 99
+# -ngl 99 is not run: it asks for 132.4 GiB of VRAM on a 122.8 GiB device
+# with no swap, and on five attempts it took the host down each time rather
+# than failing the process.  The outcome is recorded in its result file.
+# run "e9_ngl99_mmap"   -ngl 99
 run "e9_ngl40_mmap"   -ngl 40
-run "e9_ngl99_dio"    -ngl 99 -dio 1
-run "e9_ngl99_nommap" -ngl 99 -mmp 0
-run "e9_ncmoe40"      -ngl 99 -ncmoe 40
+# The same overcommit through other paths is left out for the same reason.
+# What can be asked safely is how far the model can be pushed onto the GPU
+# before it stops fitting, which -ncmoe answers by keeping N layers off it.
+run "e9_ngl40_dio"    -ngl 40 -dio 1
+run "e9_ngl40_nommap" -ngl 40 -mmp 0
+run "e9_ncmoe47"      -ngl 99 -ncmoe 47
+run "e9_ncmoe70"      -ngl 99 -ncmoe 70
 commit "Engine queue: llama.cpp on the DRAM-exceeding MoE model"
 say "=== engine queue done ==="

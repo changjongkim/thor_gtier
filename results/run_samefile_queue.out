@@ -1,0 +1,16 @@
+[17:00:27] === same-file queue: gTier on the model llama.cpp just read ===
+[17:00:27] run  e10_backend0
+gtier       pol=0 slot=1024KiB win=  0.50 GiB dev= 0.52 GiB b=1   uniq=  8.0 |  4.702 GiB/s  0.3758 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x
+[17:00:46] run  e10_backend1
+mmap-gpu    pol=0 slot=1024KiB win=  0.50 GiB dev= 0.00 GiB b=1   uniq=  8.0 |  1.550 GiB/s  0.1238 tok/s 12814.2 MiB/tok hit=0.0% amp=0.00x
+[17:01:03] run  e10_backend2
+mmap-cpu    pol=0 slot=1024KiB win=  0.50 GiB dev= 0.00 GiB b=1   uniq=  8.0 |  4.232 GiB/s  0.3381 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x
+[17:01:12] run  e10_backend3
+pread+copy  pol=0 slot=1024KiB win=  0.50 GiB dev= 1.03 GiB b=1   uniq=  8.0 |  4.033 GiB/s  0.3223 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x
+[17:01:22] run  e10_backend4
+cufile      pol=0 slot=1024KiB win=  0.50 GiB dev= 8.79 GiB b=1   uniq=  8.0 |  4.569 GiB/s  0.3651 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x
+[17:01:30] run  e10_backend5
+uvm         pol=0 slot=1024KiB win=  0.50 GiB dev= 0.00 GiB b=1   uniq=  8.0 |  2.064 GiB/s  0.1649 tok/s 12814.2 MiB/tok hit=0.0% amp=1.00x
+[17:01:42] run  e10_prefill_union
+gtier       pol=0 slot=1024KiB win=  0.50 GiB dev= 0.52 GiB b=32  uniq= 73.1 |  5.493 GiB/s  2.2662 tok/s 2482.0 MiB/tok hit=0.0% amp=1.00x
+[17:02:03] === same-file queue done ===

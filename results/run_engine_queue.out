@@ -18,3 +18,7 @@
   model 132.4 GiB vs 122.8 GiB of memory
 [14:07:25] skip e9_ngl0_mmap
 [14:07:25] run  e9_ngl99_mmap
+[14:31:06] === engine queue: Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf  pp=512 tg=32 ===
+  model 132.4 GiB vs 122.8 GiB of memory
+[14:31:06] skip e9_ngl0_mmap
+[14:31:06] run  e9_ngl99_mmap

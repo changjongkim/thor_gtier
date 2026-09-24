@@ -43,3 +43,4 @@ online+prefix | io   59.10 ms/tok | compute   24.10 ms (floor  14.27) -> ** 12.0
 unified       | io    3.13 ms/tok | compute   21.22 ms (floor  14.27) -> ** 41.082 tok/s** (ceiling  57.497) | prefill I/O   0.563 s
 [18:11:35] run  t_b40_p9
 unified-online | io   15.53 ms/tok | compute   23.28 ms (floor  14.27) -> ** 25.766 tok/s** (ceiling  33.560) | prefill I/O   1.461 s
+[18:12:21] === token rate queue done ===

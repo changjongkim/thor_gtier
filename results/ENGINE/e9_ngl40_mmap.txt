@@ -1,0 +1,1 @@
+IOMETER {"label": "e9_ngl40_mmap", "returncode": -9, "wall_s": 577.96, "read_GiB": 0.096, "read_GiB_s": 0.0002, "cmd": ["/home/thor/skim/llama.cpp/build/bin/llama-bench", "-m", "/home/thor/kcj/models/moe235b_q4km/Qwen3-235B-A22B-Instruct-2507-Q4_K_M-00001-of-00003.gguf", "-p", "512", "-n", "32", "-r", "1", "-o", "json", "-ngl", "40"]}

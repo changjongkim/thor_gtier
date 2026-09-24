@@ -16,3 +16,19 @@ ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
   Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
 ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
   Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 125748 MiB):
+  Device 0: NVIDIA Thor, compute capability 11.0, VMM: yes, VRAM: 125748 MiB
+OUTCOME failed rc=143
+
+OUTCOME crashed-host
+  -ngl 99 asks for the whole 132.4 GiB model in VRAM on a device with
+  122.8 GiB of unified memory and no swap.  Five attempts, five hard
+  restarts of the machine, 18 to 39 minutes in:
+
+    started 13:47 -> reboot 14:05   (18 min)
+    started 14:07 -> reboot 14:29   (22 min)
+    started 14:31 -> reboot 15:10   (39 min)
+    started 15:11 -> reboot 15:50   (39 min)
+
+  Not an OOM kill of the process: the host goes down.  Recorded as the
+  outcome and not retried.

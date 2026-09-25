@@ -1,0 +1,6 @@
+LRU 0.8385 {}
+LFU 0.7637 {}
+PHASOR 0.8988 {}
+FlashMoE 0.8228 {'slots_per_layer': 44}
+DuoServe 0.8711 {'extra_fetch_per_access': 0.1282, 'pred_precision': 0.4437}
+DuoServe_popaff 0.8464 {'extra_fetch_per_access': 0.0574, 'pred_precision': 0.331}

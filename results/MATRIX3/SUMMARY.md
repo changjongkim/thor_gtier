@@ -130,3 +130,11 @@ Ablation at 0.45:
 | - recency term | 1.464 | 1.299 | 20.7 |
 | count utility | 1.493 | 1.338 | 19.4 |
 
+## mixtral8x7b
+
+### mixtral8x7b / longbench
+
+| budget | system | request s | TTFT s | TPOT ms | tok/s | peak GiB |
+|---|---|---|---|---|---|---|
+| 0.25 | LRU (pread+copy) | 58.700 | 17.023 | 1302.4 | 0.55 | 5.38 |
+

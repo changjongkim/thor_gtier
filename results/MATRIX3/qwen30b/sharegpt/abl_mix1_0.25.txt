@@ -1,0 +1,55 @@
+profile: IN-SAMPLE (served trace) (24 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 4.32 GiB  window 0.50  path-overhead 0.08  residency 2.81 GiB (17.2% of experts)  policy=ledger  backend=gtier
+REQ name=sg_3O3k7Ni_0_t2 prompt_tok=260 decode_tok=32 ttft_s=2.0028 request_s=5.2900
+REQ name=sg_3O3k7Ni_0_t3 prompt_tok=798 decode_tok=32 ttft_s=1.9166 request_s=4.8143
+REQ name=sg_5cVpTKS_0_t2 prompt_tok=246 decode_tok=32 ttft_s=1.6571 request_s=4.8110
+REQ name=sg_9EM9xb8_25_t2 prompt_tok=379 decode_tok=32 ttft_s=1.7565 request_s=4.1508
+REQ name=sg_9EM9xb8_25_t3 prompt_tok=1853 decode_tok=32 ttft_s=1.9612 request_s=4.3860
+REQ name=sg_CcQ9JCK_25_t2 prompt_tok=823 decode_tok=32 ttft_s=1.7739 request_s=4.5914
+REQ name=sg_MuZDUct_0_t2 prompt_tok=109 decode_tok=32 ttft_s=1.3054 request_s=4.2709
+REQ name=sg_MuZDUct_0_t3 prompt_tok=377 decode_tok=32 ttft_s=1.5390 request_s=4.2934
+REQ name=sg_RtCgJK2_47_t2 prompt_tok=415 decode_tok=32 ttft_s=1.6499 request_s=4.7130
+REQ name=sg_RtCgJK2_47_t3 prompt_tok=684 decode_tok=32 ttft_s=1.7442 request_s=4.5852
+REQ name=sg_V4wpuJu_0_t2 prompt_tok=614 decode_tok=32 ttft_s=2.1568 request_s=5.3061
+REQ name=sg_V4wpuJu_0_t3 prompt_tok=1240 decode_tok=32 ttft_s=2.3237 request_s=5.8476
+REQ name=sg_cSz8Ik6_0_t2 prompt_tok=67 decode_tok=32 ttft_s=1.2293 request_s=4.1422
+REQ name=sg_cSz8Ik6_0_t3 prompt_tok=391 decode_tok=32 ttft_s=1.6618 request_s=4.6979
+REQ name=sg_f9XBWSi_15_t2 prompt_tok=442 decode_tok=32 ttft_s=1.7410 request_s=4.5460
+REQ name=sg_f9XBWSi_15_t3 prompt_tok=759 decode_tok=32 ttft_s=1.8297 request_s=4.7455
+REQ name=sg_jKqNBVf_0_t2 prompt_tok=1059 decode_tok=32 ttft_s=2.1059 request_s=5.1039
+REQ name=sg_jKqNBVf_0_t3 prompt_tok=1237 decode_tok=32 ttft_s=2.1296 request_s=5.4111
+REQ name=sg_k7ymHcr_21_t2 prompt_tok=1012 decode_tok=32 ttft_s=2.2198 request_s=5.6344
+REQ name=sg_k7ymHcr_21_t3 prompt_tok=1797 decode_tok=32 ttft_s=2.2697 request_s=5.4612
+REQ name=sg_zZRzzTy_16_t2 prompt_tok=199 decode_tok=32 ttft_s=1.3728 request_s=3.9956
+REQ name=sg_zZRzzTy_16_t3 prompt_tok=393 decode_tok=32 ttft_s=1.5091 request_s=4.2051
+REQ name=sg_zcq8Evp_0_t2 prompt_tok=164 decode_tok=32 ttft_s=1.4310 request_s=4.1178
+REQ name=sg_zcq8Evp_0_t3 prompt_tok=223 decode_tok=32 ttft_s=1.4363 request_s=3.7525
+REQ name=sg_3O3k7Ni_0_t2 prompt_tok=260 decode_tok=32 ttft_s=1.4670 request_s=4.7353
+REQ name=sg_3O3k7Ni_0_t3 prompt_tok=798 decode_tok=32 ttft_s=1.8684 request_s=4.7498
+REQ name=sg_5cVpTKS_0_t2 prompt_tok=246 decode_tok=32 ttft_s=1.6245 request_s=4.8106
+REQ name=sg_9EM9xb8_25_t2 prompt_tok=379 decode_tok=32 ttft_s=1.7149 request_s=4.1473
+REQ name=sg_9EM9xb8_25_t3 prompt_tok=1853 decode_tok=32 ttft_s=1.9632 request_s=4.4216
+REQ name=sg_CcQ9JCK_25_t2 prompt_tok=823 decode_tok=32 ttft_s=1.7882 request_s=4.6143
+REQ name=sg_MuZDUct_0_t2 prompt_tok=109 decode_tok=32 ttft_s=1.3067 request_s=4.2932
+REQ name=sg_MuZDUct_0_t3 prompt_tok=377 decode_tok=32 ttft_s=1.5450 request_s=4.2816
+REQ name=sg_RtCgJK2_47_t2 prompt_tok=415 decode_tok=32 ttft_s=1.6413 request_s=4.6970
+REQ name=sg_RtCgJK2_47_t3 prompt_tok=684 decode_tok=32 ttft_s=1.7519 request_s=4.6117
+REQ name=sg_V4wpuJu_0_t2 prompt_tok=614 decode_tok=32 ttft_s=2.1534 request_s=5.3281
+REQ name=sg_V4wpuJu_0_t3 prompt_tok=1240 decode_tok=32 ttft_s=2.3278 request_s=5.8334
+REQ name=sg_cSz8Ik6_0_t2 prompt_tok=67 decode_tok=32 ttft_s=1.2486 request_s=4.1648
+REQ name=sg_cSz8Ik6_0_t3 prompt_tok=391 decode_tok=32 ttft_s=1.6642 request_s=4.7127
+REQ name=sg_f9XBWSi_15_t2 prompt_tok=442 decode_tok=32 ttft_s=1.7541 request_s=4.5505
+REQ name=sg_f9XBWSi_15_t3 prompt_tok=759 decode_tok=32 ttft_s=1.8483 request_s=4.7834
+REQ name=sg_jKqNBVf_0_t2 prompt_tok=1059 decode_tok=32 ttft_s=2.0953 request_s=5.1139
+REQ name=sg_jKqNBVf_0_t3 prompt_tok=1237 decode_tok=32 ttft_s=2.1367 request_s=5.4176
+REQ name=sg_k7ymHcr_21_t2 prompt_tok=1012 decode_tok=32 ttft_s=2.2239 request_s=5.6047
+REQ name=sg_k7ymHcr_21_t3 prompt_tok=1797 decode_tok=32 ttft_s=2.2793 request_s=5.5252
+REQ name=sg_zZRzzTy_16_t2 prompt_tok=199 decode_tok=32 ttft_s=1.3546 request_s=3.9763
+REQ name=sg_zZRzzTy_16_t3 prompt_tok=393 decode_tok=32 ttft_s=1.5281 request_s=4.1947
+REQ name=sg_zcq8Evp_0_t2 prompt_tok=164 decode_tok=32 ttft_s=1.4335 request_s=4.1073
+REQ name=sg_zcq8Evp_0_t3 prompt_tok=223 decode_tok=32 ttft_s=1.4291 request_s=3.7370
+ledger        | TTFT(io)   1.757 s  prefill    9.33 GiB | look=0   | TPOT(io)   91.13 ms  decode   0.348 GiB/tok | stall 178.345 s | bg   0.00 GiB vs shadow   0.00 GiB | pins 0 evict 0 | total  982.18 GiB
+ledger        | admissions: free 1026 swap 305721 already 397038 | blocked: all-pinned 0 all-live 0 other 0 | resident 1026 of 6144 units | rejected 100579
+value: decode-probability estimate  mix 1.00  selective 1 | count mode: W 4.00 (fixed) half-life 0
+RESULT policy=ledger backend=gtier batch=1 overlap=1 budget=4.32 window=0.50 requests=48 prompt_tok=647.5 decode_tok=32.0 ttft_s=1.7682 tpot_ms=91.415 request_s=4.6934 throughput_tok_s=6.8180 prefill_io_s=1.7572 decode_io_ms=91.135 prefill_gib=9.328 decode_gib_tok=0.3479 compute=calibrated

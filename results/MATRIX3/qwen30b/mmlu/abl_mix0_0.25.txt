@@ -1,0 +1,55 @@
+profile: IN-SAMPLE (served trace) (24 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 4.32 GiB  window 0.50  path-overhead 0.08  residency 2.81 GiB (17.2% of experts)  policy=ledger  backend=gtier
+REQ name=mmlu_abstract_algebra_4 prompt_tok=391 decode_tok=8 ttft_s=2.3215 request_s=3.2299
+REQ name=mmlu_abstract_algebra_5 prompt_tok=434 decode_tok=8 ttft_s=1.7396 request_s=2.3759
+REQ name=mmlu_abstract_algebra_6 prompt_tok=386 decode_tok=8 ttft_s=1.7226 request_s=2.3304
+REQ name=mmlu_abstract_algebra_7 prompt_tok=425 decode_tok=8 ttft_s=1.7515 request_s=2.2577
+REQ name=mmlu_computer_security_16 prompt_tok=392 decode_tok=8 ttft_s=1.9341 request_s=2.5503
+REQ name=mmlu_computer_security_17 prompt_tok=421 decode_tok=8 ttft_s=1.9192 request_s=2.4863
+REQ name=mmlu_computer_security_18 prompt_tok=564 decode_tok=8 ttft_s=2.1600 request_s=2.7207
+REQ name=mmlu_computer_security_19 prompt_tok=492 decode_tok=8 ttft_s=2.1450 request_s=2.6924
+REQ name=mmlu_high_school_psychology_20 prompt_tok=334 decode_tok=8 ttft_s=1.8233 request_s=2.3007
+REQ name=mmlu_high_school_psychology_21 prompt_tok=380 decode_tok=8 ttft_s=1.8002 request_s=2.2456
+REQ name=mmlu_high_school_psychology_22 prompt_tok=379 decode_tok=8 ttft_s=1.8376 request_s=2.3104
+REQ name=mmlu_high_school_psychology_23 prompt_tok=433 decode_tok=8 ttft_s=1.8610 request_s=2.3359
+REQ name=mmlu_machine_learning_10 prompt_tok=433 decode_tok=8 ttft_s=1.8948 request_s=2.3932
+REQ name=mmlu_machine_learning_11 prompt_tok=444 decode_tok=8 ttft_s=1.9433 request_s=2.4498
+REQ name=mmlu_machine_learning_8 prompt_tok=636 decode_tok=8 ttft_s=2.1386 request_s=2.6394
+REQ name=mmlu_machine_learning_9 prompt_tok=442 decode_tok=8 ttft_s=1.9218 request_s=2.3708
+REQ name=mmlu_professional_medicine_12 prompt_tok=862 decode_tok=8 ttft_s=1.9124 request_s=2.4369
+REQ name=mmlu_professional_medicine_13 prompt_tok=1127 decode_tok=8 ttft_s=1.9494 request_s=2.4693
+REQ name=mmlu_professional_medicine_14 prompt_tok=964 decode_tok=8 ttft_s=1.9231 request_s=2.4266
+REQ name=mmlu_professional_medicine_15 prompt_tok=958 decode_tok=8 ttft_s=1.9234 request_s=2.4245
+REQ name=mmlu_professional_psychology_0 prompt_tok=601 decode_tok=8 ttft_s=1.9816 request_s=2.4837
+REQ name=mmlu_professional_psychology_1 prompt_tok=589 decode_tok=8 ttft_s=1.9771 request_s=2.4355
+REQ name=mmlu_professional_psychology_2 prompt_tok=600 decode_tok=8 ttft_s=1.9806 request_s=2.4131
+REQ name=mmlu_professional_psychology_3 prompt_tok=637 decode_tok=8 ttft_s=1.9793 request_s=2.4239
+REQ name=mmlu_abstract_algebra_4 prompt_tok=391 decode_tok=8 ttft_s=1.7838 request_s=2.4122
+REQ name=mmlu_abstract_algebra_5 prompt_tok=434 decode_tok=8 ttft_s=1.7733 request_s=2.3858
+REQ name=mmlu_abstract_algebra_6 prompt_tok=386 decode_tok=8 ttft_s=1.7332 request_s=2.3449
+REQ name=mmlu_abstract_algebra_7 prompt_tok=425 decode_tok=8 ttft_s=1.7602 request_s=2.2242
+REQ name=mmlu_computer_security_16 prompt_tok=392 decode_tok=8 ttft_s=1.9740 request_s=2.5234
+REQ name=mmlu_computer_security_17 prompt_tok=421 decode_tok=8 ttft_s=1.9579 request_s=2.4714
+REQ name=mmlu_computer_security_18 prompt_tok=564 decode_tok=8 ttft_s=2.2192 request_s=2.7239
+REQ name=mmlu_computer_security_19 prompt_tok=492 decode_tok=8 ttft_s=2.1709 request_s=2.6881
+REQ name=mmlu_high_school_psychology_20 prompt_tok=334 decode_tok=8 ttft_s=1.8474 request_s=2.2894
+REQ name=mmlu_high_school_psychology_21 prompt_tok=380 decode_tok=8 ttft_s=1.7968 request_s=2.2095
+REQ name=mmlu_high_school_psychology_22 prompt_tok=379 decode_tok=8 ttft_s=1.8772 request_s=2.3143
+REQ name=mmlu_high_school_psychology_23 prompt_tok=433 decode_tok=8 ttft_s=1.8389 request_s=2.2729
+REQ name=mmlu_machine_learning_10 prompt_tok=433 decode_tok=8 ttft_s=1.9183 request_s=2.4193
+REQ name=mmlu_machine_learning_11 prompt_tok=444 decode_tok=8 ttft_s=1.9749 request_s=2.4512
+REQ name=mmlu_machine_learning_8 prompt_tok=636 decode_tok=8 ttft_s=2.1483 request_s=2.6594
+REQ name=mmlu_machine_learning_9 prompt_tok=442 decode_tok=8 ttft_s=1.9279 request_s=2.3789
+REQ name=mmlu_professional_medicine_12 prompt_tok=862 decode_tok=8 ttft_s=1.9209 request_s=2.4118
+REQ name=mmlu_professional_medicine_13 prompt_tok=1127 decode_tok=8 ttft_s=1.9468 request_s=2.4549
+REQ name=mmlu_professional_medicine_14 prompt_tok=964 decode_tok=8 ttft_s=1.9242 request_s=2.4276
+REQ name=mmlu_professional_medicine_15 prompt_tok=958 decode_tok=8 ttft_s=1.9416 request_s=2.4377
+REQ name=mmlu_professional_psychology_0 prompt_tok=601 decode_tok=8 ttft_s=1.9687 request_s=2.4709
+REQ name=mmlu_professional_psychology_1 prompt_tok=589 decode_tok=8 ttft_s=1.9621 request_s=2.4117
+REQ name=mmlu_professional_psychology_2 prompt_tok=600 decode_tok=8 ttft_s=1.9489 request_s=2.3776
+REQ name=mmlu_professional_psychology_3 prompt_tok=637 decode_tok=8 ttft_s=1.9710 request_s=2.4084
+ledger        | TTFT(io)   1.924 s  prefill   10.12 GiB | look=0   | TPOT(io)   63.64 ms  decode   0.232 GiB/tok | stall  89.935 s | bg   0.00 GiB vs shadow   0.00 GiB | pins 0 evict 0 | total  574.93 GiB
+ledger        | admissions: free 1022 swap 102506 already 136236 | blocked: all-pinned 0 all-live 0 other 0 | resident 1022 of 6144 units | rejected 137680
+value: decode-probability estimate  mix 0.00  selective 1 | count mode: W 4.00 (fixed) half-life 0
+RESULT policy=ledger backend=gtier batch=1 overlap=1 budget=4.32 window=0.50 requests=48 prompt_tok=555.2 decode_tok=8.0 ttft_s=1.9339 tpot_ms=63.921 request_s=2.4453 throughput_tok_s=3.2716 prefill_io_s=1.9245 decode_io_ms=63.641 prefill_gib=10.122 decode_gib_tok=0.2319 compute=calibrated

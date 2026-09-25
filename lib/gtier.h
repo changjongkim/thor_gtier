@@ -96,6 +96,14 @@ typedef struct {
 } gtier_range;
 
 gtier *gtier_open(const char *path, const gtier_config *cfg);
+
+// More files behind the same window and ring.  A checkpoint split into shards
+// is one set of reads, and a handle per shard would split the window into
+// shards too.  Returns the file's index f; address its bytes with
+// GTIER_FILE_OFF(f, offset).  The gTier backend without a cache only.
+int gtier_add_file(gtier *g, const char *path);
+#define GTIER_FILE_SHIFT 48
+#define GTIER_FILE_OFF(f, off) ((((uint64_t)(f)) << GTIER_FILE_SHIFT) | (uint64_t)(off))
 void   gtier_close(gtier *g);
 
 // Asynchronous form.  gtier_fetch submits and then waits for everything, so the

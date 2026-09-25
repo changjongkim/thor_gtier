@@ -48,6 +48,7 @@ struct gtier {
     gtier_config cfg{};
     int fd = -1;
     off_t file_bytes = 0;
+    std::vector<int> extra_fds;        // gtier_add_file: files 1..n
     gtier_stats st{};
 
     // gtier / cufile / pread backends
@@ -241,6 +242,7 @@ void gtier_close(gtier *g) {
     if (g->map) munmap(g->map, g->file_bytes);
     if (g->uvm) cudaFree(g->uvm);
     if (g->fd >= 0) close(g->fd);
+    for (int fd : g->extra_fds) close(fd);
     delete g;
 }
 
@@ -248,6 +250,21 @@ void gtier_get_stats(const gtier *g, gtier_stats *o) { if (g && o) *o = g->st; }
 void gtier_reset_stats(gtier *g) { if (g) g->st = gtier_stats{}; }
 
 // ------------------------------------------------------------------ planning
+
+static inline int fd_for(gtier *g, uint64_t off) {
+    uint32_t f = (uint32_t)(off >> GTIER_FILE_SHIFT);
+    return f == 0 ? g->fd : g->extra_fds[f - 1];
+}
+static inline uint64_t file_off(uint64_t off) { return off & ((1ull << GTIER_FILE_SHIFT) - 1); }
+
+int gtier_add_file(gtier *g, const char *path) {
+    if (!g || g->cfg.backend != GTIER_BACKEND_GTIER || g->cfg.cache_policy != GTIER_CACHE_NONE)
+        return -ENOTSUP;
+    int fd = open(path, O_RDONLY | O_DIRECT);
+    if (fd < 0) return -errno;
+    g->extra_fds.push_back(fd);
+    return (int)g->extra_fds.size();
+}
 
 namespace {
 // O_DIRECT needs the length aligned as well as the offset.  A file whose size
@@ -302,7 +319,7 @@ static int fetch_gtier(gtier *g, const gtier_range *r, int n, void **out) {
         for (size_t p = 0; p < ps.size(); ++p) {
             io_uring_sqe *s = io_uring_get_sqe(&g->ring);
             if (!s) return -EBUSY;
-            io_uring_prep_read(s, g->fd, g->host[p], ps[p].len, (off_t)ps[p].off);
+            io_uring_prep_read(s, fd_for(g, ps[p].off), g->host[p], ps[p].len, (off_t)file_off(ps[p].off));
             io_uring_sqe_set_data64(s, p);
         }
         io_uring_submit(&g->ring);
@@ -691,7 +708,7 @@ int gtier_submit(gtier *g, const gtier_range *r, int n, gtier_ticket *t) {
         io_uring_sqe *s = io_uring_get_sqe(&g->ring);
         if (!s) return -EBUSY;
         int slot = f.slot_base + (int)p;
-        io_uring_prep_read(s, g->fd, g->host[slot], ps[p].len, (off_t)ps[p].off);
+        io_uring_prep_read(s, fd_for(g, ps[p].off), g->host[slot], ps[p].len, (off_t)file_off(ps[p].off));
         // user_data packs the ticket so a wait can route foreign completions
         io_uring_sqe_set_data64(s, ((uint64_t)id << 32) | (uint32_t)p);
     }

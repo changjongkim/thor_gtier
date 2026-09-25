@@ -7,6 +7,7 @@
 // trace; feeding it to each backend measures what inference would actually get.
 #include "gguf.h"
 #include "gtier.h"
+#include "cpucost.h"
 
 #include <cuda_runtime.h>
 #include <algorithm>
@@ -222,6 +223,7 @@ int main(int argc, char **argv) {
 
     uint64_t useful = 0;
     gtier_stats agg{};
+    CpuSnap c0 = CpuSnap::now();
     auto t0 = std::chrono::steady_clock::now();
     for (int tok = 0; tok < steps; ++tok) {
         for (int L = 0; L <= n_layers; L += layers_per_batch) {
@@ -314,6 +316,8 @@ int main(int argc, char **argv) {
         }
     }
     double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
+    CpuSnap c1 = CpuSnap::now();
+    cpu_report(gtier_backend_name((gtier_backend)backend), slot, (double)useful / (1ull << 30), c0, c1);
     double win = (double)per_shard * sh.size() * slot / 1073741824.0;
     // uniq is the mean number of distinct experts a layer had to read per
     // step: it is 'active' at batch 1 and climbs toward 'experts' as the draws

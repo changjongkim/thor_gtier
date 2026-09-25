@@ -1,5 +1,6 @@
 // Drives every backend over identical workloads so the numbers compare.
 #include "gtier.h"
+#include "cpucost.h"
 
 #include <cuda_runtime.h>
 #include <chrono>
@@ -119,6 +120,7 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
         tot.exact_fetches += x.exact_fetches;
     };
 
+    CpuSnap c0 = CpuSnap::now();
     auto t0 = std::chrono::steady_clock::now();
     if (o.async && b == GTIER_BACKEND_GTIER && o.policy == GTIER_CACHE_NONE) {
         // Keep one batch in flight while the previous one is consumed, so the
@@ -179,6 +181,8 @@ static double run(gtier_backend b, const Opt &o, gtier_stats *agg) {
     }
     {
         double t = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
+        CpuSnap c1 = CpuSnap::now();
+        cpu_report(gtier_backend_name(b), o.item, (double)tot.bytes_useful / (1ull << 30), c0, c1);
         tot.seconds = t;
         *agg = tot;
         cudaFree(sink);

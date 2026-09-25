@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
     // sources: this request's own prefill routing (how often its prompt chose
     // the unit) and the decode routing seen so far.  mix is the weight of the
     // first.  "--mix off" restores the count utility above.
-    bool use_pred = true; double mix = 0.0; bool selective = true;
+    bool use_pred = true; double mix = 0.5; bool selective = true;
     int batch = 1; bool overlap = false;
     const char *fm_weights = nullptr;
     // Terms of the estimate, each scaled to [0,1]:

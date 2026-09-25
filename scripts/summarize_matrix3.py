@@ -12,8 +12,8 @@ SYS = [("lru", "LRU (pread+copy)"), ("moeinf", "MoE-Infinity* (pread+copy, prefe
        ("llama", "llama.cpp (--cpu-moe, mmap)"), ("ledger", "PHASOR")]
 ABL = [("ledger_0.45", "PHASOR"), ("abl_nooverlap", "- layer pipelining"),
        ("abl_noasync", "- continuous submission"), ("abl_pread", "pread+copy path instead of gTier"),
-       ("abl_lru", "LRU residency on gTier path"), ("abl_mix05", "+ prompt routing term (a=0.5)"),
-       ("abl_mix1", "prompt routing instead of decode history (a=1)"), ("abl_norec", "- recency term"),
+       ("abl_lru", "LRU residency on gTier path"), ("abl_mix0", "- prompt routing term (a=0)"),
+       ("abl_mix1", "- decode history term (a=1)"), ("abl_norec", "- recency term"),
        ("abl_count", "count utility")]
 
 def res(path):

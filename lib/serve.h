@@ -46,6 +46,11 @@ typedef enum {
     //              pinned, with the least recently served family evicted when
     //              the pin budget is in the way.
     SERVE_FULL,           // LEDGER: the value ledger (sec 3.4)
+    // FlashMoE (arXiv 2601.17063), reproduced from the paper: a fixed number
+    // of expert slots per layer; on a decode miss in a full layer the expert a
+    // small FFN over (1/recency, frequency/max) scores highest is evicted.
+    // Prefill loads its union once and only fills free slots.
+    SERVE_FLASHMOE,
     SERVE_POLICY_COUNT
 } serve_policy;
 

@@ -111,6 +111,7 @@ static const char *policy_name(int p) {
         case SERVE_MOEINF: return "moe-inf*";
         case SERVE_MIXTRAL: return "mixtral*";
         case SERVE_FULL: return "ledger";
+        case SERVE_FLASHMOE: return "flashmoe*";
     }
     return "?";
 }
@@ -154,6 +155,7 @@ int main(int argc, char **argv) {
     // first.  "--mix off" restores the count utility above.
     bool use_pred = true; double mix = 0.5; bool selective = true;
     int batch = 1; bool overlap = false;
+    const char *fm_weights = nullptr;
     // Terms of the estimate, each scaled to [0,1]:
     //   w_rec * 2^-(age/H)        recency, age in serving steps
     //   mix * pf / max pf         this request's prompt routing
@@ -248,6 +250,7 @@ int main(int argc, char **argv) {
         else if (s=="--selective") selective = atoi(nx()) != 0;
         else if (s=="--batch") batch = std::max(1, atoi(nx()));
         else if (s=="--overlap") overlap = true;
+        else if (s=="--fm-weights") fm_weights = nx();
         else if (s=="--rec-half") rec_half = atof(nx());
         else if (s=="--w-rec") w_rec = atof(nx());
         else if (s=="--w-req") w_req = atof(nx());
@@ -855,6 +858,67 @@ int main(int argc, char **argv) {
     // LRU whose ordering is overridden by membership in the current
     // sequence's activation set.
     std::unordered_set<int> seq_active;
+    // ---- FlashMoE* -------------------------------------------------------
+    struct Lin { int r, c; std::vector<float> W, b; };
+    std::vector<Lin> fm_net;
+    if (policy == SERVE_FLASHMOE) {
+        if (!fm_weights) { std::fprintf(stderr, "flashmoe needs --fm-weights\n"); return 1; }
+        FILE *wf = fopen(fm_weights, "r");
+        int nl = 0;
+        if (!wf || fscanf(wf, "%d", &nl) != 1) { std::fprintf(stderr, "bad weights\n"); return 1; }
+        for (int i = 0; i < nl; ++i) {
+            Lin ln; if (fscanf(wf, "%d %d", &ln.r, &ln.c) != 2) return 1;
+            ln.W.resize((size_t)ln.r * ln.c); ln.b.resize(ln.r);
+            for (auto &v : ln.W) if (fscanf(wf, "%f", &v) != 1) return 1;
+            for (auto &v : ln.b) if (fscanf(wf, "%f", &v) != 1) return 1;
+            fm_net.push_back(std::move(ln));
+        }
+        fclose(wf);
+    }
+    auto fm_score = [&](float x0, float x1) -> float {
+        std::vector<float> x{x0, x1}, y;
+        for (size_t i = 0; i < fm_net.size(); ++i) {
+            const Lin &ln = fm_net[i];
+            y.assign(ln.r, 0.f);
+            for (int o = 0; o < ln.r; ++o) {
+                float a = ln.b[o];
+                for (int j = 0; j < ln.c; ++j) a += ln.W[(size_t)o * ln.c + j] * x[j];
+                if (i + 1 < fm_net.size()) a = a / (1.f + std::exp(-a));
+                y[o] = a;
+            }
+            x.swap(y);
+        }
+        return x[0];
+    };
+    const int fm_slots = std::max<int>(1, (int)(R / std::max<uint64_t>(per_unit, 1) / L));
+    std::vector<int> fm_count(L, 0);
+    std::vector<double> fm_last((size_t)L*E, -1e18), fm_freq((size_t)L*E, 0.0);
+    double fm_step = 0;
+    auto fm_touch = [&](const std::unordered_set<int> &ids) {
+        fm_step += 1;
+        for (int id : ids) { fm_last[id] = fm_step; fm_freq[id] += 1; }
+    };
+    auto flashmoe_admit = [&](int id, bool from_prefill,
+                              const std::unordered_set<int> &now) {
+        if (!unit[id].bytes || arena.has(id)) return;
+        int l = id / E;
+        if (fm_count[l] < fm_slots && arena.put(id, unit[id].bytes)) { fm_count[l]++; return; }
+        if (from_prefill) return;
+        double fmax = 1;
+        for (int e = 0; e < E; ++e) fmax = std::max(fmax, fm_freq[(size_t)l*E+e]);
+        int victim = -1; float best = -1e30f;
+        for (int e = 0; e < E; ++e) {
+            int c = l*E + e;
+            if (!arena.has(c) || now.count(c)) continue;
+            double r = fm_step - fm_last[c] + 1;
+            float sc = fm_score((float)(1.0 / r), (float)(fm_freq[c] / fmax));
+            if (sc > best) { best = sc; victim = c; }
+        }
+        if (victim < 0) return;
+        uint64_t off = arena.at[victim];
+        arena.at.erase(victim); arena.at[id] = off;
+    };
+
     auto moeinf_admit = [&](int id) {
         seq_active.insert(id);
         if (arena.has(id) || !unit[id].bytes) return;
@@ -1179,6 +1243,7 @@ int main(int argc, char **argv) {
             }
             pf_known_layer = L - 1;
         }
+        if (policy==SERVE_FLASHMOE) for (int id : miss) flashmoe_admit(id, true, u);
         if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
         if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
         if (policy==SERVE_MIXTRAL) for (int id : miss) lru_admit(id);
@@ -1246,6 +1311,10 @@ int main(int argc, char **argv) {
             }
             if (policy==SERVE_MOEINF)
                 for (int id : need) if (unit[id].bytes) moeinf_admit(id);
+            if (policy==SERVE_FLASHMOE) {
+                fm_touch(need);
+                for (int id : need) flashmoe_admit(id, false, need);
+            }
             if (policy==SERVE_MIXTRAL) {
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
                 for (int id : prev_need) if (unit[id].bytes && !arena.has(id))

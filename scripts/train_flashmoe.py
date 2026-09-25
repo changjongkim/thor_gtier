@@ -65,6 +65,13 @@ for p in paths:
                 for c in cand:
                     X.append([1.0 / r[c], f[c] / fm]); Y.append(1.0 if c == far else 0.0)
                 cache.discard(far); cache.add(e)
+if not X:
+    # Every expert fits its layer's slots: nothing is ever evicted, and the
+    # network is never consulted.  Write a zero network so the run can start.
+    with open(out, "w") as fo:
+        fo.write("1\n1 2\n0 0\n0\n")
+    print("no evictions at this size; wrote a zero network", file=sys.stderr)
+    sys.exit(0)
 X = torch.tensor(np.array(X), dtype=torch.float32)
 Y = torch.tensor(np.array(Y), dtype=torch.float32).unsqueeze(1)
 print(f"samples {len(X)}  positive {Y.mean().item():.3f}", file=sys.stderr)

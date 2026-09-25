@@ -45,7 +45,7 @@ for m in MODELS:
         print(f"### {m} / {w}\n")
         print("| budget | system | request s | TTFT s | TPOT ms | tok/s | peak GiB |")
         print("|---|---|---|---|---|---|---|")
-        for fr in ["0.25", "0.45", "0.65"]:
+        for fr in ["0.25", "0.45", "0.65", "1.08"]:
             rows = {k: res(f"{R}/{m}/{w}/{k}_{fr}.txt") for k, _ in SYS}
             for k, name in SYS:
                 d = rows[k]

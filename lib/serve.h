@@ -51,6 +51,13 @@ typedef enum {
     // small FFN over (1/recency, frequency/max) scores highest is evicted.
     // Prefill loads its union once and only fills free slots.
     SERVE_FLASHMOE,
+    // DuoServe-MoE (arXiv 2509.07379), reproduced: experts live in a host
+    // cache (LRU, SSD-backed when the budget is below the model) and are
+    // copied to the GPU; for decode the next layer's top-k experts are
+    // predicted from the experts selected at the previous layer (popularity x
+    // inter-layer affinity, the predictor's inputs) and fetched ahead; a wrong
+    // prediction costs its bytes.
+    SERVE_DUOSERVE,
     SERVE_POLICY_COUNT
 } serve_policy;
 

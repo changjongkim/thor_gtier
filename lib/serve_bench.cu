@@ -112,6 +112,7 @@ static const char *policy_name(int p) {
         case SERVE_MIXTRAL: return "mixtral*";
         case SERVE_FULL: return "ledger";
         case SERVE_FLASHMOE: return "flashmoe*";
+        case SERVE_DUOSERVE: return "duoserve*";
     }
     return "?";
 }
@@ -919,6 +920,48 @@ int main(int argc, char **argv) {
         arena.at.erase(victim); arena.at[id] = off;
     };
 
+    // ---- DuoServe* --------------------------------------------------------
+    // Popularity and consecutive-layer affinity from the held-out traces.
+    std::vector<double> ds_pop, ds_aff;
+    if (policy == SERVE_DUOSERVE) {
+        ds_pop.assign((size_t)L*E, 0.0); ds_aff.assign((size_t)L*E*E, 0.0);
+        for (auto &r : preq)
+            for (int t=0;t<r.n_decode;++t)
+                for (int l=0;l<L;++l)
+                    for (int k=0;k<K;++k) {
+                        int e = r.decode[((size_t)t*L+l)*K+k];
+                        if (e<0) continue;
+                        ds_pop[(size_t)l*E+e] += 1;
+                        if (l == 0) continue;
+                        for (int k2=0;k2<K;++k2) {
+                            int p = r.decode[((size_t)t*L+l-1)*K+k2];
+                            if (p>=0) ds_aff[((size_t)(l-1)*E+p)*E+e] += 1;
+                        }
+                    }
+    }
+    // Predicted top-K experts per layer for one decode token, layer l's from
+    // the experts actually selected at l-1 (known before l runs).
+    auto ds_predict = [&](const Request &r, int tok, std::vector<int> &out) {
+        std::vector<std::pair<double,int>> sc(E);
+        for (int l=0;l<L;++l) {
+            for (int e=0;e<E;++e) {
+                double v = ds_pop[(size_t)l*E+e] + 1e-9;
+                if (l > 0) {
+                    double a = 0;
+                    for (int k2=0;k2<K;++k2) {
+                        int p = r.decode[((size_t)tok*L+l-1)*K+k2];
+                        if (p>=0) a += ds_aff[((size_t)(l-1)*E+p)*E+e];
+                    }
+                    v = v * (a + 1e-9);
+                }
+                sc[e] = {v, e};
+            }
+            std::partial_sort(sc.begin(), sc.begin()+std::min(K,E), sc.end(),
+                              [](auto &a, auto &b){ return a.first > b.first; });
+            for (int k=0;k<std::min(K,E);++k) out.push_back(l*E + sc[k].second);
+        }
+    };
+
     auto moeinf_admit = [&](int id) {
         seq_active.insert(id);
         if (arena.has(id) || !unit[id].bytes) return;
@@ -1244,6 +1287,7 @@ int main(int argc, char **argv) {
             pf_known_layer = L - 1;
         }
         if (policy==SERVE_FLASHMOE) for (int id : miss) flashmoe_admit(id, true, u);
+        if (policy==SERVE_DUOSERVE) for (int id : miss) lru_admit(id);
         if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
         if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
         if (policy==SERVE_MIXTRAL) for (int id : miss) lru_admit(id);
@@ -1272,6 +1316,13 @@ int main(int argc, char **argv) {
                         if (e>=0) need.insert((int)((size_t)l*E+e));
                     }
             }
+            std::unordered_set<int> ds_extra;
+            if (policy == SERVE_DUOSERVE) {
+                std::vector<int> pr;
+                for (size_t j=0;j<br.size();++j)
+                    if (tok < nd[j]) ds_predict(tr.req[br[j]], tok, pr);
+                for (int id : pr) if (!need.count(id) && unit[id].bytes && !resident(id)) ds_extra.insert(id);
+            }
             uint64_t db=0; double ddt = 0, dct = 0;
             int grp = lookahead > 0 ? lookahead : L;
             for (int l0=0; l0<L; l0+=grp) {
@@ -1281,6 +1332,10 @@ int main(int argc, char **argv) {
                     if (l < l0 || l >= std::min(L,l0+grp) || !unit[id].bytes) continue;
                     all.push_back(id);
                     if (!resident(id)) dm.push_back(id);
+                }
+                for (int id : ds_extra) {
+                    int l = id / E;
+                    if (l >= l0 && l < std::min(L,l0+grp)) dm.push_back(id);
                 }
                 std::sort(dm.begin(), dm.end()); std::sort(all.begin(), all.end());
                 ddt += fetch_units(dm, db);
@@ -1311,6 +1366,10 @@ int main(int argc, char **argv) {
             }
             if (policy==SERVE_MOEINF)
                 for (int id : need) if (unit[id].bytes) moeinf_admit(id);
+            if (policy==SERVE_DUOSERVE) {
+                for (int id : ds_extra) lru_admit(id);
+                for (int id : need) if (unit[id].bytes) lru_admit(id);
+            }
             if (policy==SERVE_FLASHMOE) {
                 fm_touch(need);
                 for (int id : need) flashmoe_admit(id, false, need);

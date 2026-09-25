@@ -1,0 +1,448 @@
+diff --git a/csrc/CMakeLists.txt b/csrc/CMakeLists.txt
+index c9cfb80..acb9384 100644
+--- a/csrc/CMakeLists.txt
++++ b/csrc/CMakeLists.txt
+@@ -15,9 +15,9 @@ set(CMAKE_CUDA_STANDARD 17)
+ set(CMAKE_CUDA_SEPARABLE_COMPILATION OFF)
+ set(CMAKE_CUDA_RESOLVE_DEVICE_SYMBOLS OFF)
+ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+-# Jetson AGX Orin (Ampere 8.7)
+-set(TORCH_CUDA_ARCH_LIST "8.7")
+-set(CMAKE_CUDA_ARCHITECTURES 87)
++# Jetson AGX Thor (Blackwell 11.0); the release targets Orin (8.7)
++set(TORCH_CUDA_ARCH_LIST "11.0")
++set(CMAKE_CUDA_ARCHITECTURES 110)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fPIC")
+ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -O3 --default-stream per-thread")
+ # This determines the behavior in GDB debugging
+@@ -25,16 +25,16 @@ set(CMAKE_BUILD_TYPE Release)
+ #set(CMAKE_BUILD_TYPE Debug)
+ # Python & Pybind11 & Torch
+ set(CMAKE_FIND_QUIETLY ON)
+-set(Python_EXECUTABLE "CONDA_PREFIX/zipmoe/bin/python")
+-find_package(Python 3.10 EXACT REQUIRED COMPONENTS Interpreter Development)
++set(Python_EXECUTABLE "/home/thor/kcj/envs/zipmoe/bin/python")
++find_package(Python 3.12 EXACT REQUIRED COMPONENTS Interpreter Development)
+ # Set Pybind11 directory
+-set(pybind11_DIR "CONDA_PREFIX/zipmoe/lib/python3.10/site-packages/pybind11/share/cmake/pybind11")
++set(pybind11_DIR "/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/pybind11/share/cmake/pybind11")
+ find_package(pybind11 REQUIRED)
+ # Set Torch directory
+-set(Torch_DIR "CONDA_PREFIX/zipmoe/lib/python3.10/site-packages/torch/share/cmake/Torch")
++set(Torch_DIR "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/share/cmake/Torch")
+ find_package(Torch REQUIRED)
+ find_library(ZSTD_LIBRARY zstd REQUIRED)
+-find_library(LZ4_LIBRARY lz4 REQUIRED)
++find_library(LZ4_LIBRARY lz4 PATHS /home/thor/kcj/envs/lz4-install/lib NO_DEFAULT_PATH REQUIRED)
+ file(GLOB BASE_SRCS base/*.cpp base/*.hpp)
+ file(GLOB BIND_SRCS binding/*.cpp binding/*.hpp)
+ file(GLOB COMMON_SRCS common/*.cpp common/*.hpp)
+@@ -57,8 +57,8 @@ target_include_directories(cuda_kernels PRIVATE
+     ${TORCH_INCLUDE_DIRS}
+     ${Python_INCLUDE_DIRS}
+     ${CMAKE_CURRENT_SOURCE_DIR}
+-    "CONDA_PREFIX/zipmoe/include"
+-    "CONDA_PREFIX/zipmoe/include/python3.10"
++    "/home/thor/kcj/envs/lz4-install/include"
++    "/usr/include/python3.12"
+ )
+ # Build Python Module
+ pybind11_add_module(
+@@ -79,15 +79,15 @@ target_include_directories(ZipMoE PRIVATE
+     ${TORCH_INCLUDE_DIRS}
+     ${Python_INCLUDE_DIRS}
+     ${CMAKE_CURRENT_SOURCE_DIR}
+-    "CONDA_PREFIX/zipmoe/include"
+-    "CONDA_PREFIX/zipmoe/include/python3.10"
++    "/home/thor/kcj/envs/lz4-install/include"
++    "/usr/include/python3.12"
+ )
+ set_target_properties(ZipMoE PROPERTIES
+-    INSTALL_RPATH "$ORIGIN:CONDA_PREFIX/zipmoe/lib"
++    INSTALL_RPATH "$ORIGIN:/home/thor/kcj/envs/lz4-install/lib:/home/thor/Envs/t26/lib/python3.12/site-packages/torch/lib"
+ )
+ target_link_libraries(ZipMoE PRIVATE
+     ${TORCH_LIBRARIES}
+-    "CONDA_PREFIX/zipmoe/lib/python3.10/site-packages/torch/lib/libtorch_python.so"
++    "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/lib/libtorch_python.so"
+     ${ZSTD_LIBRARY}
+     ${LZ4_LIBRARY}
+ )
+diff --git a/csrc/kernels/tensor_recover.cu b/csrc/kernels/tensor_recover.cu
+index a384e58..15f522d 100644
+--- a/csrc/kernels/tensor_recover.cu
++++ b/csrc/kernels/tensor_recover.cu
+@@ -6,6 +6,7 @@
+ 
+ 
+ 
++#include <cstdint>
+ #include "tensor_recover.hpp"
+ 
+ 
+diff --git a/csrc/tensor_engine/tensor_engine.hpp b/csrc/tensor_engine/tensor_engine.hpp
+index 43beb9d..aaebb90 100644
+--- a/csrc/tensor_engine/tensor_engine.hpp
++++ b/csrc/tensor_engine/tensor_engine.hpp
+@@ -44,9 +44,9 @@
+ 
+ #include "../base/noncopyable.hpp"
+ #include "../utils/logger.hpp"
+-#include "ZIPMOE-PREFIX/ZipMoE/csrc/base/zipmoe_tensor_index.hpp"
+-#include "ZIPMOE-PREFIX/ZipMoE/csrc/memory/cache.hpp"
+-#include "ZIPMOE-PREFIX/ZipMoE/csrc/topology/model_topology.hpp"
++#include "/home/thor/kcj/ZipMoE/csrc/base/zipmoe_tensor_index.hpp"
++#include "/home/thor/kcj/ZipMoE/csrc/memory/cache.hpp"
++#include "/home/thor/kcj/ZipMoE/csrc/topology/model_topology.hpp"
+ #include "kernels/memory_docks.hpp"
+ 
+ 
+diff --git a/customized/__init__.py b/customized/__init__.py
+index 1c11cea..d64de8e 100644
+--- a/customized/__init__.py
++++ b/customized/__init__.py
+@@ -1,3 +1,4 @@
+ from .deepseek import DeepseekMoEBlock
+ from .switch_transformers import SyncSwitchTransformersSparseMLP
+-from .qwen import Qwen2MoEBlock
+\ No newline at end of file
++from .qwen import Qwen2MoEBlock
++from .qwen3 import Qwen3MoEBlock
+diff --git a/evaluation/evaluate.py b/evaluation/evaluate.py
+index 697a585..6fe2653 100644
+--- a/evaluation/evaluate.py
++++ b/evaluation/evaluate.py
+@@ -31,8 +31,8 @@ parser.add_argument("--batch_size", type=int, default=1)
+ parser.add_argument("--SSD_type", type=str, default = "Samsung970EVO",
+                     choices=["Samsung970EVO","AigoP2000"])
+ parser.add_argument("--gpu_pool_ratio", type=float, default=0.95)
+-parser.add_argument("--output_dir", type=str, default="ZIPMOE-PREFIX/ZipMoE/evaluation/results/")
+-parser.add_argument("--dataset_path", type=str, default="ZIPMOE-PREFIX/ZipMoE/evaluation/dataset/sharegpt_gpt4.jsonl")
++parser.add_argument("--output_dir", type=str, default="/home/thor/kcj/ZipMoE/evaluation/results/")
++parser.add_argument("--dataset_path", type=str, default="/home/thor/kcj/ZipMoE/evaluation/dataset/sharegpt_gpt4.jsonl")
+ parser.add_argument("--num_test_prompts", type=int, default=96)
+ parser.add_argument("--test_random_seed", type=int, default=321)
+ parser.add_argument("--cache_algorithm", type=str, default="ZipMoE",
+@@ -56,9 +56,9 @@ prompts = sample_first_prompts(
+ )
+ 
+ target_model_type = args.model_type
+-checkpoint = f"ZIPMOE-PREFIX/ZipMoE/models/{target_model_type}/"
++checkpoint = f"/home/thor/kcj/ZipMoE/models/{target_model_type}/"
+ config = {
+-    "offload_path": f"ZIPMOE-PREFIX/ZipMoE/offload/{target_model_type}/",
++    "offload_path": f"/home/thor/kcj/ZipMoE/offload/{target_model_type}/",
+     "caching_algorithm": args.cache_algorithm,#"ZipMoE",
+     "prefetcher_topk": args.prefetcher_topk,
+     "device_memory_ratio": MEMMAPPING[args.system][args.memory_footprint],
+@@ -68,7 +68,7 @@ config = {
+     "hyperparam_state_margin": 0.1,
+     "num_file_chunks": 3,
+     "num_compute_threads": 6,
+-    "trace_path": f"ZIPMOE-PREFIX/ZipMoE/trace/{target_model_type}_trace.pt",
++    "trace_path": f"/home/thor/kcj/ZipMoE/trace/{target_model_type}_trace.pt",
+     "expert_topk": List_expert_topk[target_model_type],
+     "num_elements_per_expert": List_num_elements_per_expert[target_model_type],
+     "num_tensors_per_expert": List_num_tensors_per_expert[target_model_type],
+diff --git a/evaluation/evaluate_batch_tps.sh b/evaluation/evaluate_batch_tps.sh
+index 5bd30d9..188f88d 100755
+--- a/evaluation/evaluate_batch_tps.sh
++++ b/evaluation/evaluate_batch_tps.sh
+@@ -18,12 +18,12 @@ VIRTUAL_ENV=zipmoe
+ PYTHON=python3
+ SCRIPT=evaluation/evaluate.py
+ 
+-cd ZIPMOE-PREFIX/ZipMoE
++cd /home/thor/kcj/ZipMoE
+ export PYTHONPATH="$(pwd)"
+ 
+ 
+ 
+-OUTPUT_DIR=ZIPMOE-PREFIX/ZipMoE/evaluation/results/
++OUTPUT_DIR=/home/thor/kcj/ZipMoE/evaluation/results/
+ SSD_TYPE=Samsung970EVO # Variable, choices=["Samsung970EVO","AigoP2000"]
+ CACHE_ALG=ZipMoE # Variable, choices=["ZipMoE","LRU","LFU","Marking","FIFO"]
+ PREFETCHER_TOPKS=0
+diff --git a/evaluation/evaluate_mem_latency.sh b/evaluation/evaluate_mem_latency.sh
+index d5a7658..c9dc80d 100755
+--- a/evaluation/evaluate_mem_latency.sh
++++ b/evaluation/evaluate_mem_latency.sh
+@@ -20,12 +20,12 @@ VIRTUAL_ENV=zipmoe
+ PYTHON=python3
+ SCRIPT=evaluation/evaluate.py
+ 
+-cd ZIPMOE-PREFIX/ZipMoE
++cd /home/thor/kcj/ZipMoE
+ export PYTHONPATH="$(pwd)"
+ 
+ 
+ 
+-OUTPUT_DIR=ZIPMOE-PREFIX/ZipMoE/evaluation/results/
++OUTPUT_DIR=/home/thor/kcj/ZipMoE/evaluation/results/
+ SSD_TYPE=Samsung970EVO # Variable, choices=["Samsung970EVO","AigoP2000"]
+ CACHE_ALG=ZipMoE # Variable, choices=["ZipMoE","LRU","LFU","Marking","FIFO"]
+ PREFETCHER_TOPKS=0
+diff --git a/runtime/model_offload.py b/runtime/model_offload.py
+index ba969a4..06f8339 100644
+--- a/runtime/model_offload.py
++++ b/runtime/model_offload.py
+@@ -40,7 +40,8 @@ from experts import (
+ from customized import (
+     DeepseekMoEBlock,
+     SyncSwitchTransformersSparseMLP,
+-    Qwen2MoEBlock
++    Qwen2MoEBlock,
++    Qwen3MoEBlock
+ )
+ import models
+ from runtime.hooks import *
+@@ -244,7 +245,9 @@ class ZipMoEEngine(object):
+         transformers.models.switch_transformers.modeling_switch_transformers._old_sparse_mlp = transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersSparseMLP
+         transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersSparseMLP = SyncSwitchTransformersSparseMLP
+         transformers.models.qwen2_moe.modeling_qwen2_moe._old_sparse_mlp = transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock
+-        transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock = Qwen2MoEBlock        
++        transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock = Qwen2MoEBlock
++        transformers.models.qwen3_moe.modeling_qwen3_moe._old_sparse_mlp = transformers.models.qwen3_moe.modeling_qwen3_moe.Qwen3MoeSparseMoeBlock
++        transformers.models.qwen3_moe.modeling_qwen3_moe.Qwen3MoeSparseMoeBlock = Qwen3MoEBlock
+         def from_pretrained_decorator(
+             original_from_pretrained: Callable
+         ):
+@@ -419,6 +422,7 @@ class ZipMoEEngine(object):
+                         isinstance(module, DeepseekMoEBlock)
+                         or isinstance(module, SyncSwitchTransformersSparseMLP)
+                         or isinstance(module, Qwen2MoEBlock)
++                        or isinstance(module, Qwen3MoEBlock)
+                     ):
+                         module.zipmoe_engine = self.zipmoe_engine
+                         module.zipmoe_config = self.zipmoe_config
+@@ -792,4 +796,5 @@ class ZipMoEEngine(object):
+         models.deepseek.modeling_deepseek.DeepseekV2MoE = models.deepseek.modeling_deepseek._old_sparse_mlp
+         transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersTop1Router._cast_classifier = transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersTop1Router._old_cast_classifier
+         transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersSparseMLP = transformers.models.switch_transformers.modeling_switch_transformers._old_sparse_mlp
+-        transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock = transformers.models.qwen2_moe.modeling_qwen2_moe._old_sparse_mlp
+\ No newline at end of file
++        transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock = transformers.models.qwen2_moe.modeling_qwen2_moe._old_sparse_mlp
++        transformers.models.qwen3_moe.modeling_qwen3_moe.Qwen3MoeSparseMoeBlock = transformers.models.qwen3_moe.modeling_qwen3_moe._old_sparse_mlp
+\ No newline at end of file
+diff --git a/utils/config.py b/utils/config.py
+index 684b4a3..cf3233a 100644
+--- a/utils/config.py
++++ b/utils/config.py
+@@ -16,7 +16,7 @@ from transformers import HfArgumentParser
+ class ZipMoEConfig:
+     
+     offload_path: str = field(
+-        default = "ZIPMOE-PREFIX/ZipMoE/offload/model_name", 
++        default = "/home/thor/kcj/ZipMoE/offload/model_name", 
+         metadata = {"help": "Path to the compressed tensor binaries. [Warning] need to align with model."}
+     )
+     
+@@ -41,7 +41,7 @@ class ZipMoEConfig:
+     )
+     
+     trace_path: str = field(
+-        default = "ZIPMOE-PREFIX/ZipMoE/trace/model_name", 
++        default = "/home/thor/kcj/ZipMoE/trace/model_name", 
+         metadata = {"help": "Path to the model traces. [Warning] need to align with model."}
+     )    
+     
+diff --git a/utils/constants.py b/utils/constants.py
+index 2c96733..3089401 100644
+--- a/utils/constants.py
++++ b/utils/constants.py
+@@ -16,16 +16,19 @@ from models.deepseek import (
+ 
+ from transformers import (
+     SwitchTransformersForConditionalGeneration,
+-    Qwen2MoeForCausalLM
++    Qwen2MoeForCausalLM,
++    Qwen3MoeForCausalLM
+ )
+ 
+ MODEL_MAPPING_NAMES = {
++    "qwen3": Qwen3MoeForCausalLM,
+     "deepseek": DeepseekV2ForCausalLM,
+     "switch": SwitchTransformersForConditionalGeneration,
+     "qwen": Qwen2MoeForCausalLM
+ }
+ 
+ MODEL_MAPPING_TYPES = {
++    "qwen3": 0,
+     "deepseek": 0,
+     "switch": 1,
+     "qwen": 0
+@@ -49,30 +52,35 @@ COMPRESSION_RATIO_PROFILE = {
+ }
+ 
+ List_expert_topk = {
++    "qwen3": 8,
+     "deepseek": 6,
+     "switch": 1,
+     "qwen": 4
+ }
+ 
+ List_num_elements_per_expert = {
++    "qwen3": 768*2048,
+     "deepseek": 1408*2048,
+     "switch": 1024*4096,
+     "qwen": 1408*2048
+ }
+ 
+ List_num_tensors_per_expert = {
++    "qwen3": 3,
+     "deepseek": 3,
+     "switch": 2,
+     "qwen": 3
+ }
+ 
+ List_num_expert_layers = {
++    "qwen3": 48,
+     "deepseek": 26,
+     "switch": 24,
+     "qwen": 24
+ }
+ 
+ List_num_experts = {
++    "qwen3": 128,
+     "deepseek": 64,
+     "switch": 128,
+     "qwen": 60
+@@ -80,6 +88,7 @@ List_num_experts = {
+ 
+ 
+ List_first_k_dense_replace = {
++    "qwen3": 0,
+     "deepseek": 1,
+     "switch": 0,
+     "qwen": 0
+diff --git a/zipmoe_stream_chat.py b/zipmoe_stream_chat.py
+index f03311d..20bd522 100644
+--- a/zipmoe_stream_chat.py
++++ b/zipmoe_stream_chat.py
+@@ -22,10 +22,10 @@ else:
+     target_model_type = "deepseek"
+ 
+ # 2. Runtime Setups
+-checkpoint = f"ZIPMOE-PREFIX/ZipMoE/models/{target_model_type}/"
++checkpoint = f"/home/thor/kcj/ZipMoE/models/{target_model_type}/"
+ tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote=True)
+ config = {
+-    "offload_path": f"ZIPMOE-PREFIX/ZipMoE/offload/{target_model_type}/",
++    "offload_path": f"/home/thor/kcj/ZipMoE/offload/{target_model_type}/",
+     "prefetcher_topk": 0,
+     "caching_algorithm": "ZipMoE",
+     "device_memory_ratio": 0.5,
+@@ -34,7 +34,7 @@ config = {
+     "hyperparam_state_margin": 0,
+     "num_file_chunks": 3,
+     "num_compute_threads": 10,
+-    "trace_path": f"ZIPMOE-PREFIX/ZipMoE/trace/{target_model_type}_trace.pt",
++    "trace_path": f"/home/thor/kcj/ZipMoE/trace/{target_model_type}_trace.pt",
+     "expert_topk": List_expert_topk[target_model_type],
+     "num_elements_per_expert": List_num_elements_per_expert[target_model_type],
+     "num_tensors_per_expert": List_num_tensors_per_expert[target_model_type],
+diff --git a/customized/qwen3.py b/customized/qwen3.py
+new file mode 100644
+index 0000000..93023b3
+--- /dev/null
++++ b/customized/qwen3.py
+@@ -0,0 +1,98 @@
++# Port of ZipMoE's Qwen1.5-MoE block to Qwen3-MoE (Qwen3-30B-A3B) for the
++# PHASOR evaluation.  Identical to customized/qwen.py except that Qwen3-MoE has
++# no shared expert.  Added by the PHASOR authors; not part of the ZipMoE release.
++# Copyright (c) 2026 <ZipMoE / MINT, Nanjing University>.
++# All rights reserved.
++#
++# Modifications and additions to this file are licensed under the
++# Academic Non-Commercial License. See the LICENSE file in the
++# project root for details.
++#
++# -------------------------------------------------------------------
++# DERIVED FROM:
++# EfficientMoE (Apache License 2.0)
++# Copyright (c) EfficientMoE.
++#
++# The original code is licensed under the Apache License, Version 2.0.
++# This file contains substantial modifications.
++# -------------------------------------------------------------------
++
++
++import torch
++import torch.nn as nn
++import torch.nn.functional as F
++from transformers.models.qwen3_moe.modeling_qwen3_moe import Qwen3MoeMLP
++class Qwen3MoEBlock(nn.Module):
++    def __init__(self, config):
++        super().__init__()
++        self.config = config
++        self.num_experts = config.num_experts
++        self.top_k = config.num_experts_per_tok
++        self.norm_topk_prob = config.norm_topk_prob 
++        self.gate = nn.Linear(
++            config.hidden_size, config.num_experts, bias=False
++        )
++        self.experts = nn.ModuleList(
++            [
++                Qwen3MoeMLP(
++                    config, intermediate_size=config.moe_intermediate_size
++                )
++                for _ in range(self.num_experts)
++            ]
++        )
++    def __prepare_expert_route(self, hidden_states):
++        router_logits = self.gate(hidden_states)
++
++        routing_weights = F.softmax(router_logits, dim=1, dtype=torch.float)
++        routing_weights, selected_experts = torch.topk(
++            routing_weights, self.top_k, dim=-1
++        )
++        if self.norm_topk_prob:
++            routing_weights /= routing_weights.sum(dim=-1, keepdim=True)
++        routing_weights = routing_weights.to(hidden_states.dtype)
++        return selected_experts, routing_weights, router_logits
++
++    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
++        identity = hidden_states
++        batch_size, sequence_length, hidden_dim = hidden_states.shape
++        hidden_states = hidden_states.view(-1, hidden_dim)
++        topk_idx, topk_weight, logits = (
++            self.__prepare_expert_route(hidden_states)
++        )
++        router_mask = F.one_hot(
++            topk_idx, num_classes=self.num_experts
++        )
++        routing_weights_mask = (topk_weight[:, :, None] * router_mask).permute(
++            0, 2, 1
++        )
++        routing_weights_mask = torch.sum(routing_weights_mask, dim=-1)
++        router_mask = router_mask.permute(0, 2, 1)
++        for i in range(self.top_k):
++            router_mask[:, :, 0] = torch.logical_or(
++                router_mask[:, :, 0], router_mask[:, :, i]
++            )
++        router_mask = router_mask[:, :, 0]
++    
++        final_hidden_states = torch.zeros(
++            (batch_size * sequence_length, hidden_dim),
++            dtype=hidden_states.dtype,
++            device=hidden_states.device,
++        )
++        results = self.expert_executor.dispatch_local(
++            hidden_states, 
++            router_mask, 
++            self.layer_id
++        )
++
++        for output, _, idx, _ in results:
++            token_indices = router_mask[:, idx].bool()
++            final_hidden_states[token_indices, :] += (
++                output.to(routing_weights_mask.device)
++                * routing_weights_mask[token_indices, idx][:, None]
++            )
++
++        final_hidden_states = final_hidden_states.view(
++            batch_size, sequence_length, hidden_dim
++        )
++    
++        return final_hidden_states
+\ No newline at end of file

@@ -13,7 +13,30 @@
 #       equal-memory setting from E1's memcal; a batch adds KV cache and
 #       activations to every system, so the cap is E1's cap + 8 GiB and the
 #       measured peaks are reported.
-say "=== extras ($m): E5, E9 window, E3 ==="
+say "=== extras ($m): E1 retries, E5, E9 window, E3 ==="
+# E1 retries.  memcal calibrates on two prompts; a baseline whose memory keeps
+# growing over a workload (e.g. DuoServe*'s host LRU) can then exceed the cap
+# on the full run.  Such a cell is retried with its knob lowered to x0.85,
+# x0.7, x0.55 of the calibrated value, stopping at the first that runs; the
+# cell reports that run and its knob.  PHASOR is never retried.
+for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
+  nb=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
+  for s in $systems; do
+    [ $s = phasor ] && continue
+    t=$O/$w/${s}_$f.txt
+    grep -q "^NORUN.*oom-under-cap" $t 2>/dev/null || continue
+    cal=$O/memcal/${s}_$nb.json; [ -s $cal ] || continue
+    k0=$(python3 -c "import json;v=json.load(open('$cal'))['budget_gib'];print(v if v else 'none')"); [ "$k0" = none ] && continue
+    CAP_GIB=$(capfor $nb)
+    for k in 0.85 0.7 0.55; do
+      kb=$(awk -v a=$k0 -v k=$k 'BEGIN{printf "%.2f", a*k}'); o=$O/$w/${s}_${f}_k$k
+      if [ $s = zipmoe ] || [ $s = flashmoe ] || [ $s = duoserve ] || [ $s = fiddler ] || [ $s = mixoff ]; then
+        run "s5_${m}_${w}_${s}_${nb}_k$k" $kb $o $(sys_cmd $s $m $ck $zt $slot $win $w $kb $o) && break
+      fi
+    done
+    unset CAP_GIB
+  done
+done; done
 X=$O/extras; mkdir -p $X/e5 $X/e9 $X/e3
 b45=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}')
 calb(){  # calb <sys> -> equal-memory budget at 0.45, or "none"

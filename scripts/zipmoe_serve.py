@@ -92,3 +92,7 @@ json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy=zipmoe budget={a.budget_gib:.2f} requests={n} ttft_s={res['ttft_s']:.4f} "
       f"tpot_ms={res['tpot_ms']:.3f} request_s={res['request_s']:.4f} "
       f"footprint_gib={res['footprint_gib']:.2f} peak_gib={_mw.peak_gib():.2f} compute=measured")
+# ZipMoE's worker threads do not exit after its task pool is destroyed, which
+# leaves the process running until the timeout; the results are written, so leave.
+sys.stdout.flush(); sys.stderr.flush()
+os._exit(0)

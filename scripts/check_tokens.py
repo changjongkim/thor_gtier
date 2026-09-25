@@ -40,3 +40,7 @@ for p in prompts:
     res[p] = o[0, ids.shape[1]:].tolist()
     print(system, repr(tok.decode(res[p])))
 json.dump(res, open(out, "w"))
+# ZipMoE's worker threads do not exit after its task pool is destroyed, which
+# leaves the process running until the timeout; the results are written, so leave.
+sys.stdout.flush(); sys.stderr.flush()
+os._exit(0)

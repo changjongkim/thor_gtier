@@ -12,6 +12,7 @@ import json
 import os
 import struct
 
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -53,6 +54,18 @@ def safetensors_index(path):
     return out
 
 
+# E5: when set to a dict, every MoE layer adds its time in seconds, split by
+# phase, into PROFILE[phase][part]: "wait" = collect (expert bytes not yet
+# resident), "expert" = expert matmuls, "moe" = the whole block.  Profiling
+# synchronizes around each part, so it runs separately from the timed matrix.
+PROFILE = None
+
+
+def _pf(phase, part, dt):
+    d = PROFILE.setdefault(phase, {})
+    d[part] = d.get(part, 0.0) + dt
+
+
 class PhasorMoE(nn.Module):
     """Drop-in for Qwen3MoeSparseMoeBlock / MixtralSparseMoeBlock."""
 
@@ -72,7 +85,11 @@ class PhasorMoE(nn.Module):
         if self.norm:
             w = w / w.sum(dim=-1, keepdim=True)
         w = w.to(x.dtype)
-        prefill = s > 1 or b > 1
+        # a decode step of a batch is still decode: b sequences, one token each
+        prefill = s > 1
+        prof = PROFILE is not None
+        if prof:
+            torch.cuda.synchronize(); t_blk = time.perf_counter(); phase = "prefill" if prefill else "decode"
         if prefill:
             self.engine.note_prefill(self.layer, torch.bincount(sel.flatten(), minlength=self.E))
         experts = torch.unique(sel).tolist()
@@ -92,13 +109,21 @@ class PhasorMoE(nn.Module):
                 if i >= 1:
                     torch.cuda.synchronize()
                 handles.append(self.engine.submit(self.layer, chunks[i + 1]))
+            if prof:
+                torch.cuda.synchronize(); t1 = time.perf_counter()
             ws = self.engine.collect(handles[i], prefill)
+            if prof:
+                t2 = time.perf_counter(); _pf(phase, "wait", t2 - t1)
             for e, (g, u, d) in zip(ch, ws):
                 tok, kk = torch.where(sel == e)
                 xe = x[tok]
                 y = F.linear(F.silu(F.linear(xe, g)) * F.linear(xe, u), d)
                 out.index_add_(0, tok, y * w[tok, kk, None])
+            if prof:
+                torch.cuda.synchronize(); _pf(phase, "expert", time.perf_counter() - t2)
         torch.cuda.synchronize()
+        if prof:
+            _pf(phase, "moe", time.perf_counter() - t_blk)
         out = out.view(b, s, h)
         return (out, logits) if self.returns_logits else out
 

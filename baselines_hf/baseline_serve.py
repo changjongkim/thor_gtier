@@ -18,6 +18,7 @@ ap.add_argument("--trace", nargs="*", default=[])
 ap.add_argument("--max-prompt", type=int, default=8192)
 ap.add_argument("--max-new", type=int, default=32)
 ap.add_argument("--limit", type=int, default=0)
+ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 import torch
@@ -43,6 +44,11 @@ load_s = time.time() - t0
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]
 rows = []
+if a.batch > 1:
+    import batchgen
+    rows = batchgen.serve(model.generate, tok, work, a.batch, a.max_prompt, a.max_new,
+                          lambda: {"read_gib": cache.r.bytes_read / 2**30})
+    work = []
 for w in work:
     ids = tok(w["prompt"], return_tensors="pt").input_ids[:, :a.max_prompt].to("cuda:0")
     new = min(a.max_new, int(w.get("max_new", a.max_new)))
@@ -64,6 +70,8 @@ res = {"system": a.system, "budget_gib": a.budget_gib, "load_s": load_s, "footpr
        "requests": n, "ttft_s": sum(r["ttft_s"] for r in rows) / n, "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
 res["peak_gib"] = _mw.peak_gib()
+res["batch"] = a.batch
+if a.batch > 1: res.update(batchgen.summary(rows))
 json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy={a.system} budget={a.budget_gib:.2f} requests={n} ttft_s={res['ttft_s']:.4f} "
       f"tpot_ms={res['tpot_ms']:.3f} request_s={res['request_s']:.4f} footprint_gib={res['footprint_gib']:.2f} peak_gib={_mw.peak_gib():.2f} compute=measured")

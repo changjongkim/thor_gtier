@@ -34,5 +34,9 @@ while kill -0 $pid 2>/dev/null; do
   sleep 0.5
 done
 wait $pid; rc=$?
+# E4/E6 accounting for the whole run (every process and thread of the system):
+# bytes read from block devices, and CPU time
+awk '{for(i=2;i<=NF;i++) if($i ~ /^rbytes=/){split($i,a,"="); s+=a[2]}} END{printf "cgroup_io_read_gib=%.3f\n", s/1073741824}' "$CG/io.stat" 2>/dev/null
+awk '/^usage_usec/{u=$2} /^user_usec/{us=$2} /^system_usec/{sy=$2} END{printf "cgroup_cpu_s=%.1f cgroup_user_s=%.1f cgroup_sys_s=%.1f\n", u/1e6, us/1e6, sy/1e6}' "$CG/cpu.stat" 2>/dev/null
 [ $guard = 1 ] && exit 137
 exit $rc

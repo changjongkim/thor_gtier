@@ -10,6 +10,9 @@ NAME = {"gtier": "gtier(async)", "cufile": "cufile", "pread+copy": "pread+copy",
         "mmap-cpu": "mmap-cpu", "uvm": "uvm", "mmap-gpu": "mmap-gpu"}
 ORDER = list(NAME)
 NOTES = []
+# runs disturbed by an operator drop_caches while they ran (23:41, 2026-09-25);
+# the other repeats of the same point stand
+EXCLUDE = {"micro_iters128.log": {"RUN rep=1 item=1048576 backend=0", "RUN rep=1 item=1048576 backend=4"}}
 
 
 def parse(path):
@@ -19,6 +22,8 @@ def parse(path):
         elif ln.startswith("RUN"): run = ln.strip()
         elif ln.startswith("BASE"): base = float(ln.split("=")[1])
         elif ln.startswith("FAILED"): fails.append(f"{run} {ln.strip()}")
+        elif ln.startswith("CPU ") and run in EXCLUDE.get(path.rsplit("/", 1)[-1], ()):
+            NOTES.append(f"excluded (disturbed by a drop_caches during the run): {path.rsplit('/', 1)[-1]} {run}")
         elif ln.startswith("CPU "):
             kv = dict(x.split("=", 1) for x in ln.split()[1:])
             d = {k: float(v) for k, v in kv.items() if k != "backend"}

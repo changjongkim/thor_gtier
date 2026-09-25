@@ -20,6 +20,8 @@ ap.add_argument("--slot-mib", type=int, default=4)
 ap.add_argument("--max-prompt", type=int, default=8192)
 ap.add_argument("--max-new", type=int, default=32)
 ap.add_argument("--limit", type=int, default=0)
+ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
+ap.add_argument("--profile", action="store_true", help="E5: per-phase wait / expert / MoE time (synchronizing)")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 import torch
@@ -45,7 +47,19 @@ model, tok, eng = phasor_hf.build(a.checkpoint, a.budget_gib, window_gib=a.windo
 load_s = time.time() - t0
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]
+if a.profile:
+    phasor_hf.PROFILE = {}
 rows = []
+
+
+if a.batch > 1:
+    import batchgen
+    def _st():
+        x = eng.stats(); return {"hits": x[0], "misses": x[1], "read_gib": x[2] / 2**30}
+    def _gen(**k):
+        eng.begin_request(); return model.generate(**k)
+    rows = batchgen.serve(_gen, tok, work, a.batch, a.max_prompt, a.max_new, _st)
+    work = []
 for w in work:
     ids = tok(w["prompt"], return_tensors="pt").input_ids[:, :a.max_prompt].to("cuda:0")
     new = min(a.max_new, int(w.get("max_new", a.max_new)))
@@ -74,7 +88,12 @@ res = {"system": "PHASOR-HF", "policy": a.policy, "budget_gib": a.budget_gib,
        "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
 res["peak_gib"] = _mw.peak_gib()
+res["batch"] = a.batch
+if a.batch > 1:
+    res.update(batchgen.summary(rows))
+if a.profile:
+    res["profile_s"] = phasor_hf.PROFILE
 json.dump(res, open(a.out, "w"), indent=1)
-print(f"RESULT policy=phasor-hf-{a.policy} budget={a.budget_gib:.2f} requests={n} "
+print(f"RESULT policy=phasor-hf-{a.policy} budget={a.budget_gib:.2f} requests={n} batch={a.batch} "
       f"ttft_s={res['ttft_s']:.4f} tpot_ms={res['tpot_ms']:.3f} request_s={res['request_s']:.4f} "
       f"footprint_gib={res['footprint_gib']:.2f} peak_gib={_mw.peak_gib():.2f} compute=measured")

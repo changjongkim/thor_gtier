@@ -18,6 +18,7 @@ ap.add_argument("--trace", required=True)
 ap.add_argument("--max-prompt", type=int, default=8192)
 ap.add_argument("--max-new", type=int, default=32)
 ap.add_argument("--limit", type=int, default=0)
+ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 
@@ -48,7 +49,7 @@ cfg = {
     "offload_path": f"/home/thor/kcj/ZipMoE/offload/{mt}/",
     "caching_algorithm": "ZipMoE", "prefetcher_topk": 4,
     "device_memory_ratio": min(0.95, a.budget_gib / total),
-    "gpu_pool_ratio": 0.95, "batch_size": 1, "code_type": "LZ4HC",
+    "gpu_pool_ratio": 0.95, "batch_size": a.batch, "code_type": "LZ4HC",
     "hyperparam_state_margin": 0.1, "num_file_chunks": 3, "num_compute_threads": 6,
     "trace_path": a.trace,
     "expert_topk": List_expert_topk[mt],
@@ -65,6 +66,10 @@ load_s = time.time() - t0
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]
 rows = []
+if a.batch > 1:
+    import batchgen
+    rows = batchgen.serve(model.generate, tok, work, a.batch, a.max_prompt, a.max_new)
+    work = []
 for w in work:
     ids = tok(w["prompt"], return_tensors="pt").input_ids[:, :a.max_prompt].to("cuda:0")
     new = min(a.max_new, int(w.get("max_new", a.max_new)))
@@ -88,6 +93,8 @@ res = {"system": "ZipMoE", "budget_gib": a.budget_gib, "load_s": load_s,
        "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
 res["peak_gib"] = _mw.peak_gib()
+res["batch"] = a.batch
+if a.batch > 1: res.update(batchgen.summary(rows))
 json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy=zipmoe budget={a.budget_gib:.2f} requests={n} ttft_s={res['ttft_s']:.4f} "
       f"tpot_ms={res['tpot_ms']:.3f} request_s={res['request_s']:.4f} "

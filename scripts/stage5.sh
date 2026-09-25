@@ -82,8 +82,8 @@ system(){  # system <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>  -> run
     moeinf)  run "s5_${m}_${w}_moeinf_$nb" $b $o $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload $W --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib $b --out $o.json ;;
     flashmoe) run "s5_${m}_${w}_flashmoe_$nb" $b $o $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload $W --budget-gib $b --weights $(fm_weights $m $w $b) --out $o.json ;;
     duoserve) run "s5_${m}_${w}_duoserve_$nb" $b $o $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload $W --budget-gib $b --predictor results/DUOSERVE/${m}_$w.pt --trace $(held $m $w) --out $o.json ;;
-    fiddler) run "s5_${m}_${w}_fiddler_$nb" $b $o $ZPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json ;;
-    mixoff)  run "s5_${m}_${w}_mixoff_$nb" $b $o $ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json ;;
+    fiddler) run "s5_${m}_${w}_fiddler_$nb" $b $o $OPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json ;;
+    mixoff)  run "s5_${m}_${w}_mixoff_$nb" $b $o $OPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json ;;
   esac
 }
 
@@ -123,6 +123,22 @@ for s_ in "fiddler baselines_hf/fiddler_serve.py --checkpoint /home/thor/kcj/mod
     say "  FAILED s5_smoke_$n: $(grep -E 'Error|HOSTGUARD' results/PREP/smoke_${n}_oldhf.log | tail -1)"
   fi
 done
+# Self-test of the E3/E5 runner modes (batch, profile) on two MMLU prompts, so a
+# broken mode shows now rather than when the extras are reached; not a measurement.
+if [ ! -f $ST/s5_selftest_extras.done ]; then
+  Q=/home/thor/kcj/models/qwen3_30b_a3b; W=results/WORKLOADS/mmlu.json; T=results/PREP/selftest; mkdir -p $T; okall=1
+  for t in "phasor_b2 $ZPY phasor_hf/phasor_serve.py --checkpoint $Q --workload $W --budget-gib 25.65 --slot-mib 4 --window-gib 0.5 --batch 2" \
+           "phasor_prof $ZPY phasor_hf/phasor_serve.py --checkpoint $Q --workload $W --budget-gib 25.65 --slot-mib 4 --window-gib 0.5 --profile" \
+           "flashmoe_b2 $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $Q --workload $W --budget-gib 25.65 --weights $(ls results/FLASHMOE/bf16/qwen30b_mmlu_s*.txt | head -1) --batch 2" \
+           "duoserve_b2 $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $Q --workload $W --budget-gib 25.65 --predictor results/DUOSERVE/qwen30b_mmlu.pt --trace $(held qwen30b mmlu) --batch 2" \
+           "zipmoe_b2 $ZPY scripts/zipmoe_serve.py --model-type qwen3 --workload $W --budget-gib 25.65 --trace /home/thor/kcj/ZipMoE/trace/qwen3_mmlu_heldout.pt --batch 2"; do
+    set -- $t; n=$1; shift; drop
+    if timeout 3600 scripts/in_cgroup.sh prep max "$@" --limit 4 --out $T/$n.json > $T/$n.log 2>&1 && grep -q '^RESULT' $T/$n.log; then
+      say "  selftest ok $n ($(python3 -c "import json;d=json.load(open('$T/$n.json'));print({k:d[k] for k in ('tok_per_s','profile_s') if k in d})" 2>&1 | cut -c1-200))"
+    else okall=0; say "  selftest FAILED $n: $(grep -E 'Error|error|HOSTGUARD' $T/$n.log | tail -1 | cut -c1-200)"; fi
+  done
+  [ $okall = 1 ] && touch $ST/s5_selftest_extras.done
+fi
 for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,moeinf,flashmoe,duoserve" \
             "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,moeinf,flashmoe,duoserve,fiddler,mixoff"; do
   # Queued SSD-idle work (e.g. CPU-cost measurements) runs here, between
@@ -228,6 +244,9 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
       system $s $m $ck $zt $slot $win mmlu $b $O/mmlu/${s}_$f || break
     done
   done
+  # E3 (batch), E5 (latency breakdown), E9 (window, SSD bandwidth): in their
+  # own script, read when reached, while this model's conversion stores exist
+  [ -f scripts/stage5_extras.sh ] && . scripts/stage5_extras.sh   # sourced: uses run/system/sys_cmd and this loop's variables
   python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
   git add -A results/MATRIX5 results/FLASHMOE >/dev/null 2>&1
   git diff --cached --quiet || { git commit -q -m "Architecture-level matrix: $m

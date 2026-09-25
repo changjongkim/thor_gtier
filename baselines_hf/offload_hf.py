@@ -204,7 +204,7 @@ class BaselineMoE(nn.Module):
         w, sel = torch.topk(w, self.K, dim=-1)
         if self.norm: w = w / w.sum(dim=-1, keepdim=True)
         w = w.to(x.dtype)
-        prefill = s > 1 or b > 1
+        prefill = s > 1                     # a batched decode step is decode
         experts = torch.unique(sel).tolist()
         out = torch.zeros_like(x)
         if self.kind == "flashmoe":

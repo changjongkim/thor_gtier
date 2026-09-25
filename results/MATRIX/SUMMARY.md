@@ -47,6 +47,7 @@ Ablation at 0.45 (qwen30b / longbench):
 | + held-out initial counts | 7.931 | 6.592 | 41.82 |
 | - prefix pin | 7.995 | 6.618 | 43.05 |
 | - live-set guard | 7.981 | 6.615 | 42.68 |
+| pread+copy data path | 8.768 | 7.179 | 49.65 |
 | no residency | 15.661 | 7.636 | 250.80 |
 
 ### qwen30b / sharegpt

@@ -141,4 +141,5 @@ Ablation at 0.45:
 | 0.25 | Mixtral-offloading* (copy, speculative) | 55.389 | 11.980 | 1356.5 | 0.58 | 5.38 |
 | 0.25 | PHASOR | 41.485 | 11.855 | 925.9 | 0.77 | 5.88 |
 | 0.25 | **PHASOR vs best other (moeinf)** | **1.29x** | 1.01x | 1.40x | | |
+| 0.45 | LRU (pread+copy) | 43.632 | 15.757 | 871.1 | 0.73 | 10.71 |
 

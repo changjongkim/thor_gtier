@@ -6,8 +6,8 @@ R = "/home/thor/kcj/thor_gtier/results/MATRIX"
 MODELS = ["qwen30b", "mixtral8x7b", "qwen235b", "qwen30b_bf16"]
 WL = ["longbench", "sharegpt", "mmlu"]
 POL = [("lru", "LRU"), ("moeinf", "MoE-Infinity*"), ("mixtral", "Mixtral-offloading*"),
-       ("moeinf_real", "MoE-Infinity (real system)"), ("ledger", "LEDGER")]
-ABL = [("ledger_0.45", "LEDGER (full)"), ("abl_noasync", "- async submission"),
+       ("moeinf_real", "MoE-Infinity (real system)"), ("ledger", "PHASOR")]
+ABL = [("ledger_0.45", "PHASOR (full)"), ("abl_noasync", "- async submission"),
        ("abl_mix0", "- prompt routing term (history only)"),
        ("abl_mix1", "- decode history term (prompt only)"),
        ("abl_norec", "- recency term"), ("abl_nosel", "- selective admission"),
@@ -56,7 +56,7 @@ for m in MODELS:
                       f"{f(d,'ttft_s','.3f')} | {f(d,'tpot_ms','.2f')} | {f(d,'e2e_tok_s','.3f')} | "
                       f"{f(d,'prefill_gib','.2f')} | {f(d,'decode_gib_tok','.4f')} |")
             if led and best:
-                print(f"| {fr} | **LEDGER vs best baseline ({best['policy']})** | "
+                print(f"| {fr} | **PHASOR vs best baseline ({best['policy']})** | "
                       f"**{float(best['request_s'])/float(led['request_s']):.2f}x** | "
                       f"{float(best['ttft_s'])/float(led['ttft_s']):.2f}x | "
                       f"{float(best['tpot_ms'])/float(led['tpot_ms']):.2f}x | | | |")

@@ -9,8 +9,8 @@ SYS = [("lru", "LRU (pread+copy)"), ("moeinf", "MoE-Infinity* (pread+copy, prefe
        ("mixtral", "Mixtral-offloading* (copy, speculative)"),
        ("flashmoe", "FlashMoE* (copy, learned per-layer eviction)"),
        ("duoserve", "DuoServe-MoE* (copy, predicted prefetch)"),
-       ("llama", "llama.cpp (--cpu-moe, mmap)"), ("ledger", "LEDGER")]
-ABL = [("ledger_0.45", "LEDGER"), ("abl_nooverlap", "- layer pipelining"),
+       ("llama", "llama.cpp (--cpu-moe, mmap)"), ("ledger", "PHASOR")]
+ABL = [("ledger_0.45", "PHASOR"), ("abl_nooverlap", "- layer pipelining"),
        ("abl_noasync", "- continuous submission"), ("abl_pread", "pread+copy path instead of gTier"),
        ("abl_lru", "LRU residency on gTier path"), ("abl_mix0", "- prompt routing term"),
        ("abl_mix1", "- decode history term"), ("abl_norec", "- recency term"),
@@ -56,13 +56,13 @@ for m in MODELS:
             base = [(k, d) for k, d in rows.items() if d and k != "ledger"]
             if led and base:
                 bk, bd = min(base, key=lambda x: float(x[1]["request_s"]))
-                print(f"| {fr} | **LEDGER vs best other ({bk})** | "
+                print(f"| {fr} | **PHASOR vs best other ({bk})** | "
                       f"**{float(bd['request_s'])/float(led['request_s']):.2f}x** | "
                       f"{float(bd['ttft_s'])/float(led['ttft_s']):.2f}x | "
                       f"{float(bd['tpot_ms'])/float(led['tpot_ms']):.2f}x | | |")
         b = [(n, res(f"{R}/{m}/{w}/{k}.txt")) for k, n in
              (("moeinf_b4_0.45", "MoE-Infinity* batch 4"), ("flashmoe_b4_0.45", "FlashMoE* batch 4"), ("duoserve_b4_0.45", "DuoServe-MoE* batch 4"),
-              ("ledger_b4_0.45", "LEDGER batch 4"))]
+              ("ledger_b4_0.45", "PHASOR batch 4"))]
         if any(d for _, d in b):
             print(f"\nBatch 4 at 0.45:\n\n| system | request s | TTFT s | TPOT ms | tok/s |\n|---|---|---|---|---|")
             for n, d in b:

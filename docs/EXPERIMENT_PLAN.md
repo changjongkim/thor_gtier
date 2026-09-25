@@ -3,9 +3,9 @@
 실행 스크립트: `scripts/pipeline.sh`(라우팅 캡처) → `scripts/stage2.sh`(서빙 행렬).
 결과: `results/MATRIX/<model>/<workload>/<run>.txt`, 요약 `results/MATRIX/SUMMARY.md`.
 
-## 0. 무엇이 LEDGER인가
+## 0. 무엇이 PHASOR인가
 
-LEDGER는 **모든 컴포넌트가 켜진 하나의 설정**이다. 스위치는 기여 분해용이다.
+PHASOR는 **모든 컴포넌트가 켜진 하나의 설정**이다. 스위치는 기여 분해용이다.
 
 ```
 층 1 — gTier 데이터 경로

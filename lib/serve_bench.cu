@@ -1389,6 +1389,11 @@ int main(int argc, char **argv) {
         }
         for (size_t j=0;j<br.size();++j) {
             req_time_sum += t_req[j]; ttft_time_sum += t_prefill; ++n_req_done;
+            // One line per request: the distribution (tails, queueing) is
+            // rebuilt from these, the RESULT line only carries means.
+            std::printf("REQ name=%s prompt_tok=%d decode_tok=%d ttft_s=%.4f request_s=%.4f\n",
+                        tr.req[br[j]].name.c_str(), tr.req[br[j]].n_prefill, nd[j],
+                        t_prefill, t_req[j]);
         }
         wall_sum += t_batch;
     }

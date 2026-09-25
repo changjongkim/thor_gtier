@@ -139,4 +139,6 @@ Ablation at 0.45:
 | 0.25 | LRU (pread+copy) | 58.700 | 17.023 | 1302.4 | 0.55 | 5.38 |
 | 0.25 | MoE-Infinity* (pread+copy, prefetch) | 53.548 | 11.999 | 1298.4 | 0.60 | 5.38 |
 | 0.25 | Mixtral-offloading* (copy, speculative) | 55.389 | 11.980 | 1356.5 | 0.58 | 5.38 |
+| 0.25 | PHASOR | 41.485 | 11.855 | 925.9 | 0.77 | 5.88 |
+| 0.25 | **PHASOR vs best other (moeinf)** | **1.29x** | 1.01x | 1.40x | | |
 

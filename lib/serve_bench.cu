@@ -1223,42 +1223,54 @@ int main(int argc, char **argv) {
         const double cyc_per_s = 200000000.0 / (ms * 1e-3);
         auto spin = [&](double sec) { if (sec > 0) spin_kernel<<<1,1>>>((long long)(sec * cyc_per_s)); };
         std::vector<void*> outs(cfg.max_fetch_ranges);
+        // A layer's reads, split into ticket-sized chunks.  All chunks of the
+        // next layer are in flight together while the current layer computes.
+        typedef std::vector<std::vector<gtier_range>> Chunks;
         auto ranges_of = [&](const std::vector<int> &ids) {
-            std::vector<gtier_range> v;
-            for (int id : ids) for (auto &pr : unit[id].parts) v.push_back(pr.second);
-            if ((int)v.size() > cfg.max_fetch_ranges) {
-                std::fprintf(stderr, "layer needs %zu ranges > ticket %d; raise --window\n",
-                             v.size(), cfg.max_fetch_ranges); exit(1);
+            Chunks ch(1);
+            for (int id : ids) for (auto &pr : unit[id].parts) {
+                if ((int)ch.back().size() == cfg.max_fetch_ranges) ch.emplace_back();
+                ch.back().push_back(pr.second);
             }
-            return v;
+            if (ch.back().empty()) ch.pop_back();
+            if ((int)ch.size() > GTIER_MAX_INFLIGHT) {
+                std::fprintf(stderr, "layer needs %zu tickets > %d; raise --window\n",
+                             ch.size(), GTIER_MAX_INFLIGHT); exit(1);
+            }
+            return ch;
         };
         auto now = [] { return std::chrono::steady_clock::now(); };
         auto secs = [](auto a, auto b) { return std::chrono::duration<double>(b - a).count(); };
         // One phase = L layers, each with its ranges and its compute seconds.
-        auto run_phase = [&](const std::vector<std::vector<gtier_range>> &R,
+        auto run_phase = [&](const std::vector<Chunks> &R,
                              const std::vector<double> &c, double &real, double &model,
                              double &sum_io, double &sum_c) {
             // sequential: measure each layer's I/O and compute on their own
             sum_io = sum_c = 0;
             for (int l = 0; l < L; ++l) {
                 auto t0 = now();
-                if (!R[l].empty() && gtier_fetch(g, R[l].data(), (int)R[l].size(), outs.data())) exit(1);
+                for (auto &ck : R[l])
+                    if (gtier_fetch(g, ck.data(), (int)ck.size(), outs.data())) exit(1);
                 auto t1 = now(); spin(c[l]); CK(cudaDeviceSynchronize()); auto t2 = now();
                 sum_io += secs(t0, t1); sum_c += secs(t1, t2);
             }
             model = std::max(sum_io, sum_c) + std::min(sum_io, sum_c) / L;
             // real pipeline: layer l+1 in flight while layer l computes
-            gtier_ticket tk[2]; bool live[2] = {false, false};
-            auto t0 = now();
-            if (!R[0].empty()) { if (gtier_submit(g, R[0].data(), (int)R[0].size(), &tk[0])) exit(1); live[0] = true; }
-            for (int l = 0; l < L; ++l) {
-                int cur = l & 1, nxt = (l + 1) & 1;
-                if (live[cur]) { if (gtier_wait(g, &tk[cur], outs.data())) exit(1); live[cur] = false; }
-                if (l + 1 < L && !R[l+1].empty()) {
-                    if (gtier_submit(g, R[l+1].data(), (int)R[l+1].size(), &tk[nxt])) exit(1);
-                    live[nxt] = true;
+            std::vector<gtier_ticket> pend;
+            auto submit_layer = [&](int l) {
+                for (auto &ck : R[l]) {
+                    gtier_ticket t;
+                    if (gtier_submit(g, ck.data(), (int)ck.size(), &t)) exit(1);
+                    pend.push_back(t);
                 }
-                spin(c[l]);               // asynchronous: the next read proceeds meanwhile
+            };
+            auto t0 = now();
+            submit_layer(0);
+            for (int l = 0; l < L; ++l) {
+                for (auto &t : pend) if (gtier_wait(g, &t, outs.data())) exit(1);
+                pend.clear();
+                if (l + 1 < L) submit_layer(l + 1);
+                spin(c[l]);               // asynchronous: the next reads proceed meanwhile
                 // the next layer's arithmetic must follow its data, which the
                 // wait at the top of the next iteration guarantees
             }
@@ -1269,7 +1281,7 @@ int main(int argc, char **argv) {
         int nreq = std::min<int>(validate_reqs, (int)tr.req.size()), ntok_all = 0;
         for (int ri = 0; ri < nreq; ++ri) {
             Request &r = tr.req[ri];
-            std::vector<std::vector<gtier_range>> R(L); std::vector<double> c(L);
+            std::vector<Chunks> R(L); std::vector<double> c(L);
             std::vector<std::unordered_set<int>> U(L);
             for (int t = 0; t < r.n_prefill; ++t) for (int l = 0; l < L; ++l) for (int k = 0; k < K; ++k) {
                 int e = r.prefill[((size_t)t*L+l)*K+k]; if (e >= 0) U[l].insert(l*E+e); }

@@ -41,8 +41,8 @@ Ablation at 0.45:
 | - continuous submission | 6.442 | 5.283 | 36.2 |
 | pread+copy path instead of gTier | 6.674 | 5.314 | 42.5 |
 | LRU residency on gTier path | 6.606 | 5.217 | 43.4 |
-| - prompt routing term | 6.321 | 5.218 | 34.5 |
-| - decode history term | 6.063 | 5.216 | 26.5 |
+| - prompt routing term (a=0) | 6.321 | 5.218 | 34.5 |
+| - decode history term (a=1) | 6.063 | 5.216 | 26.5 |
 | - recency term | 6.877 | 5.225 | 51.6 |
 | count utility | 6.913 | 5.227 | 52.7 |
 
@@ -83,8 +83,8 @@ Ablation at 0.45:
 | - continuous submission | 2.575 | 1.521 | 32.9 |
 | pread+copy path instead of gTier | 2.993 | 1.689 | 40.8 |
 | LRU residency on gTier path | 2.877 | 1.206 | 52.2 |
-| - prompt routing term | 2.033 | 1.179 | 26.7 |
-| - decode history term | 2.206 | 1.167 | 32.5 |
+| - prompt routing term (a=0) | 2.033 | 1.179 | 26.7 |
+| - decode history term (a=1) | 2.206 | 1.167 | 32.5 |
 | - recency term | 2.324 | 1.169 | 36.1 |
 | count utility | 2.194 | 1.182 | 31.6 |
 
@@ -125,8 +125,8 @@ Ablation at 0.45:
 | - continuous submission | 1.884 | 1.696 | 23.4 |
 | pread+copy path instead of gTier | 2.104 | 1.882 | 27.8 |
 | LRU residency on gTier path | 2.158 | 1.304 | 106.8 |
-| - prompt routing term | 1.417 | 1.276 | 17.7 |
-| - decode history term | 1.627 | 1.315 | 39.0 |
+| - prompt routing term (a=0) | 1.417 | 1.276 | 17.7 |
+| - decode history term (a=1) | 1.627 | 1.315 | 39.0 |
 | - recency term | 1.464 | 1.299 | 20.7 |
 | count utility | 1.493 | 1.338 | 19.4 |
 
@@ -137,4 +137,6 @@ Ablation at 0.45:
 | budget | system | request s | TTFT s | TPOT ms | tok/s | peak GiB |
 |---|---|---|---|---|---|---|
 | 0.25 | LRU (pread+copy) | 58.700 | 17.023 | 1302.4 | 0.55 | 5.38 |
+| 0.25 | MoE-Infinity* (pread+copy, prefetch) | 53.548 | 11.999 | 1298.4 | 0.60 | 5.38 |
+| 0.25 | Mixtral-offloading* (copy, speculative) | 55.389 | 11.980 | 1356.5 | 0.58 | 5.38 |
 

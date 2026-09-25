@@ -117,6 +117,13 @@ static const char *policy_name(int p) {
     return "?";
 }
 
+// Occupies the GPU for a given number of cycles: the stand-in for a layer's
+// arithmetic when the overlap model is checked against a real pipeline.
+__global__ void spin_kernel(long long cycles) {
+    long long t0 = clock64();
+    while (clock64() - t0 < cycles) { }
+}
+
 __global__ void touch(const uint8_t *const *p, const size_t *l, int n,
                       unsigned long long *sink) {
     int r = blockIdx.x; if (r >= n) return;
@@ -156,6 +163,7 @@ int main(int argc, char **argv) {
     // first.  "--mix off" restores the count utility above.
     bool use_pred = true; double mix = 0.5; bool selective = true;
     int batch = 1; bool overlap = false;
+    int validate_reqs = 0, validate_toks = 4;
     const char *fm_weights = nullptr;
     // Terms of the estimate, each scaled to [0,1]:
     //   w_rec * 2^-(age/H)        recency, age in serving steps
@@ -251,6 +259,8 @@ int main(int argc, char **argv) {
         else if (s=="--selective") selective = atoi(nx()) != 0;
         else if (s=="--batch") batch = std::max(1, atoi(nx()));
         else if (s=="--overlap") overlap = true;
+        else if (s=="--validate-overlap") validate_reqs = atoi(nx());
+        else if (s=="--validate-tokens") validate_toks = atoi(nx());
         else if (s=="--fm-weights") fm_weights = nx();
         else if (s=="--rec-half") rec_half = atof(nx());
         else if (s=="--w-rec") w_rec = atof(nx());
@@ -1197,6 +1207,96 @@ int main(int argc, char **argv) {
             pinned_units.insert(id);
         }
     };
+
+    // --- overlap validation -------------------------------------------------
+    // The serving loop charges a pipelined phase max(io, c) + min(io, c)/L.
+    // Here the pipeline really runs: layer l+1's experts are read (gTier
+    // tickets, no residency) while a kernel occupies the GPU for layer l's
+    // calibrated arithmetic, and the elapsed time is compared with the model
+    // evaluated on the same layers' measured I/O and compute.
+    if (validate_reqs > 0) {
+        if (sh.size() != 1) { std::fprintf(stderr, "validation expects one shard\n"); return 1; }
+        gtier *g = sh[0].g;
+        cudaEvent_t e0, e1; CK(cudaEventCreate(&e0)); CK(cudaEventCreate(&e1));
+        CK(cudaEventRecord(e0)); spin_kernel<<<1,1>>>(200000000LL); CK(cudaEventRecord(e1));
+        CK(cudaEventSynchronize(e1)); float ms = 0; CK(cudaEventElapsedTime(&ms, e0, e1));
+        const double cyc_per_s = 200000000.0 / (ms * 1e-3);
+        auto spin = [&](double sec) { if (sec > 0) spin_kernel<<<1,1>>>((long long)(sec * cyc_per_s)); };
+        std::vector<void*> outs(cfg.max_fetch_ranges);
+        auto ranges_of = [&](const std::vector<int> &ids) {
+            std::vector<gtier_range> v;
+            for (int id : ids) for (auto &pr : unit[id].parts) v.push_back(pr.second);
+            if ((int)v.size() > cfg.max_fetch_ranges) {
+                std::fprintf(stderr, "layer needs %zu ranges > ticket %d; raise --window\n",
+                             v.size(), cfg.max_fetch_ranges); exit(1);
+            }
+            return v;
+        };
+        auto now = [] { return std::chrono::steady_clock::now(); };
+        auto secs = [](auto a, auto b) { return std::chrono::duration<double>(b - a).count(); };
+        // One phase = L layers, each with its ranges and its compute seconds.
+        auto run_phase = [&](const std::vector<std::vector<gtier_range>> &R,
+                             const std::vector<double> &c, double &real, double &model,
+                             double &sum_io, double &sum_c) {
+            // sequential: measure each layer's I/O and compute on their own
+            sum_io = sum_c = 0;
+            for (int l = 0; l < L; ++l) {
+                auto t0 = now();
+                if (!R[l].empty() && gtier_fetch(g, R[l].data(), (int)R[l].size(), outs.data())) exit(1);
+                auto t1 = now(); spin(c[l]); CK(cudaDeviceSynchronize()); auto t2 = now();
+                sum_io += secs(t0, t1); sum_c += secs(t1, t2);
+            }
+            model = std::max(sum_io, sum_c) + std::min(sum_io, sum_c) / L;
+            // real pipeline: layer l+1 in flight while layer l computes
+            gtier_ticket tk[2]; bool live[2] = {false, false};
+            auto t0 = now();
+            if (!R[0].empty()) { if (gtier_submit(g, R[0].data(), (int)R[0].size(), &tk[0])) exit(1); live[0] = true; }
+            for (int l = 0; l < L; ++l) {
+                int cur = l & 1, nxt = (l + 1) & 1;
+                if (live[cur]) { if (gtier_wait(g, &tk[cur], outs.data())) exit(1); live[cur] = false; }
+                if (l + 1 < L && !R[l+1].empty()) {
+                    if (gtier_submit(g, R[l+1].data(), (int)R[l+1].size(), &tk[nxt])) exit(1);
+                    live[nxt] = true;
+                }
+                spin(c[l]);               // asynchronous: the next read proceeds meanwhile
+                // the next layer's arithmetic must follow its data, which the
+                // wait at the top of the next iteration guarantees
+            }
+            CK(cudaDeviceSynchronize());
+            real = secs(t0, now());
+        };
+        double P_real = 0, P_model = 0, D_real = 0, D_model = 0;
+        int nreq = std::min<int>(validate_reqs, (int)tr.req.size()), ntok_all = 0;
+        for (int ri = 0; ri < nreq; ++ri) {
+            Request &r = tr.req[ri];
+            std::vector<std::vector<gtier_range>> R(L); std::vector<double> c(L);
+            std::vector<std::unordered_set<int>> U(L);
+            for (int t = 0; t < r.n_prefill; ++t) for (int l = 0; l < L; ++l) for (int k = 0; k < K; ++k) {
+                int e = r.prefill[((size_t)t*L+l)*K+k]; if (e >= 0) U[l].insert(l*E+e); }
+            for (int l = 0; l < L; ++l) {
+                R[l] = ranges_of(std::vector<int>(U[l].begin(), U[l].end()));
+                c[l] = r.n_prefill * compute_ms_prompt_token * 1e-3 / L;
+            }
+            double re, mo, io, cc; run_phase(R, c, re, mo, io, cc);
+            P_real += re; P_model += mo;
+            std::printf("VAL prefill %s tok=%d io=%.4f c=%.4f model=%.4f real=%.4f err=%+.1f%%\n",
+                        r.name.c_str(), r.n_prefill, io, cc, mo, re, (mo - re) / re * 100);
+            int nd = std::min(validate_toks, r.n_decode);
+            for (int t = 0; t < nd; ++t) {
+                for (int l = 0; l < L; ++l) {
+                    std::vector<int> ids;
+                    for (int k = 0; k < K; ++k) { int e = r.decode[((size_t)t*L+l)*K+k]; if (e >= 0) ids.push_back(l*E+e); }
+                    R[l] = ranges_of(ids); c[l] = compute_ms_token * 1e-3 / L;
+                }
+                run_phase(R, c, re, mo, io, cc);
+                D_real += re; D_model += mo; ++ntok_all;
+            }
+        }
+        std::printf("VALIDATE prefill real=%.4f model=%.4f err=%+.2f%% | decode(%d tok) real=%.4f model=%.4f err=%+.2f%%\n",
+                    P_real, P_model, (P_model - P_real) / P_real * 100, ntok_all,
+                    D_real, D_model, (D_model - D_real) / D_real * 100);
+        return 0;
+    }
 
     // --- serve ------------------------------------------------------------
     // Static batching: requests are taken B at a time in trace order.  A

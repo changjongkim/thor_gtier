@@ -1,0 +1,48 @@
+profile: IN-SAMPLE (served trace) (21 requests)
+model 26.5 GiB  units 256 x 101.72 MiB  always-resident 1.06 GiB
+budget 6.62 GiB  window 0.50  path-overhead 0.59  residency 4.47 GiB (17.6% of experts)  policy=mixtral*  backend=pread+copy
+REQ name=lb_2wikimqa_20 prompt_tok=8192 decode_tok=32 ttft_s=14.0424 request_s=58.7454
+REQ name=lb_dureader_16 prompt_tok=8192 decode_tok=32 ttft_s=14.0057 request_s=56.6570
+REQ name=lb_gov_report_0 prompt_tok=7386 decode_tok=32 ttft_s=12.6447 request_s=58.1651
+REQ name=lb_hotpotqa_6 prompt_tok=8192 decode_tok=32 ttft_s=14.0026 request_s=57.6625
+REQ name=lb_lcc_18 prompt_tok=2707 decode_tok=32 ttft_s=5.5693 request_s=47.3286
+REQ name=lb_lsht_13 prompt_tok=8192 decode_tok=32 ttft_s=14.0045 request_s=55.9454
+REQ name=lb_multi_news_1 prompt_tok=5959 decode_tok=32 ttft_s=10.2340 request_s=53.1993
+REQ name=lb_multifieldqa_en_10 prompt_tok=1396 decode_tok=32 ttft_s=5.5422 request_s=51.1445
+REQ name=lb_multifieldqa_zh_9 prompt_tok=2953 decode_tok=32 ttft_s=5.6335 request_s=49.7774
+REQ name=lb_musique_7 prompt_tok=8192 decode_tok=32 ttft_s=14.0049 request_s=63.9235
+REQ name=lb_narrativeqa_11 prompt_tok=8192 decode_tok=32 ttft_s=14.0016 request_s=57.6061
+REQ name=lb_passage_count_2 prompt_tok=8192 decode_tok=32 ttft_s=14.0021 request_s=57.1624
+REQ name=lb_passage_retrieval_en_12 prompt_tok=8192 decode_tok=32 ttft_s=14.0015 request_s=55.9864
+REQ name=lb_passage_retrieval_zh_15 prompt_tok=7216 decode_tok=32 ttft_s=12.3559 request_s=55.3832
+REQ name=lb_qasper_5 prompt_tok=6180 decode_tok=32 ttft_s=10.6047 request_s=54.6883
+REQ name=lb_qmsum_8 prompt_tok=8192 decode_tok=32 ttft_s=14.0033 request_s=58.3665
+REQ name=lb_repobench-p_4 prompt_tok=8192 decode_tok=32 ttft_s=14.0020 request_s=56.7609
+REQ name=lb_samsum_19 prompt_tok=8192 decode_tok=32 ttft_s=14.0034 request_s=57.5763
+REQ name=lb_trec_14 prompt_tok=6821 decode_tok=32 ttft_s=11.6869 request_s=53.4017
+REQ name=lb_triviaqa_17 prompt_tok=5385 decode_tok=32 ttft_s=9.2615 request_s=52.7572
+REQ name=lb_vcsum_3 prompt_tok=8192 decode_tok=32 ttft_s=14.0020 request_s=54.4162
+REQ name=lb_2wikimqa_20 prompt_tok=8192 decode_tok=32 ttft_s=14.0022 request_s=58.5378
+REQ name=lb_dureader_16 prompt_tok=8192 decode_tok=32 ttft_s=14.0046 request_s=56.4014
+REQ name=lb_gov_report_0 prompt_tok=7386 decode_tok=32 ttft_s=12.6423 request_s=57.6794
+REQ name=lb_hotpotqa_6 prompt_tok=8192 decode_tok=32 ttft_s=14.0021 request_s=57.4698
+REQ name=lb_lcc_18 prompt_tok=2707 decode_tok=32 ttft_s=5.5653 request_s=47.1323
+REQ name=lb_lsht_13 prompt_tok=8192 decode_tok=32 ttft_s=14.0039 request_s=55.6123
+REQ name=lb_multi_news_1 prompt_tok=5959 decode_tok=32 ttft_s=10.2324 request_s=52.8106
+REQ name=lb_multifieldqa_en_10 prompt_tok=1396 decode_tok=32 ttft_s=5.5549 request_s=50.8905
+REQ name=lb_multifieldqa_zh_9 prompt_tok=2953 decode_tok=32 ttft_s=5.6214 request_s=49.5061
+REQ name=lb_musique_7 prompt_tok=8192 decode_tok=32 ttft_s=14.0033 request_s=57.3204
+REQ name=lb_narrativeqa_11 prompt_tok=8192 decode_tok=32 ttft_s=14.0014 request_s=57.8885
+REQ name=lb_passage_count_2 prompt_tok=8192 decode_tok=32 ttft_s=14.0033 request_s=57.4103
+REQ name=lb_passage_retrieval_en_12 prompt_tok=8192 decode_tok=32 ttft_s=14.0022 request_s=56.1192
+REQ name=lb_passage_retrieval_zh_15 prompt_tok=7216 decode_tok=32 ttft_s=12.3560 request_s=55.4871
+REQ name=lb_qasper_5 prompt_tok=6180 decode_tok=32 ttft_s=10.6059 request_s=55.0123
+REQ name=lb_qmsum_8 prompt_tok=8192 decode_tok=32 ttft_s=14.0044 request_s=58.6739
+REQ name=lb_repobench-p_4 prompt_tok=8192 decode_tok=32 ttft_s=14.0030 request_s=56.8097
+REQ name=lb_samsum_19 prompt_tok=8192 decode_tok=32 ttft_s=14.0035 request_s=57.7037
+REQ name=lb_trec_14 prompt_tok=6821 decode_tok=32 ttft_s=11.6876 request_s=53.7478
+REQ name=lb_triviaqa_17 prompt_tok=5385 decode_tok=32 ttft_s=9.2633 request_s=53.0508
+REQ name=lb_vcsum_3 prompt_tok=8192 decode_tok=32 ttft_s=14.0017 request_s=54.4194
+mixtral*      | TTFT(io)   5.479 s  prefill   20.49 GiB | look=0   | TPOT(io) 1355.31 ms  decode   5.032 GiB/tok | stall 1778.504 s | bg   0.00 GiB vs shadow   0.00 GiB | pins 0 evict 0 | total 7624.05 GiB
+RESULT policy=mixtral* backend=pread+copy batch=1 overlap=1 budget=6.62 window=0.50 requests=42 prompt_tok=6871.8 decode_tok=32.0 ttft_s=11.9803 tpot_ms=1356.521 request_s=55.3890 throughput_tok_s=0.5777 prefill_io_s=5.4791 decode_io_ms=1355.313 prefill_gib=20.494 decode_gib_tok=5.0322 compute=calibrated
+cgroup_peak_gib=5.38

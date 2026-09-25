@@ -1,0 +1,6 @@
+profile: IN-SAMPLE (served trace) (24 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 7.78 GiB  window 0.50  path-overhead 0.59  residency 5.76 GiB (35.2% of experts)  policy=moe-inf*  backend=pread+copy
+moe-inf*      | TTFT(io)   0.546 s  prefill    2.08 GiB | look=0   | TPOT(io)   20.56 ms  decode   0.056 GiB/tok | stall  13.211 s | bg   0.00 GiB vs shadow   0.00 GiB | pins 0 evict 0 | total  121.20 GiB
+RESULT policy=moe-inf* backend=pread+copy batch=4 overlap=1 budget=7.78 window=0.50 requests=48 prompt_tok=555.2 decode_tok=8.0 ttft_s=2.4134 tpot_ms=82.577 request_s=3.0740 throughput_tok_s=10.4099 prefill_io_s=0.5458 decode_io_ms=20.558 prefill_gib=2.079 decode_gib_tok=0.0558 compute=calibrated
+cgroup_peak_gib=6.59

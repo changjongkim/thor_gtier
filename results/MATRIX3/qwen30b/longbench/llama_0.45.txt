@@ -1,0 +1,23 @@
+req lb_gov_report_0 prompt_tok=6571 new_tok=32 ttft_s=279.6645 tpot_ms=1423.164 request_s=323.7826
+req lb_multi_news_1 prompt_tok=5205 new_tok=32 ttft_s=196.8047 tpot_ms=1271.509 request_s=236.2215
+req lb_passage_count_2 prompt_tok=8192 new_tok=32 ttft_s=74.7755 tpot_ms=137.673 request_s=79.0434
+req lb_vcsum_3 prompt_tok=5530 new_tok=32 ttft_s=12.5658 tpot_ms=63.203 request_s=14.5251
+req lb_repobench-p_4 prompt_tok=8192 new_tok=32 ttft_s=14.8435 tpot_ms=131.163 request_s=18.9096
+req lb_qasper_5 prompt_tok=5635 new_tok=32 ttft_s=9.9871 tpot_ms=85.987 request_s=12.6527
+req lb_hotpotqa_6 prompt_tok=8192 new_tok=32 ttft_s=13.0654 tpot_ms=48.027 request_s=14.5543
+req lb_musique_7 prompt_tok=8192 new_tok=32 ttft_s=8.7893 tpot_ms=49.698 request_s=10.3300
+req lb_qmsum_8 prompt_tok=8192 new_tok=32 ttft_s=6.5940 tpot_ms=47.249 request_s=8.0587
+req lb_multifieldqa_zh_9 prompt_tok=1753 new_tok=32 ttft_s=4.2966 tpot_ms=48.584 request_s=5.8027
+req lb_multifieldqa_en_10 prompt_tok=1327 new_tok=32 ttft_s=1.9475 tpot_ms=53.366 request_s=3.6019
+req lb_narrativeqa_11 prompt_tok=8192 new_tok=32 ttft_s=7.8714 tpot_ms=46.774 request_s=9.3214
+req lb_passage_retrieval_en_12 prompt_tok=8192 new_tok=32 ttft_s=7.6386 tpot_ms=51.631 request_s=9.2391
+req lb_lsht_13 prompt_tok=8192 new_tok=32 ttft_s=9.9347 tpot_ms=85.050 request_s=12.5712
+req lb_trec_14 prompt_tok=6153 new_tok=32 ttft_s=7.6562 tpot_ms=83.152 request_s=10.2339
+req lb_passage_retrieval_zh_15 prompt_tok=4449 new_tok=32 ttft_s=4.9128 tpot_ms=50.069 request_s=6.4649
+req lb_dureader_16 prompt_tok=8030 new_tok=32 ttft_s=7.4800 tpot_ms=48.378 request_s=8.9797
+req lb_triviaqa_17 prompt_tok=4750 new_tok=32 ttft_s=4.1756 tpot_ms=54.785 request_s=5.8739
+req lb_lcc_18 prompt_tok=1943 new_tok=32 ttft_s=2.0117 tpot_ms=158.509 request_s=6.9255
+req lb_samsum_19 prompt_tok=8192 new_tok=32 ttft_s=7.5595 tpot_ms=61.132 request_s=9.4546
+req lb_2wikimqa_20 prompt_tok=8192 new_tok=32 ttft_s=8.3964 tpot_ms=61.943 request_s=10.3166
+RESULT policy=llama.cpp backend=mmap batch=1 overlap=1 requests=21 prompt_tok=6346.0 decode_tok=32.0 ttft_s=32.9034 tpot_ms=193.383 request_s=38.8983 throughput_tok_s=0.8227 compute=measured
+cgroup_peak_gib=8.28

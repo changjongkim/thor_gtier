@@ -1,0 +1,26 @@
+req mmlu_professional_psychology_0 prompt_tok=601 new_tok=8 ttft_s=88.4859 tpot_ms=2534.886 request_s=106.2301
+req mmlu_professional_psychology_1 prompt_tok=589 new_tok=8 ttft_s=68.1757 tpot_ms=2490.782 request_s=85.6112
+req mmlu_professional_psychology_2 prompt_tok=600 new_tok=8 ttft_s=61.4771 tpot_ms=1800.919 request_s=74.0835
+req mmlu_professional_psychology_3 prompt_tok=637 new_tok=8 ttft_s=48.7261 tpot_ms=1718.856 request_s=60.7580
+req mmlu_abstract_algebra_4 prompt_tok=391 new_tok=8 ttft_s=45.8353 tpot_ms=1590.720 request_s=56.9703
+req mmlu_abstract_algebra_5 prompt_tok=434 new_tok=8 ttft_s=39.0353 tpot_ms=1310.106 request_s=48.2060
+req mmlu_abstract_algebra_6 prompt_tok=386 new_tok=8 ttft_s=37.7502 tpot_ms=1368.289 request_s=47.3282
+req mmlu_abstract_algebra_7 prompt_tok=425 new_tok=8 ttft_s=37.2659 tpot_ms=564.675 request_s=41.2186
+req mmlu_machine_learning_8 prompt_tok=636 new_tok=8 ttft_s=8.6428 tpot_ms=244.366 request_s=10.3534
+req mmlu_machine_learning_9 prompt_tok=442 new_tok=8 ttft_s=5.5805 tpot_ms=93.068 request_s=6.2319
+req mmlu_machine_learning_10 prompt_tok=433 new_tok=8 ttft_s=1.3857 tpot_ms=70.788 request_s=1.8812
+req mmlu_machine_learning_11 prompt_tok=444 new_tok=8 ttft_s=1.9163 tpot_ms=56.904 request_s=2.3146
+req mmlu_professional_medicine_12 prompt_tok=862 new_tok=8 ttft_s=5.4912 tpot_ms=207.054 request_s=6.9406
+req mmlu_professional_medicine_13 prompt_tok=1127 new_tok=8 ttft_s=1.5444 tpot_ms=103.770 request_s=2.2707
+req mmlu_professional_medicine_14 prompt_tok=964 new_tok=8 ttft_s=1.8133 tpot_ms=78.058 request_s=2.3597
+req mmlu_professional_medicine_15 prompt_tok=958 new_tok=8 ttft_s=1.7130 tpot_ms=51.432 request_s=2.0731
+req mmlu_computer_security_16 prompt_tok=392 new_tok=8 ttft_s=2.5039 tpot_ms=247.870 request_s=4.2390
+req mmlu_computer_security_17 prompt_tok=421 new_tok=8 ttft_s=1.1259 tpot_ms=148.733 request_s=2.1670
+req mmlu_computer_security_18 prompt_tok=564 new_tok=8 ttft_s=1.6735 tpot_ms=50.003 request_s=2.0235
+req mmlu_computer_security_19 prompt_tok=492 new_tok=8 ttft_s=0.8430 tpot_ms=140.723 request_s=1.8281
+req mmlu_high_school_psychology_20 prompt_tok=334 new_tok=8 ttft_s=0.9800 tpot_ms=359.679 request_s=3.4978
+req mmlu_high_school_psychology_21 prompt_tok=380 new_tok=8 ttft_s=1.2505 tpot_ms=59.316 request_s=1.6657
+req mmlu_high_school_psychology_22 prompt_tok=379 new_tok=8 ttft_s=0.9517 tpot_ms=68.215 request_s=1.4292
+req mmlu_high_school_psychology_23 prompt_tok=433 new_tok=8 ttft_s=0.7180 tpot_ms=55.220 request_s=1.1046
+RESULT policy=llama.cpp backend=mmap batch=1 overlap=1 requests=24 prompt_tok=555.2 decode_tok=8.0 ttft_s=19.3702 tpot_ms=642.268 request_s=23.8661 throughput_tok_s=0.3352 compute=measured
+cgroup_peak_gib=8.28

@@ -1,0 +1,26 @@
+req sg_jKqNBVf_0_t2 prompt_tok=1059 new_tok=32 ttft_s=86.9313 tpot_ms=2051.777 request_s=150.5364
+req sg_jKqNBVf_0_t3 prompt_tok=1237 new_tok=32 ttft_s=59.8052 tpot_ms=1517.150 request_s=106.8368
+req sg_cSz8Ik6_0_t2 prompt_tok=67 new_tok=32 ttft_s=42.0469 tpot_ms=925.057 request_s=70.7237
+req sg_cSz8Ik6_0_t3 prompt_tok=391 new_tok=32 ttft_s=28.8119 tpot_ms=878.562 request_s=56.0473
+req sg_zcq8Evp_0_t2 prompt_tok=164 new_tok=32 ttft_s=19.6971 tpot_ms=467.494 request_s=34.1894
+req sg_zcq8Evp_0_t3 prompt_tok=223 new_tok=32 ttft_s=8.2519 tpot_ms=111.909 request_s=11.7211
+req sg_5cVpTKS_0_t2 prompt_tok=246 new_tok=32 ttft_s=10.6031 tpot_ms=134.860 request_s=14.7838
+req sg_V4wpuJu_0_t2 prompt_tok=614 new_tok=32 ttft_s=8.2269 tpot_ms=62.320 request_s=10.1588
+req sg_V4wpuJu_0_t3 prompt_tok=1240 new_tok=32 ttft_s=4.7558 tpot_ms=142.394 request_s=9.1700
+req sg_k7ymHcr_21_t2 prompt_tok=1012 new_tok=32 ttft_s=2.6299 tpot_ms=47.608 request_s=4.1058
+req sg_k7ymHcr_21_t3 prompt_tok=1797 new_tok=32 ttft_s=2.7638 tpot_ms=98.983 request_s=5.8323
+req sg_MuZDUct_0_t2 prompt_tok=109 new_tok=32 ttft_s=1.0216 tpot_ms=60.380 request_s=2.8934
+req sg_MuZDUct_0_t3 prompt_tok=377 new_tok=32 ttft_s=2.2251 tpot_ms=53.336 request_s=3.8786
+req sg_CcQ9JCK_25_t2 prompt_tok=823 new_tok=32 ttft_s=5.3248 tpot_ms=87.664 request_s=8.0424
+req sg_9EM9xb8_25_t2 prompt_tok=379 new_tok=32 ttft_s=2.7890 tpot_ms=66.676 request_s=4.8560
+req sg_9EM9xb8_25_t3 prompt_tok=1853 new_tok=32 ttft_s=1.9994 tpot_ms=46.715 request_s=3.4476
+req sg_f9XBWSi_15_t2 prompt_tok=442 new_tok=32 ttft_s=1.1981 tpot_ms=41.071 request_s=2.4713
+req sg_f9XBWSi_15_t3 prompt_tok=759 new_tok=32 ttft_s=1.5443 tpot_ms=44.279 request_s=2.9170
+req sg_3O3k7Ni_0_t2 prompt_tok=260 new_tok=32 ttft_s=1.0923 tpot_ms=45.699 request_s=2.5089
+req sg_3O3k7Ni_0_t3 prompt_tok=798 new_tok=32 ttft_s=2.6794 tpot_ms=49.578 request_s=4.2163
+req sg_zZRzzTy_16_t2 prompt_tok=199 new_tok=32 ttft_s=0.7942 tpot_ms=48.030 request_s=2.2831
+req sg_zZRzzTy_16_t3 prompt_tok=393 new_tok=32 ttft_s=1.0906 tpot_ms=41.513 request_s=2.3774
+req sg_RtCgJK2_47_t2 prompt_tok=415 new_tok=32 ttft_s=1.0085 tpot_ms=40.774 request_s=2.2725
+req sg_RtCgJK2_47_t3 prompt_tok=684 new_tok=32 ttft_s=1.2789 tpot_ms=59.884 request_s=3.1353
+RESULT policy=llama.cpp backend=mmap batch=1 overlap=1 requests=24 prompt_tok=647.5 decode_tok=32.0 ttft_s=12.4404 tpot_ms=296.821 request_s=21.6419 throughput_tok_s=1.4786 compute=measured
+cgroup_peak_gib=8.28

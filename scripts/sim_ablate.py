@@ -88,7 +88,8 @@ def run(kind, time_unit="step", hist_scope="decode", admission="selective", a=0.
         now += 1.0; pfn = pf / max(pf.max(), 1)
         pre_miss.append(float((u & ~res).sum()) / max(u.sum(), 1))
         ids = np.flatnonzero(u); stamp(ids)
-        if hist_scope == "all": hist[ids] += 1
+        # "all": the prompt's routing counted per token, as decode is
+        if hist_scope == "all": hist[ids] += pf[ids]
         admit(u.copy(), pfn)
         for t in toks:
             now += 1.0

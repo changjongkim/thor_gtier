@@ -92,6 +92,30 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
             "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,moeinf,flashmoe,duoserve,fiddler,mixoff"; do
   set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }
   O=results/MATRIX5/$m
+  if [ $m = mixtral8x7b ] && [ ! -f $ST/mixtral_bf16_traces.done ]; then
+    # The Mixtral traces were captured from the Q4 GGUF with llama.cpp; the
+    # matrix serves bf16, so its routing is recaptured from the bf16 model
+    # through PHASOR-HF (tokens equal stock transformers), and everything
+    # trained or planned from traces is rebuilt from the new ones.
+    mkdir -p results/SCOPE/gguf_invalid
+    for w in longbench sharegpt mmlu; do
+      say "capture bf16 Mixtral routing: $w"; drop
+      timeout 21600 $ZPY phasor_hf/capture_routing.py --checkpoint $ck --workload results/WORKLOADS/$w.json \
+        --out results/SCOPE/rt_${m}_${w}.bf16.npz --budget-gib 60 > results/SCOPE/capture_bf16_$w.log 2>&1 || { say "capture failed: $w"; exit 1; }
+    done
+    for w in longbench sharegpt mmlu; do
+      mv results/SCOPE/rt_${m}_$w.npz results/SCOPE/rt_${m}_$w.bin results/SCOPE/gguf_invalid/ 2>/dev/null
+      mv results/SCOPE/rt_${m}_$w.bf16.npz results/SCOPE/rt_${m}_$w.npz
+      $TPY scripts/export_routing.py --npz results/SCOPE/rt_${m}_$w.npz --out results/SCOPE/rt_${m}_$w.bin >> $LOG 2>&1
+    done
+    rm -f results/FLASHMOE/bf16/${m}_*.txt
+    for w in longbench sharegpt mmlu; do
+      h=$(held $m $w)
+      OMP_NUM_THREADS=4 $ZPY baselines_hf/train_duoserve.py results/DUOSERVE/${m}_$w.pt $h >> $LOG 2>&1
+      $ZPY scripts/zipmoe_trace.py /home/thor/kcj/ZipMoE-ICML26/trace/mixtral_${w}_heldout.pt $h >> $LOG 2>&1
+    done
+    touch $ST/mixtral_bf16_traces.done; say "Mixtral bf16 traces captured; predictors and plans rebuilt"
+  fi
   if [ $m = mixtral8x7b ]; then
     # conversions that could not coexist with the Qwen3-30B stores: token check and
     # smoke for ZipMoE and MoE-Infinity here; a system that fails is left out

@@ -1,0 +1,8 @@
+profile: IN-SAMPLE (served trace) (24 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 8.00 GiB  window 4.00  path-overhead 0.00  residency 0.00 GiB (0.0% of experts)  policy=none  backend=gtier
+VAL prefill mmlu_abstract_algebra_4 tok=391 io=2.5558 c=0.5407 model=2.5671 real=2.3200 err=+10.6%
+VAL prefill mmlu_abstract_algebra_5 tok=434 io=2.6193 c=0.6003 model=2.6318 real=2.3581 err=+11.6%
+VAL prefill mmlu_abstract_algebra_6 tok=386 io=2.5427 c=0.5429 model=2.5540 real=2.3057 err=+10.8%
+VAL prefill mmlu_abstract_algebra_7 tok=425 io=2.5597 c=0.5353 model=2.5709 real=2.3350 err=+10.1%
+VALIDATE prefill real=9.3188 model=10.3237 err=+10.78% | decode(16 tok) real=4.7400 model=4.8151 err=+1.58%

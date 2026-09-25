@@ -1,0 +1,8 @@
+profile: IN-SAMPLE (served trace) (21 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 8.00 GiB  window 4.00  path-overhead 0.00  residency 0.00 GiB (0.0% of experts)  policy=none  backend=gtier
+VAL prefill lb_2wikimqa_20 tok=8192 io=3.2691 c=5.5941 model=5.6622 real=5.7199 err=-1.0%
+VAL prefill lb_dureader_16 tok=8030 io=9.6499 c=5.5481 model=9.7655 real=5.6250 err=+73.6%
+VAL prefill lb_gov_report_0 tok=6570 io=3.2588 c=4.5135 model=4.5814 real=4.6250 err=-0.9%
+VAL prefill lb_hotpotqa_6 tok=8192 io=3.5236 c=5.6117 model=5.6851 real=5.7263 err=-0.7%
+VALIDATE prefill real=21.6962 model=25.6943 err=+18.43% | decode(16 tok) real=7.3015 model=8.1733 err=+11.94%

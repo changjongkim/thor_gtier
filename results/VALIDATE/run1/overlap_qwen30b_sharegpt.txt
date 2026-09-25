@@ -1,0 +1,8 @@
+profile: IN-SAMPLE (served trace) (24 requests)
+model 17.3 GiB  units 6144 x 2.72 MiB  always-resident 0.93 GiB
+budget 8.00 GiB  window 4.00  path-overhead 0.00  residency 0.00 GiB (0.0% of experts)  policy=none  backend=gtier
+VAL prefill sg_3O3k7Ni_0_t2 tok=260 io=2.1749 c=0.2897 model=2.1810 real=2.0323 err=+7.3%
+VAL prefill sg_3O3k7Ni_0_t3 tok=798 io=9.1251 c=0.8219 model=9.1422 real=2.4452 err=+273.9%
+VAL prefill sg_5cVpTKS_0_t2 tok=246 io=2.6473 c=0.8468 model=2.6649 real=2.1826 err=+22.1%
+VAL prefill sg_9EM9xb8_25_t2 tok=379 io=2.5047 c=0.5002 model=2.5152 real=2.2604 err=+11.3%
+VALIDATE prefill real=8.9205 model=16.5032 err=+85.00% | decode(16 tok) real=4.9136 model=4.9872 err=+1.50%

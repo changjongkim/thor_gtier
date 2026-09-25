@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Decode miss rate against resident capacity for LRU (access-level time),
-LFU (decode history), PHASOR and Belady, by trace replay.  CPU only.
+LFU (every access, the prompt counted per token), LFU over decode only,
+PHASOR (step-level time, as in the paper) and Belady, by trace replay.
+The policies follow sim_ablate.py (lru_access, lfu_all, lfu_decode,
+phasor_step).  CPU only.
 usage: sim_sweep.py <trace.npz> <fractions comma-separated>"""
 import json, sys
 import numpy as np
@@ -25,24 +28,31 @@ for n, ph in reqs.items():
 R2 = R * 2
 
 def run(kind, C):
+    """Same rules as sim_ablate.run: LRU on access-level time (lru_access),
+    PHASOR on step-level time (phasor_step), LFU counting the prompt per token
+    (lfu_all) or decode only (lfu_decode)."""
+    access = kind == "lru"; hist_all = kind == "lfu"
     res = np.zeros(N, bool); last = np.full(N, -1e9); hist = np.zeros(N); now = 0.0; hit = tot = 0
     jit = rng.random(N) * 1e-9
+    def stamp(ids):
+        last[ids] = now + layer_of[ids] / L if access else now
     def keep(cand, pfn):
         idx = np.flatnonzero(cand)
         if len(idx) <= C: r = np.zeros(N, bool); r[idx] = True; return r
-        if kind == "lru": s = last
-        elif kind == "lfu": s = hist
+        if kind == "lru": s = last.copy()
+        elif kind in ("lfu", "lfu_decode"): s = hist.copy()
         else: s = np.exp2(-(now - last) / 8) + 0.5 * pfn + 0.5 * hist / max(hist.max(), 1e-12)
-        s = s + jit
+        s = s + (jit if access else rng.random(N) * 1e-9)
         top = idx[np.argpartition(-s[idx], C - 1)[:C]]
         r = np.zeros(N, bool); r[top] = True; return r
     for (u, pf, toks) in R2:
         now += 1; pfn = pf / max(pf.max(), 1); ids = np.flatnonzero(u)
-        last[ids] = now + layer_of[ids] / L
+        stamp(ids)
+        if hist_all: hist[ids] += pf[ids]
         res = keep(res | u, pfn)
         for t in toks:
             now += 1; hit += res[t].sum(); tot += len(t)
-            last[t] = now + layer_of[t] / L; hist[t] += 1
+            stamp(t); hist[t] += 1
             nd = np.zeros(N, bool); nd[t] = True; res = keep(res | nd, pfn)
     return 1 - hit / tot
 
@@ -69,6 +79,7 @@ out = {"trace": sys.argv[1], "points": []}
 for f in fracs:
     C = max(1, int(f * N))
     out["points"].append({"frac": f, "lru": round(run("lru", C), 4), "lfu": round(run("lfu", C), 4),
+                          "lfu_decode": round(run("lfu_decode", C), 4),
                           "phasor": round(run("phasor", C), 4), "belady": round(belady(C), 4)})
     print(json.dumps(out["points"][-1]), file=sys.stderr, flush=True)
 print(json.dumps(out))

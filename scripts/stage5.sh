@@ -45,18 +45,42 @@ fm_weights(){  # fm_weights <model> <workload> <budget> -> weights file (trained
   fi
   echo $f
 }
+sys_cmd(){  # sys_cmd <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>: the runner command line
+  local s=$1 m=$2 ck=$3 zt=$4 slot=$5 win=$6 w=$7 b=$8 o=$9 W=results/WORKLOADS/$7.json
+  case $s in
+    zipmoe)  echo "$ZPY scripts/zipmoe_serve.py --model-type $zt --workload $W --budget-gib $b --trace /home/thor/kcj/ZipMoE/trace/${zt}_${w}_heldout.pt --out $o.json" ;;
+    moeinf)  echo "$TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload $W --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib $b --out $o.json" ;;
+    flashmoe) echo "$ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload $W --budget-gib $b --weights $(fm_weights $m $w $b) --out $o.json" ;;
+    duoserve) echo "$ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload $W --budget-gib $b --predictor results/DUOSERVE/${m}_$w.pt --trace $(held $m $w) --out $o.json" ;;
+    fiddler) echo "$ZPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json" ;;
+    mixoff)  echo "$ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json" ;;
+  esac
+}
 held(){ local m=$1 w=$2 h=""; for o in longbench sharegpt mmlu; do [ $o = $w ] || h="$h results/SCOPE/rt_${m}_$o.npz"; done; echo $h; }
 
 system(){  # system <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>  -> runs one system
   local s=$1 m=$2 ck=$3 zt=$4 slot=$5 win=$6 w=$7 b=$8 o=$9 W=results/WORKLOADS/$7.json
+  # equal memory: a baseline gets the knob value that makes its measured peak
+  # equal PHASOR's at this budget (memcal); the run name keeps the nominal budget
+  local nb=$b cal=results/MATRIX5/$m/memcal/${s}_$b.json
+  if [ -s $cal ]; then
+    b=$(python3 -c "import json;v=json.load(open('$cal'))['budget_gib'];print(v if v else 'none')")
+    if [ "$b" = none ]; then   # no setting fits within PHASOR's memory: a result, not a failure
+      mkdir -p $(dirname $o); echo "NORUN budget=$nb reason=exceeds-phasor-memory-at-every-setting" > $o.txt; return 1
+    fi
+  fi
+  # reference run at the system's own setting (it may exceed the budget; its peak shows by how much)
+  if [ "$s" != phasor ] && [ "$w" = mmlu ]; then
+    run "s5_${m}_${w}_${s}_nominal_$nb" $nb ${o}_nominal $(sys_cmd $s $m $ck $zt $slot $win $w $nb ${o}_nominal) || true
+  fi
   case $s in
-    phasor)  run "s5_${m}_${w}_phasor_$b" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload $W --budget-gib $b --slot-mib $slot --window-gib $win --out $o.json ;;
-    zipmoe)  run "s5_${m}_${w}_zipmoe_$b" $b $o $ZPY scripts/zipmoe_serve.py --model-type $zt --workload $W --budget-gib $b --trace /home/thor/kcj/ZipMoE/trace/${zt}_${w}_heldout.pt --out $o.json ;;
-    moeinf)  run "s5_${m}_${w}_moeinf_$b" $b $o $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload $W --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib $b --out $o.json ;;
-    flashmoe) run "s5_${m}_${w}_flashmoe_$b" $b $o $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload $W --budget-gib $b --weights $(fm_weights $m $w $b) --out $o.json ;;
-    duoserve) run "s5_${m}_${w}_duoserve_$b" $b $o $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload $W --budget-gib $b --predictor results/DUOSERVE/${m}_$w.pt --trace $(held $m $w) --out $o.json ;;
-    fiddler) run "s5_${m}_${w}_fiddler_$b" $b $o $ZPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json ;;
-    mixoff)  run "s5_${m}_${w}_mixoff_$b" $b $o $ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json ;;
+    phasor)  run "s5_${m}_${w}_phasor_$nb" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload $W --budget-gib $b --slot-mib $slot --window-gib $win --out $o.json ;;
+    zipmoe)  run "s5_${m}_${w}_zipmoe_$nb" $b $o $ZPY scripts/zipmoe_serve.py --model-type $zt --workload $W --budget-gib $b --trace /home/thor/kcj/ZipMoE/trace/${zt}_${w}_heldout.pt --out $o.json ;;
+    moeinf)  run "s5_${m}_${w}_moeinf_$nb" $b $o $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload $W --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib $b --out $o.json ;;
+    flashmoe) run "s5_${m}_${w}_flashmoe_$nb" $b $o $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload $W --budget-gib $b --weights $(fm_weights $m $w $b) --out $o.json ;;
+    duoserve) run "s5_${m}_${w}_duoserve_$nb" $b $o $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload $W --budget-gib $b --predictor results/DUOSERVE/${m}_$w.pt --trace $(held $m $w) --out $o.json ;;
+    fiddler) run "s5_${m}_${w}_fiddler_$nb" $b $o $ZPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json ;;
+    mixoff)  run "s5_${m}_${w}_mixoff_$nb" $b $o $ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json ;;
   esac
 }
 
@@ -78,6 +102,29 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
       --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib 39.15 --limit 2 --out $P/smoke_mi_mix.json > $P/smoke_mi_mix.log 2>&1 \
       || { systems=${systems/moeinf/}; say "MoE-Infinity/Mixtral smoke failed: left out"; }
   fi
+  # Equal memory.  PHASOR's measured peak at each budget is the target; each
+  # calibratable baseline gets the knob value that reaches it (2-prompt MMLU).
+  mkdir -p $O/memcal
+  for f in 0.25 0.45 0.65 1.08; do
+    b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
+    t=$O/memcal/phasor_$b.json
+    if [ ! -s $t ]; then drop; timeout 3600 $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/mmlu.json \
+        --budget-gib $b --slot-mib $slot --window-gib $win --limit 2 --out $t > $t.log 2>&1; fi
+    T=$(python3 -c "import json;print(round(json.load(open('$t'))['peak_gib'],2))" 2>/dev/null) || continue
+    say "memcal $m $f: PHASOR peak $T GiB"
+    for s in $systems; do
+      case $s in phasor|fiddler|mixoff) continue ;; esac
+      c=$O/memcal/${s}_$b.json; [ -s $c ] && continue
+      case $s in
+        zipmoe)   cmd="$ZPY scripts/zipmoe_serve.py --model-type $zt --workload results/WORKLOADS/mmlu.json --budget-gib {B} --trace /home/thor/kcj/ZipMoE/trace/${zt}_mmlu_heldout.pt --limit 2 --out {OUT}" ;;
+        moeinf)   cmd="$TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload results/WORKLOADS/mmlu.json --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib {B} --limit 2 --out {OUT}" ;;
+        flashmoe) cmd="$ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload results/WORKLOADS/mmlu.json --budget-gib {B} --weights $(fm_weights $m mmlu $b) --limit 2 --out {OUT}" ;;
+        duoserve) cmd="$ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload results/WORKLOADS/mmlu.json --budget-gib {B} --predictor results/DUOSERVE/${m}_mmlu.pt --trace $(held $m mmlu) --limit 2 --out {OUT}" ;;
+      esac
+      drop; timeout 14400 python3 scripts/memcal.py $T $b $c -- $cmd > $c.log 2>&1
+      say "memcal $m $f $s: $(tail -1 $c.log)"
+    done
+  done
   # E1
   for w in mmlu sharegpt longbench; do mkdir -p $O/$w; for f in 0.25 0.45 0.65 1.08; do
     b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')

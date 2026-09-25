@@ -23,6 +23,9 @@ ap.add_argument("--out", required=True)
 a = ap.parse_args()
 import torch
 import phasor_hf
+sys.path.insert(0, "/home/thor/kcj/thor_gtier/scripts")
+from memwatch import MemWatch
+_mw = MemWatch()
 
 def mem_avail_gib():
     for line in open("/proc/meminfo"):
@@ -68,7 +71,8 @@ res = {"system": "PHASOR-HF", "policy": a.policy, "budget_gib": a.budget_gib,
        "ttft_s": sum(r["ttft_s"] for r in rows) / n,
        "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
+res["peak_gib"] = _mw.peak_gib()
 json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy=phasor-hf-{a.policy} budget={a.budget_gib:.2f} requests={n} "
       f"ttft_s={res['ttft_s']:.4f} tpot_ms={res['tpot_ms']:.3f} request_s={res['request_s']:.4f} "
-      f"footprint_gib={res['footprint_gib']:.2f} compute=measured")
+      f"footprint_gib={res['footprint_gib']:.2f} peak_gib={_mw.peak_gib():.2f} compute=measured")

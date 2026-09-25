@@ -27,6 +27,9 @@ a = ap.parse_args()
 
 import torch
 from transformers import AutoTokenizer
+sys.path.insert(0, "/home/thor/kcj/thor_gtier/scripts")
+from memwatch import MemWatch
+_mw = MemWatch()
 
 def mem_avail_gib():
     for line in open("/proc/meminfo"):
@@ -91,7 +94,8 @@ res = {"system": a.system, "checkpoint": a.checkpoint, "workload": a.workload,
        "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n,
        "rows": rows}
+res["peak_gib"] = _mw.peak_gib()
 json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy={a.system} budget={a.budget_gib:.2f} requests={n} "
       f"ttft_s={res['ttft_s']:.4f} tpot_ms={res['tpot_ms']:.3f} "
-      f"request_s={res['request_s']:.4f} footprint_gib={res['footprint_gib']:.2f}")
+      f"request_s={res['request_s']:.4f} footprint_gib={res['footprint_gib']:.2f} peak_gib={_mw.peak_gib():.2f}")

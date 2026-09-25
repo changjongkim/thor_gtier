@@ -24,6 +24,9 @@ a = ap.parse_args()
 import torch
 from transformers import AutoTokenizer
 from entry.llm_modeling import MoE
+sys.path.insert(0, "/home/thor/kcj/thor_gtier/scripts")
+from memwatch import MemWatch
+_mw = MemWatch()
 from utils.constants import (List_expert_topk, List_num_elements_per_expert,
     List_num_tensors_per_expert, List_num_expert_layers, List_num_experts,
     List_first_k_dense_replace)
@@ -84,7 +87,8 @@ res = {"system": "ZipMoE", "budget_gib": a.budget_gib, "load_s": load_s,
        "ttft_s": sum(r["ttft_s"] for r in rows) / n,
        "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
+res["peak_gib"] = _mw.peak_gib()
 json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy=zipmoe budget={a.budget_gib:.2f} requests={n} ttft_s={res['ttft_s']:.4f} "
       f"tpot_ms={res['tpot_ms']:.3f} request_s={res['request_s']:.4f} "
-      f"footprint_gib={res['footprint_gib']:.2f} compute=measured")
+      f"footprint_gib={res['footprint_gib']:.2f} peak_gib={_mw.peak_gib():.2f} compute=measured")

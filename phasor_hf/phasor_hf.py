@@ -111,9 +111,14 @@ class PhasorMoE(nn.Module):
                 handles.append(self.engine.submit(self.layer, chunks[i + 1]))
             if prof:
                 torch.cuda.synchronize(); t1 = time.perf_counter()
+            if prof:
+                st0 = self.engine.stats()
             ws = self.engine.collect(handles[i], prefill)
             if prof:
                 t2 = time.perf_counter(); _pf(phase, "wait", t2 - t1)
+                st1 = self.engine.stats()
+                _pf(phase, "hits", st1[0] - st0[0]); _pf(phase, "misses", st1[1] - st0[1])
+                _pf(phase, "read_gib", (st1[2] - st0[2]) / 2**30)
             for e, (g, u, d) in zip(ch, ws):
                 tok, kk = torch.where(sel == e)
                 xe = x[tok]
@@ -123,7 +128,7 @@ class PhasorMoE(nn.Module):
                 torch.cuda.synchronize(); _pf(phase, "expert", time.perf_counter() - t2)
         torch.cuda.synchronize()
         if prof:
-            _pf(phase, "moe", time.perf_counter() - t_blk)
+            _pf(phase, "moe", time.perf_counter() - t_blk); _pf(phase, "layers", 1)
         out = out.view(b, s, h)
         return (out, logits) if self.returns_logits else out
 

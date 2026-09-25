@@ -1,0 +1,12 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "sg_jKqNBVf_0_t2", "prompt_tok": 1059, "new_tok": 32, "ttft_s": 13.963382959365845, "tpot_ms": 440.52092490657685, "request_s": 27.620091676712036, "hits": 9400.0, "misses": 7677.0, "read_gib": 67.4736328125}
+REQ {"name": "sg_jKqNBVf_0_t3", "prompt_tok": 1237, "new_tok": 32, "ttft_s": 12.666507244110107, "tpot_ms": 413.0799155081472, "request_s": 25.472511291503906, "hits": 9866.0, "misses": 7324.0, "read_gib": 64.37109375}
+REQ {"name": "sg_cSz8Ik6_0_t2", "prompt_tok": 67, "new_tok": 32, "ttft_s": 7.247486352920532, "tpot_ms": 470.16147644289083, "request_s": 21.82306408882141, "hits": 9538.0, "misses": 5704.0, "read_gib": 50.1328125}
+REQ {"name": "sg_cSz8Ik6_0_t3", "prompt_tok": 391, "new_tok": 32, "ttft_s": 10.001063346862793, "tpot_ms": 494.8473745776761, "request_s": 25.34208583831787, "hits": 9388.0, "misses": 6842.0, "read_gib": 60.134765625}
+REQ {"name": "sg_zcq8Evp_0_t2", "prompt_tok": 164, "new_tok": 32, "ttft_s": 8.114359617233276, "tpot_ms": 433.0891332318706, "request_s": 21.541103839874268, "hits": 9786.0, "misses": 5826.0, "read_gib": 51.205078125}
+REQ {"name": "sg_zcq8Evp_0_t3", "prompt_tok": 223, "new_tok": 32, "ttft_s": 8.626742124557495, "tpot_ms": 370.11890257558514, "request_s": 20.101158618927002, "hits": 10252.0, "misses": 5486.0, "read_gib": 48.216796875}
+REQ {"name": "sg_5cVpTKS_0_t2", "prompt_tok": 246, "new_tok": 32, "ttft_s": 9.399378299713135, "tpot_ms": 545.3962664450368, "request_s": 26.30729031562805, "hits": 8980.0, "misses": 7107.0, "read_gib": 62.4638671875}
+REQ {"name": "sg_V4wpuJu_0_t2", "prompt_tok": 614, "new_tok": 32, "ttft_s": 12.367024183273315, "tpot_ms": 469.54387234103297, "request_s": 26.923455238342285, "hits": 9406.0, "misses": 7800.0, "read_gib": 68.5546875}
+RESULT policy=phasor-hf-phasor budget=14.25 requests=8 batch=1 ttft_s=10.2982 tpot_ms=454.595 request_s=24.3913 footprint_gib=19.16 peak_gib=19.17 compute=measured
+cgroup_io_read_gib=474.781
+cgroup_cpu_s=129.6 cgroup_user_s=74.0 cgroup_sys_s=55.7

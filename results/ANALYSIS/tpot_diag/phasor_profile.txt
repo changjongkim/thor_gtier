@@ -1,0 +1,12 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 601, "new_tok": 8, "ttft_s": 12.589145421981812, "tpot_ms": 622.553961617606, "request_s": 16.947685956954956, "hits": 1769.0, "misses": 5811.0, "read_gib": 51.0732421875}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 589, "new_tok": 8, "ttft_s": 11.66818881034851, "tpot_ms": 554.8590251377651, "request_s": 15.552823066711426, "hits": 2241.0, "misses": 5351.0, "read_gib": 47.0302734375}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 600, "new_tok": 8, "ttft_s": 11.37525987625122, "tpot_ms": 577.6624338967459, "request_s": 15.419543504714966, "hits": 2261.0, "misses": 5308.0, "read_gib": 46.65234375}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 637, "new_tok": 8, "ttft_s": 11.658431053161621, "tpot_ms": 579.535961151123, "request_s": 15.715822696685791, "hits": 2221.0, "misses": 5362.0, "read_gib": 47.126953125}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 391, "new_tok": 8, "ttft_s": 10.272623777389526, "tpot_ms": 576.8655708857945, "request_s": 14.311519622802734, "hits": 2227.0, "misses": 4857.0, "read_gib": 42.6884765625}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 434, "new_tok": 8, "ttft_s": 10.358901500701904, "tpot_ms": 610.8511516026089, "request_s": 14.635478496551514, "hits": 2150.0, "misses": 5003.0, "read_gib": 43.9716796875}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 386, "new_tok": 8, "ttft_s": 10.271779775619507, "tpot_ms": 591.9723510742188, "request_s": 14.416386842727661, "hits": 2163.0, "misses": 4959.0, "read_gib": 43.5849609375}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 425, "new_tok": 8, "ttft_s": 10.408714294433594, "tpot_ms": 534.3332290649414, "request_s": 14.14969778060913, "hits": 2269.0, "misses": 4874.0, "read_gib": 42.837890625}
+RESULT policy=phasor-hf-phasor budget=14.25 requests=8 batch=1 ttft_s=11.0754 tpot_ms=581.079 request_s=15.1436 footprint_gib=18.95 peak_gib=18.95 compute=measured
+cgroup_io_read_gib=367.034
+cgroup_cpu_s=83.5 cgroup_user_s=40.0 cgroup_sys_s=43.5

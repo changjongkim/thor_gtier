@@ -1,0 +1,123 @@
+{
+ "system": "PHASOR-HF",
+ "policy": "phasor+pfree",
+ "budget_gib": 14.25,
+ "load_s": 38.39266657829285,
+ "footprint_gib": 18.967220306396484,
+ "requests": 8,
+ "ttft_s": 8.084611684083939,
+ "tpot_ms": 316.9798042093005,
+ "request_s": 10.304067850112915,
+ "rows": [
+  {
+   "name": "mmlu_professional_psychology_0",
+   "prompt_tok": 601,
+   "new_tok": 8,
+   "ttft_s": 12.452802181243896,
+   "tpot_ms": 621.3980742863247,
+   "request_s": 16.80323624610901,
+   "hits": 1769.0,
+   "misses": 5811.0,
+   "read_gib": 51.0732421875
+  },
+  {
+   "name": "mmlu_professional_psychology_1",
+   "prompt_tok": 589,
+   "new_tok": 8,
+   "ttft_s": 8.245930910110474,
+   "tpot_ms": 293.5706547328404,
+   "request_s": 10.301528215408325,
+   "hits": 3938.0,
+   "misses": 3651.0,
+   "read_gib": 32.0888671875
+  },
+  {
+   "name": "mmlu_professional_psychology_2",
+   "prompt_tok": 600,
+   "new_tok": 8,
+   "ttft_s": 8.133977174758911,
+   "tpot_ms": 219.6057183401925,
+   "request_s": 9.67178750038147,
+   "hits": 4083.0,
+   "misses": 3479.0,
+   "read_gib": 30.5771484375
+  },
+  {
+   "name": "mmlu_professional_psychology_3",
+   "prompt_tok": 637,
+   "new_tok": 8,
+   "ttft_s": 7.978401184082031,
+   "tpot_ms": 225.0666618347168,
+   "request_s": 9.554471254348755,
+   "hits": 4047.0,
+   "misses": 3533.0,
+   "read_gib": 31.0517578125
+  },
+  {
+   "name": "mmlu_abstract_algebra_4",
+   "prompt_tok": 391,
+   "new_tok": 8,
+   "ttft_s": 7.062992572784424,
+   "tpot_ms": 435.7635974884033,
+   "request_s": 10.11396837234497,
+   "hits": 3474.0,
+   "misses": 3622.0,
+   "read_gib": 31.833984375
+  },
+  {
+   "name": "mmlu_abstract_algebra_5",
+   "prompt_tok": 434,
+   "new_tok": 8,
+   "ttft_s": 7.187687873840332,
+   "tpot_ms": 240.6144142150879,
+   "request_s": 8.872600078582764,
+   "hits": 3992.0,
+   "misses": 3173.0,
+   "read_gib": 27.8876953125
+  },
+  {
+   "name": "mmlu_abstract_algebra_6",
+   "prompt_tok": 386,
+   "new_tok": 8,
+   "ttft_s": 6.8332366943359375,
+   "tpot_ms": 244.93053981236048,
+   "request_s": 8.548316717147827,
+   "hits": 4047.0,
+   "misses": 3072.0,
+   "read_gib": 27.0
+  },
+  {
+   "name": "mmlu_abstract_algebra_7",
+   "prompt_tok": 425,
+   "new_tok": 8,
+   "ttft_s": 6.781864881515503,
+   "tpot_ms": 254.88877296447754,
+   "request_s": 8.5666344165802,
+   "hits": 3991.0,
+   "misses": 3149.0,
+   "read_gib": 27.6767578125
+  }
+ ],
+ "peak_gib": 19.256160736083984,
+ "batch": 1,
+ "profile_s": {
+  "prefill": {
+   "wait": 5.9038270157179795,
+   "hits": 10708.0,
+   "misses": 26619.0,
+   "read_gib": 233.9560546875,
+   "expert": 24.507700461588684,
+   "moe": 62.433341781943454,
+   "layers": 384.0
+  },
+  "decode": {
+   "wait": 5.51122385742201,
+   "hits": 18633.0,
+   "misses": 2871.0,
+   "read_gib": 25.2333984375,
+   "expert": 5.249843418991077,
+   "moe": 14.398641662861337,
+   "layers": 2688.0
+  }
+ }
+}

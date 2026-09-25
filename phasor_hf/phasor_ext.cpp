@@ -57,6 +57,17 @@ public:
         if (policy_.find("+all") != std::string::npos) {
             admit_all_ = true; policy_.erase(policy_.find("+all"), 4);
         }
+        // PHASOR: a unit staged for a prefill enters only a free slot; it never
+        // displaces a resident, so a prompt's wide routing union cannot push out
+        // the units decode keeps using (decode admission unchanged).  Measured
+        // (Qwen3-30B, 0.25, MMLU): decode hit 0.688 -> 0.866, TPOT 581 -> 317 ms.
+        // "+pfall" restores prefill admission by value (the E7 ablation);
+        // LRU and the count utility admit every unit, as they did.
+        prefill_free_only_ = (policy_.rfind("phasor", 0) == 0);
+        if (policy_.find("+pfree") != std::string::npos) policy_.erase(policy_.find("+pfree"), 6);
+        if (policy_.find("+pfall") != std::string::npos) {
+            prefill_free_only_ = false; policy_.erase(policy_.find("+pfall"), 6);
+        }
         max_ranges_ = cfg.max_fetch_ranges;
         g_ = gtier_open(files[0].c_str(), &cfg);
         if (!g_) throw std::runtime_error("gtier_open failed: " + files[0]);
@@ -176,7 +187,10 @@ public:
                 w.push_back(at::for_blob(ptr, {p.rows, p.cols}).options(opt)
                                 .target_device(c10::Device(c10::kCUDA, 0)).make_tensor());
             }
-            if (rs == res_.end()) { ++misses_; admit(id, staged[id]); }
+            if (rs == res_.end()) {
+                ++misses_;
+                if (!(from_prefill && prefill_free_only_ && free_.empty())) admit(id, staged[id]);
+            }
             r.push_back(std::move(w));
         }
         for (int id : pd.pinned) if (--pin_[id] == 0) pin_.erase(id);
@@ -242,7 +256,7 @@ private:
     std::unordered_map<int, int> res_, pin_;
     std::string policy_;
     double mix_, rec_half_, w_rec_;
-    bool admit_all_ = false;
+    bool admit_all_ = false, prefill_free_only_ = false;
     double clk_ = 0;
     std::vector<double> last_, hist_, pf_, pre_;
     double hist_max_ = 0, pf_max_ = 0;

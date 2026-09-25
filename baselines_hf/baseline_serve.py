@@ -70,6 +70,8 @@ res = {"system": a.system, "budget_gib": a.budget_gib, "load_s": load_s, "footpr
        "requests": n, "ttft_s": sum(r["ttft_s"] for r in rows) / n, "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
 res["peak_gib"] = _mw.peak_gib()
+if hasattr(cache, "dec_hits"):
+    res["cache"] = {"hits": cache.hits, "misses": cache.misses, "decode_hits": cache.dec_hits, "decode_misses": cache.dec_misses}
 res["batch"] = a.batch
 if a.batch > 1: res.update(batchgen.summary(rows))
 json.dump(res, open(a.out, "w"), indent=1)

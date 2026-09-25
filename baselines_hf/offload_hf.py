@@ -80,6 +80,7 @@ class FlashMoECache:
         self.last = np.full((L, E), -1e9); self.freq = np.zeros((L, E)); self.step = 0
         self.net = self._load(weights_path)
         self.hits = self.misses = 0
+        self.dec_hits = self.dec_misses = 0     # decode steps only (diagnostics)
 
     def _load(self, p):
         lines = open(p).read().split("\n"); k = 0; nl = int(lines[k]); k += 1; Ws = []
@@ -104,8 +105,11 @@ class FlashMoECache:
         for e in experts:
             c = self.cache[l]
             if e in c:
-                self.hits += 1; out[e] = c[e]; continue
+                self.hits += 1; out[e] = c[e]
+                if not prefill: self.dec_hits += 1
+                continue
             self.misses += 1
+            if not prefill: self.dec_misses += 1
             w = [t.to("cuda", non_blocking=True) for t in self.r.read(l, e)]
             out[e] = w
             if len(c) < self.S:

@@ -1,0 +1,12 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 601, "new_tok": 8, "ttft_s": 29.477306365966797, "tpot_ms": 912.3081139155796, "request_s": 35.864819288253784, "read_gib": 52.5146484375}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 589, "new_tok": 8, "ttft_s": 20.081517934799194, "tpot_ms": 494.4444043295724, "request_s": 23.5440571308136, "read_gib": 36.4833984375}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 600, "new_tok": 8, "ttft_s": 19.122344493865967, "tpot_ms": 291.2108898162842, "request_s": 21.161458730697632, "read_gib": 33.802734375}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 637, "new_tok": 8, "ttft_s": 19.621589422225952, "tpot_ms": 260.16620227268766, "request_s": 21.44337272644043, "read_gib": 33.890625}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 391, "new_tok": 8, "ttft_s": 17.92005228996277, "tpot_ms": 599.9509266444614, "request_s": 22.120381355285645, "read_gib": 34.2421875}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 434, "new_tok": 8, "ttft_s": 17.050296783447266, "tpot_ms": 388.40035029820035, "request_s": 19.769773244857788, "read_gib": 34.5234375}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 386, "new_tok": 8, "ttft_s": 16.472527980804443, "tpot_ms": 336.46409852164135, "request_s": 18.828415393829346, "read_gib": 33.1083984375}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 425, "new_tok": 8, "ttft_s": 16.578511476516724, "tpot_ms": 388.2885319846017, "request_s": 19.29719090461731, "read_gib": 33.416015625}
+RESULT policy=flashmoe budget=13.19 requests=8 ttft_s=19.5405 tpot_ms=458.904 request_s=22.7537 footprint_gib=19.87 peak_gib=19.92 compute=measured
+cgroup_io_read_gib=236.166
+cgroup_cpu_s=137.6 cgroup_user_s=36.2 cgroup_sys_s=101.3

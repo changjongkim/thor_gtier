@@ -242,7 +242,7 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
   # E7: PHASOR ablations at 0.45
   b=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); CAP_GIB=$(capfor $b)
   for w in mmlu sharegpt longbench; do
-    for ab in "lru --policy lru" "count --policy count" "copy --policy phasor+copy" "nopipe --no-pipeline" "noprompt --mix 0" "admitall --policy phasor+all"; do
+    for ab in "lru --policy lru" "count --policy count" "copy --policy phasor+copy" "nopipe --no-pipeline" "noprompt --mix 0" "admitall --policy phasor+all" "pfall --policy phasor+pfall"; do
       set -- $ab; n=$1; shift
       run "s5_${m}_${w}_abl_$n" $b $O/$w/abl_$n $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/$w.json \
         --budget-gib $b --slot-mib $slot --window-gib $win "$@" --out $O/$w/abl_$n.json

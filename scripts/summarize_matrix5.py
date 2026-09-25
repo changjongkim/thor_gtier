@@ -7,7 +7,8 @@ WL = [("longbench", "LongBench"), ("sharegpt", "ShareGPT"), ("mmlu", "MMLU")]
 SYS = [("phasor", "PHASOR"), ("zipmoe", "ZipMoE"), ("moeinf", "MoE-Infinity"), ("flashmoe", "FlashMoE*"),
        ("duoserve", "DuoServe*"), ("fiddler", "Fiddler"), ("mixoff", "Mixtral-offloading (2-bit)")]
 ABL = [("lru", "LRU residency"), ("count", "count utility"), ("copy", "host-staged copy path"),
-       ("nopipe", "no intra-layer pipeline"), ("noprompt", "no prompt-routing term")]
+       ("nopipe", "no intra-layer pipeline"), ("noprompt", "no prompt-routing term"),
+       ("admitall", "admit every staged unit")]
 
 def load(prefix):
     j = prefix + ".json"; t = prefix + ".txt"

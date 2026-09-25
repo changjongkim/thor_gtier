@@ -50,7 +50,12 @@ public:
         // "+copy": the host-staged path of the other systems -- every landed
         // slot is copied into a separate device buffer before it is used.
         if (policy_.find("+copy") != std::string::npos) {
-            cfg.ablate_copy = 1; policy_ = policy_.substr(0, policy_.find("+copy"));
+            cfg.ablate_copy = 1; policy_.erase(policy_.find("+copy"), 5);
+        }
+        // "+all": admit every staged unit (evicting the least valuable),
+        // instead of only those worth more than what they would displace
+        if (policy_.find("+all") != std::string::npos) {
+            admit_all_ = true; policy_.erase(policy_.find("+all"), 4);
         }
         max_ranges_ = cfg.max_fetch_ranges;
         g_ = gtier_open(files[0].c_str(), &cfg);
@@ -215,7 +220,7 @@ private:
                 if (v < wv) { wv = v; worst = kv.first; }
             }
             if (worst < 0) return;
-            if (policy_ == "phasor" && value(id) <= wv) return;
+            if (policy_ == "phasor" && !admit_all_ && value(id) <= wv) return;
             slot = res_[worst]; res_.erase(worst);
         }
         uint8_t *dst = arena_dev_ + (size_t)slot * unit_bytes_;
@@ -237,6 +242,7 @@ private:
     std::unordered_map<int, int> res_, pin_;
     std::string policy_;
     double mix_, rec_half_, w_rec_;
+    bool admit_all_ = false;
     double clk_ = 0;
     std::vector<double> last_, hist_, pf_, pre_;
     double hist_max_ = 0, pf_max_ = 0;

@@ -120,11 +120,25 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
     # conversions that could not coexist with the Qwen3-30B stores: token check and
     # smoke for ZipMoE and MoE-Infinity here; a system that fails is left out
     P=results/PREP; mkdir -p /home/thor/kcj/offload_tmp/$m
-    drop; timeout 14400 $ZPY scripts/check_tokens.py zipmoe $ck mixtral 39.15 $P/tok_zipmoe_mixtral.json > $P/tok_zipmoe_mixtral.log 2>&1 \
+    drop; timeout 14400 scripts/in_cgroup.sh prep max $ZPY scripts/check_tokens.py zipmoe $ck mixtral 39.15 $P/tok_zipmoe_mixtral.json > $P/tok_zipmoe_mixtral.log 2>&1 \
       || { systems=${systems/zipmoe/}; say "ZipMoE/Mixtral token check failed: left out"; }
-    drop; timeout 14400 $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload results/WORKLOADS/mmlu.json \
-      --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib 39.15 --limit 2 --out $P/smoke_mi_mix.json > $P/smoke_mi_mix.log 2>&1 \
-      || { systems=${systems/moeinf/}; say "MoE-Infinity/Mixtral smoke failed: left out"; }
+  fi
+  # MoE-Infinity keeps the whole model pinned in host memory and adds its GPU
+  # cache on top (device_memory_ratio), so on a unified pool it needs more
+  # than the model.  The smoke only checks that it serves at all (4 GiB GPU
+  # cache, host guard on); whether it fits a budget is memcal's question.
+  if [[ " $systems " == *" moeinf "* ]] || [[ $systems == *moeinf* ]]; then
+    mkdir -p /home/thor/kcj/offload_tmp/$m
+    if [ ! -f $ST/s5_smoke_mi_$m.done ]; then
+      say "run  s5_smoke_mi_$m"; drop
+      if timeout 7200 scripts/in_cgroup.sh prep max $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck \
+           --workload results/WORKLOADS/mmlu.json --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib 4 --limit 2 \
+           --out results/PREP/smoke_mi_$m.json > results/PREP/smoke_mi_$m.log 2>&1 && grep -q '^RESULT' results/PREP/smoke_mi_$m.log; then
+        touch $ST/s5_smoke_mi_$m.done; say "  ok s5_smoke_mi_$m ($(grep '^RESULT' results/PREP/smoke_mi_$m.log | grep -o 'peak_gib=[0-9.]*'))"
+      else
+        systems=${systems/moeinf/}; say "MoE-Infinity/$m smoke failed: left out ($(grep -o 'HOSTGUARD.*' results/PREP/smoke_mi_$m.log | head -1))"
+      fi
+    fi
   fi
   # Equal memory.  PHASOR's measured peak at each budget is the target; each
   # calibratable baseline gets the knob value that reaches it (2-prompt MMLU).

@@ -163,6 +163,9 @@ for m in qwen30b mixtral8x7b qwen235b; do
   done
   for w in longbench sharegpt mmlu; do
     [ "$m" = qwen235b ] && [ "$w" != longbench ] && continue
+    # Mixtral routes near-uniformly: on LongBench and ShareGPT every policy
+    # lands within 1% of LRU, so an ablation there has nothing to attribute.
+    [ "$m" = mixtral8x7b ] && [ "$w" != mmlu ] && continue
     sb $m $w "abl_noasync"   0.45 --policy 12 --no-async
     sb $m $w "abl_mix0"      0.45 --policy 12 --mix 0
     sb $m $w "abl_mix1"      0.45 --policy 12 --mix 1

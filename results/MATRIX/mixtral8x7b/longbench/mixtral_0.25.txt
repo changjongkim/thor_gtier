@@ -1,0 +1,5 @@
+profile: held-out trace (48 requests)
+model 26.5 GiB  units 256 x 101.72 MiB  always-resident 1.06 GiB
+budget 6.62 GiB  window 0.50  path-overhead 0.00  residency 5.06 GiB (19.9% of experts)  policy=mixtral*  backend=gtier
+mixtral*      | TTFT(io)   3.786 s  prefill   19.93 GiB | look=0   | TPOT(io)  920.54 ms  decode   4.870 GiB/tok | stall 1188.042 s | bg   0.00 GiB vs shadow 295.18 GiB | pins 0 evict 0 | total 7381.90 GiB
+RESULT policy=mixtral* budget=6.62 window=0.50 requests=42 prompt_tok=6871.8 decode_tok=32.0 ttft_s=15.3897 tpot_ms=959.193 request_s=46.0839 decode_tok_s=1.043 e2e_tok_s=0.6944 prefill_io_s=3.7862 decode_io_ms=920.540 prefill_gib=19.932 decode_gib_tok=4.8696 compute=calibrated

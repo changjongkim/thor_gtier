@@ -4,6 +4,7 @@ usage: check_tokens.py <system> <ckpt> <model-type> <budget-gib> <out.json>
 system: stock | phasor | zipmoe"""
 import sys, json, time, os
 system, ck, mt, budget, out = sys.argv[1], sys.argv[2], sys.argv[3], float(sys.argv[4]), sys.argv[5]
+out = os.path.abspath(out); ck = os.path.abspath(ck)   # the ZipMoE path chdirs into its repo
 prompts = ["Explain why the sky is blue in two sentences.",
            "Write a Python function that returns the n-th Fibonacci number."]
 import torch

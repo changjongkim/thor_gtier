@@ -9,6 +9,7 @@ usage: zipmoe_serve.py --workload W.json --budget-gib B --trace T.pt --out O.jso
 """
 import argparse, json, os, sys, time
 sys.path.insert(0, "/home/thor/kcj/ZipMoE")
+_cwd0 = os.getcwd()
 os.chdir("/home/thor/kcj/ZipMoE")
 ap = argparse.ArgumentParser()
 ap.add_argument("--model-type", default="qwen3")
@@ -21,6 +22,15 @@ ap.add_argument("--limit", type=int, default=0)
 ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
+# ZipMoE runs from its own directory (chdir above): paths given relative to the
+# caller's directory are resolved against it before that
+for k in ("workload", "out", "trace"):
+    v = getattr(a, k, None)
+    if v and not os.path.isabs(v): setattr(a, k, os.path.join(_cwd0, v))
+# its task-pool threads keep the process alive after an exception; exit instead
+def _die(t, v, tb):
+    import traceback; traceback.print_exception(t, v, tb); sys.stderr.flush(); os._exit(1)
+sys.excepthook = _die
 
 import torch
 from transformers import AutoTokenizer

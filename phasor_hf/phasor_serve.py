@@ -12,7 +12,8 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--checkpoint", required=True)
 ap.add_argument("--workload", required=True)
 ap.add_argument("--budget-gib", type=float, required=True)
-ap.add_argument("--policy", default="phasor")
+ap.add_argument("--policy", default="phasor", help="phasor | lru | count, optionally +copy")
+ap.add_argument("--no-pipeline", action="store_true")
 ap.add_argument("--mix", type=float, default=0.5)
 ap.add_argument("--window-gib", type=float, default=0.5)
 ap.add_argument("--slot-mib", type=int, default=4)
@@ -39,7 +40,8 @@ class Clock:
 
 m0 = mem_avail_gib(); t0 = time.time()
 model, tok, eng = phasor_hf.build(a.checkpoint, a.budget_gib, window_gib=a.window_gib,
-                                  slot_mib=a.slot_mib, policy=a.policy, mix=a.mix)
+                                  slot_mib=a.slot_mib, policy=a.policy, mix=a.mix,
+                                  pipeline=not a.no_pipeline)
 load_s = time.time() - t0
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]

@@ -56,11 +56,12 @@ def safetensors_index(path):
 class PhasorMoE(nn.Module):
     """Drop-in for Qwen3MoeSparseMoeBlock / MixtralSparseMoeBlock."""
 
-    def __init__(self, gate, layer, n_experts, top_k, norm_topk, engine, chunk, returns_logits):
+    def __init__(self, gate, layer, n_experts, top_k, norm_topk, engine, chunk, returns_logits, pipeline=True):
         super().__init__()
         self.gate = gate
         self.layer, self.E, self.k, self.norm = layer, n_experts, top_k, norm_topk
         self.engine, self.chunk, self.returns_logits = engine, chunk, returns_logits
+        self.pipeline = pipeline
 
     def forward(self, hidden_states):
         b, s, h = hidden_states.shape
@@ -83,7 +84,11 @@ class PhasorMoE(nn.Module):
         # refilled while a kernel still reads it.
         handles = [self.engine.submit(self.layer, chunks[0])] if chunks else []
         for i, ch in enumerate(chunks):
-            if i + 1 < len(chunks):
+            if not self.pipeline:          # ablation: read a chunk only after the last one computed
+                if i >= 1:
+                    torch.cuda.synchronize()
+                    handles.append(self.engine.submit(self.layer, ch))
+            elif i + 1 < len(chunks):
                 if i >= 1:
                     torch.cuda.synchronize()
                 handles.append(self.engine.submit(self.layer, chunks[i + 1]))
@@ -99,7 +104,7 @@ class PhasorMoE(nn.Module):
 
 
 def build(ckpt, budget_gib, window_gib=0.5, slot_mib=4, policy="phasor", mix=0.5,
-          rec_half=8.0, w_rec=1.0, chunk=None):
+          rec_half=8.0, w_rec=1.0, chunk=None, pipeline=True):
     """Returns (model, tokenizer, engine).  budget_gib covers the arena and the
     staging window; the non-expert weights and the KV cache sit on the GPU as in
     every transformers-based system."""
@@ -145,7 +150,7 @@ def build(ckpt, budget_gib, window_gib=0.5, slot_mib=4, policy="phasor", mix=0.5
         old = getattr(layer, moe_attr)
         gate = nn.Linear(old.gate.in_features, old.gate.out_features, bias=False,
                          device="cuda", dtype=torch.bfloat16)
-        setattr(layer, moe_attr, PhasorMoE(gate, l, E, K, norm, eng, chunk, ret_logits))
+        setattr(layer, moe_attr, PhasorMoE(gate, l, E, K, norm, eng, chunk, ret_logits, pipeline))
 
     from safetensors import safe_open
     for sp in shards:

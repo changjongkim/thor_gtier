@@ -752,8 +752,18 @@ int gtier_wait(gtier *g, gtier_ticket *t, void **dev_out) {
         --f.outstanding;
     }
 
+    // Ablation, as in the synchronous path: copy each landed slot into a
+    // separate device buffer and hand that out -- the extra step a host-staged
+    // path (pread+copy, cuFile compatibility mode) takes.
+    if (g->cfg.ablate_copy) {
+        for (size_t p = 0; p < me.plans.size(); ++p) {
+            int slot = me.slot_base + (int)p;
+            if (cudaMemcpy(g->devbuf[slot], g->dev[slot], me.plans[p].len, cudaMemcpyDefault) != cudaSuccess)
+                return -EIO;
+        }
+    }
     for (auto &pl : me.placement)
-        dev_out[pl[0]] = g->dev[pl[1]] + pl[2];
+        dev_out[pl[0]] = (g->cfg.ablate_copy ? g->devbuf[pl[1]] : g->dev[pl[1]]) + pl[2];
 
     g->st = gtier_stats{(uint64_t)t->n, me.plans.size(), me.useful, me.bytes_read,
                         0, 0, 0, 0, 0, now_s() - t0};

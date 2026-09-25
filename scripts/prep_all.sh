@@ -26,7 +26,6 @@ Q=/home/thor/kcj/models/qwen3_30b_a3b; M=/home/thor/kcj/models/mixtral8x7b_bf16;
 chk tok_zipmoe_qwen 70 $ZPY scripts/check_tokens.py zipmoe $Q qwen3 25.65 $P/tok_zipmoe_qwen.json
 chk tok_stock_mixtral 100 $ZPY scripts/check_tokens.py stock $M mixtral 0 $P/tok_stock_mixtral.json
 chk tok_phasor_mixtral 50 $ZPY scripts/check_tokens.py phasor $M mixtral 39.15 $P/tok_phasor_mixtral.json
-chk tok_zipmoe_mixtral 70 $ZPY scripts/check_tokens.py zipmoe $M mixtral 39.15 $P/tok_zipmoe_mixtral.json
 # smoke: reimplemented baselines (Qwen3-30B and Mixtral)
 chk smoke_flash_qwen 40 $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $Q --workload $W \
   --budget-gib 25.65 --weights results/FLASHMOE/bf16/qwen30b_mmlu_s60.txt --limit 2 --out $P/smoke_flash_qwen.json
@@ -38,18 +37,15 @@ chk smoke_flash_mix 50 $ZPY baselines_hf/baseline_serve.py --system flashmoe --c
 chk smoke_duo_mix 50 $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $M --workload $W \
   --budget-gib 39.15 --predictor results/DUOSERVE/mixtral8x7b_mmlu.pt \
   --trace results/SCOPE/rt_mixtral8x7b_longbench.npz results/SCOPE/rt_mixtral8x7b_sharegpt.npz --limit 2 --out $P/smoke_duo_mix.json
-# released systems on Mixtral
+# released systems on Mixtral (ZipMoE and MoE-Infinity convert the checkpoint first;
+# the disk holds one model's conversions at a time, so theirs run in stage 5
+# after the Qwen3-30B stores are removed)
 chk smoke_mixoff 40 $ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo \
   --workload $W --limit 2 --out $P/smoke_mixoff.json
 chk smoke_fiddler_mix 100 $ZPY baselines_hf/fiddler_serve.py --checkpoint $M --workload $W --budget-gib 94.0 \
   --limit 2 --out $P/smoke_fiddler_mix.json
-mkdir -p /home/thor/kcj/offload_tmp/mixtral8x7b
-chk smoke_mi_mix 60 $TORCH_VENV/bin/python scripts/sota_serve.py --system moe-infinity --checkpoint $M --workload $W \
-  --offload-dir /home/thor/kcj/offload_tmp/mixtral8x7b --budget-gib 39.15 --limit 2 --out $P/smoke_mi_mix.json
 chk smoke_phasor_mix 50 $ZPY phasor_hf/phasor_serve.py --checkpoint $M --workload $W --budget-gib 39.15 \
   --slot-mib 128 --window-gib 1.5 --limit 2 --out $P/smoke_phasor_mix.json
-chk smoke_zip_mix 70 $ZPY scripts/zipmoe_serve.py --model-type mixtral --workload $W --budget-gib 39.15 \
-  --trace /home/thor/kcj/ZipMoE/trace/mixtral_mmlu_heldout.pt --limit 2 --out $P/smoke_zip_mix.json
 python3 - <<'PY'
 import json, os
 P = "/home/thor/kcj/thor_gtier/results/PREP"

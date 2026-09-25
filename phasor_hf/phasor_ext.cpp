@@ -47,6 +47,11 @@ public:
         cfg.slot_bytes = slot; cfg.slots = slots; cfg.queue_depth = slots;
         cfg.cache_policy = GTIER_CACHE_NONE;
         cfg.max_fetch_ranges = std::max(4, slots / GTIER_MAX_INFLIGHT);
+        // "+copy": the host-staged path of the other systems -- every landed
+        // slot is copied into a separate device buffer before it is used.
+        if (policy_.find("+copy") != std::string::npos) {
+            cfg.ablate_copy = 1; policy_ = policy_.substr(0, policy_.find("+copy"));
+        }
         max_ranges_ = cfg.max_fetch_ranges;
         g_ = gtier_open(files[0].c_str(), &cfg);
         if (!g_) throw std::runtime_error("gtier_open failed: " + files[0]);
@@ -54,7 +59,7 @@ public:
             if (gtier_add_file(g_, files[i].c_str()) != (int)i)
                 throw std::runtime_error("gtier_add_file failed: " + files[i]);
         arena_bytes_ = (uint64_t)(arena_gib * (1ull << 30));
-        last_.assign(units_.size(), -1e18); hist_.assign(units_.size(), 0);
+        last_.assign(units_.size(), -1e18); hist_.assign(units_.size(), 0); pre_.assign(units_.size(), 0);
         pf_.assign(units_.size(), 0);
     }
     ~Engine() {
@@ -151,6 +156,7 @@ public:
             int id = pd.layer * E_ + (int)e;
             last_[id] = clk_;
             if (!from_prefill) { hist_[id] += 1; hist_max_ = std::max(hist_max_, hist_[id]); }
+            else pre_[id] += 1;
             std::vector<torch::Tensor> w;
             auto rs = res_.find(id);
             uint8_t *base = nullptr;
@@ -186,6 +192,7 @@ private:
 
     double value(int id) const {
         if (policy_ == "lru") return last_[id];
+        if (policy_ == "count") return pre_[id] + 4.0 * hist_[id];   // the earlier count utility
         double rc = std::exp2(-(clk_ - last_[id]) / rec_half_);
         double h = hist_max_ > 0 ? hist_[id] / hist_max_ : 0.0;
         double a = pf_max_ > 0 ? pf_[id] / pf_max_ : 0.0;
@@ -208,7 +215,7 @@ private:
                 if (v < wv) { wv = v; worst = kv.first; }
             }
             if (worst < 0) return;
-            if (policy_ != "lru" && value(id) <= wv) return;
+            if (policy_ == "phasor" && value(id) <= wv) return;
             slot = res_[worst]; res_.erase(worst);
         }
         uint8_t *dst = arena_dev_ + (size_t)slot * unit_bytes_;
@@ -231,7 +238,7 @@ private:
     std::string policy_;
     double mix_, rec_half_, w_rec_;
     double clk_ = 0;
-    std::vector<double> last_, hist_, pf_;
+    std::vector<double> last_, hist_, pf_, pre_;
     double hist_max_ = 0, pf_max_ = 0;
     std::unordered_map<int64_t, Pending> pending_;
     int64_t next_handle_ = 1;

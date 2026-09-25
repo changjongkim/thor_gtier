@@ -1,0 +1,110 @@
+#!/bin/bash
+# Stage 5: the architecture-level matrix (docs/EXPERIMENT_PLAN.md v3).
+# Every system is its real code on the transformers stack; same prompts, same
+# cgroup cap (budget + 0.5 GiB); each run also records the peak drop in
+# MemAvailable, which sees cudaMalloc'd GPU caches that the cgroup does not.
+#   E1  all systems x 2 models x 3 workloads x budgets 0.25/0.45/0.65/1.08
+#   E7  PHASOR ablations at 0.45
+#   E2  smallest budget each system runs at (0.20, 0.15, 0.10, 0.05)
+set -u
+R=/home/thor/kcj/thor_gtier; cd "$R"
+. scripts/torch_env.sh; . scripts/memguard.sh
+ST=$R/results/PIPELINE; LOG=$ST/pipeline.log
+ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python
+say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
+drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
+# run <name> <budget> <out-prefix> <cmd...>: capped run; RESULT line decides success
+run(){
+  local name=$1 b=$2 o=$3; shift 3
+  [ -f "$ST/$name.done" ] && return 0
+  [ -f "$ST/$name.norun" ] && return 1
+  local fails=$(cat "$ST/$name.fail" 2>/dev/null || echo 0)
+  if [ "$fails" -ge 2 ]; then say "give up $name"; return 1; fi
+  local need=$(awk -v b=$b 'BEGIN{printf "%.0f", b+12}')
+  mg_check $need >>"$LOG" 2>&1 || { say "REFUSED $name"; return 1; }
+  local cap=$(awk -v b=$b 'BEGIN{printf "%.0f", (b+0.5)*1073741824}')
+  say "run  $name"; drop
+  timeout 21600 "$R/scripts/in_cgroup.sh" m5 $cap "$@" > "$o.txt" 2>&1
+  local rc=$?
+  awk '{printf "cgroup_peak_gib=%.2f\n", $1/1073741824}' /sys/fs/cgroup/ledger_bench/m5/memory.peak >> "$o.txt" 2>/dev/null
+  if grep -q '^RESULT' "$o.txt"; then touch "$ST/$name.done"; say "  ok $name"; return 0; fi
+  # an OOM kill under the cap is a result (the system does not run at this budget)
+  if grep -q "oom_kill [1-9]" /sys/fs/cgroup/ledger_bench/m5/memory.events 2>/dev/null || [ $rc = 137 ]; then
+    echo "NORUN budget=$b reason=oom-under-cap" >> "$o.txt"; touch "$ST/$name.norun"; say "  NORUN $name (oom under cap)"; return 1
+  fi
+  echo $((fails+1)) > "$ST/$name.fail"; say "  FAILED $name (rc=$rc)"; return 1
+}
+fm_weights(){  # fm_weights <model> <workload> <budget> -> weights file (trained on held-out workloads)
+  local m=$1 w=$2 b=$3 unit L
+  if [ $m = qwen30b ]; then unit=9437184; L=48; else unit=352321536; L=32; fi
+  local s=$(awk -v b=$b -v u=$unit -v l=$L 'BEGIN{n=int(b*1073741824/u/l); if(n<1)n=1; print n}')
+  local f=results/FLASHMOE/bf16/${m}_${w}_s$s.txt
+  if [ ! -s $f ]; then
+    local h=""; for o in longbench sharegpt mmlu; do [ $o = $w ] || h="$h results/SCOPE/rt_${m}_$o.npz"; done
+    OMP_NUM_THREADS=4 $ZPY scripts/train_flashmoe.py $f $s $h > $f.log 2>&1
+  fi
+  echo $f
+}
+held(){ local m=$1 w=$2 h=""; for o in longbench sharegpt mmlu; do [ $o = $w ] || h="$h results/SCOPE/rt_${m}_$o.npz"; done; echo $h; }
+
+system(){  # system <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>  -> runs one system
+  local s=$1 m=$2 ck=$3 zt=$4 slot=$5 win=$6 w=$7 b=$8 o=$9 W=results/WORKLOADS/$7.json
+  case $s in
+    phasor)  run "s5_${m}_${w}_phasor_$b" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload $W --budget-gib $b --slot-mib $slot --window-gib $win --out $o.json ;;
+    zipmoe)  run "s5_${m}_${w}_zipmoe_$b" $b $o $ZPY scripts/zipmoe_serve.py --model-type $zt --workload $W --budget-gib $b --trace /home/thor/kcj/ZipMoE/trace/${zt}_${w}_heldout.pt --out $o.json ;;
+    moeinf)  run "s5_${m}_${w}_moeinf_$b" $b $o $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload $W --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib $b --out $o.json ;;
+    flashmoe) run "s5_${m}_${w}_flashmoe_$b" $b $o $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload $W --budget-gib $b --weights $(fm_weights $m $w $b) --out $o.json ;;
+    duoserve) run "s5_${m}_${w}_duoserve_$b" $b $o $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload $W --budget-gib $b --predictor results/DUOSERVE/${m}_$w.pt --trace $(held $m $w) --out $o.json ;;
+    fiddler) run "s5_${m}_${w}_fiddler_$b" $b $o $ZPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json ;;
+    mixoff)  run "s5_${m}_${w}_mixoff_$b" $b $o $ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json ;;
+  esac
+}
+
+# only after every system has passed its preparation
+until grep -q "=== prep done ===" "$LOG"; do sleep 60; done
+exec 9>/tmp/gtier_pipeline.lock; flock 9
+say "=== stage 5 (architecture-level matrix) start ==="
+for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,moeinf,flashmoe,duoserve" \
+            "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,moeinf,flashmoe,duoserve,fiddler,mixoff"; do
+  set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }
+  O=results/MATRIX5/$m
+  if [ $m = mixtral8x7b ]; then
+    # conversions that could not coexist with the Qwen3-30B stores: token check and
+    # smoke for ZipMoE and MoE-Infinity here; a system that fails is left out
+    P=results/PREP; mkdir -p /home/thor/kcj/offload_tmp/$m
+    drop; timeout 14400 $ZPY scripts/check_tokens.py zipmoe $ck mixtral 39.15 $P/tok_zipmoe_mixtral.json > $P/tok_zipmoe_mixtral.log 2>&1 \
+      || { systems=${systems/zipmoe/}; say "ZipMoE/Mixtral token check failed: left out"; }
+    drop; timeout 14400 $TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload results/WORKLOADS/mmlu.json \
+      --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib 39.15 --limit 2 --out $P/smoke_mi_mix.json > $P/smoke_mi_mix.log 2>&1 \
+      || { systems=${systems/moeinf/}; say "MoE-Infinity/Mixtral smoke failed: left out"; }
+  fi
+  # E1
+  for w in mmlu sharegpt longbench; do mkdir -p $O/$w; for f in 0.25 0.45 0.65 1.08; do
+    b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
+    for s in $systems; do system $s $m $ck $zt $slot $win $w $b $O/$w/${s}_$f; done
+  done; done
+  # E7: PHASOR ablations at 0.45
+  b=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}')
+  for w in mmlu sharegpt longbench; do
+    for ab in "lru --policy lru" "count --policy count" "copy --policy phasor+copy" "nopipe --no-pipeline" "noprompt --mix 0"; do
+      set -- $ab; n=$1; shift
+      run "s5_${m}_${w}_abl_$n" $b $O/$w/abl_$n $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/$w.json \
+        --budget-gib $b --slot-mib $slot --window-gib $win "$@" --out $O/$w/abl_$n.json
+    done
+  done
+  # E2: smallest budget, MMLU (shortest requests); a system stops at its first budget it cannot run at
+  for s in $systems; do
+    for f in 0.20 0.15 0.10 0.05; do
+      b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
+      system $s $m $ck $zt $slot $win mmlu $b $O/mmlu/${s}_$f || break
+    done
+  done
+  python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
+  git add -A results/MATRIX5 results/FLASHMOE >/dev/null 2>&1
+  git diff --cached --quiet || { git commit -q -m "Architecture-level matrix: $m
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>"; timeout 300 git push -q origin HEAD; }
+  # the next model needs the disk: remove this model's conversion stores (ours, regenerable)
+  if [ $m = qwen30b ]; then rm -rf /home/thor/kcj/offload_tmp/qwen30b /home/thor/kcj/ZipMoE-ICML26/offload/qwen3; say "removed Qwen3-30B conversion stores"; fi
+done
+say "=== stage 5 done ==="

@@ -673,7 +673,7 @@ swap이 없으므로 **초과는 느려지는 것이 아니라 OOM이다** — c
   ([`results/SOTA/PORTING.md`](results/SOTA/PORTING.md)). Mixtral-offloading의 정책은
   위의 재현으로 평가한다.
 
-실행: [`scripts/stage3.sh`](scripts/stage3.sh), [`stage3b.sh`](scripts/stage3b.sh) (FlashMoE*),
+llama.cpp는 커밋 `be4a6a6` 빌드를 쓴다. 실행: [`scripts/stage3.sh`](scripts/stage3.sh), [`stage3b.sh`](scripts/stage3b.sh) (FlashMoE*),
 [`stage3c.sh`](scripts/stage3c.sh) (DuoServe*). 전체 표:
 [`results/MATRIX3/SUMMARY.md`](results/MATRIX3/SUMMARY.md).
 
@@ -750,18 +750,40 @@ swap이 없으므로 **초과는 느려지는 것이 아니라 OOM이다** — c
 
 ### 4.5 상주 정책 — 상한과의 거리
 
-트레이스 재생 시뮬레이터([`scripts/sim_residency.py`](scripts/sim_residency.py))로 디코드
-적중률을 미래를 아는 최적(Belady)과 비교한다(Qwen3-30B, 상주 17.6%).
+트레이스 재생 시뮬레이터([`scripts/sim_all.py`](scripts/sim_all.py))로 세 모델, 세 워크로드,
+상주 비율 14/35/55%(전문가 유닛 중 상주 가능한 비율)에서 디코드 적중률을 미래를 아는
+최적(Belady)과 비교한다. 전체 표: [`results/SIM/SUMMARY.md`](results/SIM/SUMMARY.md).
 
-| 워크로드 | LRU | PHASOR | Belady |
+| 모델 | 워크로드 | 상주 35%: LRU | LFU | PHASOR | Belady |
+|---|---|---:|---:|---:|---:|
+| Qwen3-30B | LongBench | 0.854 | 0.698 | **0.897** | 0.984 |
+| | ShareGPT | 0.837 | 0.838 | **0.899** | 0.966 |
+| | MMLU | 0.716 | 0.946 | **0.941** | 1.000 |
+| Mixtral-8x7B | LongBench | 0.462 | 0.401 | **0.466** | 0.715 |
+| | MMLU | 0.492 | 0.601 | **0.586** | 0.756 |
+| Qwen3-235B | LongBench | 0.841 | 0.680 | **0.848** | 0.973 |
+| | MMLU | 0.670 | 0.903 | **0.902** | 0.999 |
+
+- PHASOR는 27개 조건 중 26개에서 LRU보다 디코드 미스가 적다(예외: 235B LongBench 14%,
+  −1%). LFU가 강한 워크로드(MMLU)에서는 LFU와 같고, LFU가 약한 워크로드(LongBench)에서는
+  LRU보다 낫다.
+- **Mixtral은 라우팅이 거의 균등해** 온라인 정책의 이득이 1–3%다(MMLU 제외). 이 모델에서
+  시스템 이득은 상주가 아니라 데이터 경로와 파이프라인에서 나와야 한다.
+- 기본값(a = 0.5, H = 8)은 상주 35%의 9개 조건 중 8개에서 각 조건의 최고 설정과 0.02
+  이내다. 설정을 잘못 고르면 크게 떨어진다(235B MMLU 최저 0.693).
+
+**라우팅 특성.**
+
+| 모델 | 프롬프트 합집합 | 연속 토큰 공유 | 프롬프트 상위 25%가 덮는 디코드 |
 |---|---:|---:|---:|
-| LongBench | 0.716 | 0.742 | 0.879 |
-| ShareGPT | 0.658 | 0.693 | 0.840 |
-| MMLU | 0.589 | 0.777 | 0.894 |
+| Qwen3-30B | 72.8–83.5% | 42.5–48.3% | 61.6–69.3% |
+| Mixtral-8x7B | 97.7% | 36.0–39.9% | 25.4–25.5% |
+| Qwen3-235B | 99.0% | 43.5–49.9% | 30.4–34.7% |
 
-Mixtral-8x7B(전문가 8, top-2)는 라우팅이 거의 균등해 어떤 온라인 정책도 적중률이 상주 비율
-근처에 머문다(LRU 0.247, PHASOR 0.262, Belady 0.506, LongBench). 이 모델에서 PHASOR의
-이득은 상주보다 데이터 경로와 파이프라인에서 나와야 한다.
+프롬프트 합집합이 모든 모델에서 크므로 상주가 프리필 읽기량을 줄이지 못한다는 결론(§4.3)은
+세 모델 모두에서 성립한다. 반면 프롬프트 라우팅의 디코드 예측력은 Qwen3-30B에서만 강하고
+(무작위 25% 대비 62–69%), Mixtral에서는 없다. PHASOR의 이득은 주로 최근성과 디코드 이력의
+결합에서 나온다.
 
 ### 4.6 배칭
 

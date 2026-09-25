@@ -20,6 +20,8 @@ def res(path):
     d = None; peak = None
     try:
         for line in open(path):
+            if line.startswith("NORUN"):
+                return {"norun": line.split("reason=")[1].strip()}
             if line.startswith("RESULT "):
                 d = {k: v for k, v in (x.split("=", 1) for x in line.split()[1:])}
             if line.startswith("cgroup_peak_gib="):
@@ -45,15 +47,17 @@ for m in MODELS:
         print(f"### {m} / {w}\n")
         print("| budget | system | request s | TTFT s | TPOT ms | tok/s | peak GiB |")
         print("|---|---|---|---|---|---|---|")
-        for fr in ["0.25", "0.45", "0.65", "1.08"]:
+        for fr in ["0.10", "0.15", "0.25", "0.45", "0.65", "1.08"]:
             rows = {k: res(f"{R}/{m}/{w}/{k}_{fr}.txt") for k, _ in SYS}
             for k, name in SYS:
                 d = rows[k]
                 if not d: continue
+                if "norun" in d:
+                    print(f"| {fr} | {name} | cannot run ({d['norun']}) | | | | |"); continue
                 print(f"| {fr} | {name} | {g(d,'request_s','.3f')} | {g(d,'ttft_s','.3f')} | "
                       f"{g(d,'tpot_ms','.1f')} | {g(d,'throughput_tok_s','.2f')} | {d.get('peak','-')} |")
             led = rows["ledger"]
-            base = [(k, d) for k, d in rows.items() if d and k != "ledger"]
+            base = [(k, d) for k, d in rows.items() if d and k != "ledger" and "norun" not in d]
             if led and base:
                 bk, bd = min(base, key=lambda x: float(x[1]["request_s"]))
                 print(f"| {fr} | **PHASOR vs best other ({bk})** | "

@@ -153,6 +153,7 @@ int main(int argc, char **argv) {
     // the unit) and the decode routing seen so far.  mix is the weight of the
     // first.  "--mix off" restores the count utility above.
     bool use_pred = true; double mix = 0.5; bool selective = true;
+    int batch = 1; bool overlap = false;
     // Terms of the estimate, each scaled to [0,1]:
     //   w_rec * 2^-(age/H)        recency, age in serving steps
     //   mix * pf / max pf         this request's prompt routing
@@ -206,7 +207,7 @@ int main(int argc, char **argv) {
     // shown to be doing anything, and three of them turned out to be inert
     // before anyone checked.
     bool use_live_set = true;
-    bool use_prefix_pin = true;
+    bool use_prefix_pin = false;
     int dim_hidden = 2048, dim_inter = 768;
 
     for (int i = 1; i < argc; ++i) {
@@ -235,6 +236,7 @@ int main(int argc, char **argv) {
         else if (s=="--no-async") use_async = false;
         else if (s=="--no-live-set") use_live_set = false;
         else if (s=="--no-prefix-pin") use_prefix_pin = false;
+        else if (s=="--prefix-pin") use_prefix_pin = true;
         else if (s=="--hidden") dim_hidden = atoi(nx());
         else if (s=="--inter") dim_inter = atoi(nx());
         else if (s=="--prefix-budget") prefix_budget_gib = atof(nx());
@@ -244,6 +246,8 @@ int main(int argc, char **argv) {
         else if (s=="--mix") { const char *v = nx();
             if (!std::strcmp(v,"off")) use_pred = false; else mix = atof(v); }
         else if (s=="--selective") selective = atoi(nx()) != 0;
+        else if (s=="--batch") batch = std::max(1, atoi(nx()));
+        else if (s=="--overlap") overlap = true;
         else if (s=="--rec-half") rec_half = atof(nx());
         else if (s=="--w-rec") w_rec = atof(nx());
         else if (s=="--w-req") w_req = atof(nx());
@@ -1088,120 +1092,149 @@ int main(int argc, char **argv) {
     };
 
     // --- serve ------------------------------------------------------------
-    std::vector<int> prev_need;              // last token's units, for speculation
-    for (auto &st : sched) {
-        Request &r = tr.req[st.req];
+    // Static batching: requests are taken B at a time in trace order.  A
+    // batch's prefill reads the union of its prompts' units once, and each
+    // decode step reads the union of what its still-active requests route to,
+    // so a unit wanted by several requests in the batch is read once for all
+    // of them.  B = 1 is one request at a time.
+    //
+    // Time.  I/O is measured; the arithmetic is the measured kernels under
+    // --compute and the calibrated cost otherwise.  A decode step is bound by
+    // the bytes it touches, so its cost scales with the dense weights plus the
+    // routed units it touches: c_d * (dense + |need| * unit) / (dense + K*L*unit).
+    // Prompt arithmetic is compute-bound and adds up over the batch's tokens.
+    // Without --overlap the phase costs I/O + arithmetic; with it the layers
+    // are pipelined (layer l+1 is read while layer l computes), which costs
+    // max(io, c) + min(io, c) / L -- the slower of the two plus one layer's
+    // worth of the faster to fill the pipe.
+    auto phase_time = [&](double io, double c) -> double {
+        if (!overlap) return io + c;
+        return std::max(io, c) + std::min(io, c) / L;
+    };
+    const double unit_avg = (double)per_unit;
+    const double dense_b = (double)always_bytes;
+    std::vector<int> prev_need;              // last step's units, for speculation
+    double req_time_sum = 0, ttft_time_sum = 0, tok_time_sum = 0, wall_sum = 0;
+    uint64_t n_req_done = 0, n_tok_done = 0;
+    std::vector<int> order_req;
+    for (int rep=0; rep<repeats; ++rep)
+        for (size_t i=0;i<tr.req.size();++i) order_req.push_back((int)i);
+    for (size_t b0 = 0; b0 < order_req.size(); b0 += batch) {
+        std::vector<int> br(order_req.begin()+b0,
+                            order_req.begin()+std::min(order_req.size(), b0+(size_t)batch));
+        // ---- prefill ------------------------------------------------------
         clk += 1.0;
-        if (st.tok < 0) {
-            if ((policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
-                 || policy==SERVE_FULL) && use_prefix_pin)
-                pin_family(family_of(r.name));
-            bool learn = (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
-                          || policy==SERVE_FULL) && use_prefix_pin;
-            std::unordered_set<int> u;
+        bool learn = (policy==SERVE_MULTIPREFIX || policy==SERVE_ONLINE_PREFIX
+                      || policy==SERVE_FULL) && use_prefix_pin;
+        if (learn) for (int ri : br) pin_family(family_of(tr.req[ri].name));
+        std::unordered_set<int> u;
+        double prompt_c = 0;
+        for (int ri : br) {
+            Request &r = tr.req[ri];
             for (int t=0;t<r.n_prefill;++t)
                 for (int l=0;l<L;++l)
                     for (int k=0;k<K;++k) {
                         int e = r.prefill[((size_t)t*L+l)*K+k];
                         if (e>=0) u.insert((int)((size_t)l*E+e));
                     }
-            std::vector<int> miss;
-            for (int id : u) if (!resident(id) && unit[id].bytes) miss.push_back(id);
-            std::sort(miss.begin(), miss.end());
-            uint64_t b=0; double dt = fetch_units(miss, b);
-            pre_bytes += b; ttft_sum += dt; ++n_pre; prompt_tok_sum += r.n_prefill;
-            if (b) { pre_io_s += dt; pre_io_b += b; }
-            // The prefix's routing is known once prefill has run; a family it
-            // qualifies is pinned now, for this request's decode and the next.
-            if (learn && learn_family(family_of(r.name), r)) pin_family(family_of(r.name));
-            // Prefill arithmetic is batched over the prompt, so its shadow is
-            // large; what exceeds it is the wait a user sees.
-            double shadow = r.n_prefill * compute_ms_prompt_token * 1e-3;
-            stall_sum += std::max(0.0, dt - shadow);
-            // An LRU admits here because it cannot tell that prefill will not
-            // come back for these, and in doing so evicts what decode needs.
-            // Refusing outright is worse, though: a policy that never admits
-            // from prefill leaves the arena mostly empty, because the decode
-            // working set alone does not fill it -- measured, its prefill I/O
-            // stayed flat at 5.46 s from a 24 GiB budget to 48 while plain LRU
-            // fell to 2.07.  The rule that survives both is narrower than
-            // either: prefill may take free space and may not take anyone
-            // else's, and what it takes goes in coldest so decode can reclaim
-            // it first.
-            if (policy==SERVE_LRU) for (int id : miss) lru_admit(id);
-            if (policy==SERVE_LRU_PHASE) for (int id : miss) lru_admit_free_only(id);
-            // The unified value counts a prefill hit, so it has to see one.
-            if (policy==SERVE_UNIFIED_ONLINE)
-                for (int id : u) if (unit[id].bytes) unified_admit(id, true);
-            if (policy==SERVE_FULL) {
-                // Prefill reads the union once and does not return to it, so
-                // none of it is "in use" beyond its own read.
-                live_set.clear();
-                std::fill(cur_pf.begin(), cur_pf.end(), 0.0); cur_pf_sum = 0; cur_pf_max = 0;
-                std::fill(creq.begin(), creq.end(), 0.0); creq_max = 0;
+            prompt_c += r.n_prefill * compute_ms_prompt_token * 1e-3;
+            prompt_tok_sum += r.n_prefill;
+        }
+        std::vector<int> miss;
+        for (int id : u) if (!resident(id) && unit[id].bytes) miss.push_back(id);
+        std::sort(miss.begin(), miss.end());
+        uint64_t b=0; double dt = fetch_units(miss, b);
+        pre_bytes += b; ttft_sum += dt; n_pre += (int)br.size();
+        if (b) { pre_io_s += dt; pre_io_b += b; }
+        double t_prefill = phase_time(dt, prompt_c);
+        stall_sum += std::max(0.0, dt - prompt_c);
+        if (learn) for (int ri : br)
+            if (learn_family(family_of(tr.req[ri].name), tr.req[ri]))
+                pin_family(family_of(tr.req[ri].name));
+        if (policy==SERVE_LRU) for (int id : miss) lru_admit(id);
+        if (policy==SERVE_LRU_PHASE) for (int id : miss) lru_admit_free_only(id);
+        if (policy==SERVE_UNIFIED_ONLINE)
+            for (int id : u) if (unit[id].bytes) unified_admit(id, true);
+        if (policy==SERVE_FULL) {
+            live_set.clear();
+            std::fill(cur_pf.begin(), cur_pf.end(), 0.0); cur_pf_sum = 0; cur_pf_max = 0;
+            std::fill(creq.begin(), creq.end(), 0.0); creq_max = 0;
+            for (int ri : br) {
+                Request &r = tr.req[ri];
                 for (int t=0;t<r.n_prefill;++t)
                     for (int l=0;l<L;++l)
                         for (int k=0;k<K;++k) {
                             int e = r.prefill[((size_t)t*L+l)*K+k];
                             if (e>=0) { cur_pf[(size_t)l*E+e] += 1.0; cur_pf_sum += 1.0; }
                         }
-                for (double v : cur_pf) cur_pf_max = std::max(cur_pf_max, v);
-                // In layer order: when layer l's experts pass through the
-                // window, the prompt's routing is known up to layer l only.
-                std::vector<int> us(u.begin(), u.end());
-                std::sort(us.begin(), us.end());
-                for (int id : us) {
-                    pf_known_layer = id / E;
-                    if (unit[id].bytes) full_admit(id, true);
-                }
-                pf_known_layer = L - 1;
             }
-            // A sequence's activation set belongs to that sequence.
-            if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
-            if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
-            if (policy==SERVE_MIXTRAL) for (int id : miss) lru_admit(id);
-        } else {
+            for (double v : cur_pf) cur_pf_max = std::max(cur_pf_max, v);
+            // In layer order: when layer l's experts pass through the
+            // window, the prompts' routing is known up to layer l only.
+            std::vector<int> us(u.begin(), u.end());
+            std::sort(us.begin(), us.end());
+            for (int id : us) {
+                pf_known_layer = id / E;
+                if (unit[id].bytes) full_admit(id, true);
+            }
+            pf_known_layer = L - 1;
+        }
+        if (policy==SERVE_MOEINF || policy==SERVE_MIXTRAL) seq_active.clear();
+        if (policy==SERVE_MOEINF) for (int id : miss) lru_admit_free_only(id);
+        if (policy==SERVE_MIXTRAL) for (int id : miss) lru_admit(id);
+
+        // ---- decode -------------------------------------------------------
+        std::vector<int> nd(br.size());
+        int T = 0;
+        for (size_t j=0;j<br.size();++j) {
+            Request &r = tr.req[br[j]];
+            nd[j] = max_decode ? std::min(max_decode, r.n_decode) : r.n_decode;
+            T = std::max(T, nd[j]);
+        }
+        std::vector<double> t_req(br.size(), t_prefill);
+        double t_batch = t_prefill;
+        for (int tok=0; tok<T; ++tok) {
+            clk += 1.0;
             std::unordered_set<int> need;
-            for (int l=0;l<L;++l)
-                for (int k=0;k<K;++k) {
-                    int e = r.decode[((size_t)st.tok*L+l)*K+k];
-                    if (e>=0) need.insert((int)((size_t)l*E+e));
-                }
-            // With a finite lookahead the token's layers are fetched in
-            // groups, and each group's read cannot start before the previous
-            // group's arithmetic has revealed it.
+            int active = 0;
+            for (size_t j=0;j<br.size();++j) {
+                if (tok >= nd[j]) continue;
+                ++active;
+                Request &r = tr.req[br[j]];
+                for (int l=0;l<L;++l)
+                    for (int k=0;k<K;++k) {
+                        int e = r.decode[((size_t)tok*L+l)*K+k];
+                        if (e>=0) need.insert((int)((size_t)l*E+e));
+                    }
+            }
             uint64_t db=0; double ddt = 0, dct = 0;
             int grp = lookahead > 0 ? lookahead : L;
             for (int l0=0; l0<L; l0+=grp) {
                 std::vector<int> dm, all;
-                for (int l=l0; l<std::min(L,l0+grp); ++l)
-                    for (int k=0;k<K;++k) {
-                        int e = r.decode[((size_t)st.tok*L+l)*K+k];
-                        if (e<0) continue;
-                        int id = (int)((size_t)l*E+e);
-                        if (!unit[id].bytes) continue;
-                        all.push_back(id);
-                        if (!resident(id)) dm.push_back(id);
-                    }
-                for (auto *v : {&dm,&all}) {
-                    std::sort(v->begin(), v->end());
-                    v->erase(std::unique(v->begin(), v->end()), v->end());
+                for (int id : need) {
+                    int l = id / E;
+                    if (l < l0 || l >= std::min(L,l0+grp) || !unit[id].bytes) continue;
+                    all.push_back(id);
+                    if (!resident(id)) dm.push_back(id);
                 }
+                std::sort(dm.begin(), dm.end()); std::sort(all.begin(), all.end());
                 ddt += fetch_units(dm, db);
-                // The arithmetic runs over every routed expert in the group,
-                // resident or just arrived, which is what makes the reported
-                // rate a token rate rather than a transfer rate.
                 dct += run_ffn(all);
             }
-            compute_sum += dct;
-            dec_bytes += db; tpot_sum += ddt; ++n_dec;
+            double c_step = do_compute ? dct
+                : compute_ms_token * 1e-3 * (dense_b + need.size() * unit_avg)
+                                          / (dense_b + (double)K * L * unit_avg);
+            double t_step = phase_time(ddt, c_step);
+            compute_sum += c_step;
+            dec_bytes += db; tpot_sum += ddt; n_dec += active;
             if (db) { dec_io_s += ddt; dec_io_b += db; }
             if (decode_weight_auto && pre_io_b > 0 && dec_io_b > 0)
                 decode_weight = std::min(64.0, std::max(1.0,
                     (dec_io_s / dec_io_b) / (pre_io_s / pre_io_b)));
-            double shadow = compute_ms_token * 1e-3;
-            stall_sum += std::max(0.0, ddt - shadow);
-            shadow_bytes_sum += shadow * BW;
+            stall_sum += std::max(0.0, ddt - c_step);
+            t_batch += t_step;
+            for (size_t j=0;j<br.size();++j)
+                if (tok < nd[j]) { t_req[j] += t_step; tok_time_sum += t_step; ++n_tok_done; }
             if (policy==SERVE_LRU || policy==SERVE_LRU_PHASE)
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
             if (policy==SERVE_UNIFIED_ONLINE)
@@ -1214,28 +1247,22 @@ int main(int argc, char **argv) {
             if (policy==SERVE_MOEINF)
                 for (int id : need) if (unit[id].bytes) moeinf_admit(id);
             if (policy==SERVE_MIXTRAL) {
-                // LRU plus speculation.  Consecutive decode tokens share 3.30
-                // of 8 experts against 0.50 for independent draws (sec 2.3c),
-                // so "what the last token used" is the predictor this line of
-                // work relies on; it is admitted alongside what is needed now.
                 for (int id : need) if (unit[id].bytes) lru_admit(id);
                 for (int id : prev_need) if (unit[id].bytes && !arena.has(id))
                     lru_admit(id);
                 prev_need.assign(need.begin(), need.end());
             }
             if (policy==SERVE_ONLINE || policy==SERVE_ONLINE_PREFIX
-                || policy==SERVE_MULTIPREFIX) {
-                // Admission happens from bytes already in the window, so it is
-                // a copy and not a read; the fetch that would make it a read
-                // has already been paid on the critical path above.  What a
-                // background prefetcher would additionally read is counted
-                // separately so it can be checked against the shadow.
+                || policy==SERVE_MULTIPREFIX)
                 for (int id : need) if (unit[id].bytes) {
                     if (!arena.has(id)) bg_bytes_sum += unit[id].bytes;
                     online_admit(id);
                 }
-            }
         }
+        for (size_t j=0;j<br.size();++j) {
+            req_time_sum += t_req[j]; ttft_time_sum += t_prefill; ++n_req_done;
+        }
+        wall_sum += t_batch;
     }
 
     std::printf("%-13s | TTFT(io) %7.3f s  prefill %7.2f GiB | "
@@ -1298,19 +1325,18 @@ int main(int argc, char **argv) {
         std::printf("value: %s  mix %.2f  selective %d | count mode: W %.2f (%s) half-life %g\n",
                     use_pred ? "decode-probability estimate" : "counts", mix, (int)selective,
                     decode_weight, decode_weight_auto ? "measured cost ratio" : "fixed", half_life);
-    if (n_pre && n_dec) {
-        double c_d = do_compute ? compute_sum / n_dec : compute_ms_token * 1e-3;
-        double c_p = compute_ms_prompt_token * 1e-3;
-        double ttft = (ttft_sum + prompt_tok_sum * c_p) / n_pre;
-        double tpot = tpot_sum / n_dec + c_d;
-        double req  = (ttft_sum + prompt_tok_sum * c_p + tpot_sum + n_dec * c_d) / n_pre;
-        std::printf("RESULT policy=%s budget=%.2f window=%.2f requests=%d prompt_tok=%.1f "
-                    "decode_tok=%.1f ttft_s=%.4f tpot_ms=%.3f request_s=%.4f "
-                    "decode_tok_s=%.3f e2e_tok_s=%.4f prefill_io_s=%.4f decode_io_ms=%.3f "
+    if (n_req_done && n_tok_done) {
+        double ttft = ttft_time_sum / n_req_done;
+        double tpot = tok_time_sum / n_tok_done;
+        double req  = req_time_sum / n_req_done;
+        std::printf("RESULT policy=%s backend=%s batch=%d overlap=%d budget=%.2f window=%.2f "
+                    "requests=%llu prompt_tok=%.1f decode_tok=%.1f ttft_s=%.4f tpot_ms=%.3f "
+                    "request_s=%.4f throughput_tok_s=%.4f prefill_io_s=%.4f decode_io_ms=%.3f "
                     "prefill_gib=%.3f decode_gib_tok=%.4f compute=%s\n",
-                    policy_name(policy), budget_gib, window_gib, n_pre,
-                    (double)prompt_tok_sum / n_pre, (double)n_dec / n_pre,
-                    ttft, tpot * 1e3, req, 1.0 / tpot, (double)n_dec / (req * n_pre),
+                    policy_name(policy), gtier_backend_name((gtier_backend)backend), batch,
+                    (int)overlap, budget_gib, window_gib, (unsigned long long)n_req_done,
+                    (double)prompt_tok_sum / n_req_done, (double)n_tok_done / n_req_done,
+                    ttft, tpot * 1e3, req, (double)n_tok_done / wall_sum,
                     ttft_sum / n_pre, tpot_sum / n_dec * 1e3,
                     pre_bytes / 1073741824.0 / n_pre, dec_bytes / 1073741824.0 / n_dec,
                     do_compute ? "measured" : "calibrated");

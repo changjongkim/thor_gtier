@@ -98,16 +98,17 @@ index 43beb9d..aaebb90 100644
  
  
 diff --git a/customized/__init__.py b/customized/__init__.py
-index 1c11cea..d64de8e 100644
+index 1c11cea..d60bf5b 100644
 --- a/customized/__init__.py
 +++ b/customized/__init__.py
-@@ -1,3 +1,4 @@
+@@ -1,3 +1,5 @@
  from .deepseek import DeepseekMoEBlock
  from .switch_transformers import SyncSwitchTransformersSparseMLP
 -from .qwen import Qwen2MoEBlock
 \ No newline at end of file
 +from .qwen import Qwen2MoEBlock
 +from .qwen3 import Qwen3MoEBlock
++from .mixtral import MixtralZipBlock
 diff --git a/evaluation/evaluate.py b/evaluation/evaluate.py
 index 697a585..6fe2653 100644
 --- a/evaluation/evaluate.py
@@ -183,20 +184,21 @@ index d5a7658..c9dc80d 100755
  CACHE_ALG=ZipMoE # Variable, choices=["ZipMoE","LRU","LFU","Marking","FIFO"]
  PREFETCHER_TOPKS=0
 diff --git a/runtime/model_offload.py b/runtime/model_offload.py
-index ba969a4..06f8339 100644
+index ba969a4..5b7c201 100644
 --- a/runtime/model_offload.py
 +++ b/runtime/model_offload.py
-@@ -40,7 +40,8 @@ from experts import (
+@@ -40,7 +40,9 @@ from experts import (
  from customized import (
      DeepseekMoEBlock,
      SyncSwitchTransformersSparseMLP,
 -    Qwen2MoEBlock
 +    Qwen2MoEBlock,
-+    Qwen3MoEBlock
++    Qwen3MoEBlock,
++    MixtralZipBlock
  )
  import models
  from runtime.hooks import *
-@@ -244,7 +245,9 @@ class ZipMoEEngine(object):
+@@ -244,7 +246,11 @@ class ZipMoEEngine(object):
          transformers.models.switch_transformers.modeling_switch_transformers._old_sparse_mlp = transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersSparseMLP
          transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersSparseMLP = SyncSwitchTransformersSparseMLP
          transformers.models.qwen2_moe.modeling_qwen2_moe._old_sparse_mlp = transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock
@@ -204,18 +206,43 @@ index ba969a4..06f8339 100644
 +        transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock = Qwen2MoEBlock
 +        transformers.models.qwen3_moe.modeling_qwen3_moe._old_sparse_mlp = transformers.models.qwen3_moe.modeling_qwen3_moe.Qwen3MoeSparseMoeBlock
 +        transformers.models.qwen3_moe.modeling_qwen3_moe.Qwen3MoeSparseMoeBlock = Qwen3MoEBlock
++        transformers.models.mixtral.modeling_mixtral._old_sparse_mlp = transformers.models.mixtral.modeling_mixtral.MixtralSparseMoeBlock
++        transformers.models.mixtral.modeling_mixtral.MixtralSparseMoeBlock = MixtralZipBlock
          def from_pretrained_decorator(
              original_from_pretrained: Callable
          ):
-@@ -419,6 +422,7 @@ class ZipMoEEngine(object):
+@@ -419,6 +425,8 @@ class ZipMoEEngine(object):
                          isinstance(module, DeepseekMoEBlock)
                          or isinstance(module, SyncSwitchTransformersSparseMLP)
                          or isinstance(module, Qwen2MoEBlock)
 +                        or isinstance(module, Qwen3MoEBlock)
++                        or isinstance(module, MixtralZipBlock)
                      ):
                          module.zipmoe_engine = self.zipmoe_engine
                          module.zipmoe_config = self.zipmoe_config
-@@ -792,4 +796,5 @@ class ZipMoEEngine(object):
+@@ -454,6 +462,11 @@ class ZipMoEEngine(object):
+     def get_topology(self, model):
+         name_lst = []
+         ret_dict = {}
++        _role = {"gate_proj": 0, "w1": 0, "up_proj": 1, "w3": 1, "down_proj": 2, "w2": 2}
++        _rank = {}
++        for _n, _ in model.named_parameters(recurse=True):
++            if _n in self.name_id_map:
++                _rank[self.name_id_map[_n]] = _role.get(_n.split(".")[-2], 9)
+         for name, _ in model.named_parameters(recurse=True):
+             match = re.search(r"\d+", name)
+             if name not in self.name_id_map:
+@@ -541,7 +554,8 @@ class ZipMoEEngine(object):
+                     name_lst.append(stored_name)
+         for i in ret_dict.keys():
+             if isinstance(ret_dict[i], dict):
+-                ret_dict[i] = list(ret_dict[i].values())
++                ret_dict[i] = [sorted(v, key=lambda t: _rank.get(t, 9))
++                               for v in ret_dict[i].values()]
+ 
+         topology = list(ret_dict.items())
+         return topology        
+@@ -792,4 +806,6 @@ class ZipMoEEngine(object):
          models.deepseek.modeling_deepseek.DeepseekV2MoE = models.deepseek.modeling_deepseek._old_sparse_mlp
          transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersTop1Router._cast_classifier = transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersTop1Router._old_cast_classifier
          transformers.models.switch_transformers.modeling_switch_transformers.SwitchTransformersSparseMLP = transformers.models.switch_transformers.modeling_switch_transformers._old_sparse_mlp
@@ -223,6 +250,7 @@ index ba969a4..06f8339 100644
 \ No newline at end of file
 +        transformers.models.qwen2_moe.modeling_qwen2_moe.Qwen2MoeSparseMoeBlock = transformers.models.qwen2_moe.modeling_qwen2_moe._old_sparse_mlp
 +        transformers.models.qwen3_moe.modeling_qwen3_moe.Qwen3MoeSparseMoeBlock = transformers.models.qwen3_moe.modeling_qwen3_moe._old_sparse_mlp
++        transformers.models.mixtral.modeling_mixtral.MixtralSparseMoeBlock = transformers.models.mixtral.modeling_mixtral._old_sparse_mlp
 \ No newline at end of file
 diff --git a/utils/config.py b/utils/config.py
 index 684b4a3..cf3233a 100644
@@ -247,19 +275,21 @@ index 684b4a3..cf3233a 100644
      )    
      
 diff --git a/utils/constants.py b/utils/constants.py
-index 2c96733..3089401 100644
+index 2c96733..e92d11e 100644
 --- a/utils/constants.py
 +++ b/utils/constants.py
-@@ -16,16 +16,19 @@ from models.deepseek import (
+@@ -16,16 +16,22 @@ from models.deepseek import (
  
  from transformers import (
      SwitchTransformersForConditionalGeneration,
 -    Qwen2MoeForCausalLM
 +    Qwen2MoeForCausalLM,
-+    Qwen3MoeForCausalLM
++    Qwen3MoeForCausalLM,
++    MixtralForCausalLM
  )
  
  MODEL_MAPPING_NAMES = {
++    "mixtral": MixtralForCausalLM,
 +    "qwen3": Qwen3MoeForCausalLM,
      "deepseek": DeepseekV2ForCausalLM,
      "switch": SwitchTransformersForConditionalGeneration,
@@ -267,14 +297,16 @@ index 2c96733..3089401 100644
  }
  
  MODEL_MAPPING_TYPES = {
++    "mixtral": 0,
 +    "qwen3": 0,
      "deepseek": 0,
      "switch": 1,
      "qwen": 0
-@@ -49,30 +52,35 @@ COMPRESSION_RATIO_PROFILE = {
+@@ -49,30 +55,40 @@ COMPRESSION_RATIO_PROFILE = {
  }
  
  List_expert_topk = {
++    "mixtral": 2,
 +    "qwen3": 8,
      "deepseek": 6,
      "switch": 1,
@@ -282,6 +314,7 @@ index 2c96733..3089401 100644
  }
  
  List_num_elements_per_expert = {
++    "mixtral": 14336*4096,
 +    "qwen3": 768*2048,
      "deepseek": 1408*2048,
      "switch": 1024*4096,
@@ -289,6 +322,7 @@ index 2c96733..3089401 100644
  }
  
  List_num_tensors_per_expert = {
++    "mixtral": 3,
 +    "qwen3": 3,
      "deepseek": 3,
      "switch": 2,
@@ -296,6 +330,7 @@ index 2c96733..3089401 100644
  }
  
  List_num_expert_layers = {
++    "mixtral": 32,
 +    "qwen3": 48,
      "deepseek": 26,
      "switch": 24,
@@ -303,14 +338,16 @@ index 2c96733..3089401 100644
  }
  
  List_num_experts = {
++    "mixtral": 8,
 +    "qwen3": 128,
      "deepseek": 64,
      "switch": 128,
      "qwen": 60
-@@ -80,6 +88,7 @@ List_num_experts = {
+@@ -80,6 +96,8 @@ List_num_experts = {
  
  
  List_first_k_dense_replace = {
++    "mixtral": 0,
 +    "qwen3": 0,
      "deepseek": 1,
      "switch": 0,
@@ -446,3 +483,106 @@ index 0000000..93023b3
 +    
 +        return final_hidden_states
 \ No newline at end of file
+diff --git a/customized/mixtral.py b/customized/mixtral.py
+new file mode 100644
+index 0000000..9b2a7a3
+--- /dev/null
++++ b/customized/mixtral.py
+@@ -0,0 +1,97 @@
++# Port of ZipMoE's MoE block to Mixtral-8x7B for the PHASOR evaluation.  Same
++# dispatch as customized/qwen3.py; Mixtral always renormalises the top-k
++# weights and its decoder layer unpacks (hidden_states, router_logits).
++# Added by the PHASOR authors; not part of the ZipMoE release.
++# Copyright (c) 2026 <ZipMoE / MINT, Nanjing University>.
++# All rights reserved.
++#
++# Modifications and additions to this file are licensed under the
++# Academic Non-Commercial License. See the LICENSE file in the
++# project root for details.
++#
++# -------------------------------------------------------------------
++# DERIVED FROM:
++# EfficientMoE (Apache License 2.0)
++# Copyright (c) EfficientMoE.
++#
++# The original code is licensed under the Apache License, Version 2.0.
++# This file contains substantial modifications.
++# -------------------------------------------------------------------
++
++
++import torch
++import torch.nn as nn
++import torch.nn.functional as F
++from transformers.models.mixtral.modeling_mixtral import MixtralBlockSparseTop2MLP
++class MixtralZipBlock(nn.Module):
++    def __init__(self, config):
++        super().__init__()
++        self.config = config
++        self.num_experts = config.num_local_experts
++        self.top_k = config.num_experts_per_tok
++        self.norm_topk_prob = True
++        self.gate = nn.Linear(
++            config.hidden_size, config.num_experts, bias=False
++        )
++        self.experts = nn.ModuleList(
++            [
++                MixtralBlockSparseTop2MLP(config)
++                for _ in range(self.num_experts)
++            ]
++        )
++    def __prepare_expert_route(self, hidden_states):
++        router_logits = self.gate(hidden_states)
++
++        routing_weights = F.softmax(router_logits, dim=1, dtype=torch.float)
++        routing_weights, selected_experts = torch.topk(
++            routing_weights, self.top_k, dim=-1
++        )
++        if self.norm_topk_prob:
++            routing_weights /= routing_weights.sum(dim=-1, keepdim=True)
++        routing_weights = routing_weights.to(hidden_states.dtype)
++        return selected_experts, routing_weights, router_logits
++
++    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
++        identity = hidden_states
++        batch_size, sequence_length, hidden_dim = hidden_states.shape
++        hidden_states = hidden_states.view(-1, hidden_dim)
++        topk_idx, topk_weight, logits = (
++            self.__prepare_expert_route(hidden_states)
++        )
++        router_mask = F.one_hot(
++            topk_idx, num_classes=self.num_experts
++        )
++        routing_weights_mask = (topk_weight[:, :, None] * router_mask).permute(
++            0, 2, 1
++        )
++        routing_weights_mask = torch.sum(routing_weights_mask, dim=-1)
++        router_mask = router_mask.permute(0, 2, 1)
++        for i in range(self.top_k):
++            router_mask[:, :, 0] = torch.logical_or(
++                router_mask[:, :, 0], router_mask[:, :, i]
++            )
++        router_mask = router_mask[:, :, 0]
++    
++        final_hidden_states = torch.zeros(
++            (batch_size * sequence_length, hidden_dim),
++            dtype=hidden_states.dtype,
++            device=hidden_states.device,
++        )
++        results = self.expert_executor.dispatch_local(
++            hidden_states, 
++            router_mask, 
++            self.layer_id
++        )
++
++        for output, _, idx, _ in results:
++            token_indices = router_mask[:, idx].bool()
++            final_hidden_states[token_indices, :] += (
++                output.to(routing_weights_mask.device)
++                * routing_weights_mask[token_indices, idx][:, None]
++            )
++
++        final_hidden_states = final_hidden_states.view(
++            batch_size, sequence_length, hidden_dim
++        )
++    
++        return final_hidden_states, logits

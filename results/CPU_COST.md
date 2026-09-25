@@ -50,10 +50,15 @@
 | backend | read size | GiB/s | user s/GiB | sys s/GiB | avg cores | machine s/GiB | machine cores |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | gtier(async) | 4 MiB | 4.502 | 0.002 | 0.061 | 0.28 | 0.128 | 0.57 |
+| cufile | 4 MiB | 3.684 | 0.011 | 0.051 | 0.23 | 0.200 | 0.74 |
 | pread+copy | 4 MiB | 3.460 | 0.005 | 0.113 | 0.41 | 0.183 | 0.63 |
 | mmap-cpu | 4 MiB | 0.339 | 0.017 | 16.520 | 5.61 | 16.790 | 5.70 |
 | uvm | 4 MiB | 1.564 | 0.005 | 0.422 | 0.67 | 0.587 | 0.92 |
 | mmap-gpu | 4 MiB | 2.040 | 0.002 | 0.001 | 0.01 | 0.330 | 0.67 |
+
+## 참고
+
+- cufile was OOM-killed under the 8 GiB cap (footprint 10.6 GiB, HF_MOE/FOOTPRINT.md); rerun under a 16 GiB cap
 
 ## 실패한 실행
 

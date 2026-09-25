@@ -11,7 +11,7 @@
 #       code serves a batch (PHASOR, ZipMoE, FlashMoE*, DuoServe*; Fiddler and
 #       Mixtral-offloading generate one sequence).  Each baseline keeps its
 #       equal-memory setting from E1's memcal; a batch adds KV cache and
-#       activations to every system, so the cap is the budget + 8 GiB and the
+#       activations to every system, so the cap is E1's cap + 8 GiB and the
 #       measured peaks are reported.
 say "=== extras ($m): E5, E9 window, E3 ==="
 X=$O/extras; mkdir -p $X/e5 $X/e9 $X/e3
@@ -22,6 +22,7 @@ calb(){  # calb <sys> -> equal-memory budget at 0.45, or "none"
   [ -s $c ] || { echo $b45; return; }
   python3 -c "import json;v=json.load(open('$c'))['budget_gib'];print(v if v else 'none')"
 }
+CAP_GIB=$(capfor $b45)          # E5, E9: PHASOR at 0.45, the E1 cap
 # E5
 for w in mmlu sharegpt longbench; do
   run "s5x_${m}_${w}_phasor_profile" $b45 $X/e5/${w}_phasor $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \
@@ -42,14 +43,14 @@ for B in 4 8; do
       [[ " $systems " == *" $s "* ]] || continue
       b=$(calb $s)
       if [ "$b" = none ]; then echo "NORUN budget=$b45 reason=exceeds-phasor-memory-at-every-setting" > $X/e3/${w}_${s}_b$B.txt; continue; fi
-      capb=$(awk -v b=$b 'BEGIN{printf "%.2f", b+8}')
+      capb=$(awk -v c=$(capfor $b45) 'BEGIN{printf "%.2f", c+8}')   # the E1 cap + 8 GiB for batch KV/activations
       o=$X/e3/${w}_${s}_b$B
       if [ $s = phasor ]; then
         cmd="$ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/$w.json --budget-gib $b --slot-mib $slot --window-gib $win --out $o.json"
       else
         cmd=$(sys_cmd $s $m $ck $zt $slot $win $w $b $o)
       fi
-      run "s5x_${m}_${w}_${s}_b$B" $capb $o $cmd --batch $B
+      CAP_GIB=$capb run "s5x_${m}_${w}_${s}_b$B" $b $o $cmd --batch $B
     done
   done
 done
@@ -57,4 +58,5 @@ git add -A $X >/dev/null 2>&1
 git diff --cached --quiet || { git commit -q -m "Extras ($m): E5 breakdown, E9 window, E3 batch
 
 Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>"; timeout 300 git push -q origin HEAD; }
+unset CAP_GIB
 say "=== extras ($m) done ==="

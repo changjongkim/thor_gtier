@@ -23,9 +23,11 @@ run(){
   [ -f "$ST/$name.norun" ] && return 1
   local fails=$(cat "$ST/$name.fail" 2>/dev/null || echo 0)
   if [ "$fails" -ge 2 ]; then say "give up $name"; return 1; fi
-  local need=$(awk -v b=$b 'BEGIN{printf "%.0f", b+12}')
+  local need=$(awk -v b=${CAP_GIB:-$b} 'BEGIN{printf "%.0f", b+12}')
   mg_check $need >>"$LOG" 2>&1 || { say "REFUSED $name"; return 1; }
-  local cap=$(awk -v b=$b 'BEGIN{printf "%.0f", (b+0.5)*1073741824}')
+  # cap: the run's memory bound in GiB (CAP_GIB, set per nominal budget by the
+  # caller; see capfor), plus 0.5.  Without it, the budget argument itself.
+  local cap=$(awk -v b=${CAP_GIB:-$b} 'BEGIN{printf "%.0f", (b+0.5)*1073741824}')
   say "run  $name"; drop
   timeout 21600 "$R/scripts/in_cgroup.sh" m5 $cap "$@" > "$o.txt" 2>&1
   local rc=$?
@@ -61,11 +63,18 @@ sys_cmd(){  # sys_cmd <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>: the 
 }
 held(){ local m=$1 w=$2 h=""; for o in longbench sharegpt mmlu; do [ $o = $w ] || h="$h results/SCOPE/rt_${m}_$o.npz"; done; echo $h; }
 
+capfor(){  # capfor <nominal budget>: 1.05 x PHASOR's measured peak there (memcal's
+  # probe cap), else 1.05 x (budget + 6 GiB of non-expert weights, KV and CUDA
+  # context, PHASOR's measured overhead at the calibrated budgets: 5.3-5.8 GiB)
+  local t=$O/memcal/phasor_$1.json
+  python3 -c "import json,os;p='$t';print(round(1.05*(json.load(open(p))['peak_gib'] if os.path.exists(p) and os.path.getsize(p) else $1+6),2))"
+}
 system(){  # system <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>  -> runs one system
   local s=$1 m=$2 ck=$3 zt=$4 slot=$5 win=$6 w=$7 b=$8 o=$9 W=results/WORKLOADS/$7.json
   # equal memory: a baseline gets the knob value that makes its measured peak
   # equal PHASOR's at this budget (memcal); the run name keeps the nominal budget
   local nb=$b cal=results/MATRIX5/$m/memcal/${s}_$b.json
+  local CAP_GIB=$(capfor $nb)   # every system at this nominal budget gets the same cap
   if [ -s $cal ]; then
     b=$(python3 -c "import json;v=json.load(open('$cal'))['budget_gib'];print(v if v else 'none')")
     if [ "$b" = none ]; then   # no setting fits within PHASOR's memory: a result, not a failure
@@ -132,7 +141,9 @@ if [ ! -f $ST/s5_selftest_extras.done ]; then
            "flashmoe_b2 $ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $Q --workload $W --budget-gib 25.65 --weights $(ls results/FLASHMOE/bf16/qwen30b_mmlu_s*.txt | head -1) --batch 2" \
            "duoserve_b2 $ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $Q --workload $W --budget-gib 25.65 --predictor results/DUOSERVE/qwen30b_mmlu.pt --trace $(held qwen30b mmlu) --batch 2" \
            "zipmoe_b2 $ZPY scripts/zipmoe_serve.py --model-type qwen3 --workload $W --budget-gib 25.65 --trace /home/thor/kcj/ZipMoE/trace/qwen3_mmlu_heldout.pt --batch 2"; do
-    set -- $t; n=$1; shift; drop
+    set -- $t; n=$1; shift
+    grep -q '^RESULT' $T/$n.log 2>/dev/null && continue       # passed on an earlier start
+    drop
     if timeout 3600 scripts/in_cgroup.sh prep max "$@" --limit 4 --out $T/$n.json > $T/$n.log 2>&1 && grep -q '^RESULT' $T/$n.log; then
       say "  selftest ok $n ($(python3 -c "import json;d=json.load(open('$T/$n.json'));print({k:d[k] for k in ('tok_per_s','profile_s') if k in d})" 2>&1 | cut -c1-200))"
     else okall=0; say "  selftest FAILED $n: $(grep -E 'Error|error|HOSTGUARD' $T/$n.log | tail -1 | cut -c1-200)"; fi
@@ -229,7 +240,7 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
     for s in $systems; do system $s $m $ck $zt $slot $win $w $b $O/$w/${s}_$f; done
   done; done
   # E7: PHASOR ablations at 0.45
-  b=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}')
+  b=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); CAP_GIB=$(capfor $b)
   for w in mmlu sharegpt longbench; do
     for ab in "lru --policy lru" "count --policy count" "copy --policy phasor+copy" "nopipe --no-pipeline" "noprompt --mix 0" "admitall --policy phasor+all"; do
       set -- $ab; n=$1; shift
@@ -237,6 +248,7 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
         --budget-gib $b --slot-mib $slot --window-gib $win "$@" --out $O/$w/abl_$n.json
     done
   done
+  unset CAP_GIB
   # E2: smallest budget, MMLU (shortest requests); a system stops at its first budget it cannot run at
   for s in $systems; do
     for f in 0.20 0.15 0.10 0.05; do

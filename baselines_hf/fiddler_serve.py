@@ -23,6 +23,11 @@ sys.path.insert(0, "/home/thor/kcj/thor_gtier/scripts")
 from memwatch import MemWatch
 _mw = MemWatch()
 import torch
+import transformers
+# transformers 4.36 (Fiddler's pin) ships a tokenizers that cannot parse this
+# checkpoint's newer tokenizer.json; the SentencePiece model gives the same ids
+_from = transformers.AutoTokenizer.from_pretrained
+transformers.AutoTokenizer.from_pretrained = lambda *a, **k: _from(*a, **{**k, "use_fast": False})
 import mixtral as fid
 
 model_gib = sum(os.path.getsize(os.path.join(a.checkpoint, f)) for f in os.listdir(a.checkpoint)

@@ -11,6 +11,9 @@ R=/home/thor/kcj/thor_gtier; cd "$R"
 . scripts/torch_env.sh; . scripts/memguard.sh
 ST=$R/results/PIPELINE; LOG=$ST/pipeline.log
 ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python
+# Fiddler and Mixtral-offloading pin transformers 4.36 (and hqq at a fixed commit);
+# this venv has those and borrows torch from t26
+OPY=/home/thor/kcj/envs/oldhf/bin/python
 say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 # run <name> <budget> <out-prefix> <cmd...>: capped run; RESULT line decides success
@@ -52,8 +55,8 @@ sys_cmd(){  # sys_cmd <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>: the 
     moeinf)  echo "$TPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload $W --offload-dir /home/thor/kcj/offload_tmp/$m --budget-gib $b --out $o.json" ;;
     flashmoe) echo "$ZPY baselines_hf/baseline_serve.py --system flashmoe --checkpoint $ck --workload $W --budget-gib $b --weights $(fm_weights $m $w $b) --out $o.json" ;;
     duoserve) echo "$ZPY baselines_hf/baseline_serve.py --system duoserve --checkpoint $ck --workload $W --budget-gib $b --predictor results/DUOSERVE/${m}_$w.pt --trace $(held $m $w) --out $o.json" ;;
-    fiddler) echo "$ZPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json" ;;
-    mixoff)  echo "$ZPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json" ;;
+    fiddler) echo "$OPY baselines_hf/fiddler_serve.py --checkpoint $ck --workload $W --budget-gib $b --out $o.json" ;;
+    mixoff)  echo "$OPY baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo --workload $W --budget-gib $b --out $o.json" ;;
   esac
 }
 held(){ local m=$1 w=$2 h=""; for o in longbench sharegpt mmlu; do [ $o = $w ] || h="$h results/SCOPE/rt_${m}_$o.npz"; done; echo $h; }
@@ -88,9 +91,50 @@ system(){  # system <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>  -> run
 until grep -q "=== prep done ===" "$LOG"; do sleep 60; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 5 (architecture-level matrix) start ==="
+# CPU cost, real-model cuFile: OOM-killed under the 8 GiB cap of the other
+# backends (its footprint is 10.6 GiB, HF_MOE/FOOTPRINT.md); measured again
+# under 16 GiB so the table has its CPU cost, and both facts are reported.
+if ! grep -q "cap=16G" results/CPU_COST/real.log 2>/dev/null; then
+  say "cpu cost: cufile real-model rerun (16 GiB cap)"; drop
+  { echo "NOTE cufile was OOM-killed under the 8 GiB cap (footprint 10.6 GiB, HF_MOE/FOOTPRINT.md); rerun under a 16 GiB cap"
+    echo "RUN backend=4 cap=16G"
+    a=$(awk '/^cpu /{print $2+$3+$4+$7+$8+$9}' /proc/stat); sleep 3; b=$(awk '/^cpu /{print $2+$3+$4+$7+$8+$9}' /proc/stat)
+    echo "BASE machine_cores=$(awk -v a=$a -v b=$b -v h=$(getconf CLK_TCK) 'BEGIN{printf "%.3f", (b-a)/h/3}')"
+    SH=""; for x in /home/thor/kcj/models/qwen3_30b_a3b/model-*.safetensors; do SH="$SH --shard $x"; done
+    LD_LIBRARY_PATH=/usr/local/cuda-13.0/targets/sbsa-linux/lib timeout 3600 scripts/in_cgroup.sh cpucost $((16<<30)) lib/gguf_bench $SH \
+      --experts 128 --active 8 --skew 0.8 --tokens 16 --batch 8 --slot 4194304 --slots 512 --backend 4 || echo "FAILED rc=$?"
+  } >> results/CPU_COST/real.log 2>&1
+  python3 scripts/cpu_cost_table.py > /dev/null && git add results/CPU_COST results/CPU_COST.md && git commit -q -m "CPU cost: cuFile real-model run under 16 GiB (OOM under 8 GiB)
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>" && timeout 300 git push -q origin HEAD
+fi
+# Fiddler and Mixtral-offloading failed their prep smoke on the newer
+# transformers; smoke them in their own venv first, so a failure shows now and
+# not after the Qwen3 matrix.  Host guard on; results in results/PREP.
+for s_ in "fiddler baselines_hf/fiddler_serve.py --checkpoint /home/thor/kcj/models/mixtral8x7b_bf16 --budget-gib 94.0" \
+          "mixoff baselines_hf/mixoff_serve.py --state /home/thor/kcj/models/mixtral_offloading_demo"; do
+  set -- $s_; n=$1; shift
+  [ -f $ST/s5_smoke_$n.done ] && continue
+  say "run  s5_smoke_$n"; drop
+  if timeout 7200 scripts/in_cgroup.sh prep max $OPY "$@" --workload results/WORKLOADS/mmlu.json --limit 2 \
+       --out results/PREP/smoke_${n}_oldhf.json > results/PREP/smoke_${n}_oldhf.log 2>&1 && grep -q '^RESULT' results/PREP/smoke_${n}_oldhf.log; then
+    touch $ST/s5_smoke_$n.done; say "  ok s5_smoke_$n ($(grep '^RESULT' results/PREP/smoke_${n}_oldhf.log | grep -o 'request_s=[0-9.]* peak_gib=[0-9.]*'))"
+  else
+    say "  FAILED s5_smoke_$n: $(grep -E 'Error|HOSTGUARD' results/PREP/smoke_${n}_oldhf.log | tail -1)"
+  fi
+done
 for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,moeinf,flashmoe,duoserve" \
             "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,moeinf,flashmoe,duoserve,fiddler,mixoff"; do
+  # Queued SSD-idle work (e.g. CPU-cost measurements) runs here, between
+  # models, under this script's lock; each hook runs once.
+  for h in $ST/hooks/*.sh; do
+    [ -f "$h" ] && [ ! -f "$h.done" ] || continue
+    say "hook start $(basename $h)"; bash "$h" >> "$h.log" 2>&1; touch "$h.done"; say "hook done $(basename $h)"
+  done
   set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }
+  for n in fiddler mixoff; do
+    [[ $systems == *$n* ]] && [ ! -f $ST/s5_smoke_$n.done ] && { systems=${systems/$n/}; say "$n smoke failed: left out of $m"; }
+  done
   O=results/MATRIX5/$m
   if [ $m = mixtral8x7b ] && [ ! -f $ST/mixtral_bf16_traces.done ]; then
     # The Mixtral traces were captured from the Q4 GGUF with llama.cpp; the

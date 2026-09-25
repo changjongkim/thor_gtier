@@ -42,7 +42,7 @@ t0 = time.time()
 model = build_model(device=torch.device("cuda:0"),
                     quant_config=QuantConfig(ffn_config=ffn_config, attn_config=attn_config),
                     offload_config=offload_config, state_path=a.state)
-tok = AutoTokenizer.from_pretrained(a.tokenizer)
+tok = AutoTokenizer.from_pretrained(a.tokenizer, use_fast=False)   # 4.36 tokenizers cannot parse the newer tokenizer.json
 load_s = time.time() - t0
 
 class Clock:

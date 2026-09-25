@@ -59,7 +59,13 @@ doc = ["# 데이터 경로별 CPU 비용", "",
        "- **machine s/GiB, machine cores**: `/proc/stat` 전체 busy 시간 증가분에서 실행 직전 3 s 유휴 기준을 뺀 값.",
        "  GPU 페이지 폴트 처리와 완료 인터럽트는 프로세스 밖(커널 스레드, IRQ)에서 돌아 getrusage에 잡히지 않으므로 함께 적는다.",
        "",
-       "## 미시 벤치마크 (read size 스윕)", ""] + table(micro, sorted({k[1] for k in micro}))
+       "## 미시 벤치마크 (read size 스윕, 실행당 4 GiB, 2회)", "",
+       "실행당 4 GiB를 16 GiB 구간에서 읽으므로 mmap 계열은 readahead로 올라온 이웃 페이지를 재사용한다",
+       "(BACKENDS.md는 실행당 512 MiB). 이전 표와 같은 길이의 결과는 아래 절.", ""] + table(micro, sorted({k[1] for k in micro}))
+import os
+if os.path.exists(f"{R}/CPU_COST/micro_iters128.log"):
+    m2, f2 = parse(f"{R}/CPU_COST/micro_iters128.log"); mf += f2
+    doc += ["", "## 미시 벤치마크 (BACKENDS.md와 같은 길이: 실행당 512 MiB, 3회)", ""] + table(m2, sorted({k[1] for k in m2}))
 doc += ["", "## 실제 모델 설정 (Qwen3-30B-A3B bf16, 128 중 8 전문가, skew 0.8, batch 8, window 2 GiB = 512 × 4 MiB, cgroup 8 GiB)", ""]
 doc += table(real, sorted({k[1] for k in real}))
 if NOTES:

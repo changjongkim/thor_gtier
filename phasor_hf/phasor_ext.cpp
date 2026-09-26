@@ -64,7 +64,11 @@ public:
         // "+pfall" restores prefill admission by value (the E7 ablation);
         // LRU and the count utility admit every unit, as they did.
         prefill_free_only_ = (policy_.rfind("phasor", 0) == 0);
-        if (policy_.find("+pfree") != std::string::npos) policy_.erase(policy_.find("+pfree"), 6);
+        // "+pfree" gives any policy (e.g. LRU) the same prefill admission, so
+        // the ablation can separate the value function from the admission rule
+        if (policy_.find("+pfree") != std::string::npos) {
+            prefill_free_only_ = true; policy_.erase(policy_.find("+pfree"), 6);
+        }
         if (policy_.find("+pfall") != std::string::npos) {
             prefill_free_only_ = false; policy_.erase(policy_.find("+pfall"), 6);
         }

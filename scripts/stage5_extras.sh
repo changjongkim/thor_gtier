@@ -45,7 +45,13 @@ calb(){  # calb <sys> -> equal-memory budget at 0.45, or "none"
   [ -s $c ] || { echo $b45; return; }
   python3 -c "import json;v=json.load(open('$c'))['budget_gib'];print(v if v else 'none')"
 }
-CAP_GIB=$(capfor $b45)          # E5, E9: PHASOR at 0.45, the E1 cap
+CAP_GIB=$(capfor $b45)          # E5, E9, E7b: PHASOR at 0.45, the E1 cap
+# E7b: LRU with PHASOR's prefill admission (free slots only), separating the
+# value function from the admission rule (E7's lru differs in both)
+for w in mmlu sharegpt longbench; do
+  run "s5_${m}_${w}_abl_lrupfree" $b45 $O/$w/abl_lrupfree $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \
+    --workload results/WORKLOADS/$w.json --budget-gib $b45 --slot-mib $slot --window-gib $win --policy lru+pfree --out $O/$w/abl_lrupfree.json
+done
 # E5
 for w in mmlu sharegpt longbench; do
   run "s5x_${m}_${w}_phasor_profile" $b45 $X/e5/${w}_phasor $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \

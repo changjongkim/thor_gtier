@@ -23,6 +23,12 @@ killcg(){ echo 1 | sudo -n tee "$CG/cgroup.kill" >/dev/null 2>&1; }
 ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98
   exec "$@" ) &
 pid=$!
+# Page cache of the model files is kept empty during the run (SCRUB_GLOB, set
+# by the caller): see scrub_cache.py -- equal memory counts it
+if [ -n "${SCRUB_GLOB:-}" ]; then
+  python3 /home/thor/kcj/thor_gtier/scripts/scrub_cache.py $pid $SCRUB_GLOB &
+  spid=$!
+fi
 trap 'killcg; wait $pid; exit 143' TERM INT
 guard=0; pinned_since=0; tick=0
 maxb=$(cat "$CG/memory.max")

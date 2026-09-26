@@ -159,6 +159,9 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
     say "hook start $(basename $h)"; bash "$h" >> "$h.log" 2>&1; touch "$h.done"; say "hook done $(basename $h)"
   done
   set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }
+  # equal memory counts the page cache: the model files' cached pages are kept
+  # empty during every capped run (in_cgroup.sh / scrub_cache.py)
+  export SCRUB_GLOB="$ck/*.safetensors /home/thor/kcj/ZipMoE/offload/$zt/*"
   for n in fiddler mixoff; do
     [[ $systems == *$n* ]] && [ ! -f $ST/s5_smoke_$n.done ] && { systems=${systems/$n/}; say "$n smoke failed: left out of $m"; }
   done

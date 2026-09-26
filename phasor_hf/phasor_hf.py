@@ -159,6 +159,11 @@ def build(ckpt, budget_gib, window_gib=0.5, slot_mib=4, policy="phasor", mix=0.5
         for k, v in safetensors_index(sp).items():
             idx[k] = (fi,) + v
     arena_gib = max(0.0, budget_gib - window_gib)
+    # the host-staged data path (E7b "+pread") holds a device copy of the window
+    # as well; at the same budget that memory comes out of the arena.  (E7's
+    # "+copy" keeps the arena: it isolates the copy's time, not its memory.)
+    if "+pread" in policy:
+        arena_gib = max(0.0, arena_gib - window_gib)
     eng = ext().Engine(shards, L, E, window_gib, slot_mib, arena_gib, policy, mix, rec_half, w_rec)
     for l in range(L):
         for e in range(E):

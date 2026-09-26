@@ -88,6 +88,8 @@ struct gtier {
         // where each caller range ended up: (range index, slot, byte offset)
         std::vector<std::array<uint64_t, 3>> placement;
         uint64_t useful = 0, bytes_read = 0;
+        // PREAD_COPY async path: the ticket's reads run on worker threads
+        std::thread job; int job_rc = 0;
     };
     Inflight fly[GTIER_MAX_INFLIGHT];
     int ticket_slots = 0;
@@ -258,7 +260,8 @@ static inline int fd_for(gtier *g, uint64_t off) {
 static inline uint64_t file_off(uint64_t off) { return off & ((1ull << GTIER_FILE_SHIFT) - 1); }
 
 int gtier_add_file(gtier *g, const char *path) {
-    if (!g || g->cfg.backend != GTIER_BACKEND_GTIER || g->cfg.cache_policy != GTIER_CACHE_NONE)
+    if (!g || (g->cfg.backend != GTIER_BACKEND_GTIER && g->cfg.backend != GTIER_BACKEND_PREAD_COPY)
+        || g->cfg.cache_policy != GTIER_CACHE_NONE)
         return -ENOTSUP;
     int fd = open(path, O_RDONLY | O_DIRECT);
     if (fd < 0) return -errno;
@@ -689,8 +692,56 @@ size_t gtier_calibrate_merge_gap(gtier *g) {
 
 // ---------------------------------------------------------------- async path
 
+// The host-staged path of the other systems, with the same ticket semantics:
+// eight threads pread the ticket's plans into its pinned host slots, then each
+// slot is copied into its device buffer.  The ticket owns its slots, so the
+// caller's pipeline (submit the next chunk before collecting this one) holds.
+static int submit_pread_copy(gtier *g, const gtier_range *r, int n, gtier_ticket *t) {
+    int id = -1;
+    for (int i = 0; i < GTIER_MAX_INFLIGHT; ++i)
+        if (!g->fly[i].open) { id = i; break; }
+    if (id < 0) return -EBUSY;
+    auto ps = plan_exact(r, n, 0, g->cfg.slot_bytes, g->file_bytes);
+    if (ps.empty()) return -E2BIG;
+    if ((int)ps.size() > g->ticket_slots) return -ENOSPC;
+    gtier::Inflight &f = g->fly[id];
+    f.open = true; f.outstanding = 0; f.bytes_read = 0; f.useful = 0; f.job_rc = 0;
+    f.placement.clear();
+    for (size_t p = 0; p < ps.size(); ++p)
+        for (int m : ps[p].members) {
+            f.placement.push_back({(uint64_t)m, (uint64_t)(f.slot_base + (int)p), r[m].off - ps[p].off});
+            f.useful += r[m].len;
+        }
+    f.plans = std::move(ps);
+    f.job = std::thread([g, &f] {
+        const size_t np = f.plans.size();
+        std::vector<ssize_t> got(np);
+        const int nt = std::min<int>(8, (int)np);
+        std::vector<std::thread> ts;
+        for (int k = 0; k < nt; ++k)
+            ts.emplace_back([&, k] {
+                for (size_t p = k; p < np; p += nt)
+                    got[p] = pread(fd_for(g, f.plans[p].off), g->host[f.slot_base + (int)p],
+                                   f.plans[p].len, (off_t)file_off(f.plans[p].off));
+            });
+        for (auto &x : ts) x.join();
+        for (size_t p = 0; p < np; ++p) {
+            if (got[p] < 0) { f.job_rc = -EIO; return; }
+            f.bytes_read += got[p];
+            int slot = f.slot_base + (int)p;
+            if (cudaMemcpy(g->devbuf[slot], g->host[slot], got[p], cudaMemcpyHostToDevice) != cudaSuccess) {
+                f.job_rc = -EIO; return;
+            }
+        }
+    });
+    t->id = id; t->n = n;
+    return 0;
+}
+
 int gtier_submit(gtier *g, const gtier_range *r, int n, gtier_ticket *t) {
     if (!g || n <= 0 || !t) return -EINVAL;
+    if (g->cfg.backend == GTIER_BACKEND_PREAD_COPY && g->cfg.cache_policy == GTIER_CACHE_NONE)
+        return submit_pread_copy(g, r, n, t);
     if (g->cfg.backend != GTIER_BACKEND_GTIER) return -ENOTSUP;
     if (g->cfg.cache_policy != GTIER_CACHE_NONE) return -ENOTSUP;
 
@@ -738,6 +789,16 @@ int gtier_wait(gtier *g, gtier_ticket *t, void **dev_out) {
     if (!me.open) return -EINVAL;
 
     double t0 = now_s();
+    if (g->cfg.backend == GTIER_BACKEND_PREAD_COPY) {
+        me.job.join();
+        int rc = me.job_rc;
+        if (!rc)
+            for (auto &pl : me.placement) dev_out[pl[0]] = g->devbuf[pl[1]] + pl[2];
+        g->st = gtier_stats{(uint64_t)t->n, me.plans.size(), me.useful, me.bytes_read,
+                            0, 0, 0, 0, 0, now_s() - t0};
+        me.open = false; me.plans.clear(); me.placement.clear();
+        return rc;
+    }
     while (me.outstanding > 0) {
         io_uring_cqe *c;
         if (io_uring_wait_cqe(&g->ring, &c) < 0) return -EIO;

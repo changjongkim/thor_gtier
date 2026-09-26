@@ -52,6 +52,14 @@ for w in mmlu sharegpt longbench; do
   run "s5_${m}_${w}_abl_lrupfree" $b45 $O/$w/abl_lrupfree $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \
     --workload results/WORKLOADS/$w.json --budget-gib $b45 --slot-mib $slot --window-gib $win --policy lru+pfree --out $O/$w/abl_lrupfree.json
 done
+# E7b: the other systems' data path under PHASOR's engine -- eight pread
+# threads into pinned host slots, then a copy into device buffers, whose extra
+# window-sized buffer comes out of the arena (same budget); everything else,
+# including the policy and the chunk pipeline, unchanged
+for w in mmlu sharegpt longbench; do
+  run "s5_${m}_${w}_abl_pread" $b45 $O/$w/abl_pread $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \
+    --workload results/WORKLOADS/$w.json --budget-gib $b45 --slot-mib $slot --window-gib $win --policy phasor+pread --out $O/$w/abl_pread.json
+done
 # E5
 for w in mmlu sharegpt longbench; do
   run "s5x_${m}_${w}_phasor_profile" $b45 $X/e5/${w}_phasor $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \

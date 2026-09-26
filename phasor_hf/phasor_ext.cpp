@@ -72,6 +72,12 @@ public:
         if (policy_.find("+pfall") != std::string::npos) {
             prefill_free_only_ = false; policy_.erase(policy_.find("+pfall"), 6);
         }
+        // "+pread": the other systems' data path under the same engine -- eight
+        // pread threads into pinned host slots, then a copy into device buffers
+        // (O_DIRECT, same slot ownership and chunk pipeline).  E7b ablation.
+        if (policy_.find("+pread") != std::string::npos) {
+            cfg.backend = GTIER_BACKEND_PREAD_COPY; policy_.erase(policy_.find("+pread"), 6);
+        }
         max_ranges_ = cfg.max_fetch_ranges;
         g_ = gtier_open(files[0].c_str(), &cfg);
         if (!g_) throw std::runtime_error("gtier_open failed: " + files[0]);

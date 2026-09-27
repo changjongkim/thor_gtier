@@ -159,7 +159,11 @@ if [ ! -f $ST/s5_selftest_extras.done ]; then
   [ $okall = 1 ] && touch $ST/s5_selftest_extras.done
 fi
 for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,moeinf,flashmoe,duoserve" \
-            "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,flashmoe,duoserve,fiddler,mixoff"; do
+            "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,flashmoe,duoserve"; do
+  # Mixtral (decided 09-28): a generality check -- MMLU only, the four bf16
+  # systems, all four budgets; no ShareGPT/LongBench, E7, E2 or extras beyond
+  # the lowered-knob retries.  (Fiddler cannot run below the model size and
+  # Mixtral-offloading is 2-bit; their MMLU 25% cells were kept.)
   # MoE-Infinity is not run on Mixtral: it cannot run within any budget on this
   # device (results/PREP/MOE_INFINITY.md), and its first run would write an
   # 87 GB offload store next to ZipMoE's (disk: ~120 GB free)
@@ -252,11 +256,13 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
     done
   done
   # E1
-  for w in mmlu sharegpt longbench; do mkdir -p $O/$w; for f in 0.25 0.45 0.65 1.08; do
+  WLS="mmlu sharegpt longbench"; [ $m = mixtral8x7b ] && WLS=mmlu
+  for w in $WLS; do mkdir -p $O/$w; for f in 0.25 0.45 0.65 1.08; do
     b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
     for s in $systems; do system $s $m $ck $zt $slot $win $w $b $O/$w/${s}_$f; done
   done; done
-  # E7: PHASOR ablations at 0.45
+  # E7: PHASOR ablations at 0.45 (Qwen3 only)
+  [ $m = mixtral8x7b ] || {
   b=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); CAP_GIB=$(capfor $b)
   for w in mmlu sharegpt longbench; do
     for ab in "lru --policy lru" "count --policy count" "copy --policy phasor+copy" "nopipe --no-pipeline" "noprompt --mix 0" "admitall --policy phasor+all" "pfall --policy phasor+pfall"; do
@@ -265,6 +271,7 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
         --budget-gib $b --slot-mib $slot --window-gib $win "$@" --out $O/$w/abl_$n.json
     done
   done
+  }
   unset CAP_GIB
   # E2: smallest budget, MMLU (shortest requests); a system stops at its first budget it cannot run at
   # (Qwen3 only: Mixtral runs E1 and E7; its runs take 3-10x longer)

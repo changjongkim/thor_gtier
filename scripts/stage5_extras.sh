@@ -19,7 +19,8 @@ say "=== extras ($m): E1 retries, E5, E9 window, E3 ==="
 # on the full run.  Such a cell is retried with its knob lowered to x0.85,
 # x0.7, x0.55 of the calibrated value, stopping at the first that runs; the
 # cell reports that run and its knob.  PHASOR is never retried.
-for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
+RW="mmlu sharegpt longbench"; [ $m = mixtral8x7b ] && RW=mmlu
+for w in $RW; do for f in 0.25 0.45 0.65 1.08; do
   nb=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
   for s in $systems; do
     [ $s = phasor ] && continue
@@ -45,6 +46,7 @@ calb(){  # calb <sys> -> equal-memory budget at 0.45, or "none"
   [ -s $c ] || { echo $b45; return; }
   python3 -c "import json;v=json.load(open('$c'))['budget_gib'];print(v if v else 'none')"
 }
+if [ $m != mixtral8x7b ]; then   # Mixtral: retries only (generality check, 09-28)
 CAP_GIB=$(capfor $b45)          # E5, E9, E7b: PHASOR at 0.45, the E1 cap
 # E7b: LRU with PHASOR's prefill admission (free slots only), separating the
 # value function from the admission rule (E7's lru differs in both)
@@ -105,6 +107,7 @@ for B in 4 8; do
     done
   done
 done
+fi
 fi
 git add -A $X >/dev/null 2>&1
 git diff --cached --quiet || { git commit -q -m "Extras ($m): E5 breakdown, E9 window, E3 batch

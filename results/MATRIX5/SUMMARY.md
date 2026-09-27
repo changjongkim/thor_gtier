@@ -81,6 +81,13 @@ E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 - no prompt-routing term: 16.63 s (+1%), TTFT 8.92 s, TPOT 249 ms, peak 31.9 GiB
 - admit every staged decode unit: 16.28 s (-1%), TTFT 9.05 s, TPOT 233 ms, peak 31.9 GiB
 
+### Repeats at 45% (request s over E1 + stage 6 runs)
+
+| workload | system | runs | mean | sd | cv |
+|---|---|---:|---:|---:|---:|
+| MMLU | PHASOR | 2 | 6.97 | 0.42 | 6.0% |
+| ShareGPT | PHASOR | 2 | 10.91 | 0.25 | 2.3% |
+
 ### E2: small budgets (MMLU, each system at its own setting)
 
 | system | 20% (11.40 GiB) | 15% (8.55 GiB) | 10% (5.70 GiB) | 5% (2.85 GiB) |

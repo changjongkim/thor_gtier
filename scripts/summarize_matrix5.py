@@ -107,6 +107,8 @@ for m, mname, gb in MODELS:
                     rep_rows.append(f"| {float(fr):.0%} | {wname} | {name} | {len(xs)} | {mu:.2f} | {sd:.2f} | {sd / mu:.1%} |")
     if rep_rows:
         print("### Repeats (request s over E1 + stage 6 runs)\n")
+        print("Timing only: the 25% repeats ran while an IDE language server outside the experiments held ~60 GB,")
+        print("which moves the system-wide MemAvailable drop the peak is measured from; their peaks are not used.\n")
         print("| budget | workload | system | runs | mean | sd | cv |"); print("|---|---|---|---:|---:|---:|---:|")
         print("\n".join(rep_rows)); print()
     # slower SSD (paper 4.8): NVMe power states, 45%, MMLU

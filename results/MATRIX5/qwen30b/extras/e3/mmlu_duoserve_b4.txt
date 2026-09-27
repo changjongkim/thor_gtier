@@ -1,0 +1,12 @@
+scrub: 19 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"names": ["mmlu_professional_psychology_0", "mmlu_professional_psychology_1", "mmlu_professional_psychology_2", "mmlu_professional_psychology_3"], "batch": 4, "prompt_tok": [601, 589, 600, 637], "new_tok": 8, "ttft_s": 46.35736107826233, "tpot_ms": 1839.9167742047991, "request_s": 59.23762917518616, "tok_per_s": 0.5401971761119091, "read_gib": 58.482421875}
+REQ {"names": ["mmlu_abstract_algebra_4", "mmlu_abstract_algebra_5", "mmlu_abstract_algebra_6", "mmlu_abstract_algebra_7"], "batch": 4, "prompt_tok": [391, 434, 386, 425], "new_tok": 8, "ttft_s": 25.823025465011597, "tpot_ms": 1858.2895142691475, "request_s": 38.832343339920044, "tok_per_s": 0.8240553427303388, "read_gib": 51.310546875}
+REQ {"names": ["mmlu_machine_learning_8", "mmlu_machine_learning_9", "mmlu_machine_learning_10", "mmlu_machine_learning_11"], "batch": 4, "prompt_tok": [636, 442, 433, 444], "new_tok": 8, "ttft_s": 30.068567752838135, "tpot_ms": 1781.0712882450648, "request_s": 42.53688859939575, "tok_per_s": 0.7522882150918431, "read_gib": 57.5595703125}
+REQ {"names": ["mmlu_professional_medicine_12", "mmlu_professional_medicine_13", "mmlu_professional_medicine_14", "mmlu_professional_medicine_15"], "batch": 4, "prompt_tok": [862, 1127, 964, 958], "new_tok": 8, "ttft_s": 28.26662278175354, "tpot_ms": 1721.7202527182442, "request_s": 40.319658041000366, "tok_per_s": 0.7936575247602485, "read_gib": 52.5322265625}
+REQ {"names": ["mmlu_computer_security_16", "mmlu_computer_security_17", "mmlu_computer_security_18", "mmlu_computer_security_19"], "batch": 4, "prompt_tok": [392, 421, 564, 492], "new_tok": 8, "ttft_s": 30.991368532180786, "tpot_ms": 1961.1780302865166, "request_s": 44.720717668533325, "tok_per_s": 0.7155520230507402, "read_gib": 58.6845703125}
+REQ {"names": ["mmlu_high_school_psychology_20", "mmlu_high_school_psychology_21", "mmlu_high_school_psychology_22", "mmlu_high_school_psychology_23"], "batch": 4, "prompt_tok": [334, 380, 379, 433], "new_tok": 8, "ttft_s": 27.619040489196777, "tpot_ms": 1593.8259533473424, "request_s": 38.77665638923645, "tok_per_s": 0.8252387642396753, "read_gib": 50.80078125}
+RESULT policy=duoserve budget=19.68 requests=6 ttft_s=31.5210 tpot_ms=1792.667 request_s=44.0706 footprint_gib=31.13 peak_gib=32.31 compute=measured
+cgroup_io_read_gib=370.187
+cgroup_cpu_s=193.9 cgroup_user_s=51.2 cgroup_sys_s=142.7
+cgroup_peak_gib=29.46

@@ -1,0 +1,99 @@
+{
+ "system": "ZipMoE",
+ "budget_gib": 23.23,
+ "load_s": 8.054480075836182,
+ "footprint_gib": 36.633323669433594,
+ "requests": 3,
+ "ttft_s": 19.933076937993366,
+ "tpot_ms": 1804.6833333514987,
+ "request_s": 32.56711498896281,
+ "rows": [
+  {
+   "names": [
+    "mmlu_professional_psychology_0",
+    "mmlu_professional_psychology_1",
+    "mmlu_professional_psychology_2",
+    "mmlu_professional_psychology_3",
+    "mmlu_abstract_algebra_4",
+    "mmlu_abstract_algebra_5",
+    "mmlu_abstract_algebra_6",
+    "mmlu_abstract_algebra_7"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    601,
+    589,
+    600,
+    637,
+    391,
+    434,
+    386,
+    425
+   ],
+   "new_tok": 8,
+   "ttft_s": 24.665045261383057,
+   "tpot_ms": 2047.1554824284146,
+   "request_s": 38.99642848968506,
+   "tok_per_s": 1.6411759353020914
+  },
+  {
+   "names": [
+    "mmlu_machine_learning_8",
+    "mmlu_machine_learning_9",
+    "mmlu_machine_learning_10",
+    "mmlu_machine_learning_11",
+    "mmlu_professional_medicine_12",
+    "mmlu_professional_medicine_13",
+    "mmlu_professional_medicine_14",
+    "mmlu_professional_medicine_15"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    636,
+    442,
+    433,
+    444,
+    862,
+    1127,
+    964,
+    958
+   ],
+   "new_tok": 8,
+   "ttft_s": 19.323777675628662,
+   "tpot_ms": 1728.6848000117711,
+   "request_s": 31.425742626190186,
+   "tok_per_s": 2.0365469405538392
+  },
+  {
+   "names": [
+    "mmlu_computer_security_16",
+    "mmlu_computer_security_17",
+    "mmlu_computer_security_18",
+    "mmlu_computer_security_19",
+    "mmlu_high_school_psychology_20",
+    "mmlu_high_school_psychology_21",
+    "mmlu_high_school_psychology_22",
+    "mmlu_high_school_psychology_23"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    392,
+    421,
+    564,
+    492,
+    334,
+    380,
+    379,
+    433
+   ],
+   "new_tok": 8,
+   "ttft_s": 15.810407876968384,
+   "tpot_ms": 1638.2097176143102,
+   "request_s": 27.279173851013184,
+   "tok_per_s": 2.346112105503626
+  }
+ ],
+ "peak_gib": 38.22960662841797,
+ "batch": 8,
+ "tok_per_s": 1.965172537441219
+}

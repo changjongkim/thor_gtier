@@ -1,0 +1,108 @@
+{
+ "system": "flashmoe",
+ "budget_gib": 23.83,
+ "load_s": 13.99341368675232,
+ "footprint_gib": 33.26821517944336,
+ "requests": 3,
+ "ttft_s": 26.293081760406494,
+ "tpot_ms": 1121.2099620274134,
+ "request_s": 34.14241862297058,
+ "rows": [
+  {
+   "names": [
+    "mmlu_professional_psychology_0",
+    "mmlu_professional_psychology_1",
+    "mmlu_professional_psychology_2",
+    "mmlu_professional_psychology_3",
+    "mmlu_abstract_algebra_4",
+    "mmlu_abstract_algebra_5",
+    "mmlu_abstract_algebra_6",
+    "mmlu_abstract_algebra_7"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    601,
+    589,
+    600,
+    637,
+    391,
+    434,
+    386,
+    425
+   ],
+   "new_tok": 8,
+   "ttft_s": 38.535584926605225,
+   "tpot_ms": 1987.3671531677246,
+   "request_s": 52.44803595542908,
+   "tok_per_s": 1.220255417274117,
+   "read_gib": 60.9873046875
+  },
+  {
+   "names": [
+    "mmlu_machine_learning_8",
+    "mmlu_machine_learning_9",
+    "mmlu_machine_learning_10",
+    "mmlu_machine_learning_11",
+    "mmlu_professional_medicine_12",
+    "mmlu_professional_medicine_13",
+    "mmlu_professional_medicine_14",
+    "mmlu_professional_medicine_15"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    636,
+    442,
+    433,
+    444,
+    862,
+    1127,
+    964,
+    958
+   ],
+   "new_tok": 8,
+   "ttft_s": 21.456706047058105,
+   "tpot_ms": 805.7257447923932,
+   "request_s": 27.09769320487976,
+   "tok_per_s": 2.3618246585091183,
+   "read_gib": 32.34375
+  },
+  {
+   "names": [
+    "mmlu_computer_security_16",
+    "mmlu_computer_security_17",
+    "mmlu_computer_security_18",
+    "mmlu_computer_security_19",
+    "mmlu_high_school_psychology_20",
+    "mmlu_high_school_psychology_21",
+    "mmlu_high_school_psychology_22",
+    "mmlu_high_school_psychology_23"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    392,
+    421,
+    564,
+    492,
+    334,
+    380,
+    379,
+    433
+   ],
+   "new_tok": 8,
+   "ttft_s": 18.886954307556152,
+   "tpot_ms": 570.5369881221226,
+   "request_s": 22.881526708602905,
+   "tok_per_s": 2.79701616133584,
+   "read_gib": 29.671875
+  }
+ ],
+ "peak_gib": 34.401634216308594,
+ "cache": {
+  "hits": 18140,
+  "misses": 13995,
+  "decode_hits": 12788,
+  "decode_misses": 2433
+ },
+ "batch": 8,
+ "tok_per_s": 1.8745010629370475
+}

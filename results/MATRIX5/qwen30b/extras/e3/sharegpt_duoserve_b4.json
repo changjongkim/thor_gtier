@@ -1,0 +1,141 @@
+{
+ "system": "duoserve",
+ "budget_gib": 19.68,
+ "load_s": 15.682010889053345,
+ "footprint_gib": 32.40499496459961,
+ "requests": 6,
+ "ttft_s": 34.34248594443003,
+ "tpot_ms": 2401.006642208304,
+ "request_s": 108.77462995052338,
+ "rows": [
+  {
+   "names": [
+    "sg_jKqNBVf_0_t2",
+    "sg_jKqNBVf_0_t3",
+    "sg_cSz8Ik6_0_t2",
+    "sg_cSz8Ik6_0_t3"
+   ],
+   "batch": 4,
+   "prompt_tok": [
+    1059,
+    1237,
+    67,
+    391
+   ],
+   "new_tok": 32,
+   "ttft_s": 48.94854474067688,
+   "tpot_ms": 2176.443415303384,
+   "request_s": 116.4193058013916,
+   "tok_per_s": 1.0994740014887632,
+   "read_gib": 113.3701171875
+  },
+  {
+   "names": [
+    "sg_zcq8Evp_0_t2",
+    "sg_zcq8Evp_0_t3",
+    "sg_5cVpTKS_0_t2",
+    "sg_V4wpuJu_0_t2"
+   ],
+   "batch": 4,
+   "prompt_tok": [
+    164,
+    223,
+    246,
+    614
+   ],
+   "new_tok": 32,
+   "ttft_s": 32.59096574783325,
+   "tpot_ms": 2347.948989560527,
+   "request_s": 105.3781967163086,
+   "tok_per_s": 1.2146725222921793,
+   "read_gib": 120.181640625
+  },
+  {
+   "names": [
+    "sg_V4wpuJu_0_t3",
+    "sg_k7ymHcr_21_t2",
+    "sg_k7ymHcr_21_t3",
+    "sg_MuZDUct_0_t2"
+   ],
+   "batch": 4,
+   "prompt_tok": [
+    1240,
+    1012,
+    1797,
+    109
+   ],
+   "new_tok": 32,
+   "ttft_s": 34.668986797332764,
+   "tpot_ms": 2780.3918469336722,
+   "request_s": 120.86241340637207,
+   "tok_per_s": 1.059055469706942,
+   "read_gib": 128.337890625
+  },
+  {
+   "names": [
+    "sg_MuZDUct_0_t3",
+    "sg_CcQ9JCK_25_t2",
+    "sg_9EM9xb8_25_t2",
+    "sg_9EM9xb8_25_t3"
+   ],
+   "batch": 4,
+   "prompt_tok": [
+    377,
+    823,
+    379,
+    1853
+   ],
+   "new_tok": 32,
+   "ttft_s": 31.114014148712158,
+   "tpot_ms": 2048.528871228618,
+   "request_s": 94.61913967132568,
+   "tok_per_s": 1.3527918394167178,
+   "read_gib": 93.8232421875
+  },
+  {
+   "names": [
+    "sg_f9XBWSi_15_t2",
+    "sg_f9XBWSi_15_t3",
+    "sg_3O3k7Ni_0_t2",
+    "sg_3O3k7Ni_0_t3"
+   ],
+   "batch": 4,
+   "prompt_tok": [
+    442,
+    759,
+    260,
+    798
+   ],
+   "new_tok": 32,
+   "ttft_s": 29.944048166275024,
+   "tpot_ms": 2514.6157433909757,
+   "request_s": 107.89808559417725,
+   "tok_per_s": 1.1863046438231482,
+   "read_gib": 117.10546875
+  },
+  {
+   "names": [
+    "sg_zZRzzTy_16_t2",
+    "sg_zZRzzTy_16_t3",
+    "sg_RtCgJK2_47_t2",
+    "sg_RtCgJK2_47_t3"
+   ],
+   "batch": 4,
+   "prompt_tok": [
+    199,
+    393,
+    415,
+    684
+   ],
+   "new_tok": 32,
+   "ttft_s": 28.788356065750122,
+   "tpot_ms": 2538.1109868326494,
+   "request_s": 107.47063851356506,
+   "tok_per_s": 1.1910229786514546,
+   "read_gib": 115.9716796875
+  }
+ ],
+ "peak_gib": 34.346920013427734,
+ "batch": 4,
+ "tok_per_s": 1.1767449823384495
+}

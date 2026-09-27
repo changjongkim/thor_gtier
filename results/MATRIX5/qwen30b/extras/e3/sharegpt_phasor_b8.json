@@ -1,0 +1,109 @@
+{
+ "system": "PHASOR-HF",
+ "policy": "phasor",
+ "budget_gib": 25.65,
+ "load_s": 22.025431632995605,
+ "footprint_gib": 32.97017288208008,
+ "requests": 3,
+ "ttft_s": 13.950154383977255,
+ "tpot_ms": 1273.5988632325204,
+ "request_s": 53.4324905872345,
+ "rows": [
+  {
+   "names": [
+    "sg_jKqNBVf_0_t2",
+    "sg_jKqNBVf_0_t3",
+    "sg_cSz8Ik6_0_t2",
+    "sg_cSz8Ik6_0_t3",
+    "sg_zcq8Evp_0_t2",
+    "sg_zcq8Evp_0_t3",
+    "sg_5cVpTKS_0_t2",
+    "sg_V4wpuJu_0_t2"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    1059,
+    1237,
+    67,
+    391,
+    164,
+    223,
+    246,
+    614
+   ],
+   "new_tok": 32,
+   "ttft_s": 19.048765420913696,
+   "tpot_ms": 1330.2918634107034,
+   "request_s": 60.288551330566406,
+   "tok_per_s": 4.246245669369858,
+   "hits": 44984.0,
+   "misses": 14408.0,
+   "read_gib": 126.6328125
+  },
+  {
+   "names": [
+    "sg_V4wpuJu_0_t3",
+    "sg_k7ymHcr_21_t2",
+    "sg_k7ymHcr_21_t3",
+    "sg_MuZDUct_0_t2",
+    "sg_MuZDUct_0_t3",
+    "sg_CcQ9JCK_25_t2",
+    "sg_9EM9xb8_25_t2",
+    "sg_9EM9xb8_25_t3"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    1240,
+    1012,
+    1797,
+    109,
+    377,
+    823,
+    379,
+    1853
+   ],
+   "new_tok": 32,
+   "ttft_s": 14.406370878219604,
+   "tpot_ms": 1272.4215984344482,
+   "request_s": 53.85218858718872,
+   "tok_per_s": 4.753752943309377,
+   "hits": 48513.0,
+   "misses": 10291.0,
+   "read_gib": 90.4482421875
+  },
+  {
+   "names": [
+    "sg_f9XBWSi_15_t2",
+    "sg_f9XBWSi_15_t3",
+    "sg_3O3k7Ni_0_t2",
+    "sg_3O3k7Ni_0_t3",
+    "sg_zZRzzTy_16_t2",
+    "sg_zZRzzTy_16_t3",
+    "sg_RtCgJK2_47_t2",
+    "sg_RtCgJK2_47_t3"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    442,
+    759,
+    260,
+    798,
+    199,
+    393,
+    415,
+    684
+   ],
+   "new_tok": 32,
+   "ttft_s": 8.395326852798462,
+   "tpot_ms": 1218.0831278524092,
+   "request_s": 46.156731843948364,
+   "tok_per_s": 5.546319892524286,
+   "hits": 51840.0,
+   "misses": 10039.0,
+   "read_gib": 88.2333984375
+  }
+ ],
+ "peak_gib": 33.02824020385742,
+ "batch": 8,
+ "tok_per_s": 4.7910924081304325
+}

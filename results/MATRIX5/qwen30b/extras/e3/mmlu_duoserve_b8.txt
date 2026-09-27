@@ -1,0 +1,9 @@
+scrub: 19 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"names": ["mmlu_professional_psychology_0", "mmlu_professional_psychology_1", "mmlu_professional_psychology_2", "mmlu_professional_psychology_3", "mmlu_abstract_algebra_4", "mmlu_abstract_algebra_5", "mmlu_abstract_algebra_6", "mmlu_abstract_algebra_7"], "batch": 8, "prompt_tok": [601, 589, 600, 637, 391, 434, 386, 425], "new_tok": 8, "ttft_s": 48.124605894088745, "tpot_ms": 2690.929344722203, "request_s": 66.96210956573486, "tok_per_s": 0.9557643929537937, "read_gib": 68.3525390625}
+REQ {"names": ["mmlu_machine_learning_8", "mmlu_machine_learning_9", "mmlu_machine_learning_10", "mmlu_machine_learning_11", "mmlu_professional_medicine_12", "mmlu_professional_medicine_13", "mmlu_professional_medicine_14", "mmlu_professional_medicine_15"], "batch": 8, "prompt_tok": [636, 442, 433, 444, 862, 1127, 964, 958], "new_tok": 8, "ttft_s": 34.50886917114258, "tpot_ms": 2473.4529427119664, "request_s": 51.82406663894653, "tok_per_s": 1.234947470368971, "read_gib": 66.69140625}
+REQ {"names": ["mmlu_computer_security_16", "mmlu_computer_security_17", "mmlu_computer_security_18", "mmlu_computer_security_19", "mmlu_high_school_psychology_20", "mmlu_high_school_psychology_21", "mmlu_high_school_psychology_22", "mmlu_high_school_psychology_23"], "batch": 8, "prompt_tok": [392, 421, 564, 492, 334, 380, 379, 433], "new_tok": 8, "ttft_s": 32.465569257736206, "tpot_ms": 2241.2590299333847, "request_s": 48.1553111076355, "tok_per_s": 1.3290330501021759, "read_gib": 63.1845703125}
+RESULT policy=duoserve budget=19.68 requests=3 ttft_s=38.3663 tpot_ms=2468.547 request_s=55.6472 footprint_gib=32.94 peak_gib=34.19 compute=measured
+cgroup_io_read_gib=222.162
+cgroup_cpu_s=132.9 cgroup_user_s=37.5 cgroup_sys_s=95.3
+cgroup_peak_gib=29.41

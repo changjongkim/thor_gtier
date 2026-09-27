@@ -1,0 +1,12 @@
+scrub: 19 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"names": ["sg_jKqNBVf_0_t2", "sg_jKqNBVf_0_t3", "sg_cSz8Ik6_0_t2", "sg_cSz8Ik6_0_t3"], "batch": 4, "prompt_tok": [1059, 1237, 67, 391], "new_tok": 32, "ttft_s": 15.411354064941406, "tpot_ms": 589.3962537088702, "request_s": 33.683334827423096, "tok_per_s": 3.8000987923496674, "hits": 31422.0, "misses": 8553.0, "read_gib": 75.1728515625}
+REQ {"names": ["sg_zcq8Evp_0_t2", "sg_zcq8Evp_0_t3", "sg_5cVpTKS_0_t2", "sg_V4wpuJu_0_t2"], "batch": 4, "prompt_tok": [164, 223, 246, 614], "new_tok": 32, "ttft_s": 7.652663946151733, "tpot_ms": 580.2744511635073, "request_s": 25.64183497428894, "tok_per_s": 4.991842437498937, "hits": 32729.0, "misses": 5873.0, "read_gib": 51.6181640625}
+REQ {"names": ["sg_V4wpuJu_0_t3", "sg_k7ymHcr_21_t2", "sg_k7ymHcr_21_t3", "sg_MuZDUct_0_t2"], "batch": 4, "prompt_tok": [1240, 1012, 1797, 109], "new_tok": 32, "ttft_s": 10.686228275299072, "tpot_ms": 702.5735993539134, "request_s": 32.4667763710022, "tok_per_s": 3.9424918118548904, "hits": 32481.0, "misses": 6691.0, "read_gib": 58.8076171875}
+REQ {"names": ["sg_MuZDUct_0_t3", "sg_CcQ9JCK_25_t2", "sg_9EM9xb8_25_t2", "sg_9EM9xb8_25_t3"], "batch": 4, "prompt_tok": [377, 823, 379, 1853], "new_tok": 32, "ttft_s": 9.553510665893555, "tpot_ms": 530.0113924088017, "request_s": 25.984766483306885, "tok_per_s": 4.925963066946538, "hits": 34244.0, "misses": 4547.0, "read_gib": 39.9638671875}
+REQ {"names": ["sg_f9XBWSi_15_t2", "sg_f9XBWSi_15_t3", "sg_3O3k7Ni_0_t2", "sg_3O3k7Ni_0_t3"], "batch": 4, "prompt_tok": [442, 759, 260, 798], "new_tok": 32, "ttft_s": 7.063967943191528, "tpot_ms": 555.4084470195155, "request_s": 24.282366514205933, "tok_per_s": 5.271314882967278, "hits": 34085.0, "misses": 5135.0, "read_gib": 45.1318359375}
+REQ {"names": ["sg_zZRzzTy_16_t2", "sg_zZRzzTy_16_t3", "sg_RtCgJK2_47_t2", "sg_RtCgJK2_47_t3"], "batch": 4, "prompt_tok": [199, 393, 415, 684], "new_tok": 32, "ttft_s": 6.306655645370483, "tpot_ms": 613.381193530175, "request_s": 25.322163343429565, "tok_per_s": 5.054860371288641, "hits": 38300.0, "misses": 5121.0, "read_gib": 45.0087890625}
+RESULT policy=phasor-hf-phasor budget=25.65 requests=6 batch=4 ttft_s=9.4457 tpot_ms=595.174 request_s=27.8969 footprint_gib=31.35 peak_gib=31.48 compute=measured
+cgroup_io_read_gib=317.735
+cgroup_cpu_s=127.4 cgroup_user_s=82.9 cgroup_sys_s=44.6
+cgroup_peak_gib=28.36

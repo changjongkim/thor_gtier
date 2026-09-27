@@ -59,7 +59,9 @@ print("Cell: request s / TTFT s / TPOT ms / peak GiB (MemAvailable drop) [reques
 print("Same prompts for every system. Each baseline runs at the knob memcal found to match PHASOR's measured peak at")
 print("that budget (two MMLU prompts); every run is capped at 1.05 x that peak + 0.5 GiB. `(over)`: the run's peak")
 print("exceeded 1.05 x PHASOR's peak (memory it grew into on longer workloads). `(knob xK)`: the calibrated run hit")
-print("the cap and the cell is its retry at K x the calibrated knob. `*` = reimplemented (no released code).\n")
+print("the cap and the cell is its retry at K x the calibrated knob. `*` = reimplemented (no released code).")
+print("Requests: MMLU 24, ShareGPT 24, LongBench 21 on Qwen3-30B; on Mixtral, ShareGPT and LongBench use their first")
+print("12 (the same 12 for every system; a Mixtral run takes 3-10x longer).\n")
 for m, mname, gb in MODELS:
     if not os.path.isdir(f"{R}/{m}"): continue
     print(f"## {mname}\n")

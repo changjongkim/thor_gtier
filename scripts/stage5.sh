@@ -19,6 +19,9 @@ drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 # run <name> <budget> <out-prefix> <cmd...>: capped run; RESULT line decides success
 run(){
   local name=$1 b=$2 o=$3; shift 3
+  # Mixtral: ShareGPT and LongBench with their first 12 requests (every system
+  # the same 12); a Mixtral run takes 3-10x longer than a Qwen3 one (09-27)
+  case $name in s5*_mixtral8x7b_sharegpt_*|s5*_mixtral8x7b_longbench_*) set -- "$@" --limit 12 ;; esac
   [ -f "$ST/$name.done" ] && return 0
   [ -f "$ST/$name.norun" ] && return 1
   local fails=$(cat "$ST/$name.fail" 2>/dev/null || echo 0)

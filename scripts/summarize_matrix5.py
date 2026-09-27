@@ -97,16 +97,17 @@ for m, mname, gb in MODELS:
         print()
     # repeats (stage 6): mean and spread of the three runs at 45%
     rep_rows = []
-    for w, wname in WL:
-        for k, name in SYS:
-            xs = [d["request_s"] for d in [e1(m, w, k, "0.45")[0]] + [load(f"{R}/{m}/repeats/{w}/{k}_0.45_r{r}")[0] for r in (2, 3)]
-                  if d and d != "norun"]
-            if len(xs) >= 2:
-                mu = sum(xs) / len(xs); sd = (sum((x - mu) ** 2 for x in xs) / (len(xs) - 1)) ** 0.5
-                rep_rows.append(f"| {wname} | {name} | {len(xs)} | {mu:.2f} | {sd:.2f} | {sd / mu:.1%} |")
+    for fr in ("0.25", "0.45"):
+        for w, wname in WL:
+            for k, name in SYS:
+                xs = [d["request_s"] for d in [e1(m, w, k, fr)[0]] + [load(f"{R}/{m}/repeats/{w}/{k}_{fr}_r{r}")[0] for r in (2, 3)]
+                      if d and d != "norun"]
+                if len(xs) >= 2:
+                    mu = sum(xs) / len(xs); sd = (sum((x - mu) ** 2 for x in xs) / (len(xs) - 1)) ** 0.5
+                    rep_rows.append(f"| {float(fr):.0%} | {wname} | {name} | {len(xs)} | {mu:.2f} | {sd:.2f} | {sd / mu:.1%} |")
     if rep_rows:
-        print("### Repeats at 45% (request s over E1 + stage 6 runs)\n")
-        print("| workload | system | runs | mean | sd | cv |"); print("|---|---|---:|---:|---:|---:|")
+        print("### Repeats (request s over E1 + stage 6 runs)\n")
+        print("| budget | workload | system | runs | mean | sd | cv |"); print("|---|---|---|---:|---:|---:|---:|")
         print("\n".join(rep_rows)); print()
     # slower SSD (paper 4.8): NVMe power states, 45%, MMLU
     if os.path.isdir(f"{R}/{m}/ssd"):
@@ -114,15 +115,18 @@ for m, mname, gb in MODELS:
         for ps in (1, 2):
             p = f"{R}/{m}/ssd/bandwidth_ps{ps}.json"
             if os.path.exists(p): bws[ps] = json.load(open(p)).get("gtier_async_4MiB_gibps")
-        print("### Slower SSD at 45% (MMLU; NVMe operational power states)\n")
-        print("| system | PS0 (E1) | " + " | ".join(f"PS{ps} ({bws.get(ps) or '?'} GiB/s)" for ps in (1, 2)) + " |")
-        print("|---|---:|---:|---:|")
-        for k, name in SYS:
-            base = e1(m, "mmlu", k, "0.45")[0]
-            cs = [cell(base, "", None, None) if base and base != "norun" else "-"]
-            for ps in (1, 2):
-                cs.append(cell(*load(f"{R}/{m}/ssd/mmlu_{k}_ps{ps}"), None, None))
-            if any(c != "-" for c in cs[1:]): print(f"| {name} | " + " | ".join(cs) + " |")
+        for fr in ("0.25", "0.45"):
+            rows = []
+            for k, name in SYS:
+                base = e1(m, "mmlu", k, fr)[0]
+                cs = [cell(base, "", None, None) if base and base != "norun" else "-"]
+                for ps in (1, 2):
+                    cs.append(cell(*load(f"{R}/{m}/ssd/mmlu_{k}_{fr}_ps{ps}"), None, None))
+                if any(c != "-" for c in cs[1:]): rows.append(f"| {name} | " + " | ".join(cs) + " |")
+            if rows:
+                print(f"### Slower SSD at {float(fr):.0%} (MMLU; NVMe operational power states)\n")
+                print("| system | PS0 (E1) | " + " | ".join(f"PS{ps} ({bws.get(ps) or '?'} GiB/s)" for ps in (1, 2)) + " |")
+                print("|---|---:|---:|---:|"); print("\n".join(rows))
         print()
     # E2
     print("### E2: small budgets (MMLU, each system at its own setting)\n")

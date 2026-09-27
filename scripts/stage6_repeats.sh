@@ -13,7 +13,7 @@ ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python; OPY=/home
 say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 settle(){ local i; for i in $(seq 1 36); do
-  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ] && return 0; sleep 5; done; }
+  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 45 ] && return 0; sleep 5; done; }
 # stage 5's run(), capfor(), sys_cmd(), fm_weights(), held()
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p; /^sys_cmd(){/,/^}/p; /^fm_weights(){/,/^}/p; /^held(){/p' scripts/stage5.sh)"
 
@@ -24,25 +24,30 @@ say "=== stage 6 (repeats at 45%) start ==="
 # Paper 4.1: ZipMoE fidelity on its own model and harness (once)
 . scripts/zipmoe_fidelity.sh
 # Qwen3 only: a Mixtral run takes 3-10x longer (decided 09-27: Mixtral runs E1 and E7)
-for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,flashmoe,duoserve"; do
+# F6: budget fraction of the repeats and the SSD sweep (0.45 planned; 0.25 used
+# on 09-28 while an IDE language server outside the experiments held ~60 GB);
+# S6: systems (default all four)
+F6=${F6:-0.45}; S6=${S6:-phasor,zipmoe,flashmoe,duoserve}
+for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 $S6"; do
   set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }
   O=results/MATRIX5/$m; export SCRUB_GLOB="$ck/*.safetensors /home/thor/kcj/ZipMoE/offload/$zt/*"
   if [ $m = qwen30b ]; then
     rm -rf /home/thor/kcj/ZipMoE-ICML26/offload/mixtral; say "removed Mixtral ZipMoE store (disk) before the Qwen3 repeats"
   fi
-  b=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); CAP_GIB=$(capfor $b)
+  b=$(awk -v g=$gb -v f=$F6 'BEGIN{printf "%.2f", g*f}'); CAP_GIB=$(capfor $b)
   for rep in 2 3; do for w in mmlu sharegpt longbench; do
     mkdir -p $O/repeats/$w
     for s in $systems; do
-      t=$O/$w/${s}_0.45.txt; grep -q '^RESULT' $t 2>/dev/null || continue     # only cells E1 measured
-      o=$O/repeats/$w/${s}_0.45_r$rep
+      t=$O/$w/${s}_$F6.txt; grep -q '^RESULT' $t 2>/dev/null || continue     # only cells E1 measured
+      o=$O/repeats/$w/${s}_${F6}_r$rep
+      sfx=""; [ $F6 != 0.45 ] && sfx="_f$F6"
       if [ $s = phasor ]; then
-        run "s6_${m}_${w}_phasor_r$rep" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/$w.json \
+        run "s6_${m}_${w}_phasor${sfx}_r$rep" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/$w.json \
           --budget-gib $b --slot-mib $slot --window-gib $win --out $o.json
       else
         kb=$b; cal=$O/memcal/${s}_$b.json
         [ -s $cal ] && kb=$(python3 -c "import json;v=json.load(open('$cal'))['budget_gib'];print(v if v else '$b')")
-        run "s6_${m}_${w}_${s}_r$rep" $kb $o $(sys_cmd $s $m $ck $zt $slot $win $w $kb $o)
+        run "s6_${m}_${w}_${s}${sfx}_r$rep" $kb $o $(sys_cmd $s $m $ck $zt $slot $win $w $kb $o)
       fi
     done
   done; done
@@ -61,15 +66,15 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
     say "ssd sweep $m: NVMe PS$ps ($(sudo -n nvme get-feature /dev/nvme0 --feature-id=2 -H 2>/dev/null | grep -o '(PS): [0-9]')), $bw GiB/s"
     echo "{\"ps\": $ps, \"gtier_async_4MiB_gibps\": ${bw:-null}}" > $O/ssd/bandwidth_ps$ps.json
     for s in $systems; do
-      t=$O/mmlu/${s}_0.45.txt; grep -q '^RESULT' $t 2>/dev/null || continue
-      o=$O/ssd/mmlu_${s}_ps$ps
+      t=$O/mmlu/${s}_$F6.txt; grep -q '^RESULT' $t 2>/dev/null || continue
+      o=$O/ssd/mmlu_${s}_${F6}_ps$ps
       if [ $s = phasor ]; then
-        run "s7_${m}_mmlu_phasor_ps$ps" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/mmlu.json \
+        run "s7_${m}_mmlu_phasor_f${F6}_ps$ps" $b $o $ZPY phasor_hf/phasor_serve.py --checkpoint $ck --workload results/WORKLOADS/mmlu.json \
           --budget-gib $b --slot-mib $slot --window-gib $win --out $o.json
       else
         kb=$b; cal=$O/memcal/${s}_$b.json
         [ -s $cal ] && kb=$(python3 -c "import json;v=json.load(open('$cal'))['budget_gib'];print(v if v else '$b')")
-        run "s7_${m}_mmlu_${s}_ps$ps" $kb $o $(sys_cmd $s $m $ck $zt $slot $win mmlu $kb $o)
+        run "s7_${m}_mmlu_${s}_f${F6}_ps$ps" $kb $o $(sys_cmd $s $m $ck $zt $slot $win mmlu $kb $o)
       fi
     done
   done

@@ -123,6 +123,16 @@ E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 
 | system | 25% (21.8 GiB) | 45% (39.1 GiB) | 65% (56.6 GiB) | 108% (94.0 GiB) |
 |---|---|---|---|---|
+| PHASOR | 40.53 / 14.71 / 3688 / 26.8 | - | - | - |
+| ZipMoE | 58.53 / 20.86 / 5382 / 26.7 [1.44x] | - | - | - |
+| FlashMoE* | 97.51 / 36.94 / 8653 / 20.7 [2.41x] | - | - | - |
+
+Reference: each baseline at its own setting for the nominal budget (not equal memory):
+
+| system | 25% | 45% | 65% | 108% |
+|---|---|---|---|---|
+| ZipMoE (own setting) | 50.77 / 16.31 / 4923 / 35.6 (over) | - | - | - |
+| FlashMoE* (own setting) | 78.52 / 32.08 / 6635 / 29.7 (over) | - | - | - |
 
 ### ShareGPT
 

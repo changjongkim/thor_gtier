@@ -1,0 +1,38 @@
+{
+ "system": "flashmoe",
+ "budget_gib": 93.96,
+ "load_s": 9.825779438018799,
+ "footprint_gib": 90.08933639526367,
+ "requests": 2,
+ "ttft_s": 22.23326861858368,
+ "tpot_ms": 138.71451786586218,
+ "request_s": 23.204888343811035,
+ "rows": [
+  {
+   "name": "mmlu_professional_psychology_0",
+   "prompt_tok": 694,
+   "new_tok": 8,
+   "ttft_s": 43.93036937713623,
+   "tpot_ms": 149.44148063659668,
+   "request_s": 44.97708487510681,
+   "read_gib": 84.0
+  },
+  {
+   "name": "mmlu_professional_psychology_1",
+   "prompt_tok": 682,
+   "new_tok": 8,
+   "ttft_s": 0.5361678600311279,
+   "tpot_ms": 127.98755509512766,
+   "request_s": 1.4326918125152588,
+   "read_gib": 0.0
+  }
+ ],
+ "peak_gib": 90.11182403564453,
+ "cache": {
+  "hits": 1152,
+  "misses": 256,
+  "decode_hits": 896,
+  "decode_misses": 0
+ },
+ "batch": 1
+}

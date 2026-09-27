@@ -1,0 +1,10 @@
+scrub: 22 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 53.76991057395935, "tpot_ms": 15402.819224766323, "request_s": 161.5902543067932, "read_gib": 309.75}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 682, "new_tok": 8, "ttft_s": 40.44079947471619, "tpot_ms": 15474.68512398856, "request_s": 148.764178276062, "read_gib": 311.0625}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 690, "new_tok": 8, "ttft_s": 40.48451638221741, "tpot_ms": 15501.44226210458, "request_s": 148.9953098297119, "read_gib": 309.75}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 740, "new_tok": 8, "ttft_s": 40.55055642127991, "tpot_ms": 15595.01542363848, "request_s": 149.7162265777588, "read_gib": 311.71875}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 426, "new_tok": 8, "ttft_s": 40.648988485336304, "tpot_ms": 16220.22601536342, "request_s": 154.19137835502625, "read_gib": 316.640625}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 468, "new_tok": 8, "ttft_s": 41.912370443344116, "tpot_ms": 16880.698544638497, "request_s": 160.07812118530273, "read_gib": 323.203125}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 421, "new_tok": 8, "ttft_s": 42.40648436546326, "tpot_ms": 16193.645886012486, "request_s": 155.76300954818726, "read_gib": 313.6875}
+Terminated

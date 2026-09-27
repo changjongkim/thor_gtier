@@ -1,0 +1,141 @@
+scrub: 22 files
+[20260927 17:23:09.314398Z ][3915664 ][INFO  ]Loading index file from  /home/thor/kcj/ZipMoE/offload/mixtral/zipmoe_index - zipmoe_tensor_handle.cpp:45
+[20260927 17:23:09.315514Z ][3915664 ][INFO  ]Index file size  995 - zipmoe_tensor_handle.cpp:51
+[20260927 17:23:10.183451Z ][3915664 ][INFO  ][ZipMoECacheHandle] Applying Cache Pool Planning. - cache.cpp:37
+[20260927 17:23:16.100172Z ][3915664 ][INFO  ]number of full-cache slots:  33 - cache.cpp:114
+[20260927 17:23:16.100187Z ][3915664 ][INFO  ]number of SM-cache slots:  68 - cache.cpp:115
+[Pool] Thread index 6 initialized.
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 3 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 5 initialized.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Arch: mixtralforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE Cache Pool Planning] Loading trace...
+[Coverage To Weight] Converged in 13 iterations.
+Bernoulli probs sum: 3.7302
+Total memory available per layer: 729808896.0
+Max potential full slots: 2
+[ZipMoE Invocation Modeling] Ratio Full: 0.49 | Avg Delay: 4949.1502
+[ZipMoE Invocation Modeling] Ratio Full: 0.50 | Avg Delay: 4949.1502
+[ZipMoE Invocation Modeling] Ratio Full: 0.51 | Avg Delay: 4949.1502
+[ZipMoE Invocation Modeling] Ratio Full: 0.52 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.53 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.54 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.55 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.56 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.57 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.58 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.59 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.60 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.61 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.62 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.63 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.64 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.65 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.66 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.67 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.68 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.69 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.70 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.71 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.72 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.73 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.74 | Avg Delay: 5629.7370
+[ZipMoE Invocation Modeling] Ratio Full: 0.75 | Avg Delay: 5629.7370
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.49,  Cost = 4949.150158297026
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5,  Cost = 5119.296869444938
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.51,  Cost = 5221.384896133685
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.52,  Cost = 5357.502265052015
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.53,  Cost = 5493.619633970344
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.54,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.55,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.56,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5700000000000001,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.58,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.59,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.61,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.62,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.63,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.64,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.65,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.66,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.67,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.68,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6900000000000001,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.7000000000000001,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.71,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.72,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.73,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.74,  Cost = 5629.737002888674
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.75,  Cost = 5629.737002888674
+[ZipMoE Cache Pool Planning] Best ratio: 0.49
+[ZipMoE] Loading model from offload_path ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/transformers/generation/utils.py:2412: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+[ZipMoE] Offload file opened successfully!
+MixtralConfig {
+  "architectures": [
+    "MixtralForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 1,
+  "dtype": "bfloat16",
+  "eos_token_id": 2,
+  "head_dim": null,
+  "hidden_act": "silu",
+  "hidden_size": 4096,
+  "initializer_range": 0.02,
+  "intermediate_size": 14336,
+  "max_position_embeddings": 32768,
+  "model_type": "mixtral",
+  "num_attention_heads": 32,
+  "num_experts_per_tok": 2,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 8,
+  "num_local_experts": 8,
+  "output_router_logits": false,
+  "rms_norm_eps": 1e-05,
+  "rope_theta": 1000000.0,
+  "router_aux_loss_coef": 0.02,
+  "router_jitter_noise": 0.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.56.2",
+  "use_cache": true,
+  "vocab_size": 32000
+}
+
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 23.20828676223755, "tpot_ms": 4820.478098733084, "request_s": 56.953022718429565}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 682, "new_tok": 8, "ttft_s": 17.5495023727417, "tpot_ms": 4812.531811850412, "request_s": 51.238221645355225}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 690, "new_tok": 8, "ttft_s": 15.856266975402832, "tpot_ms": 4938.53361266, "request_s": 50.4273796081543}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 740, "new_tok": 8, "ttft_s": 16.029404163360596, "tpot_ms": 4917.166369301932, "request_s": 50.45044684410095}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 426, "new_tok": 8, "ttft_s": 15.724294662475586, "tpot_ms": 4832.927431379046, "request_s": 49.555702924728394}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 468, "new_tok": 8, "ttft_s": 15.869219541549683, "tpot_ms": 4947.970492499216, "request_s": 50.505844831466675}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 421, "new_tok": 8, "ttft_s": 15.818391799926758, "tpot_ms": 4970.928055899484, "request_s": 50.615882873535156}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 463, "new_tok": 8, "ttft_s": 16.078455448150635, "tpot_ms": 5016.34270804269, "request_s": 51.193931579589844}
+REQ {"name": "mmlu_machine_learning_8", "prompt_tok": 706, "new_tok": 8, "ttft_s": 15.892356634140015, "tpot_ms": 4895.5213342394145, "request_s": 50.16178250312805}
+REQ {"name": "mmlu_machine_learning_9", "prompt_tok": 500, "new_tok": 8, "ttft_s": 16.01979088783264, "tpot_ms": 5024.674381528582, "request_s": 51.19343137741089}
+REQ {"name": "mmlu_machine_learning_10", "prompt_tok": 499, "new_tok": 8, "ttft_s": 15.811092376708984, "tpot_ms": 4948.978117534092, "request_s": 50.45514702796936}
+REQ {"name": "mmlu_machine_learning_11", "prompt_tok": 508, "new_tok": 8, "ttft_s": 15.732270240783691, "tpot_ms": 4926.715033394949, "request_s": 50.22032451629639}
+REQ {"name": "mmlu_professional_medicine_12", "prompt_tok": 968, "new_tok": 8, "ttft_s": 16.03623867034912, "tpot_ms": 4966.256141662598, "request_s": 50.80104327201843}
+REQ {"name": "mmlu_professional_medicine_13", "prompt_tok": 1271, "new_tok": 8, "ttft_s": 16.14002823829651, "tpot_ms": 4846.731492451259, "request_s": 50.068094968795776}
+REQ {"name": "mmlu_professional_medicine_14", "prompt_tok": 1092, "new_tok": 8, "ttft_s": 16.155535221099854, "tpot_ms": 4916.1652837480815, "request_s": 50.569658041000366}
+REQ {"name": "mmlu_professional_medicine_15", "prompt_tok": 1079, "new_tok": 8, "ttft_s": 16.086514472961426, "tpot_ms": 4912.596736635481, "request_s": 50.4756076335907}
+REQ {"name": "mmlu_computer_security_16", "prompt_tok": 451, "new_tok": 8, "ttft_s": 15.86587643623352, "tpot_ms": 4927.377223968506, "request_s": 50.360180616378784}
+REQ {"name": "mmlu_computer_security_17", "prompt_tok": 483, "new_tok": 8, "ttft_s": 16.010591745376587, "tpot_ms": 5039.570399693081, "request_s": 51.28841829299927}
+REQ {"name": "mmlu_computer_security_18", "prompt_tok": 671, "new_tok": 8, "ttft_s": 16.08083724975586, "tpot_ms": 4976.059096200125, "request_s": 50.914257764816284}
+REQ {"name": "mmlu_computer_security_19", "prompt_tok": 578, "new_tok": 8, "ttft_s": 15.920641422271729, "tpot_ms": 5003.546748842512, "request_s": 50.94673299789429}
+REQ {"name": "mmlu_high_school_psychology_20", "prompt_tok": 381, "new_tok": 8, "ttft_s": 15.77827262878418, "tpot_ms": 4921.039376940046, "request_s": 50.22695517539978}
+REQ {"name": "mmlu_high_school_psychology_21", "prompt_tok": 433, "new_tok": 8, "ttft_s": 15.881350994110107, "tpot_ms": 4893.378257751465, "request_s": 50.135873317718506}
+REQ {"name": "mmlu_high_school_psychology_22", "prompt_tok": 432, "new_tok": 8, "ttft_s": 15.864929676055908, "tpot_ms": 4792.162248066494, "request_s": 49.411280393600464}
+REQ {"name": "mmlu_high_school_psychology_23", "prompt_tok": 492, "new_tok": 8, "ttft_s": 15.9889554977417, "tpot_ms": 4896.289995738438, "request_s": 50.26360893249512}
+RESULT policy=zipmoe budget=21.75 requests=24 ttft_s=16.3083 tpot_ms=4922.664 request_s=50.7680 footprint_gib=34.08 peak_gib=35.55 compute=measured
+cgroup_io_read_gib=3413.557
+cgroup_cpu_s=4386.5 cgroup_user_s=2346.9 cgroup_sys_s=2039.7
+cgroup_peak_gib=16.43

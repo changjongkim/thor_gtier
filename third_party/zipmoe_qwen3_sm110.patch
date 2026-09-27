@@ -110,7 +110,7 @@ index 1c11cea..d60bf5b 100644
 +from .qwen3 import Qwen3MoEBlock
 +from .mixtral import MixtralZipBlock
 diff --git a/evaluation/evaluate.py b/evaluation/evaluate.py
-index 697a585..6fe2653 100644
+index 697a585..a4fe457 100644
 --- a/evaluation/evaluate.py
 +++ b/evaluation/evaluate.py
 @@ -31,8 +31,8 @@ parser.add_argument("--batch_size", type=int, default=1)
@@ -124,7 +124,7 @@ index 697a585..6fe2653 100644
  parser.add_argument("--num_test_prompts", type=int, default=96)
  parser.add_argument("--test_random_seed", type=int, default=321)
  parser.add_argument("--cache_algorithm", type=str, default="ZipMoE",
-@@ -56,9 +56,9 @@ prompts = sample_first_prompts(
+@@ -56,19 +56,21 @@ prompts = sample_first_prompts(
  )
  
  target_model_type = args.model_type
@@ -135,8 +135,13 @@ index 697a585..6fe2653 100644
 +    "offload_path": f"/home/thor/kcj/ZipMoE/offload/{target_model_type}/",
      "caching_algorithm": args.cache_algorithm,#"ZipMoE",
      "prefetcher_topk": args.prefetcher_topk,
-     "device_memory_ratio": MEMMAPPING[args.system][args.memory_footprint],
-@@ -68,7 +68,7 @@ config = {
+-    "device_memory_ratio": MEMMAPPING[args.system][args.memory_footprint],
++    # ZIPMOE_MEM_SCALE: the presets are fractions of a 64 GB Jetson AGX Orin; on
++    # another device, scale them so a footprint means the same bytes (thor_gtier)
++    "device_memory_ratio": MEMMAPPING[args.system][args.memory_footprint] * float(os.environ.get("ZIPMOE_MEM_SCALE", "1")),
+     "gpu_pool_ratio": args.gpu_pool_ratio,
+     "batch_size": args.batch_size,
+     "code_type": "LZ4HC",
      "hyperparam_state_margin": 0.1,
      "num_file_chunks": 3,
      "num_compute_threads": 6,

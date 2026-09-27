@@ -19,6 +19,8 @@ until grep -q "=== stage 5 done ===" "$LOG"; do sleep 120; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 trap 'sudo -n nvme set-feature /dev/nvme0 --feature-id=2 --value=0 >/dev/null 2>&1' EXIT   # never leave the SSD slowed
 say "=== stage 6 (repeats at 45%) start ==="
+# Paper 4.1: ZipMoE fidelity on its own model and harness (once)
+. scripts/zipmoe_fidelity.sh
 # Qwen3 only: a Mixtral run takes 3-10x longer (decided 09-27: Mixtral runs E1 and E7)
 for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,flashmoe,duoserve"; do
   set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }

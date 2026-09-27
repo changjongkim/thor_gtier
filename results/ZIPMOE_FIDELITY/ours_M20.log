@@ -1,0 +1,193 @@
+[20260928 04:43:16.003421Z ][26254 ][INFO  ]Loading index file from  /home/thor/kcj/ZipMoE/offload/qwen/zipmoe_index - zipmoe_tensor_handle.cpp:45
+[20260928 04:43:16.007848Z ][26254 ][INFO  ]Index file size  4659 - zipmoe_tensor_handle.cpp:51
+[20260928 04:43:16.397430Z ][26254 ][INFO  ][ZipMoECacheHandle] Applying Cache Pool Planning. - cache.cpp:37
+[20260928 04:43:17.074770Z ][26254 ][INFO  ]number of full-cache slots:  954 - cache.cpp:114
+[20260928 04:43:17.074787Z ][26254 ][INFO  ]number of SM-cache slots:  80 - cache.cpp:115
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 6 initialized.
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 5 initialized.
+[Pool] Thread index 3 initialized.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Arch: qwen2moeforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE Cache Pool Planning] Loading trace...
+[Coverage To Weight] Converged in 11 iterations.
+Bernoulli probs sum: 21.5180
+Total memory available per layer: 715827882.6666666
+Max potential full slots: 41
+[ZipMoE Invocation Modeling] Ratio Full: 0.52 | Avg Delay: 10355.3442
+[ZipMoE Invocation Modeling] Ratio Full: 0.53 | Avg Delay: 10355.3442
+[ZipMoE Invocation Modeling] Ratio Full: 0.54 | Avg Delay: 9668.0939
+[ZipMoE Invocation Modeling] Ratio Full: 0.55 | Avg Delay: 9668.0939
+[ZipMoE Invocation Modeling] Ratio Full: 0.56 | Avg Delay: 9023.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.57 | Avg Delay: 9023.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.58 | Avg Delay: 9023.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.59 | Avg Delay: 8412.8547
+[ZipMoE Invocation Modeling] Ratio Full: 0.60 | Avg Delay: 8412.8547
+[ZipMoE Invocation Modeling] Ratio Full: 0.61 | Avg Delay: 7823.6421
+[ZipMoE Invocation Modeling] Ratio Full: 0.62 | Avg Delay: 7823.6421
+[ZipMoE Invocation Modeling] Ratio Full: 0.63 | Avg Delay: 7245.2869
+[ZipMoE Invocation Modeling] Ratio Full: 0.64 | Avg Delay: 7245.2869
+[ZipMoE Invocation Modeling] Ratio Full: 0.65 | Avg Delay: 7245.2869
+[ZipMoE Invocation Modeling] Ratio Full: 0.66 | Avg Delay: 6672.5139
+[ZipMoE Invocation Modeling] Ratio Full: 0.67 | Avg Delay: 6672.5139
+[ZipMoE Invocation Modeling] Ratio Full: 0.68 | Avg Delay: 6102.6650
+[ZipMoE Invocation Modeling] Ratio Full: 0.69 | Avg Delay: 6102.6650
+[ZipMoE Invocation Modeling] Ratio Full: 0.70 | Avg Delay: 6102.6650
+[ZipMoE Invocation Modeling] Ratio Full: 0.71 | Avg Delay: 5535.7104
+[ZipMoE Invocation Modeling] Ratio Full: 0.72 | Avg Delay: 5535.7104
+[ZipMoE Invocation Modeling] Ratio Full: 0.73 | Avg Delay: 4972.9786
+[ZipMoE Invocation Modeling] Ratio Full: 0.74 | Avg Delay: 4972.9786
+[ZipMoE Invocation Modeling] Ratio Full: 0.75 | Avg Delay: 4416.6165
+[ZipMoE Invocation Modeling] Ratio Full: 0.76 | Avg Delay: 4416.6165
+[ZipMoE Invocation Modeling] Ratio Full: 0.77 | Avg Delay: 4416.6165
+[ZipMoE Invocation Modeling] Ratio Full: 0.78 | Avg Delay: 3868.8361
+[ZipMoE Invocation Modeling] Ratio Full: 0.79 | Avg Delay: 3868.8941
+[ZipMoE Invocation Modeling] Ratio Full: 0.80 | Avg Delay: 3334.0672
+[ZipMoE Invocation Modeling] Ratio Full: 0.81 | Avg Delay: 3334.4077
+[ZipMoE Invocation Modeling] Ratio Full: 0.82 | Avg Delay: 3335.5573
+[ZipMoE Invocation Modeling] Ratio Full: 0.83 | Avg Delay: 2817.8980
+[ZipMoE Invocation Modeling] Ratio Full: 0.84 | Avg Delay: 2819.2671
+[ZipMoE Invocation Modeling] Ratio Full: 0.85 | Avg Delay: 2328.1424
+[ZipMoE Invocation Modeling] Ratio Full: 0.86 | Avg Delay: 2331.9144
+[ZipMoE Invocation Modeling] Ratio Full: 0.87 | Avg Delay: 2339.9998
+[ZipMoE Invocation Modeling] Ratio Full: 0.88 | Avg Delay: 1882.0989
+[ZipMoE Invocation Modeling] Ratio Full: 0.89 | Avg Delay: 1882.0989
+[ZipMoE Invocation Modeling] Ratio Full: 0.90 | Avg Delay: 1466.3197
+[ZipMoE Invocation Modeling] Ratio Full: 0.91 | Avg Delay: 1486.5381
+[ZipMoE Invocation Modeling] Ratio Full: 0.92 | Avg Delay: 1122.0215
+[ZipMoE Invocation Modeling] Ratio Full: 0.93 | Avg Delay: 1161.7469
+[ZipMoE Invocation Modeling] Ratio Full: 0.94 | Avg Delay: 1229.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.95 | Avg Delay: 857.0090
+[ZipMoE Invocation Modeling] Ratio Full: 0.96 | Avg Delay: 928.8301
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.52,  Cost = 10126.260782854451
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.53,  Cost = 10011.719052438928
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.54,  Cost = 9814.085428458362
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.55,  Cost = 9547.726766228483
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.56,  Cost = 9281.368103998606
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5700000000000001,  Cost = 9030.320278163415
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.58,  Cost = 8779.272452328229
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.59,  Cost = 8539.290686428527
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6,  Cost = 8299.308920528827
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.61,  Cost = 7943.656121744503
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.62,  Cost = 7710.142563064117
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.63,  Cost = 7476.629004383729
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.64,  Cost = 7246.403370169736
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.65,  Cost = 7016.177735955744
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.66,  Cost = 6787.653346738518
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.67,  Cost = 6559.128957521291
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.68,  Cost = 6330.604568304065
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6900000000000001,  Cost = 6103.24385356757
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.7000000000000001,  Cost = 5875.883138831075
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.71,  Cost = 5649.945854759077
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.72,  Cost = 5424.008570687079
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.73,  Cost = 5086.798864084585
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.74,  Cost = 4862.980084330729
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.75,  Cost = 4639.161304576874
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.76,  Cost = 4418.33281959862
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.77,  Cost = 4197.515922629339
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.78,  Cost = 3981.006079620308
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.79,  Cost = 3764.564322249338
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8,  Cost = 3548.352493540567
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.81,  Cost = 3338.164863820721
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8200000000000001,  Cost = 3128.239459421887
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8300000000000001,  Cost = 2927.0544853108436
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.84,  Cost = 2726.55582650926
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.85,  Cost = 2527.4443241498598
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.86,  Cost = 2340.2844997718175
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.87,  Cost = 2152.8508620637895
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.88,  Cost = 1980.4863173037768
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.89,  Cost = 1811.411060735082
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9,  Cost = 1567.8153917309526
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.91,  Cost = 1423.7450001285595
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.92,  Cost = 1293.2353960153214
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.93,  Cost = 1171.3732731095356
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9400000000000001,  Cost = 1059.8316676118802
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9500000000000001,  Cost = 1044.284219726256
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.96,  Cost = 1005.1299867097799
+[ZipMoE Cache Pool Planning] Best ratio: 0.96
+[ZipMoE] Loading model from offload_path ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[20260928 04:43:17.081856Z ][26254 ][INFO  ][ZipMoE] Opened offloaded file:  /home/thor/kcj/ZipMoE/offload/qwen/zipmoe_param - tensor_engine.cpp:351
+[20260928 04:43:17.395819Z ][26254 ][INFO  ][Initialize] ExpertDispatcher::StartThreads, NumDevices 1 - expert_dispatcher.cpp:84
+[20260928 04:43:17.396604Z ][26254 ][INFO  ][Initialize] GPUFetchFunc Started. - expert_dispatcher.cpp:97
+[20260928 04:43:17.396604Z ][26366 ][INFO  ][Initialize] Thread started for GPU:  0 - expert_dispatcher.cpp:286
+[20260928 04:43:17.396748Z ][26254 ][INFO  ][Initialize] GPUExecFunc Started. - expert_dispatcher.cpp:109
+[20260928 04:43:17.396863Z ][26254 ][INFO  ][Initialize] OutputThreadFunc Started. - expert_dispatcher.cpp:114
+[20260928 04:43:17.671199Z ][26254 ][INFO  ]Moving dense parameters to GPU - model_topology.cpp:372
+[20260928 04:43:17.755895Z ][26254 ][INFO  ]Total dense parameter size:  3717402624 - model_topology.cpp:379
+26 left25 left24 left23 left22 left21 left20 left19 left18 left17 left16 left15 left14 left13 left12 left11 left10 left9 left8 left7 left6 left5 left4 left3 left2 left1 left
+finished: 27/27
+[20260928 04:43:19.493354Z ][26254 ][INFO  ]Moving sparse parameters to SSD - model_topology.cpp:394
+1439 left1438 left1437 left1436 left1435 left1434 left1433 left1432 left1431 left1430 left1429 left1428 left1427 left1426 left1425 left1424 left1423 left1422 left1421 left1420 left1419 left1418 left1417 left1416 left1415 left1414 left1413 left1412 left1411 left1410 left1409 left1408 left1407 left1406 left1405 left1404 left1403 left1402 left1401 left1400 left1399 left1398 left1397 left1396 left1395 left1394 left1393 left1392 left1391 left1390 left1389 left1388 left1387 left1386 left1385 left1384 left1383 left1382 left1381 left1380 left1379 left1378 left1377 left1376 left1375 left1374 left1373 left1372 left1371 left1370 left1369 left1368 left1367 left1366 left1365 left1364 left1363 left1362 left1361 left1360 left1359 left1358 left1357 left1356 left1355 left1354 left1353 left1352 left1351 left1350 left1349 left1348 left1347 left1346 left1345 left1344 left1343 left1342 left1341 left1340 left1339 left1338 left1337 left1336 left1335 left1334 left1333 left1332 left1331 left1330 left1329 left1328 left1327 left1326 left1325 left1324 left1323 left1322 left1321 left1320 left1319 left1318 left1317 left1316 left1315 left1314 left1313 left1312 left1311 left1310 left1309 left1308 left1307 left1306 left1305 left1304 left1303 left1302 left1301 left1300 left1299 left1298 left1297 left1296 left1295 left1294 left1293 left1292 left1291 left1290 left1289 left1288 left1287 left1286 left1285 left1284 left1283 left1282 left1281 left1280 left1279 left1278 left1277 left1276 left1275 left1274 left1273 left1272 left1271 left1270 left1269 left1268 left1267 left1266 left1265 left1264 left1263 left1262 left1261 left1260 left1259 left1258 left1257 left1256 left1255 left1254 left1253 left1252 left1251 left1250 left1249 left1248 left1247 left1246 left1245 left1244 left1243 left1242 left1241 left1240 left1239 left1238 left1237 left1236 left1235 left1234 left1233 left1232 left1231 left1230 left1229 left1228 left1227 left1226 left1225 left1224 left1223 left1222 left1221 left1220 left1219 left1218 left1217 left1216 left1215 left1214 left1213 left1212 left1211 left1210 left1209 left1208 left1207 left1206 left1205 left1204 left1203 left1202 left1201 left1200 left1199 left1198 left1197 left1196 left1195 left1194 left1193 left1192 left1191 left1190 left1189 left1188 left1187 left1186 left1185 left1184 left1183 left1182 left1181 left1180 left1179 left1178 left1177 left1176 left1175 left1174 left1173 left1172 left1171 left1170 left1169 left1168 left1167 left1166 left1165 left1164 left1163 left1162 left1161 left1160 left1159 left1158 left1157 left1156 left1155 left1154 left1153 left1152 left1151 left1150 left1149 left1148 left1147 left1146 left1145 left1144 left1143 left1142 left1141 left1140 left1139 left1138 left1137 left1136 left1135 left1134 left1133 left1132 left1131 left1130 left1129 left1128 left1127 left1126 left1125 left1124 left1123 left1122 left1121 left1120 left1119 left1118 left1117 left1116 left1115 left1114 left1113 left1112 left1111 left1110 left1109 left1108 left1107 left1106 left1105 left1104 left1103 left1102 left1101 left1100 left1099 left1098 left1097 left1096 left1095 left1094 left1093 left1092 left1091 left1090 left1089 left1088 left1087 left1086 left1085 left1084 left1083 left1082 left1081 left1080 left1079 left1078 left1077 left1076 left1075 left1074 left1073 left1072 left1071 left1070 left1069 left1068 left1067 left1066 left1065 left1064 left1063 left1062 left1061 left1060 left1059 left1058 left1057 left1056 left1055 left1054 left1053 left1052 left1051 left1050 left1049 left1048 left1047 left1046 left1045 left1044 left1043 left1042 left1041 left1040 left1039 left1038 left1037 left1036 left1035 left1034 left1033 left1032 left1031 left1030 left1029 left1028 left1027 left1026 left1025 left1024 left1023 left1022 left1021 left1020 left1019 left1018 left1017 left1016 left1015 left1014 left1013 left1012 left1011 left1010 left1009 left1008 left1007 left1006 left1005 left1004 left1003 left1002 left1001 left1000 left999 left998 left997 left996 left995 left994 left993 left992 left991 left990 left989 left988 left987 left986 left985 left984 left983 left982 left981 left980 left979 left978 left977 left976 left975 left974 left973 left972 left971 left970 left969 left968 left967 left966 left965 left964 left963 left962 left961 left960 left959 left958 left957 left956 left955 left954 left953 left952 left951 left950 left949 left948 left947 left946 left945 left944 left943 left942 left941 left940 left939 left938 left937 left936 left935 left934 left933 left932 left931 left930 left929 left928 left927 left926 left925 left924 left923 left922 left921 left920 left919 left918 left917 left916 left915 left914 left913 left912 left911 left910 left909 left908 left907 left906 left905 left904 left903 left902 left901 left900 left899 left898 left897 left896 left895 left894 left893 left892 left891 left890 left889 left888 left887 left886 left885 left884 left883 left882 left881 left880 left879 left878 left877 left876 left875 left874 left873 left872 left871 left870 left869 left868 left867 left866 left865 left864 left863 left862 left861 left860 left859 left858 left857 left856 left855 left854 left853 left852 left851 left850 left849 left848 left847 left846 left845 left844 left843 left842 left841 left840 left839 left838 left837 left836 left835 left834 left833 left832 left831 left830 left829 left828 left827 left826 left825 left824 left823 left822 left821 left820 left819 left818 left817 left816 left815 left814 left813 left812 left811 left810 left809 left808 left807 left806 left805 left804 left803 left802 left801 left800 left799 left798 left797 left796 left795 left794 left793 left792 left791 left790 left789 left788 left787 left786 left785 left784 left783 left782 left781 left780 left779 left778 left777 left776 left775 left774 left773 left772 left771 left770 left769 left768 left767 left766 left765 left764 left763 left762 left761 left760 left759 left758 left757 left756 left755 left754 left753 left752 left751 left750 left749 left748 left747 left746 left745 left744 left743 left742 left741 left740 left739 left738 left737 left736 left735 left734 left733 left732 left731 left730 left729 left728 left727 left726 left725 left724 left723 left722 left721 left720 left719 left718 left717 left716 left715 left714 left713 left712 left711 left710 left709 left708 left707 left706 left705 left704 left703 left702 left701 left700 left699 left698 left697 left696 left695 left694 left693 left692 left691 left690 left689 left688 left687 left686 left685 left684 left683 left682 left681 left680 left679 left678 left677 left676 left675 left674 left673 left672 left671 left670 left669 left668 left667 left666 left665 left664 left663 left662 left661 left660 left659 left658 left657 left656 left655 left654 left653 left652 left651 left650 left649 left648 left647 left646 left645 left644 left643 left642 left641 left640 left639 left638 left637 left636 left635 left634 left633 left632 left631 left630 left629 left628 left627 left626 left625 left624 left623 left622 left621 left620 left619 left618 left617 left616 left615 left614 left613 left612 left611 left610 left609 left608 left607 left606 left605 left604 left603 left602 left601 left600 left599 left598 left597 left596 left595 left594 left593 left592 left591 left590 left589 left588 left587 left586 left585 left584 left583 left582 left581 left580 left579 left578 left577 left576 left575 left574 left573 left572 left571 left570 left569 left568 left567 left566 left565 left564 left563 left562 left561 left560 left559 left558 left557 left556 left555 left554 left553 left552 left551 left550 left549 left548 left547 left546 left545 left544 left543 left542 left541 left540 left539 left538 left537 left536 left535 left534 left533 left532 left531 left530 left529 left528 left527 left526 left525 left524 left523 left522 left521 left520 left519 left518 left517 left516 left515 left514 left513 left512 left511 left510 left509 left508 left507 left506 left505 left504 left503 left502 left501 left500 left499 left498 left497 left496 left495 left494 left493 left492 left491 left490 left489 left488 left487 left486 left485 left484 left483 left482 left481 left480 left479 left478 left477 left476 left475 left474 left473 left472 left471 left470 left469 left468 left467 left466 left465 left464 left463 left462 left461 left460 left459 left458 left457 left456 left455 left454 left453 left452 left451 left450 left449 left448 left447 left446 left445 left444 left443 left442 left441 left440 left439 left438 left437 left436 left435 left434 left433 left432 left431 left430 left429 left428 left427 left426 left425 left424 left423 left422 left421 left420 left419 left418 left417 left416 left415 left414 left413 left412 left411 left410 left409 left408 left407 left406 left405 left404 left403 left402 left401 left400 left399 left398 left397 left396 left395 left394 left393 left392 left391 left390 left389 left388 left387 left386 left385 left384 left383 left382 left381 left380 left379 left378 left377 left376 left375 left374 left373 left372 left371 left370 left369 left368 left367 left366 left365 left364 left363 left362 left361 left360 left359 left358 left357 left356 left355 left354 left353 left352 left351 left350 left349 left348 left347 left346 left345 left344 left343 left342 left341 left340 left339 left338 left337 left336 left335 left334 left333 left332 left331 left330 left329 left328 left327 left326 left325 left324 left323 left322 left321 left320 left319 left318 left317 left316 left315 left314 left313 left312 left311 left310 left309 left308 left307 left306 left305 left304 left303 left302 left301 left300 left299 left298 left297 left296 left295 left294 left293 left292 left291 left290 left289 left288 left287 left286 left285 left284 left283 left282 left281 left280 left279 left278 left277 left276 left275 left274 left273 left272 left271 left270 left269 left268 left267 left266 left265 left264 left263 left262 left261 le/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/transformers/generation/utils.py:2412: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+[ZipMoE] Offload file opened successfully!
+Qwen2MoeConfig {
+  "architectures": [
+    "Qwen2MoeForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "decoder_sparse_step": 1,
+  "dtype": "bfloat16",
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": 0.02,
+  "intermediate_size": 5632,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "mlp_only_layers": [],
+  "model_type": "qwen2_moe",
+  "moe_intermediate_size": 1408,
+  "norm_topk_prob": false,
+  "num_attention_heads": 16,
+  "num_experts": 60,
+  "num_experts_per_tok": 4,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "output_router_logits": false,
+  "qkv_bias": true,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "router_aux_loss_coef": 0.001,
+  "shared_expert_intermediate_size": 5632,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.56.2",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+REQ {"name": "sharegpt_zipmoe_0", "prompt_tok": 112, "new_tok": 64, "ttft_s": 8.003321886062622, "tpot_ms": 258.5743192642454, "request_s": 24.29436683654785}
+REQ {"name": "sharegpt_zipmoe_1", "prompt_tok": 297, "new_tok": 64, "ttft_s": 1.4975297451019287, "tpot_ms": 243.66737168932718, "request_s": 16.849360704421997}
+REQ {"name": "sharegpt_zipmoe_2", "prompt_tok": 33, "new_tok": 64, "ttft_s": 1.150686502456665, "tpot_ms": 241.86088546874032, "request_s": 16.388755798339844}
+REQ {"name": "sharegpt_zipmoe_3", "prompt_tok": 512, "new_tok": 64, "ttft_s": 1.4772744178771973, "tpot_ms": 247.3576863606771, "request_s": 17.061617374420166}
+REQ {"name": "sharegpt_zipmoe_4", "prompt_tok": 48, "new_tok": 64, "ttft_s": 1.2930519580841064, "tpot_ms": 242.49022347586495, "request_s": 16.570714235305786}
+REQ {"name": "sharegpt_zipmoe_5", "prompt_tok": 252, "new_tok": 64, "ttft_s": 1.4523651599884033, "tpot_ms": 246.00502422877722, "request_s": 16.95151424407959}
+REQ {"name": "sharegpt_zipmoe_6", "prompt_tok": 48, "new_tok": 64, "ttft_s": 1.2773628234863281, "tpot_ms": 246.35920827350918, "request_s": 16.79879355430603}
+REQ {"name": "sharegpt_zipmoe_7", "prompt_tok": 20, "new_tok": 64, "ttft_s": 1.1379156112670898, "tpot_ms": 249.59765540228952, "request_s": 16.863451957702637}
+REQ {"name": "sharegpt_zipmoe_8", "prompt_tok": 34, "new_tok": 64, "ttft_s": 1.2526822090148926, "tpot_ms": 243.2034999605209, "request_s": 16.575286865234375}
+REQ {"name": "sharegpt_zipmoe_9", "prompt_tok": 512, "new_tok": 64, "ttft_s": 1.608046531677246, "tpot_ms": 243.66877949427044, "request_s": 16.959972858428955}
+REQ {"name": "sharegpt_zipmoe_10", "prompt_tok": 22, "new_tok": 64, "ttft_s": 1.2056899070739746, "tpot_ms": 247.66846687074693, "request_s": 16.80961847305298}
+REQ {"name": "sharegpt_zipmoe_11", "prompt_tok": 43, "new_tok": 64, "ttft_s": 1.327277421951294, "tpot_ms": 248.02921688745892, "request_s": 16.953939199447632}
+REQ {"name": "sharegpt_zipmoe_12", "prompt_tok": 365, "new_tok": 64, "ttft_s": 1.5432279109954834, "tpot_ms": 252.27421049087766, "request_s": 17.437275886535645}
+REQ {"name": "sharegpt_zipmoe_13", "prompt_tok": 40, "new_tok": 64, "ttft_s": 1.2195408344268799, "tpot_ms": 244.8125264001271, "request_s": 16.64357352256775}
+REQ {"name": "sharegpt_zipmoe_14", "prompt_tok": 44, "new_tok": 64, "ttft_s": 1.2102429866790771, "tpot_ms": 242.91558114309157, "request_s": 16.514768362045288}
+REQ {"name": "sharegpt_zipmoe_15", "prompt_tok": 33, "new_tok": 64, "ttft_s": 1.2354130744934082, "tpot_ms": 242.52663339887346, "request_s": 16.515360355377197}
+REQ {"name": "sharegpt_zipmoe_16", "prompt_tok": 81, "new_tok": 64, "ttft_s": 1.5175957679748535, "tpot_ms": 240.90649589659677, "request_s": 16.69551372528076}
+REQ {"name": "sharegpt_zipmoe_17", "prompt_tok": 19, "new_tok": 64, "ttft_s": 1.0229876041412354, "tpot_ms": 247.07157271248954, "request_s": 16.589309692382812}
+REQ {"name": "sharegpt_zipmoe_18", "prompt_tok": 23, "new_tok": 64, "ttft_s": 1.292677402496338, "tpot_ms": 249.63545042370993, "request_s": 17.02057409286499}
+REQ {"name": "sharegpt_zipmoe_19", "prompt_tok": 38, "new_tok": 64, "ttft_s": 1.3911519050598145, "tpot_ms": 245.17433227054656, "request_s": 16.83793044090271}
+REQ {"name": "sharegpt_zipmoe_20", "prompt_tok": 18, "new_tok": 64, "ttft_s": 0.9266245365142822, "tpot_ms": 241.03682003323996, "request_s": 16.112772226333618}
+REQ {"name": "sharegpt_zipmoe_21", "prompt_tok": 20, "new_tok": 64, "ttft_s": 1.0651962757110596, "tpot_ms": 242.44339125497, "request_s": 16.339924335479736}
+REQ {"name": "sharegpt_zipmoe_22", "prompt_tok": 12, "new_tok": 64, "ttft_s": 0.8980844020843506, "tpot_ms": 250.82532564798993, "request_s": 16.700886249542236}
+REQ {"name": "sharegpt_zipmoe_23", "prompt_tok": 512, "new_tok": 64, "ttft_s": 1.5552046298980713, "tpot_ms": 254.21324987260124, "request_s": 17.571452140808105}
+RESULT policy=zipmoe budget=16.00 requests=24 ttft_s=1.5650 tpot_ms=246.347 request_s=17.0857 footprint_gib=23.26 peak_gib=23.91 compute=measured
+cgroup_io_read_gib=21.795
+cgroup_cpu_s=1064.3 cgroup_user_s=930.2 cgroup_sys_s=134.2

@@ -1,0 +1,5406 @@
+[20260928 01:37:32.878416Z ][4139771 ][INFO  ]Index file /home/thor/kcj/ZipMoE/offload/qwen/zipmoe_index  does not exist, creating - zipmoe_tensor_handle.cpp:49
+[20260928 01:37:32.878434Z ][4139771 ][INFO  ]Index file size  0 - zipmoe_tensor_handle.cpp:51
+[20260928 01:37:33.267182Z ][4139771 ][INFO  ][ZipMoECacheHandle] Applying Cache Pool Planning. - cache.cpp:37
+[20260928 01:37:33.945265Z ][4139771 ][INFO  ]number of full-cache slots:  954 - cache.cpp:114
+[20260928 01:37:33.945273Z ][4139771 ][INFO  ]number of SM-cache slots:  80 - cache.cpp:115
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 6 initialized.
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 3 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 5 initialized.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Arch: qwen2moeforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE Cache Pool Planning] Loading trace...
+[Coverage To Weight] Converged in 11 iterations.
+Bernoulli probs sum: 21.5180
+Total memory available per layer: 715835638.8273616
+Max potential full slots: 41
+[ZipMoE Invocation Modeling] Ratio Full: 0.52 | Avg Delay: 10355.3442
+[ZipMoE Invocation Modeling] Ratio Full: 0.53 | Avg Delay: 10355.3442
+[ZipMoE Invocation Modeling] Ratio Full: 0.54 | Avg Delay: 9668.0939
+[ZipMoE Invocation Modeling] Ratio Full: 0.55 | Avg Delay: 9668.0939
+[ZipMoE Invocation Modeling] Ratio Full: 0.56 | Avg Delay: 9023.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.57 | Avg Delay: 9023.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.58 | Avg Delay: 9023.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.59 | Avg Delay: 8412.8547
+[ZipMoE Invocation Modeling] Ratio Full: 0.60 | Avg Delay: 8412.8547
+[ZipMoE Invocation Modeling] Ratio Full: 0.61 | Avg Delay: 7823.6421
+[ZipMoE Invocation Modeling] Ratio Full: 0.62 | Avg Delay: 7823.6421
+[ZipMoE Invocation Modeling] Ratio Full: 0.63 | Avg Delay: 7245.2869
+[ZipMoE Invocation Modeling] Ratio Full: 0.64 | Avg Delay: 7245.2869
+[ZipMoE Invocation Modeling] Ratio Full: 0.65 | Avg Delay: 7245.2869
+[ZipMoE Invocation Modeling] Ratio Full: 0.66 | Avg Delay: 6672.5139
+[ZipMoE Invocation Modeling] Ratio Full: 0.67 | Avg Delay: 6672.5139
+[ZipMoE Invocation Modeling] Ratio Full: 0.68 | Avg Delay: 6102.6650
+[ZipMoE Invocation Modeling] Ratio Full: 0.69 | Avg Delay: 6102.6650
+[ZipMoE Invocation Modeling] Ratio Full: 0.70 | Avg Delay: 6102.6650
+[ZipMoE Invocation Modeling] Ratio Full: 0.71 | Avg Delay: 5535.7104
+[ZipMoE Invocation Modeling] Ratio Full: 0.72 | Avg Delay: 5535.7104
+[ZipMoE Invocation Modeling] Ratio Full: 0.73 | Avg Delay: 4972.9786
+[ZipMoE Invocation Modeling] Ratio Full: 0.74 | Avg Delay: 4972.9786
+[ZipMoE Invocation Modeling] Ratio Full: 0.75 | Avg Delay: 4416.6165
+[ZipMoE Invocation Modeling] Ratio Full: 0.76 | Avg Delay: 4416.6165
+[ZipMoE Invocation Modeling] Ratio Full: 0.77 | Avg Delay: 4416.6165
+[ZipMoE Invocation Modeling] Ratio Full: 0.78 | Avg Delay: 3868.8361
+[ZipMoE Invocation Modeling] Ratio Full: 0.79 | Avg Delay: 3868.8941
+[ZipMoE Invocation Modeling] Ratio Full: 0.80 | Avg Delay: 3334.0672
+[ZipMoE Invocation Modeling] Ratio Full: 0.81 | Avg Delay: 3334.4077
+[ZipMoE Invocation Modeling] Ratio Full: 0.82 | Avg Delay: 3335.5573
+[ZipMoE Invocation Modeling] Ratio Full: 0.83 | Avg Delay: 2817.8980
+[ZipMoE Invocation Modeling] Ratio Full: 0.84 | Avg Delay: 2819.2671
+[ZipMoE Invocation Modeling] Ratio Full: 0.85 | Avg Delay: 2328.1424
+[ZipMoE Invocation Modeling] Ratio Full: 0.86 | Avg Delay: 2331.9144
+[ZipMoE Invocation Modeling] Ratio Full: 0.87 | Avg Delay: 2339.9998
+[ZipMoE Invocation Modeling] Ratio Full: 0.88 | Avg Delay: 1882.0989
+[ZipMoE Invocation Modeling] Ratio Full: 0.89 | Avg Delay: 1882.0989
+[ZipMoE Invocation Modeling] Ratio Full: 0.90 | Avg Delay: 1466.3197
+[ZipMoE Invocation Modeling] Ratio Full: 0.91 | Avg Delay: 1486.5381
+[ZipMoE Invocation Modeling] Ratio Full: 0.92 | Avg Delay: 1122.0215
+[ZipMoE Invocation Modeling] Ratio Full: 0.93 | Avg Delay: 1161.7469
+[ZipMoE Invocation Modeling] Ratio Full: 0.94 | Avg Delay: 1229.5509
+[ZipMoE Invocation Modeling] Ratio Full: 0.95 | Avg Delay: 857.0090
+[ZipMoE Invocation Modeling] Ratio Full: 0.96 | Avg Delay: 928.8301
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.52,  Cost = 10126.260782854451
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.53,  Cost = 10011.719052438928
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.54,  Cost = 9814.085428458362
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.55,  Cost = 9547.726766228483
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.56,  Cost = 9281.368103998606
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5700000000000001,  Cost = 9030.320278163415
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.58,  Cost = 8779.272452328229
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.59,  Cost = 8539.290686428527
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6,  Cost = 8299.308920528827
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.61,  Cost = 7943.656121744503
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.62,  Cost = 7710.142563064117
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.63,  Cost = 7476.629004383729
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.64,  Cost = 7246.403370169736
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.65,  Cost = 7016.177735955744
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.66,  Cost = 6787.653346738518
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.67,  Cost = 6559.128957521291
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.68,  Cost = 6330.604568304065
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6900000000000001,  Cost = 6103.24385356757
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.7000000000000001,  Cost = 5875.883138831075
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.71,  Cost = 5649.945854759077
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.72,  Cost = 5424.008570687079
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.73,  Cost = 5086.798864084585
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.74,  Cost = 4862.980084330729
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.75,  Cost = 4639.161304576874
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.76,  Cost = 4418.33281959862
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.77,  Cost = 4197.515922629339
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.78,  Cost = 3981.006079620308
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.79,  Cost = 3764.564322249338
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8,  Cost = 3548.352493540567
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.81,  Cost = 3338.164863820721
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8200000000000001,  Cost = 3128.239459421887
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8300000000000001,  Cost = 2927.0544853108436
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.84,  Cost = 2726.55582650926
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.85,  Cost = 2527.4443241498598
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.86,  Cost = 2340.2844997718175
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.87,  Cost = 2152.8508620637895
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.88,  Cost = 1980.4863173037768
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.89,  Cost = 1811.411060735082
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9,  Cost = 1567.8153917309526
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.91,  Cost = 1423.7450001285595
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.92,  Cost = 1293.2353960153214
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.93,  Cost = 1171.3732731095356
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9400000000000001,  Cost = 1059.8316676118802
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9500000000000001,  Cost = 1044.284219726256
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.96,  Cost = 1005.1299867097799
+[ZipMoE Cache Pool Planning] Best ratio: 0.96
+[ZipMoE] Creating model from scratch ...
+Loading checkpoint files:   0%|          | 0/8 [00:00<?, ?it/s]Successfully offloaded: 0
+Successfully offloaded: 1
+Successfully offloaded: 2
+Successfully offloaded: 3
+Successfully offloaded: 4
+Successfully offloaded: 5
+Successfully offloaded: 6
+Successfully offloaded: 7
+Successfully offloaded: 8
+Successfully offloaded: 9
+Successfully offloaded: 10
+Successfully offloaded: 11
+Successfully offloaded: 12
+Successfully offloaded: 13
+Successfully offloaded: 14
+Successfully offloaded: 15
+Successfully offloaded: 16
+Successfully offloaded: 17
+Successfully offloaded: 18
+Successfully offloaded: 19
+Successfully offloaded: 20
+Successfully offloaded: 21
+Successfully offloaded: 22
+Successfully offloaded: 23
+Successfully offloaded: 24
+Successfully offloaded: 25
+Successfully offloaded: 26
+Successfully offloaded: 27
+Successfully offloaded: 28
+Successfully offloaded: 29
+Successfully offloaded: 30
+Successfully offloaded: 31
+Successfully offloaded: 32
+Successfully offloaded: 33
+Successfully offloaded: 34
+Successfully offloaded: 35
+Successfully offloaded: 36
+Successfully offloaded: 37
+Successfully offloaded: 38
+Successfully offloaded: 39
+Successfully offloaded: 40
+Successfully offloaded: 41
+Successfully offloaded: 42
+Successfully offloaded: 43
+Successfully offloaded: 44
+Successfully offloaded: 45
+Successfully offloaded: 46
+Successfully offloaded: 47
+Successfully offloaded: 48
+Successfully offloaded: 49
+Successfully offloaded: 50
+Successfully offloaded: 51
+Successfully offloaded: 52
+Successfully offloaded: 53
+Successfully offloaded: 54
+Successfully offloaded: 55
+Successfully offloaded: 56
+Successfully offloaded: 57
+Successfully offloaded: 58
+Successfully offloaded: 59
+Successfully offloaded: 60
+Successfully offloaded: 61
+Successfully offloaded: 62
+Successfully offloaded: 63
+Successfully offloaded: 64
+Successfully offloaded: 65
+Successfully offloaded: 66
+Successfully offloaded: 67
+Successfully offloaded: 68
+Successfully offloaded: 69
+Successfully offloaded: 70
+Successfully offloaded: 71
+Successfully offloaded: 72
+Successfully offloaded: 73
+Successfully offloaded: 74
+Successfully offloaded: 75
+Successfully offloaded: 76
+Successfully offloaded: 77
+Successfully offloaded: 78
+Successfully offloaded: 79
+Successfully offloaded: 80
+Successfully offloaded: 81
+Successfully offloaded: 82
+Successfully offloaded: 83
+Successfully offloaded: 84
+Successfully offloaded: 85
+Successfully offloaded: 86
+Successfully offloaded: 87
+Successfully offloaded: 88
+Successfully offloaded: 89
+Successfully offloaded: 90
+Successfully offloaded: 91
+Successfully offloaded: 92
+Successfully offloaded: 93
+Successfully offloaded: 94
+Successfully offloaded: 95
+Successfully offloaded: 96
+Successfully offloaded: 97
+Successfully offloaded: 98
+Successfully offloaded: 99
+Successfully offloaded: 100
+Successfully offloaded: 101
+Successfully offloaded: 102
+Successfully offloaded: 103
+Successfully offloaded: 104
+Successfully offloaded: 105
+Successfully offloaded: 106
+Successfully offloaded: 107
+Successfully offloaded: 108
+Successfully offloaded: 109
+Successfully offloaded: 110
+Successfully offloaded: 111
+Successfully offloaded: 112
+Successfully offloaded: 113
+Successfully offloaded: 114
+Successfully offloaded: 115
+Successfully offloaded: 116
+Successfully offloaded: 117
+Successfully offloaded: 118
+Successfully offloaded: 119
+Successfully offloaded: 120
+Successfully offloaded: 121
+Successfully offloaded: 122
+Successfully offloaded: 123
+Successfully offloaded: 124
+Successfully offloaded: 125
+Successfully offloaded: 126
+Successfully offloaded: 127
+Successfully offloaded: 128
+Successfully offloaded: 129
+Successfully offloaded: 130
+Successfully offloaded: 131
+Successfully offloaded: 132
+Successfully offloaded: 133
+Successfully offloaded: 134
+Successfully offloaded: 135
+Successfully offloaded: 136
+Successfully offloaded: 137
+Successfully offloaded: 138
+Successfully offloaded: 139
+Successfully offloaded: 140
+Successfully offloaded: 141
+Successfully offloaded: 142
+Successfully offloaded: 143
+Successfully offloaded: 144
+Successfully offloaded: 145
+Successfully offloaded: 146
+Successfully offloaded: 147
+Successfully offloaded: 148
+Successfully offloaded: 149
+Successfully offloaded: 150
+Successfully offloaded: 151
+Successfully offloaded: 152
+Successfully offloaded: 153
+Successfully offloaded: 154
+Successfully offloaded: 155
+Successfully offloaded: 156
+Successfully offloaded: 157
+Successfully offloaded: 158
+Successfully offloaded: 159
+Successfully offloaded: 160
+Successfully offloaded: 161
+Successfully offloaded: 162
+Successfully offloaded: 163
+Successfully offloaded: 164
+Successfully offloaded: 165
+Successfully offloaded: 166
+Successfully offloaded: 167
+Successfully offloaded: 168
+Successfully offloaded: 169
+Successfully offloaded: 170
+Successfully offloaded: 171
+Successfully offloaded: 172
+Successfully offloaded: 173
+Successfully offloaded: 174
+Successfully offloaded: 175
+Successfully offloaded: 176
+Successfully offloaded: 177
+Successfully offloaded: 178
+Successfully offloaded: 179
+Successfully offloaded: 180
+Successfully offloaded: 181
+Successfully offloaded: 182
+Successfully offloaded: 183
+Successfully offloaded: 184
+Successfully offloaded: 185
+Successfully offloaded: 186
+Successfully offloaded: 187
+Successfully offloaded: 188
+Successfully offloaded: 189
+Successfully offloaded: 190
+Successfully offloaded: 191
+Successfully offloaded: 192
+Successfully offloaded: 193
+Successfully offloaded: 194
+Successfully offloaded: 195
+Successfully offloaded: 196
+Successfully offloaded: 197
+Successfully offloaded: 198
+Successfully offloaded: 199
+Successfully offloaded: 200
+Successfully offloaded: 201
+Successfully offloaded: 202
+Successfully offloaded: 203
+Successfully offloaded: 204
+Successfully offloaded: 205
+Successfully offloaded: 206
+Successfully offloaded: 207
+Successfully offloaded: 208
+Successfully offloaded: 209
+Successfully offloaded: 210
+Successfully offloaded: 211
+Successfully offloaded: 212
+Successfully offloaded: 213
+Successfully offloaded: 214
+Successfully offloaded: 215
+Successfully offloaded: 216
+Successfully offloaded: 217
+Successfully offloaded: 218
+Successfully offloaded: 219
+Successfully offloaded: 220
+Successfully offloaded: 221
+Successfully offloaded: 222
+Successfully offloaded: 223
+Successfully offloaded: 224
+Successfully offloaded: 225
+Successfully offloaded: 226
+Successfully offloaded: 227
+Successfully offloaded: 228
+Successfully offloaded: 229
+Successfully offloaded: 230
+Successfully offloaded: 231
+Successfully offloaded: 232
+Successfully offloaded: 233
+Successfully offloaded: 234
+Successfully offloaded: 235
+Successfully offloaded: 236
+Successfully offloaded: 237
+Successfully offloaded: 238
+Successfully offloaded: 239
+Successfully offloaded: 240
+Successfully offloaded: 241
+Successfully offloaded: 242
+Successfully offloaded: 243
+Successfully offloaded: 244
+Successfully offloaded: 245
+Successfully offloaded: 246
+Successfully offloaded: 247
+Successfully offloaded: 248
+Successfully offloaded: 249
+Successfully offloaded: 250
+Successfully offloaded: 251
+Successfully offloaded: 252
+Successfully offloaded: 253
+Successfully offloaded: 254
+Successfully offloaded: 255
+Successfully offloaded: 256
+Successfully offloaded: 257
+Successfully offloaded: 258
+Successfully offloaded: 259
+Successfully offloaded: 260
+Successfully offloaded: 261
+Successfully offloaded: 262
+Successfully offloaded: 263
+Successfully offloaded: 264
+Successfully offloaded: 265
+Successfully offloaded: 266
+Successfully offloaded: 267
+Successfully offloaded: 268
+Successfully offloaded: 269
+Successfully offloaded: 270
+Successfully offloaded: 271
+Successfully offloaded: 272
+Successfully offloaded: 273
+Successfully offloaded: 274
+Successfully offloaded: 275
+Successfully offloaded: 276
+Successfully offloaded: 277
+Successfully offloaded: 278
+Successfully offloaded: 279
+Successfully offloaded: 280
+Successfully offloaded: 281
+Successfully offloaded: 282
+Successfully offloaded: 283
+Successfully offloaded: 284
+Successfully offloaded: 285
+Successfully offloaded: 286
+Successfully offloaded: 287
+Successfully offloaded: 288
+Successfully offloaded: 289
+Successfully offloaded: 290
+Successfully offloaded: 291
+Successfully offloaded: 292
+Successfully offloaded: 293
+Successfully offloaded: 294
+Successfully offloaded: 295
+Successfully offloaded: 296Loading checkpoint files:  12%|█▎        | 1/8 [01:51<13:03, 111.98s/it]
+Successfully offloaded: 297
+Successfully offloaded: 298
+Successfully offloaded: 299
+Successfully offloaded: 300
+Successfully offloaded: 301
+Successfully offloaded: 302
+Successfully offloaded: 303
+Successfully offloaded: 304
+Successfully offloaded: 305
+Successfully offloaded: 306
+Successfully offloaded: 307
+Successfully offloaded: 308
+Successfully offloaded: 309
+Successfully offloaded: 310
+Successfully offloaded: 311
+Successfully offloaded: 312
+Successfully offloaded: 313
+Successfully offloaded: 314
+Successfully offloaded: 315
+Successfully offloaded: 316
+Successfully offloaded: 317
+Successfully offloaded: 318
+Successfully offloaded: 319
+Successfully offloaded: 320
+Successfully offloaded: 321
+Successfully offloaded: 322
+Successfully offloaded: 323
+Successfully offloaded: 324
+Successfully offloaded: 325
+Successfully offloaded: 326
+Successfully offloaded: 327
+Successfully offloaded: 328
+Successfully offloaded: 329
+Successfully offloaded: 330
+Successfully offloaded: 331
+Successfully offloaded: 332
+Successfully offloaded: 333
+Successfully offloaded: 334
+Successfully offloaded: 335
+Successfully offloaded: 336
+Successfully offloaded: 337
+Successfully offloaded: 338
+Successfully offloaded: 339
+Successfully offloaded: 340
+Successfully offloaded: 341
+Successfully offloaded: 342
+Successfully offloaded: 343
+Successfully offloaded: 344
+Successfully offloaded: 345
+Successfully offloaded: 346
+Successfully offloaded: 347
+Successfully offloaded: 348
+Successfully offloaded: 349
+Successfully offloaded: 350
+Successfully offloaded: 351
+Successfully offloaded: 352
+Successfully offloaded: 353
+Successfully offloaded: 354
+Successfully offloaded: 355
+Successfully offloaded: 356
+Successfully offloaded: 357
+Successfully offloaded: 358
+Successfully offloaded: 359
+Successfully offloaded: 360
+Successfully offloaded: 361
+Successfully offloaded: 362
+Successfully offloaded: 363
+Successfully offloaded: 364
+Successfully offloaded: 365
+Successfully offloaded: 366
+Successfully offloaded: 367
+Successfully offloaded: 368
+Successfully offloaded: 369
+Successfully offloaded: 370
+Successfully offloaded: 371
+Successfully offloaded: 372
+Successfully offloaded: 373
+Successfully offloaded: 374
+Successfully offloaded: 375
+Successfully offloaded: 376
+Successfully offloaded: 377
+Successfully offloaded: 378
+Successfully offloaded: 379
+Successfully offloaded: 380
+Successfully offloaded: 381
+Successfully offloaded: 382
+Successfully offloaded: 383
+Successfully offloaded: 384
+Successfully offloaded: 385
+Successfully offloaded: 386
+Successfully offloaded: 387
+Successfully offloaded: 388
+Successfully offloaded: 389
+Successfully offloaded: 390
+Successfully offloaded: 391
+Successfully offloaded: 392
+Successfully offloaded: 393
+Successfully offloaded: 394
+Successfully offloaded: 395
+Successfully offloaded: 396
+Successfully offloaded: 397
+Successfully offloaded: 398
+Successfully offloaded: 399
+Successfully offloaded: 400
+Successfully offloaded: 401
+Successfully offloaded: 402
+Successfully offloaded: 403
+Successfully offloaded: 404
+Successfully offloaded: 405
+Successfully offloaded: 406
+Successfully offloaded: 407
+Successfully offloaded: 408
+Successfully offloaded: 409
+Successfully offloaded: 410
+Successfully offloaded: 411
+Successfully offloaded: 412
+Successfully offloaded: 413
+Successfully offloaded: 414
+Successfully offloaded: 415
+Successfully offloaded: 416
+Successfully offloaded: 417
+Successfully offloaded: 418
+Successfully offloaded: 419
+Successfully offloaded: 420
+Successfully offloaded: 421
+Successfully offloaded: 422
+Successfully offloaded: 423
+Successfully offloaded: 424
+Successfully offloaded: 425
+Successfully offloaded: 426
+Successfully offloaded: 427
+Successfully offloaded: 428
+Successfully offloaded: 429
+Successfully offloaded: 430
+Successfully offloaded: 431
+Successfully offloaded: 432
+Successfully offloaded: 433
+Successfully offloaded: 434
+Successfully offloaded: 435
+Successfully offloaded: 436
+Successfully offloaded: 437
+Successfully offloaded: 438
+Successfully offloaded: 439
+Successfully offloaded: 440
+Successfully offloaded: 441
+Successfully offloaded: 442
+Successfully offloaded: 443
+Successfully offloaded: 444
+Successfully offloaded: 445
+Successfully offloaded: 446
+Successfully offloaded: 447
+Successfully offloaded: 448
+Successfully offloaded: 449
+Successfully offloaded: 450
+Successfully offloaded: 451
+Successfully offloaded: 452
+Successfully offloaded: 453
+Successfully offloaded: 454
+Successfully offloaded: 455
+Successfully offloaded: 456
+Successfully offloaded: 457
+Successfully offloaded: 458
+Successfully offloaded: 459
+Successfully offloaded: 460
+Successfully offloaded: 461
+Successfully offloaded: 462
+Successfully offloaded: 463
+Successfully offloaded: 464
+Successfully offloaded: 465
+Successfully offloaded: 466
+Successfully offloaded: 467
+Successfully offloaded: 468
+Successfully offloaded: 469
+Successfully offloaded: 470
+Successfully offloaded: 471
+Successfully offloaded: 472
+Successfully offloaded: 473
+Successfully offloaded: 474
+Successfully offloaded: 475
+Successfully offloaded: 476
+Successfully offloaded: 477
+Successfully offloaded: 478
+Successfully offloaded: 479
+Successfully offloaded: 480
+Successfully offloaded: 481
+Successfully offloaded: 482
+Successfully offloaded: 483
+Successfully offloaded: 484
+Successfully offloaded: 485
+Successfully offloaded: 486
+Successfully offloaded: 487
+Successfully offloaded: 488
+Successfully offloaded: 489
+Successfully offloaded: 490
+Successfully offloaded: 491
+Successfully offloaded: 492
+Successfully offloaded: 493
+Successfully offloaded: 494
+Successfully offloaded: 495
+Successfully offloaded: 496
+Successfully offloaded: 497
+Successfully offloaded: 498
+Successfully offloaded: 499
+Successfully offloaded: 500
+Successfully offloaded: 501
+Successfully offloaded: 502
+Successfully offloaded: 503
+Successfully offloaded: 504
+Successfully offloaded: 505
+Successfully offloaded: 506
+Successfully offloaded: 507
+Successfully offloaded: 508
+Successfully offloaded: 509
+Successfully offloaded: 510
+Successfully offloaded: 511
+Successfully offloaded: 512
+Successfully offloaded: 513
+Successfully offloaded: 514
+Successfully offloaded: 515
+Successfully offloaded: 516
+Successfully offloaded: 517
+Successfully offloaded: 518
+Successfully offloaded: 519
+Successfully offloaded: 520
+Successfully offloaded: 521
+Successfully offloaded: 522
+Successfully offloaded: 523
+Successfully offloaded: 524
+Successfully offloaded: 525
+Successfully offloaded: 526
+Successfully offloaded: 527
+Successfully offloaded: 528
+Successfully offloaded: 529
+Successfully offloaded: 530
+Successfully offloaded: 531
+Successfully offloaded: 532
+Successfully offloaded: 533
+Successfully offloaded: 534
+Successfully offloaded: 535
+Successfully offloaded: 536
+Successfully offloaded: 537
+Successfully offloaded: 538
+Successfully offloaded: 539
+Successfully offloaded: 540
+Successfully offloaded: 541
+Successfully offloaded: 542
+Successfully offloaded: 543
+Successfully offloaded: 544
+Successfully offloaded: 545
+Successfully offloaded: 546
+Successfully offloaded: 547
+Successfully offloaded: 548
+Successfully offloaded: 549
+Successfully offloaded: 550
+Successfully offloaded: 551
+Successfully offloaded: 552
+Successfully offloaded: 553
+Successfully offloaded: 554
+Successfully offloaded: 555
+Successfully offloaded: 556
+Successfully offloaded: 557
+Successfully offloaded: 558
+Successfully offloaded: 559
+Successfully offloaded: 560
+Successfully offloaded: 561
+Successfully offloaded: 562
+Successfully offloaded: 563
+Successfully offloaded: 564
+Successfully offloaded: 565
+Successfully offloaded: 566
+Successfully offloaded: 567
+Successfully offloaded: 568
+Successfully offloaded: 569
+Successfully offloaded: 570
+Successfully offloaded: 571
+Successfully offloaded: 572
+Successfully offloaded: 573
+Successfully offloaded: 574
+Successfully offloaded: 575
+Successfully offloaded: 576
+Successfully offloaded: 577
+Successfully offloaded: 578
+Successfully offloaded: 579
+Successfully offloaded: 580
+Successfully offloaded: 581
+Successfully offloaded: 582
+Successfully offloaded: 583
+Successfully offloaded: 584
+Successfully offloaded: 585
+Successfully offloaded: 586
+Successfully offloaded: 587
+Successfully offloaded: 588
+Successfully offloaded: 589
+Successfully offloaded: 590
+Successfully offloaded: 591
+Successfully offloaded: 592
+Successfully offloaded: 593
+Successfully offloaded: 594
+Successfully offloaded: 595
+Successfully offloaded: 596
+Successfully offloaded: 597
+Successfully offloaded: 598
+Successfully offloaded: 599
+Successfully offloaded: 600
+Successfully offloaded: 601
+Successfully offloaded: 602
+Successfully offloaded: 603
+Successfully offloaded: 604
+Successfully offloaded: 605
+Successfully offloaded: 606
+Successfully offloaded: 607
+Successfully offloaded: 608
+Successfully offloaded: 609
+Successfully offloaded: 610
+Successfully offloaded: 611
+Successfully offloaded: 612
+Successfully offloaded: 613
+Successfully offloaded: 614
+Successfully offloaded: 615
+Successfully offloaded: 616
+Successfully offloaded: 617
+Successfully offloaded: 618
+Successfully offloaded: 619
+Successfully offloaded: 620
+Successfully offloaded: 621
+Successfully offloaded: 622
+Successfully offloaded: 623
+Successfully offloaded: 624
+Successfully offloaded: 625
+Successfully offloaded: 626
+Successfully offloaded: 627
+Successfully offloaded: 628
+Successfully offloaded: 629
+Successfully offloaded: 630
+Successfully offloaded: 631
+Successfully offloaded: 632
+Successfully offloaded: 633
+Successfully offloaded: 634
+Successfully offloaded: 635
+Successfully offloaded: 636
+Successfully offloaded: 637
+Successfully offloaded: 638
+Successfully offloaded: 639
+Successfully offloaded: 640
+Successfully offloaded: 641
+Successfully offloaded: 642
+Successfully offloaded: 643
+Successfully offloaded: 644
+Successfully offloaded: 645
+Successfully offloaded: 646
+Successfully offloaded: 647
+Successfully offloaded: 648
+Successfully offloaded: 649
+Successfully offloaded: 650
+Successfully offloaded: 651
+Successfully offloaded: 652
+Successfully offloaded: 653
+Successfully offloaded: 654
+Successfully offloaded: 655
+Successfully offloaded: 656
+Successfully offloaded: 657
+Successfully offloaded: 658
+Successfully offloaded: 659
+Successfully offloaded: 660
+Successfully offloaded: 661
+Successfully offloaded: 662
+Successfully offloaded: 663
+Successfully offloaded: 664
+Successfully offloaded: 665
+Successfully offloaded: 666
+Successfully offloaded: 667
+Successfully offloaded: 668
+Successfully offloaded: 669
+Successfully offloaded: 670
+Successfully offloaded: 671
+Successfully offloaded: 672
+Successfully offloaded: 673
+Successfully offloaded: 674
+Successfully offloaded: 675
+Successfully offloaded: 676
+Successfully offloaded: 677
+Successfully offloaded: 678
+Successfully offloaded: 679
+Successfully offloaded: 680
+Successfully offloaded: 681
+Successfully offloaded: 682
+Successfully offloaded: 683
+Successfully offloaded: 684
+Successfully offloaded: 685
+Successfully offloaded: 686
+Successfully offloaded: 687
+Successfully offloaded: 688
+Successfully offloaded: 689
+Successfully offloaded: 690
+Successfully offloaded: 691
+Successfully offloaded: 692
+Successfully offloaded: 693
+Successfully offloaded: 694
+Successfully offloaded: 695
+Successfully offloaded: 696
+Successfully offloaded: 697
+Successfully offloaded: 698
+Successfully offloaded: 699
+Successfully offloaded: 700
+Successfully offloaded: 701
+Successfully offloaded: 702
+Successfully offloaded: 703
+Successfully offloaded: 704
+Successfully offloaded: 705
+Successfully offloaded: 706
+Successfully offloaded: 707
+Successfully offloaded: 708
+Successfully offloaded: 709
+Successfully offloaded: 710
+Successfully offloaded: 711
+Successfully offloaded: 712
+Successfully offloaded: 713
+Successfully offloaded: 714
+Successfully offloaded: 715
+Successfully offloaded: 716
+Successfully offloaded: 717
+Successfully offloaded: 718
+Successfully offloaded: 719
+Successfully offloaded: 720
+Successfully offloaded: 721
+Successfully offloaded: 722
+Successfully offloaded: 723
+Successfully offloaded: 724
+Successfully offloaded: 725
+Successfully offloaded: 726
+Successfully offloaded: 727
+Successfully offloaded: 728
+Successfully offloaded: 729
+Successfully offloaded: 730
+Successfully offloaded: 731
+Successfully offloaded: 732
+Successfully offloaded: 733
+Successfully offloaded: 734
+Successfully offloaded: 735
+Successfully offloaded: 736
+Successfully offloaded: 737
+Successfully offloaded: 738
+Successfully offloaded: 739
+Successfully offloaded: 740
+Successfully offloaded: 741
+Successfully offloaded: 742
+Successfully offloaded: 743
+Successfully offloaded: 744
+Successfully offloaded: 745
+Successfully offloaded: 746
+Successfully offloaded: 747
+Successfully offloaded: 748
+Successfully offloaded: 749
+Successfully offloaded: 750
+Successfully offloaded: 751
+Successfully offloaded: 752
+Successfully offloaded: 753
+Successfully offloaded: 754
+Successfully offloaded: 755
+Successfully offloaded: 756
+Successfully offloaded: 757
+Successfully offloaded: 758
+Successfully offloaded: 759
+Successfully offloaded: 760
+Successfully offloaded: 761
+Successfully offloaded: 762
+Successfully offloaded: 763
+Successfully offloaded: 764
+Successfully offloaded: 765
+Successfully offloaded: 766
+Successfully offloaded: 767
+Successfully offloaded: 768
+Successfully offloaded: 769
+Successfully offloaded: 770
+Successfully offloaded: 771
+Successfully offloaded: 772
+Successfully offloaded: 773
+Successfully offloaded: 774
+Successfully offloaded: 775
+Successfully offloaded: 776
+Successfully offloaded: 777
+Successfully offloaded: 778
+Successfully offloaded: 779
+Successfully offloaded: 780
+Successfully offloaded: 781
+Successfully offloaded: 782
+Successfully offloaded: 783
+Successfully offloaded: 784
+Successfully offloaded: 785
+Successfully offloaded: 786
+Successfully offloaded: 787
+Successfully offloaded: 788
+Successfully offloaded: 789
+Successfully offloaded: 790
+Successfully offloaded: 791
+Successfully offloaded: 792
+Successfully offloaded: 793
+Successfully offloaded: 794
+Successfully offloaded: 795
+Successfully offloaded: 796
+Successfully offloaded: 797
+Successfully offloaded: 798
+Successfully offloaded: 799
+Successfully offloaded: 800
+Successfully offloaded: 801
+Successfully offloaded: 802
+Successfully offloaded: 803
+Successfully offloaded: 804
+Successfully offloaded: 805
+Successfully offloaded: 806
+Successfully offloaded: 807
+Successfully offloaded: 808
+Successfully offloaded: 809
+Successfully offloaded: 810
+Successfully offloaded: 811
+Successfully offloaded: 812
+Successfully offloaded: 813
+Successfully offloaded: 814
+Successfully offloaded: 815
+Successfully offloaded: 816
+Successfully offloaded: 817
+Successfully offloaded: 818
+Successfully offloaded: 819
+Successfully offloaded: 820
+Successfully offloaded: 821
+Successfully offloaded: 822
+Successfully offloaded: 823
+Successfully offloaded: 824
+Successfully offloaded: 825
+Successfully offloaded: 826
+Successfully offloaded: 827
+Successfully offloaded: 828
+Successfully offloaded: 829
+Successfully offloaded: 830
+Successfully offloaded: 831
+Successfully offloaded: 832
+Successfully offloaded: 833
+Successfully offloaded: 834
+Successfully offloaded: 835
+Successfully offloaded: 836
+Successfully offloaded: 837
+Successfully offloaded: 838
+Successfully offloaded: 839
+Successfully offloaded: 840
+Successfully offloaded: 841
+Successfully offloaded: 842
+Successfully offloaded: 843
+Successfully offloaded: 844
+Successfully offloaded: 845
+Successfully offloaded: 846
+Successfully offloaded: 847
+Successfully offloaded: 848
+Successfully offloaded: 849
+Successfully offloaded: 850
+Successfully offloaded: 851
+Successfully offloaded: 852
+Successfully offloaded: 853
+Successfully offloaded: 854
+Successfully offloaded: 855
+Successfully offloaded: 856
+Successfully offloaded: 857
+Successfully offloaded: 858
+Successfully offloaded: 859
+Successfully offloaded: 860
+Successfully offloaded: 861
+Successfully offloaded: 862
+Successfully offloaded: 863
+Successfully offloaded: 864
+Successfully offloaded: 865
+Successfully offloaded: 866
+Successfully offloaded: 867
+Successfully offloaded: 868
+Successfully offloaded: 869
+Successfully offloaded: 870
+Successfully offloaded: 871
+Successfully offloaded: 872
+Successfully offloaded: 873
+Successfully offloaded: 874
+Successfully offloaded: 875
+Successfully offloaded: 876
+Successfully offloaded: 877
+Successfully offloaded: 878
+Successfully offloaded: 879
+Successfully offloaded: 880
+Successfully offloaded: 881
+Successfully offloaded: 882
+Successfully offloaded: 883
+Successfully offloaded: 884
+Successfully offloaded: 885
+Successfully offloaded: 886
+Successfully offloaded: 887
+Successfully offloaded: 888
+Successfully offloaded: 889
+Successfully offloaded: 890
+Successfully offloaded: 891
+Successfully offloaded: 892
+Successfully offloaded: 893
+Successfully offloaded: 894
+Successfully offloaded: 895
+Successfully offloaded: 896
+Successfully offloaded: 897
+Successfully offloaded: 898
+Successfully offloaded: 899
+Successfully offloaded: 900
+Successfully offloaded: 901
+Successfully offloaded: 902
+Successfully offloaded: 903
+Successfully offloaded: 904
+Successfully offloaded: 905
+Successfully offloaded: 906
+Successfully offloaded: 907
+Successfully offloaded: 908
+Successfully offloaded: 909
+Successfully offloaded: 910
+Successfully offloaded: 911
+Successfully offloaded: 912
+Successfully offloaded: 913
+Successfully offloaded: 914
+Successfully offloaded: 915
+Successfully offloaded: 916
+Successfully offloaded: 917
+Successfully offloaded: 918
+Successfully offloaded: 919
+Successfully offloaded: 920
+Successfully offloaded: 921
+Successfully offloaded: 922
+Successfully offloaded: 923
+Successfully offloaded: 924
+Successfully offloaded: 925
+Successfully offloaded: 926
+Successfully offloaded: 927
+Successfully offloaded: 928
+Successfully offloaded: 929
+Successfully offloaded: 930
+Successfully offloaded: 931
+Successfully offloaded: 932
+Successfully offloaded: 933
+Successfully offloaded: 934
+Successfully offloaded: 935
+Successfully offloaded: 936
+Successfully offloaded: 937
+Successfully offloaded: 938
+Successfully offloaded: 939
+Successfully offloaded: 940
+Successfully offloaded: 941
+Successfully offloaded: 942
+Successfully offloaded: 943
+Successfully offloaded: 944
+Successfully offloaded: 945
+Successfully offloaded: 946
+Successfully offloaded: 947
+Successfully offloaded: 948
+Successfully offloaded: 949
+Successfully offloaded: 950
+Successfully offloaded: 951
+Successfully offloaded: 952
+Successfully offloaded: 953
+Successfully offloaded: 954
+Successfully offloaded: 955
+Successfully offloaded: 956
+Successfully offloaded: 957
+Successfully offloaded: 958
+Successfully offloaded: 959
+Successfully offloaded: 960
+Successfully offloaded: 961
+Successfully offloaded: 962
+Successfully offloaded: 963
+Successfully offloaded: 964
+Successfully offloaded: 965
+Successfully offloaded: 966
+Successfully offloaded: 967
+Successfully offloaded: 968
+Successfully offloaded: 969
+Successfully offloaded: 970
+Successfully offloaded: 971
+Successfully offloaded: 972
+Successfully offloaded: 973
+Successfully offloaded: 974
+Successfully offloaded: 975
+Successfully offloaded: 976
+Successfully offloaded: 977
+Successfully offloaded: 978
+Successfully offloaded: 979
+Successfully offloaded: 980
+Successfully offloaded: 981
+Successfully offloaded: 982
+Successfully offloaded: 983
+Successfully offloaded: 984
+Successfully offloaded: 985
+Successfully offloaded: 986
+Successfully offloaded: 987
+Successfully offloaded: 988
+Successfully offloaded: 989
+Successfully offloaded: 990
+Successfully offloaded: 991
+Successfully offloaded: 992
+Successfully offloaded: 993
+Successfully offloaded: 994
+Successfully offloaded: 995
+Successfully offloaded: 996
+Successfully offloaded: 997
+Successfully offloaded: 998
+Successfully offloaded: 999
+Successfully offloaded: 1000
+Successfully offloaded: 1001
+Successfully offloaded: 1002
+Successfully offloaded: 1003
+Successfully offloaded: 1004
+Successfully offloaded: 1005
+Successfully offloaded: 1006
+Successfully offloaded: 1007
+Successfully offloaded: 1008
+Successfully offloaded: 1009
+Successfully offloaded: 1010
+Successfully offloaded: 1011
+Successfully offloaded: 1012
+Successfully offloaded: 1013
+Successfully offloaded: 1014
+Successfully offloaded: 1015
+Successfully offloaded: 1016
+Successfully offloaded: 1017
+Successfully offloaded: 1018
+Successfully offloaded: 1019
+Successfully offloaded: 1020
+Successfully offloaded: 1021
+Successfully offloaded: 1022
+Successfully offloaded: 1023
+Successfully offloaded: 1024
+Successfully offloaded: 1025
+Successfully offloaded: 1026
+Successfully offloaded: 1027
+Successfully offloaded: 1028
+Successfully offloaded: 1029
+Successfully offloaded: 1030
+Successfully offloaded: 1031
+Successfully offloaded: 1032
+Successfully offloaded: 1033
+Successfully offloaded: 1034
+Successfully offloaded: 1035
+Successfully offloaded: 1036
+Successfully offloaded: 1037
+Successfully offloaded: 1038
+Successfully offloaded: 1039
+Successfully offloaded: 1040
+Successfully offloaded: 1041
+Successfully offloaded: 1042
+Successfully offloaded: 1043
+Successfully offloaded: 1044
+Successfully offloaded: 1045
+Successfully offloaded: 1046
+Successfully offloaded: 1047
+Successfully offloaded: 1048
+Successfully offloaded: 1049
+Successfully offloaded: 1050
+Successfully offloaded: 1051
+Successfully offloaded: 1052
+Successfully offloaded: 1053
+Successfully offloaded: 1054
+Successfully offloaded: 1055
+Successfully offloaded: 1056
+Successfully offloaded: 1057
+Successfully offloaded: 1058
+Successfully offloaded: 1059
+Successfully offloaded: 1060
+Successfully offloaded: 1061
+Successfully offloaded: 1062
+Successfully offloaded: 1063
+Successfully offloaded: 1064
+Successfully offloaded: 1065
+Successfully offloaded: 1066
+Successfully offloaded: 1067
+Successfully offloaded: 1068
+Successfully offloaded: 1069
+Successfully offloaded: 1070
+Successfully offloaded: 1071
+Successfully offloaded: 1072
+Successfully offloaded: 1073
+Successfully offloaded: 1074
+Successfully offloaded: 1075
+Successfully offloaded: 1076
+Successfully offloaded: 1077
+Successfully offloaded: 1078
+Successfully offloaded: 1079
+Successfully offloaded: 1080
+Successfully offloaded: 1081
+Successfully offloaded: 1082
+Successfully offloaded: 1083
+Successfully offloaded: 1084
+Successfully offloaded: 1085
+Successfully offloaded: 1086
+Successfully offloaded: 1087
+Successfully offloaded: 1088
+Successfully offloaded: 1089
+Successfully offloaded: 1090
+Successfully offloaded: 1091
+Successfully offloaded: 1092
+Successfully offloaded: 1093
+Successfully offloaded: 1094
+Successfully offloaded: 1095
+Successfully offloaded: 1096
+Successfully offloaded: 1097
+Successfully offloaded: 1098
+Successfully offloaded: 1099
+Successfully offloaded: 1100
+Successfully offloaded: 1101
+Successfully offloaded: 1102
+Successfully offloaded: 1103
+Successfully offloaded: 1104
+Successfully offloaded: 1105
+Successfully offloaded: 1106
+Successfully offloaded: 1107
+Successfully offloaded: 1108
+Successfully offloaded: 1109
+Successfully offloaded: 1110
+Successfully offloaded: 1111
+Successfully offloaded: 1112
+Successfully offloaded: 1113
+Successfully offloaded: 1114
+Successfully offloaded: 1115
+Successfully offloaded: 1116
+Successfully offloaded: 1117
+Successfully offloaded: 1118
+Successfully offloaded: 1119
+Successfully offloaded: 1120
+Successfully offloaded: 1121
+Successfully offloaded: 1122
+Successfully offloaded: 1123
+Successfully offloaded: 1124
+Successfully offloaded: 1125
+Successfully offloaded: 1126
+Successfully offloaded: 1127
+Successfully offloaded: 1128
+Successfully offloaded: 1129
+Successfully offloaded: 1130
+Successfully offloaded: 1131
+Successfully offloaded: 1132
+Successfully offloaded: 1133
+Successfully offloaded: 1134
+Successfully offloaded: 1135
+Successfully offloaded: 1136
+Successfully offloaded: 1137
+Successfully offloaded: 1138
+Successfully offloaded: 1139
+Successfully offloaded: 1140
+Successfully offloaded: 1141
+Successfully offloaded: 1142
+Successfully offloaded: 1143
+Successfully offloaded: 1144
+Successfully offloaded: 1145
+Successfully offloaded: 1146
+Successfully offloaded: 1147
+Successfully offloaded: 1148
+Successfully offloaded: 1149
+Successfully offloaded: 1150
+Successfully offloaded: 1151
+Successfully offloaded: 1152
+Successfully offloaded: 1153
+Successfully offloaded: 1154
+Successfully offloaded: 1155
+Successfully offloaded: 1156
+Successfully offloaded: 1157
+Successfully offloaded: 1158
+Successfully offloaded: 1159
+Successfully offloaded: 1160
+Successfully offloaded: 1161
+Successfully offloaded: 1162
+Successfully offloaded: 1163
+Successfully offloaded: 1164
+Successfully offloaded: 1165
+Successfully offloaded: 1166
+Successfully offloaded: 1167
+Successfully offloaded: 1168
+Successfully offloaded: 1169Loading checkpoint files:  25%|██▌       | 2/8 [03:50<11:31, 115.17s/it]
+Successfully offloaded: 1170
+Successfully offloaded: 1171
+Successfully offloaded: 1172
+Successfully offloaded: 1173
+Successfully offloaded: 1174
+Successfully offloaded: 1175
+Successfully offloaded: 1176
+Successfully offloaded: 1177
+Successfully offloaded: 1178
+Successfully offloaded: 1179
+Successfully offloaded: 1180
+Successfully offloaded: 1181
+Successfully offloaded: 1182
+Successfully offloaded: 1183
+Successfully offloaded: 1184
+Successfully offloaded: 1185
+Successfully offloaded: 1186
+Successfully offloaded: 1187
+Successfully offloaded: 1188
+Successfully offloaded: 1189
+Successfully offloaded: 1190
+Successfully offloaded: 1191
+Successfully offloaded: 1192
+Successfully offloaded: 1193
+Successfully offloaded: 1194
+Successfully offloaded: 1195
+Successfully offloaded: 1196
+Successfully offloaded: 1197
+Successfully offloaded: 1198
+Successfully offloaded: 1199
+Successfully offloaded: 1200
+Successfully offloaded: 1201
+Successfully offloaded: 1202
+Successfully offloaded: 1203
+Successfully offloaded: 1204
+Successfully offloaded: 1205
+Successfully offloaded: 1206
+Successfully offloaded: 1207
+Successfully offloaded: 1208
+Successfully offloaded: 1209
+Successfully offloaded: 1210
+Successfully offloaded: 1211
+Successfully offloaded: 1212
+Successfully offloaded: 1213
+Successfully offloaded: 1214
+Successfully offloaded: 1215
+Successfully offloaded: 1216
+Successfully offloaded: 1217
+Successfully offloaded: 1218
+Successfully offloaded: 1219
+Successfully offloaded: 1220
+Successfully offloaded: 1221
+Successfully offloaded: 1222
+Successfully offloaded: 1223
+Successfully offloaded: 1224
+Successfully offloaded: 1225
+Successfully offloaded: 1226
+Successfully offloaded: 1227
+Successfully offloaded: 1228
+Successfully offloaded: 1229
+Successfully offloaded: 1230
+Successfully offloaded: 1231
+Successfully offloaded: 1232
+Successfully offloaded: 1233
+Successfully offloaded: 1234
+Successfully offloaded: 1235
+Successfully offloaded: 1236
+Successfully offloaded: 1237
+Successfully offloaded: 1238
+Successfully offloaded: 1239
+Successfully offloaded: 1240
+Successfully offloaded: 1241
+Successfully offloaded: 1242
+Successfully offloaded: 1243
+Successfully offloaded: 1244
+Successfully offloaded: 1245
+Successfully offloaded: 1246
+Successfully offloaded: 1247
+Successfully offloaded: 1248
+Successfully offloaded: 1249
+Successfully offloaded: 1250
+Successfully offloaded: 1251
+Successfully offloaded: 1252
+Successfully offloaded: 1253
+Successfully offloaded: 1254
+Successfully offloaded: 1255
+Successfully offloaded: 1256
+Successfully offloaded: 1257
+Successfully offloaded: 1258
+Successfully offloaded: 1259
+Successfully offloaded: 1260
+Successfully offloaded: 1261
+Successfully offloaded: 1262
+Successfully offloaded: 1263
+Successfully offloaded: 1264
+Successfully offloaded: 1265
+Successfully offloaded: 1266
+Successfully offloaded: 1267
+Successfully offloaded: 1268
+Successfully offloaded: 1269
+Successfully offloaded: 1270
+Successfully offloaded: 1271
+Successfully offloaded: 1272
+Successfully offloaded: 1273
+Successfully offloaded: 1274
+Successfully offloaded: 1275
+Successfully offloaded: 1276
+Successfully offloaded: 1277
+Successfully offloaded: 1278
+Successfully offloaded: 1279
+Successfully offloaded: 1280
+Successfully offloaded: 1281
+Successfully offloaded: 1282
+Successfully offloaded: 1283
+Successfully offloaded: 1284
+Successfully offloaded: 1285
+Successfully offloaded: 1286
+Successfully offloaded: 1287
+Successfully offloaded: 1288
+Successfully offloaded: 1289
+Successfully offloaded: 1290
+Successfully offloaded: 1291
+Successfully offloaded: 1292
+Successfully offloaded: 1293
+Successfully offloaded: 1294
+Successfully offloaded: 1295
+Successfully offloaded: 1296
+Successfully offloaded: 1297
+Successfully offloaded: 1298
+Successfully offloaded: 1299
+Successfully offloaded: 1300
+Successfully offloaded: 1301
+Successfully offloaded: 1302
+Successfully offloaded: 1303
+Successfully offloaded: 1304
+Successfully offloaded: 1305
+Successfully offloaded: 1306
+Successfully offloaded: 1307
+Successfully offloaded: 1308
+Successfully offloaded: 1309
+Successfully offloaded: 1310
+Successfully offloaded: 1311
+Successfully offloaded: 1312
+Successfully offloaded: 1313
+Successfully offloaded: 1314
+Successfully offloaded: 1315
+Successfully offloaded: 1316
+Successfully offloaded: 1317
+Successfully offloaded: 1318
+Successfully offloaded: 1319
+Successfully offloaded: 1320
+Successfully offloaded: 1321
+Successfully offloaded: 1322
+Successfully offloaded: 1323
+Successfully offloaded: 1324
+Successfully offloaded: 1325
+Successfully offloaded: 1326
+Successfully offloaded: 1327
+Successfully offloaded: 1328
+Successfully offloaded: 1329
+Successfully offloaded: 1330
+Successfully offloaded: 1331
+Successfully offloaded: 1332
+Successfully offloaded: 1333
+Successfully offloaded: 1334
+Successfully offloaded: 1335
+Successfully offloaded: 1336
+Successfully offloaded: 1337
+Successfully offloaded: 1338
+Successfully offloaded: 1339
+Successfully offloaded: 1340
+Successfully offloaded: 1341
+Successfully offloaded: 1342
+Successfully offloaded: 1343
+Successfully offloaded: 1344
+Successfully offloaded: 1345
+Successfully offloaded: 1346
+Successfully offloaded: 1347
+Successfully offloaded: 1348
+Successfully offloaded: 1349
+Successfully offloaded: 1350
+Successfully offloaded: 1351
+Successfully offloaded: 1352
+Successfully offloaded: 1353
+Successfully offloaded: 1354
+Successfully offloaded: 1355
+Successfully offloaded: 1356
+Successfully offloaded: 1357
+Successfully offloaded: 1358
+Successfully offloaded: 1359
+Successfully offloaded: 1360
+Successfully offloaded: 1361
+Successfully offloaded: 1362
+Successfully offloaded: 1363
+Successfully offloaded: 1364
+Successfully offloaded: 1365
+Successfully offloaded: 1366
+Successfully offloaded: 1367
+Successfully offloaded: 1368
+Successfully offloaded: 1369
+Successfully offloaded: 1370
+Successfully offloaded: 1371
+Successfully offloaded: 1372
+Successfully offloaded: 1373
+Successfully offloaded: 1374
+Successfully offloaded: 1375
+Successfully offloaded: 1376
+Successfully offloaded: 1377
+Successfully offloaded: 1378
+Successfully offloaded: 1379
+Successfully offloaded: 1380
+Successfully offloaded: 1381
+Successfully offloaded: 1382
+Successfully offloaded: 1383
+Successfully offloaded: 1384
+Successfully offloaded: 1385
+Successfully offloaded: 1386
+Successfully offloaded: 1387
+Successfully offloaded: 1388
+Successfully offloaded: 1389
+Successfully offloaded: 1390
+Successfully offloaded: 1391
+Successfully offloaded: 1392
+Successfully offloaded: 1393
+Successfully offloaded: 1394
+Successfully offloaded: 1395
+Successfully offloaded: 1396
+Successfully offloaded: 1397
+Successfully offloaded: 1398
+Successfully offloaded: 1399
+Successfully offloaded: 1400
+Successfully offloaded: 1401
+Successfully offloaded: 1402
+Successfully offloaded: 1403
+Successfully offloaded: 1404
+Successfully offloaded: 1405
+Successfully offloaded: 1406
+Successfully offloaded: 1407
+Successfully offloaded: 1408
+Successfully offloaded: 1409
+Successfully offloaded: 1410
+Successfully offloaded: 1411
+Successfully offloaded: 1412
+Successfully offloaded: 1413
+Successfully offloaded: 1414
+Successfully offloaded: 1415
+Successfully offloaded: 1416
+Successfully offloaded: 1417
+Successfully offloaded: 1418
+Successfully offloaded: 1419
+Successfully offloaded: 1420
+Successfully offloaded: 1421
+Successfully offloaded: 1422
+Successfully offloaded: 1423
+Successfully offloaded: 1424
+Successfully offloaded: 1425
+Successfully offloaded: 1426
+Successfully offloaded: 1427
+Successfully offloaded: 1428
+Successfully offloaded: 1429
+Successfully offloaded: 1430
+Successfully offloaded: 1431
+Successfully offloaded: 1432
+Successfully offloaded: 1433
+Successfully offloaded: 1434
+Successfully offloaded: 1435
+Successfully offloaded: 1436
+Successfully offloaded: 1437
+Successfully offloaded: 1438
+Successfully offloaded: 1439
+Successfully offloaded: 1440
+Successfully offloaded: 1441
+Successfully offloaded: 1442
+Successfully offloaded: 1443
+Successfully offloaded: 1444
+Successfully offloaded: 1445
+Successfully offloaded: 1446
+Successfully offloaded: 1447
+Successfully offloaded: 1448
+Successfully offloaded: 1449
+Successfully offloaded: 1450
+Successfully offloaded: 1451
+Successfully offloaded: 1452
+Successfully offloaded: 1453
+Successfully offloaded: 1454
+Successfully offloaded: 1455
+Successfully offloaded: 1456
+Successfully offloaded: 1457
+Successfully offloaded: 1458
+Successfully offloaded: 1459
+Successfully offloaded: 1460
+Successfully offloaded: 1461
+Successfully offloaded: 1462
+Successfully offloaded: 1463
+Successfully offloaded: 1464
+Successfully offloaded: 1465
+Successfully offloaded: 1466
+Successfully offloaded: 1467
+Successfully offloaded: 1468
+Successfully offloaded: 1469
+Successfully offloaded: 1470
+Successfully offloaded: 1471
+Successfully offloaded: 1472
+Successfully offloaded: 1473
+Successfully offloaded: 1474
+Successfully offloaded: 1475
+Successfully offloaded: 1476
+Successfully offloaded: 1477
+Successfully offloaded: 1478
+Successfully offloaded: 1479
+Successfully offloaded: 1480
+Successfully offloaded: 1481
+Successfully offloaded: 1482
+Successfully offloaded: 1483
+Successfully offloaded: 1484
+Successfully offloaded: 1485
+Successfully offloaded: 1486
+Successfully offloaded: 1487
+Successfully offloaded: 1488
+Successfully offloaded: 1489
+Successfully offloaded: 1490
+Successfully offloaded: 1491
+Successfully offloaded: 1492
+Successfully offloaded: 1493
+Successfully offloaded: 1494
+Successfully offloaded: 1495
+Successfully offloaded: 1496
+Successfully offloaded: 1497
+Successfully offloaded: 1498
+Successfully offloaded: 1499
+Successfully offloaded: 1500
+Successfully offloaded: 1501
+Successfully offloaded: 1502
+Successfully offloaded: 1503
+Successfully offloaded: 1504
+Successfully offloaded: 1505
+Successfully offloaded: 1506
+Successfully offloaded: 1507
+Successfully offloaded: 1508
+Successfully offloaded: 1509
+Successfully offloaded: 1510
+Successfully offloaded: 1511
+Successfully offloaded: 1512
+Successfully offloaded: 1513
+Successfully offloaded: 1514
+Successfully offloaded: 1515
+Successfully offloaded: 1516
+Successfully offloaded: 1517
+Successfully offloaded: 1518
+Successfully offloaded: 1519
+Successfully offloaded: 1520
+Successfully offloaded: 1521
+Successfully offloaded: 1522
+Successfully offloaded: 1523
+Successfully offloaded: 1524
+Successfully offloaded: 1525
+Successfully offloaded: 1526
+Successfully offloaded: 1527
+Successfully offloaded: 1528
+Successfully offloaded: 1529
+Successfully offloaded: 1530
+Successfully offloaded: 1531
+Successfully offloaded: 1532
+Successfully offloaded: 1533
+Successfully offloaded: 1534
+Successfully offloaded: 1535
+Successfully offloaded: 1536
+Successfully offloaded: 1537
+Successfully offloaded: 1538
+Successfully offloaded: 1539
+Successfully offloaded: 1540
+Successfully offloaded: 1541
+Successfully offloaded: 1542
+Successfully offloaded: 1543
+Successfully offloaded: 1544
+Successfully offloaded: 1545
+Successfully offloaded: 1546
+Successfully offloaded: 1547
+Successfully offloaded: 1548
+Successfully offloaded: 1549
+Successfully offloaded: 1550
+Successfully offloaded: 1551
+Successfully offloaded: 1552
+Successfully offloaded: 1553
+Successfully offloaded: 1554
+Successfully offloaded: 1555
+Successfully offloaded: 1556
+Successfully offloaded: 1557
+Successfully offloaded: 1558
+Successfully offloaded: 1559
+Successfully offloaded: 1560
+Successfully offloaded: 1561
+Successfully offloaded: 1562
+Successfully offloaded: 1563
+Successfully offloaded: 1564
+Successfully offloaded: 1565
+Successfully offloaded: 1566
+Successfully offloaded: 1567
+Successfully offloaded: 1568
+Successfully offloaded: 1569
+Successfully offloaded: 1570
+Successfully offloaded: 1571
+Successfully offloaded: 1572
+Successfully offloaded: 1573
+Successfully offloaded: 1574
+Successfully offloaded: 1575
+Successfully offloaded: 1576
+Successfully offloaded: 1577
+Successfully offloaded: 1578
+Successfully offloaded: 1579
+Successfully offloaded: 1580
+Successfully offloaded: 1581
+Successfully offloaded: 1582
+Successfully offloaded: 1583
+Successfully offloaded: 1584
+Successfully offloaded: 1585
+Successfully offloaded: 1586
+Successfully offloaded: 1587
+Successfully offloaded: 1588
+Successfully offloaded: 1589
+Successfully offloaded: 1590
+Successfully offloaded: 1591
+Successfully offloaded: 1592
+Successfully offloaded: 1593
+Successfully offloaded: 1594
+Successfully offloaded: 1595
+Successfully offloaded: 1596
+Successfully offloaded: 1597
+Successfully offloaded: 1598
+Successfully offloaded: 1599
+Successfully offloaded: 1600
+Successfully offloaded: 1601
+Successfully offloaded: 1602
+Successfully offloaded: 1603
+Successfully offloaded: 1604
+Successfully offloaded: 1605
+Successfully offloaded: 1606
+Successfully offloaded: 1607
+Successfully offloaded: 1608
+Successfully offloaded: 1609
+Successfully offloaded: 1610
+Successfully offloaded: 1611
+Successfully offloaded: 1612
+Successfully offloaded: 1613
+Successfully offloaded: 1614
+Successfully offloaded: 1615
+Successfully offloaded: 1616
+Successfully offloaded: 1617
+Successfully offloaded: 1618
+Successfully offloaded: 1619
+Successfully offloaded: 1620
+Successfully offloaded: 1621
+Successfully offloaded: 1622
+Successfully offloaded: 1623
+Successfully offloaded: 1624
+Successfully offloaded: 1625
+Successfully offloaded: 1626
+Successfully offloaded: 1627
+Successfully offloaded: 1628
+Successfully offloaded: 1629
+Successfully offloaded: 1630
+Successfully offloaded: 1631
+Successfully offloaded: 1632
+Successfully offloaded: 1633
+Successfully offloaded: 1634
+Successfully offloaded: 1635
+Successfully offloaded: 1636
+Successfully offloaded: 1637
+Successfully offloaded: 1638
+Successfully offloaded: 1639
+Successfully offloaded: 1640
+Successfully offloaded: 1641
+Successfully offloaded: 1642
+Successfully offloaded: 1643
+Successfully offloaded: 1644
+Successfully offloaded: 1645
+Successfully offloaded: 1646
+Successfully offloaded: 1647
+Successfully offloaded: 1648
+Successfully offloaded: 1649
+Successfully offloaded: 1650
+Successfully offloaded: 1651
+Successfully offloaded: 1652
+Successfully offloaded: 1653
+Successfully offloaded: 1654
+Successfully offloaded: 1655
+Successfully offloaded: 1656
+Successfully offloaded: 1657
+Successfully offloaded: 1658
+Successfully offloaded: 1659
+Successfully offloaded: 1660
+Successfully offloaded: 1661
+Successfully offloaded: 1662
+Successfully offloaded: 1663
+Successfully offloaded: 1664
+Successfully offloaded: 1665
+Successfully offloaded: 1666
+Successfully offloaded: 1667
+Successfully offloaded: 1668
+Successfully offloaded: 1669
+Successfully offloaded: 1670
+Successfully offloaded: 1671
+Successfully offloaded: 1672
+Successfully offloaded: 1673
+Successfully offloaded: 1674
+Successfully offloaded: 1675
+Successfully offloaded: 1676
+Successfully offloaded: 1677
+Successfully offloaded: 1678
+Successfully offloaded: 1679
+Successfully offloaded: 1680
+Successfully offloaded: 1681
+Successfully offloaded: 1682
+Successfully offloaded: 1683
+Successfully offloaded: 1684
+Successfully offloaded: 1685
+Successfully offloaded: 1686
+Successfully offloaded: 1687
+Successfully offloaded: 1688
+Successfully offloaded: 1689
+Successfully offloaded: 1690
+Successfully offloaded: 1691
+Successfully offloaded: 1692
+Successfully offloaded: 1693
+Successfully offloaded: 1694
+Successfully offloaded: 1695
+Successfully offloaded: 1696
+Successfully offloaded: 1697
+Successfully offloaded: 1698
+Successfully offloaded: 1699
+Successfully offloaded: 1700
+Successfully offloaded: 1701
+Successfully offloaded: 1702
+Successfully offloaded: 1703
+Successfully offloaded: 1704
+Successfully offloaded: 1705
+Successfully offloaded: 1706
+Successfully offloaded: 1707
+Successfully offloaded: 1708
+Successfully offloaded: 1709
+Successfully offloaded: 1710
+Successfully offloaded: 1711
+Successfully offloaded: 1712
+Successfully offloaded: 1713
+Successfully offloaded: 1714
+Successfully offloaded: 1715
+Successfully offloaded: 1716
+Successfully offloaded: 1717
+Successfully offloaded: 1718
+Successfully offloaded: 1719
+Successfully offloaded: 1720
+Successfully offloaded: 1721
+Successfully offloaded: 1722
+Successfully offloaded: 1723
+Successfully offloaded: 1724
+Successfully offloaded: 1725
+Successfully offloaded: 1726
+Successfully offloaded: 1727
+Successfully offloaded: 1728
+Successfully offloaded: 1729
+Successfully offloaded: 1730
+Successfully offloaded: 1731
+Successfully offloaded: 1732
+Successfully offloaded: 1733
+Successfully offloaded: 1734
+Successfully offloaded: 1735Loading checkpoint files:  38%|███▊      | 3/8 [05:54<09:51, 118.24s/it]
+Successfully offloaded: 1736
+Successfully offloaded: 1737
+Successfully offloaded: 1738
+Successfully offloaded: 1739
+Successfully offloaded: 1740
+Successfully offloaded: 1741
+Successfully offloaded: 1742
+Successfully offloaded: 1743
+Successfully offloaded: 1744
+Successfully offloaded: 1745
+Successfully offloaded: 1746
+Successfully offloaded: 1747
+Successfully offloaded: 1748
+Successfully offloaded: 1749
+Successfully offloaded: 1750
+Successfully offloaded: 1751
+Successfully offloaded: 1752
+Successfully offloaded: 1753
+Successfully offloaded: 1754
+Successfully offloaded: 1755
+Successfully offloaded: 1756
+Successfully offloaded: 1757
+Successfully offloaded: 1758
+Successfully offloaded: 1759
+Successfully offloaded: 1760
+Successfully offloaded: 1761
+Successfully offloaded: 1762
+Successfully offloaded: 1763
+Successfully offloaded: 1764
+Successfully offloaded: 1765
+Successfully offloaded: 1766
+Successfully offloaded: 1767
+Successfully offloaded: 1768
+Successfully offloaded: 1769
+Successfully offloaded: 1770
+Successfully offloaded: 1771
+Successfully offloaded: 1772
+Successfully offloaded: 1773
+Successfully offloaded: 1774
+Successfully offloaded: 1775
+Successfully offloaded: 1776
+Successfully offloaded: 1777
+Successfully offloaded: 1778
+Successfully offloaded: 1779
+Successfully offloaded: 1780
+Successfully offloaded: 1781
+Successfully offloaded: 1782
+Successfully offloaded: 1783
+Successfully offloaded: 1784
+Successfully offloaded: 1785
+Successfully offloaded: 1786
+Successfully offloaded: 1787
+Successfully offloaded: 1788
+Successfully offloaded: 1789
+Successfully offloaded: 1790
+Successfully offloaded: 1791
+Successfully offloaded: 1792
+Successfully offloaded: 1793
+Successfully offloaded: 1794
+Successfully offloaded: 1795
+Successfully offloaded: 1796
+Successfully offloaded: 1797
+Successfully offloaded: 1798
+Successfully offloaded: 1799
+Successfully offloaded: 1800
+Successfully offloaded: 1801
+Successfully offloaded: 1802
+Successfully offloaded: 1803
+Successfully offloaded: 1804
+Successfully offloaded: 1805
+Successfully offloaded: 1806
+Successfully offloaded: 1807
+Successfully offloaded: 1808
+Successfully offloaded: 1809
+Successfully offloaded: 1810
+Successfully offloaded: 1811
+Successfully offloaded: 1812
+Successfully offloaded: 1813
+Successfully offloaded: 1814
+Successfully offloaded: 1815
+Successfully offloaded: 1816
+Successfully offloaded: 1817
+Successfully offloaded: 1818
+Successfully offloaded: 1819
+Successfully offloaded: 1820
+Successfully offloaded: 1821
+Successfully offloaded: 1822
+Successfully offloaded: 1823
+Successfully offloaded: 1824
+Successfully offloaded: 1825
+Successfully offloaded: 1826
+Successfully offloaded: 1827
+Successfully offloaded: 1828
+Successfully offloaded: 1829
+Successfully offloaded: 1830
+Successfully offloaded: 1831
+Successfully offloaded: 1832
+Successfully offloaded: 1833
+Successfully offloaded: 1834
+Successfully offloaded: 1835
+Successfully offloaded: 1836
+Successfully offloaded: 1837
+Successfully offloaded: 1838
+Successfully offloaded: 1839
+Successfully offloaded: 1840
+Successfully offloaded: 1841
+Successfully offloaded: 1842
+Successfully offloaded: 1843
+Successfully offloaded: 1844
+Successfully offloaded: 1845
+Successfully offloaded: 1846
+Successfully offloaded: 1847
+Successfully offloaded: 1848
+Successfully offloaded: 1849
+Successfully offloaded: 1850
+Successfully offloaded: 1851
+Successfully offloaded: 1852
+Successfully offloaded: 1853
+Successfully offloaded: 1854
+Successfully offloaded: 1855
+Successfully offloaded: 1856
+Successfully offloaded: 1857
+Successfully offloaded: 1858
+Successfully offloaded: 1859
+Successfully offloaded: 1860
+Successfully offloaded: 1861
+Successfully offloaded: 1862
+Successfully offloaded: 1863
+Successfully offloaded: 1864
+Successfully offloaded: 1865
+Successfully offloaded: 1866
+Successfully offloaded: 1867
+Successfully offloaded: 1868
+Successfully offloaded: 1869
+Successfully offloaded: 1870
+Successfully offloaded: 1871
+Successfully offloaded: 1872
+Successfully offloaded: 1873
+Successfully offloaded: 1874
+Successfully offloaded: 1875
+Successfully offloaded: 1876
+Successfully offloaded: 1877
+Successfully offloaded: 1878
+Successfully offloaded: 1879
+Successfully offloaded: 1880
+Successfully offloaded: 1881
+Successfully offloaded: 1882
+Successfully offloaded: 1883
+Successfully offloaded: 1884
+Successfully offloaded: 1885
+Successfully offloaded: 1886
+Successfully offloaded: 1887
+Successfully offloaded: 1888
+Successfully offloaded: 1889
+Successfully offloaded: 1890
+Successfully offloaded: 1891
+Successfully offloaded: 1892
+Successfully offloaded: 1893
+Successfully offloaded: 1894
+Successfully offloaded: 1895
+Successfully offloaded: 1896
+Successfully offloaded: 1897
+Successfully offloaded: 1898
+Successfully offloaded: 1899
+Successfully offloaded: 1900
+Successfully offloaded: 1901
+Successfully offloaded: 1902
+Successfully offloaded: 1903
+Successfully offloaded: 1904
+Successfully offloaded: 1905
+Successfully offloaded: 1906
+Successfully offloaded: 1907
+Successfully offloaded: 1908
+Successfully offloaded: 1909
+Successfully offloaded: 1910
+Successfully offloaded: 1911
+Successfully offloaded: 1912
+Successfully offloaded: 1913
+Successfully offloaded: 1914
+Successfully offloaded: 1915
+Successfully offloaded: 1916
+Successfully offloaded: 1917
+Successfully offloaded: 1918
+Successfully offloaded: 1919
+Successfully offloaded: 1920
+Successfully offloaded: 1921
+Successfully offloaded: 1922
+Successfully offloaded: 1923
+Successfully offloaded: 1924
+Successfully offloaded: 1925
+Successfully offloaded: 1926
+Successfully offloaded: 1927
+Successfully offloaded: 1928
+Successfully offloaded: 1929
+Successfully offloaded: 1930
+Successfully offloaded: 1931
+Successfully offloaded: 1932
+Successfully offloaded: 1933
+Successfully offloaded: 1934
+Successfully offloaded: 1935
+Successfully offloaded: 1936
+Successfully offloaded: 1937
+Successfully offloaded: 1938
+Successfully offloaded: 1939
+Successfully offloaded: 1940
+Successfully offloaded: 1941
+Successfully offloaded: 1942
+Successfully offloaded: 1943
+Successfully offloaded: 1944
+Successfully offloaded: 1945
+Successfully offloaded: 1946
+Successfully offloaded: 1947
+Successfully offloaded: 1948
+Successfully offloaded: 1949
+Successfully offloaded: 1950
+Successfully offloaded: 1951
+Successfully offloaded: 1952
+Successfully offloaded: 1953
+Successfully offloaded: 1954
+Successfully offloaded: 1955
+Successfully offloaded: 1956
+Successfully offloaded: 1957
+Successfully offloaded: 1958
+Successfully offloaded: 1959
+Successfully offloaded: 1960
+Successfully offloaded: 1961
+Successfully offloaded: 1962
+Successfully offloaded: 1963
+Successfully offloaded: 1964
+Successfully offloaded: 1965
+Successfully offloaded: 1966
+Successfully offloaded: 1967
+Successfully offloaded: 1968
+Successfully offloaded: 1969
+Successfully offloaded: 1970
+Successfully offloaded: 1971
+Successfully offloaded: 1972
+Successfully offloaded: 1973
+Successfully offloaded: 1974
+Successfully offloaded: 1975
+Successfully offloaded: 1976
+Successfully offloaded: 1977
+Successfully offloaded: 1978
+Successfully offloaded: 1979
+Successfully offloaded: 1980
+Successfully offloaded: 1981
+Successfully offloaded: 1982
+Successfully offloaded: 1983
+Successfully offloaded: 1984
+Successfully offloaded: 1985
+Successfully offloaded: 1986
+Successfully offloaded: 1987
+Successfully offloaded: 1988
+Successfully offloaded: 1989
+Successfully offloaded: 1990
+Successfully offloaded: 1991
+Successfully offloaded: 1992
+Successfully offloaded: 1993
+Successfully offloaded: 1994
+Successfully offloaded: 1995
+Successfully offloaded: 1996
+Successfully offloaded: 1997
+Successfully offloaded: 1998
+Successfully offloaded: 1999
+Successfully offloaded: 2000
+Successfully offloaded: 2001
+Successfully offloaded: 2002
+Successfully offloaded: 2003
+Successfully offloaded: 2004
+Successfully offloaded: 2005
+Successfully offloaded: 2006
+Successfully offloaded: 2007
+Successfully offloaded: 2008
+Successfully offloaded: 2009
+Successfully offloaded: 2010
+Successfully offloaded: 2011
+Successfully offloaded: 2012
+Successfully offloaded: 2013
+Successfully offloaded: 2014
+Successfully offloaded: 2015
+Successfully offloaded: 2016
+Successfully offloaded: 2017
+Successfully offloaded: 2018
+Successfully offloaded: 2019
+Successfully offloaded: 2020
+Successfully offloaded: 2021
+Successfully offloaded: 2022
+Successfully offloaded: 2023
+Successfully offloaded: 2024
+Successfully offloaded: 2025
+Successfully offloaded: 2026
+Successfully offloaded: 2027
+Successfully offloaded: 2028
+Successfully offloaded: 2029
+Successfully offloaded: 2030
+Successfully offloaded: 2031
+Successfully offloaded: 2032
+Successfully offloaded: 2033
+Successfully offloaded: 2034
+Successfully offloaded: 2035
+Successfully offloaded: 2036
+Successfully offloaded: 2037
+Successfully offloaded: 2038
+Successfully offloaded: 2039
+Successfully offloaded: 2040
+Successfully offloaded: 2041
+Successfully offloaded: 2042
+Successfully offloaded: 2043
+Successfully offloaded: 2044
+Successfully offloaded: 2045
+Successfully offloaded: 2046
+Successfully offloaded: 2047
+Successfully offloaded: 2048
+Successfully offloaded: 2049
+Successfully offloaded: 2050
+Successfully offloaded: 2051
+Successfully offloaded: 2052
+Successfully offloaded: 2053
+Successfully offloaded: 2054
+Successfully offloaded: 2055
+Successfully offloaded: 2056
+Successfully offloaded: 2057
+Successfully offloaded: 2058
+Successfully offloaded: 2059
+Successfully offloaded: 2060
+Successfully offloaded: 2061
+Successfully offloaded: 2062
+Successfully offloaded: 2063
+Successfully offloaded: 2064
+Successfully offloaded: 2065
+Successfully offloaded: 2066
+Successfully offloaded: 2067
+Successfully offloaded: 2068
+Successfully offloaded: 2069
+Successfully offloaded: 2070
+Successfully offloaded: 2071
+Successfully offloaded: 2072
+Successfully offloaded: 2073
+Successfully offloaded: 2074
+Successfully offloaded: 2075
+Successfully offloaded: 2076
+Successfully offloaded: 2077
+Successfully offloaded: 2078
+Successfully offloaded: 2079
+Successfully offloaded: 2080
+Successfully offloaded: 2081
+Successfully offloaded: 2082
+Successfully offloaded: 2083
+Successfully offloaded: 2084
+Successfully offloaded: 2085
+Successfully offloaded: 2086
+Successfully offloaded: 2087
+Successfully offloaded: 2088
+Successfully offloaded: 2089
+Successfully offloaded: 2090
+Successfully offloaded: 2091
+Successfully offloaded: 2092
+Successfully offloaded: 2093
+Successfully offloaded: 2094
+Successfully offloaded: 2095
+Successfully offloaded: 2096
+Successfully offloaded: 2097
+Successfully offloaded: 2098
+Successfully offloaded: 2099
+Successfully offloaded: 2100
+Successfully offloaded: 2101
+Successfully offloaded: 2102
+Successfully offloaded: 2103
+Successfully offloaded: 2104
+Successfully offloaded: 2105
+Successfully offloaded: 2106
+Successfully offloaded: 2107
+Successfully offloaded: 2108
+Successfully offloaded: 2109
+Successfully offloaded: 2110
+Successfully offloaded: 2111
+Successfully offloaded: 2112
+Successfully offloaded: 2113
+Successfully offloaded: 2114
+Successfully offloaded: 2115
+Successfully offloaded: 2116
+Successfully offloaded: 2117
+Successfully offloaded: 2118
+Successfully offloaded: 2119
+Successfully offloaded: 2120
+Successfully offloaded: 2121
+Successfully offloaded: 2122
+Successfully offloaded: 2123
+Successfully offloaded: 2124
+Successfully offloaded: 2125
+Successfully offloaded: 2126
+Successfully offloaded: 2127
+Successfully offloaded: 2128
+Successfully offloaded: 2129
+Successfully offloaded: 2130
+Successfully offloaded: 2131
+Successfully offloaded: 2132
+Successfully offloaded: 2133
+Successfully offloaded: 2134
+Successfully offloaded: 2135
+Successfully offloaded: 2136
+Successfully offloaded: 2137
+Successfully offloaded: 2138
+Successfully offloaded: 2139
+Successfully offloaded: 2140
+Successfully offloaded: 2141
+Successfully offloaded: 2142
+Successfully offloaded: 2143
+Successfully offloaded: 2144
+Successfully offloaded: 2145
+Successfully offloaded: 2146
+Successfully offloaded: 2147
+Successfully offloaded: 2148
+Successfully offloaded: 2149
+Successfully offloaded: 2150
+Successfully offloaded: 2151
+Successfully offloaded: 2152
+Successfully offloaded: 2153
+Successfully offloaded: 2154
+Successfully offloaded: 2155
+Successfully offloaded: 2156
+Successfully offloaded: 2157
+Successfully offloaded: 2158
+Successfully offloaded: 2159
+Successfully offloaded: 2160
+Successfully offloaded: 2161
+Successfully offloaded: 2162
+Successfully offloaded: 2163
+Successfully offloaded: 2164
+Successfully offloaded: 2165
+Successfully offloaded: 2166
+Successfully offloaded: 2167
+Successfully offloaded: 2168
+Successfully offloaded: 2169
+Successfully offloaded: 2170
+Successfully offloaded: 2171
+Successfully offloaded: 2172
+Successfully offloaded: 2173
+Successfully offloaded: 2174
+Successfully offloaded: 2175
+Successfully offloaded: 2176
+Successfully offloaded: 2177
+Successfully offloaded: 2178
+Successfully offloaded: 2179
+Successfully offloaded: 2180
+Successfully offloaded: 2181
+Successfully offloaded: 2182
+Successfully offloaded: 2183
+Successfully offloaded: 2184
+Successfully offloaded: 2185
+Successfully offloaded: 2186
+Successfully offloaded: 2187
+Successfully offloaded: 2188
+Successfully offloaded: 2189
+Successfully offloaded: 2190
+Successfully offloaded: 2191
+Successfully offloaded: 2192
+Successfully offloaded: 2193
+Successfully offloaded: 2194
+Successfully offloaded: 2195
+Successfully offloaded: 2196
+Successfully offloaded: 2197
+Successfully offloaded: 2198
+Successfully offloaded: 2199
+Successfully offloaded: 2200
+Successfully offloaded: 2201
+Successfully offloaded: 2202
+Successfully offloaded: 2203
+Successfully offloaded: 2204
+Successfully offloaded: 2205
+Successfully offloaded: 2206
+Successfully offloaded: 2207
+Successfully offloaded: 2208
+Successfully offloaded: 2209
+Successfully offloaded: 2210
+Successfully offloaded: 2211
+Successfully offloaded: 2212
+Successfully offloaded: 2213
+Successfully offloaded: 2214
+Successfully offloaded: 2215
+Successfully offloaded: 2216
+Successfully offloaded: 2217
+Successfully offloaded: 2218
+Successfully offloaded: 2219
+Successfully offloaded: 2220
+Successfully offloaded: 2221
+Successfully offloaded: 2222
+Successfully offloaded: 2223
+Successfully offloaded: 2224
+Successfully offloaded: 2225
+Successfully offloaded: 2226
+Successfully offloaded: 2227
+Successfully offloaded: 2228
+Successfully offloaded: 2229
+Successfully offloaded: 2230
+Successfully offloaded: 2231
+Successfully offloaded: 2232
+Successfully offloaded: 2233
+Successfully offloaded: 2234
+Successfully offloaded: 2235
+Successfully offloaded: 2236
+Successfully offloaded: 2237
+Successfully offloaded: 2238
+Successfully offloaded: 2239
+Successfully offloaded: 2240
+Successfully offloaded: 2241
+Successfully offloaded: 2242
+Successfully offloaded: 2243
+Successfully offloaded: 2244
+Successfully offloaded: 2245
+Successfully offloaded: 2246
+Successfully offloaded: 2247
+Successfully offloaded: 2248
+Successfully offloaded: 2249
+Successfully offloaded: 2250
+Successfully offloaded: 2251
+Successfully offloaded: 2252
+Successfully offloaded: 2253
+Successfully offloaded: 2254
+Successfully offloaded: 2255
+Successfully offloaded: 2256
+Successfully offloaded: 2257
+Successfully offloaded: 2258
+Successfully offloaded: 2259
+Successfully offloaded: 2260
+Successfully offloaded: 2261
+Successfully offloaded: 2262
+Successfully offloaded: 2263
+Successfully offloaded: 2264
+Successfully offloaded: 2265
+Successfully offloaded: 2266
+Successfully offloaded: 2267
+Successfully offloaded: 2268
+Successfully offloaded: 2269
+Successfully offloaded: 2270
+Successfully offloaded: 2271
+Successfully offloaded: 2272
+Successfully offloaded: 2273
+Successfully offloaded: 2274
+Successfully offloaded: 2275
+Successfully offloaded: 2276
+Successfully offloaded: 2277
+Successfully offloaded: 2278
+Successfully offloaded: 2279
+Successfully offloaded: 2280
+Successfully offloaded: 2281
+Successfully offloaded: 2282
+Successfully offloaded: 2283
+Successfully offloaded: 2284
+Successfully offloaded: 2285
+Successfully offloaded: 2286
+Successfully offloaded: 2287
+Successfully offloaded: 2288
+Successfully offloaded: 2289
+Successfully offloaded: 2290
+Successfully offloaded: 2291
+Successfully offloaded: 2292
+Successfully offloaded: 2293
+Successfully offloaded: 2294
+Successfully offloaded: 2295
+Successfully offloaded: 2296
+Successfully offloaded: 2297
+Successfully offloaded: 2298
+Successfully offloaded: 2299
+Successfully offloaded: 2300
+Successfully offloaded: 2301
+Successfully offloaded: 2302
+Successfully offloaded: 2303
+Successfully offloaded: 2304
+Successfully offloaded: 2305
+Successfully offloaded: 2306
+Successfully offloaded: 2307
+Successfully offloaded: 2308
+Successfully offloaded: 2309
+Successfully offloaded: 2310
+Successfully offloaded: 2311
+Successfully offloaded: 2312
+Successfully offloaded: 2313
+Successfully offloaded: 2314
+Successfully offloaded: 2315
+Successfully offloaded: 2316
+Successfully offloaded: 2317
+Successfully offloaded: 2318
+Successfully offloaded: 2319
+Successfully offloaded: 2320
+Successfully offloaded: 2321
+Successfully offloaded: 2322
+Successfully offloaded: 2323
+Successfully offloaded: 2324
+Successfully offloaded: 2325
+Successfully offloaded: 2326
+Successfully offloaded: 2327
+Successfully offloaded: 2328
+Successfully offloaded: 2329
+Successfully offloaded: 2330
+Successfully offloaded: 2331
+Successfully offloaded: 2332
+Successfully offloaded: 2333
+Successfully offloaded: 2334
+Successfully offloaded: 2335
+Successfully offloaded: 2336
+Successfully offloaded: 2337
+Successfully offloaded: 2338
+Successfully offloaded: 2339
+Successfully offloaded: 2340
+Successfully offloaded: 2341
+Successfully offloaded: 2342
+Successfully offloaded: 2343
+Successfully offloaded: 2344
+Successfully offloaded: 2345
+Successfully offloaded: 2346
+Successfully offloaded: 2347
+Successfully offloaded: 2348
+Successfully offloaded: 2349
+Successfully offloaded: 2350
+Successfully offloaded: 2351
+Successfully offloaded: 2352
+Successfully offloaded: 2353
+Successfully offloaded: 2354
+Successfully offloaded: 2355
+Successfully offloaded: 2356
+Successfully offloaded: 2357
+Successfully offloaded: 2358
+Successfully offloaded: 2359
+Successfully offloaded: 2360
+Successfully offloaded: 2361
+Successfully offloaded: 2362
+Successfully offloaded: 2363
+Successfully offloaded: 2364
+Successfully offloaded: 2365
+Successfully offloaded: 2366
+Successfully offloaded: 2367
+Successfully offloaded: 2368
+Successfully offloaded: 2369
+Successfully offloaded: 2370
+Successfully offloaded: 2371
+Successfully offloaded: 2372
+Successfully offloaded: 2373
+Successfully offloaded: 2374
+Successfully offloaded: 2375
+Successfully offloaded: 2376
+Successfully offloaded: 2377
+Successfully offloaded: 2378
+Successfully offloaded: 2379
+Successfully offloaded: 2380
+Successfully offloaded: 2381
+Successfully offloaded: 2382
+Successfully offloaded: 2383
+Successfully offloaded: 2384
+Successfully offloaded: 2385
+Successfully offloaded: 2386
+Successfully offloaded: 2387
+Successfully offloaded: 2388
+Successfully offloaded: 2389
+Successfully offloaded: 2390
+Successfully offloaded: 2391
+Successfully offloaded: 2392
+Successfully offloaded: 2393
+Successfully offloaded: 2394
+Successfully offloaded: 2395
+Successfully offloaded: 2396
+Successfully offloaded: 2397
+Successfully offloaded: 2398
+Successfully offloaded: 2399
+Successfully offloaded: 2400
+Successfully offloaded: 2401
+Successfully offloaded: 2402
+Successfully offloaded: 2403
+Successfully offloaded: 2404
+Successfully offloaded: 2405
+Successfully offloaded: 2406
+Successfully offloaded: 2407
+Successfully offloaded: 2408
+Successfully offloaded: 2409
+Successfully offloaded: 2410
+Successfully offloaded: 2411
+Successfully offloaded: 2412
+Successfully offloaded: 2413
+Successfully offloaded: 2414
+Successfully offloaded: 2415
+Successfully offloaded: 2416
+Successfully offloaded: 2417
+Successfully offloaded: 2418
+Successfully offloaded: 2419
+Successfully offloaded: 2420
+Successfully offloaded: 2421
+Successfully offloaded: 2422
+Successfully offloaded: 2423
+Successfully offloaded: 2424
+Successfully offloaded: 2425
+Successfully offloaded: 2426
+Successfully offloaded: 2427
+Successfully offloaded: 2428
+Successfully offloaded: 2429
+Successfully offloaded: 2430
+Successfully offloaded: 2431
+Successfully offloaded: 2432
+Successfully offloaded: 2433
+Successfully offloaded: 2434
+Successfully offloaded: 2435
+Successfully offloaded: 2436
+Successfully offloaded: 2437
+Successfully offloaded: 2438
+Successfully offloaded: 2439
+Successfully offloaded: 2440
+Successfully offloaded: 2441
+Successfully offloaded: 2442
+Successfully offloaded: 2443
+Successfully offloaded: 2444
+Successfully offloaded: 2445
+Successfully offloaded: 2446
+Successfully offloaded: 2447
+Successfully offloaded: 2448
+Successfully offloaded: 2449
+Successfully offloaded: 2450
+Successfully offloaded: 2451
+Successfully offloaded: 2452
+Successfully offloaded: 2453
+Successfully offloaded: 2454
+Successfully offloaded: 2455
+Successfully offloaded: 2456
+Successfully offloaded: 2457
+Successfully offloaded: 2458
+Successfully offloaded: 2459
+Successfully offloaded: 2460
+Successfully offloaded: 2461
+Successfully offloaded: 2462
+Successfully offloaded: 2463
+Successfully offloaded: 2464
+Successfully offloaded: 2465
+Successfully offloaded: 2466
+Successfully offloaded: 2467
+Successfully offloaded: 2468
+Successfully offloaded: 2469
+Successfully offloaded: 2470
+Successfully offloaded: 2471
+Successfully offloaded: 2472
+Successfully offloaded: 2473
+Successfully offloaded: 2474
+Successfully offloaded: 2475
+Successfully offloaded: 2476
+Successfully offloaded: 2477
+Successfully offloaded: 2478
+Successfully offloaded: 2479
+Successfully offloaded: 2480
+Successfully offloaded: 2481
+Successfully offloaded: 2482
+Successfully offloaded: 2483
+Successfully offloaded: 2484
+Successfully offloaded: 2485
+Successfully offloaded: 2486
+Successfully offloaded: 2487
+Successfully offloaded: 2488
+Successfully offloaded: 2489
+Successfully offloaded: 2490
+Successfully offloaded: 2491
+Successfully offloaded: 2492
+Successfully offloaded: 2493
+Successfully offloaded: 2494
+Successfully offloaded: 2495
+Successfully offloaded: 2496
+Successfully offloaded: 2497
+Successfully offloaded: 2498
+Successfully offloaded: 2499
+Successfully offloaded: 2500
+Successfully offloaded: 2501
+Successfully offloaded: 2502
+Successfully offloaded: 2503
+Successfully offloaded: 2504
+Successfully offloaded: 2505
+Successfully offloaded: 2506
+Successfully offloaded: 2507
+Successfully offloaded: 2508
+Successfully offloaded: 2509
+Successfully offloaded: 2510
+Successfully offloaded: 2511
+Successfully offloaded: 2512
+Successfully offloaded: 2513
+Successfully offloaded: 2514
+Successfully offloaded: 2515
+Successfully offloaded: 2516
+Successfully offloaded: 2517
+Successfully offloaded: 2518
+Successfully offloaded: 2519
+Successfully offloaded: 2520
+Successfully offloaded: 2521
+Successfully offloaded: 2522
+Successfully offloaded: 2523
+Successfully offloaded: 2524
+Successfully offloaded: 2525
+Successfully offloaded: 2526
+Successfully offloaded: 2527
+Successfully offloaded: 2528
+Successfully offloaded: 2529
+Successfully offloaded: 2530
+Successfully offloaded: 2531
+Successfully offloaded: 2532
+Successfully offloaded: 2533
+Successfully offloaded: 2534
+Successfully offloaded: 2535
+Successfully offloaded: 2536
+Successfully offloaded: 2537
+Successfully offloaded: 2538
+Successfully offloaded: 2539
+Successfully offloaded: 2540
+Successfully offloaded: 2541
+Successfully offloaded: 2542
+Successfully offloaded: 2543
+Successfully offloaded: 2544
+Successfully offloaded: 2545
+Successfully offloaded: 2546
+Successfully offloaded: 2547
+Successfully offloaded: 2548
+Successfully offloaded: 2549
+Successfully offloaded: 2550
+Successfully offloaded: 2551
+Successfully offloaded: 2552
+Successfully offloaded: 2553
+Successfully offloaded: 2554
+Successfully offloaded: 2555
+Successfully offloaded: 2556
+Successfully offloaded: 2557
+Successfully offloaded: 2558
+Successfully offloaded: 2559
+Successfully offloaded: 2560
+Successfully offloaded: 2561
+Successfully offloaded: 2562
+Successfully offloaded: 2563
+Successfully offloaded: 2564
+Successfully offloaded: 2565
+Successfully offloaded: 2566
+Successfully offloaded: 2567
+Successfully offloaded: 2568
+Successfully offloaded: 2569
+Successfully offloaded: 2570
+Successfully offloaded: 2571
+Successfully offloaded: 2572
+Successfully offloaded: 2573
+Successfully offloaded: 2574
+Successfully offloaded: 2575
+Successfully offloaded: 2576
+Successfully offloaded: 2577
+Successfully offloaded: 2578
+Successfully offloaded: 2579
+Successfully offloaded: 2580
+Successfully offloaded: 2581
+Successfully offloaded: 2582
+Successfully offloaded: 2583
+Successfully offloaded: 2584Loading checkpoint files:  50%|█████     | 4/8 [07:51<07:51, 117.82s/it]
+Successfully offloaded: 2585
+Successfully offloaded: 2586
+Successfully offloaded: 2587
+Successfully offloaded: 2588
+Successfully offloaded: 2589
+Successfully offloaded: 2590
+Successfully offloaded: 2591
+Successfully offloaded: 2592
+Successfully offloaded: 2593
+Successfully offloaded: 2594
+Successfully offloaded: 2595
+Successfully offloaded: 2596
+Successfully offloaded: 2597
+Successfully offloaded: 2598
+Successfully offloaded: 2599
+Successfully offloaded: 2600
+Successfully offloaded: 2601
+Successfully offloaded: 2602
+Successfully offloaded: 2603
+Successfully offloaded: 2604
+Successfully offloaded: 2605
+Successfully offloaded: 2606
+Successfully offloaded: 2607
+Successfully offloaded: 2608
+Successfully offloaded: 2609
+Successfully offloaded: 2610
+Successfully offloaded: 2611
+Successfully offloaded: 2612
+Successfully offloaded: 2613
+Successfully offloaded: 2614
+Successfully offloaded: 2615
+Successfully offloaded: 2616
+Successfully offloaded: 2617
+Successfully offloaded: 2618
+Successfully offloaded: 2619
+Successfully offloaded: 2620
+Successfully offloaded: 2621
+Successfully offloaded: 2622
+Successfully offloaded: 2623
+Successfully offloaded: 2624
+Successfully offloaded: 2625
+Successfully offloaded: 2626
+Successfully offloaded: 2627
+Successfully offloaded: 2628
+Successfully offloaded: 2629
+Successfully offloaded: 2630
+Successfully offloaded: 2631
+Successfully offloaded: 2632
+Successfully offloaded: 2633
+Successfully offloaded: 2634
+Successfully offloaded: 2635
+Successfully offloaded: 2636
+Successfully offloaded: 2637
+Successfully offloaded: 2638
+Successfully offloaded: 2639
+Successfully offloaded: 2640
+Successfully offloaded: 2641
+Successfully offloaded: 2642
+Successfully offloaded: 2643
+Successfully offloaded: 2644
+Successfully offloaded: 2645
+Successfully offloaded: 2646
+Successfully offloaded: 2647
+Successfully offloaded: 2648
+Successfully offloaded: 2649
+Successfully offloaded: 2650
+Successfully offloaded: 2651
+Successfully offloaded: 2652
+Successfully offloaded: 2653
+Successfully offloaded: 2654
+Successfully offloaded: 2655
+Successfully offloaded: 2656
+Successfully offloaded: 2657
+Successfully offloaded: 2658
+Successfully offloaded: 2659
+Successfully offloaded: 2660
+Successfully offloaded: 2661
+Successfully offloaded: 2662
+Successfully offloaded: 2663
+Successfully offloaded: 2664
+Successfully offloaded: 2665
+Successfully offloaded: 2666
+Successfully offloaded: 2667
+Successfully offloaded: 2668
+Successfully offloaded: 2669
+Successfully offloaded: 2670
+Successfully offloaded: 2671
+Successfully offloaded: 2672
+Successfully offloaded: 2673
+Successfully offloaded: 2674
+Successfully offloaded: 2675
+Successfully offloaded: 2676
+Successfully offloaded: 2677
+Successfully offloaded: 2678
+Successfully offloaded: 2679
+Successfully offloaded: 2680
+Successfully offloaded: 2681
+Successfully offloaded: 2682
+Successfully offloaded: 2683
+Successfully offloaded: 2684
+Successfully offloaded: 2685
+Successfully offloaded: 2686
+Successfully offloaded: 2687
+Successfully offloaded: 2688
+Successfully offloaded: 2689
+Successfully offloaded: 2690
+Successfully offloaded: 2691
+Successfully offloaded: 2692
+Successfully offloaded: 2693
+Successfully offloaded: 2694
+Successfully offloaded: 2695
+Successfully offloaded: 2696
+Successfully offloaded: 2697
+Successfully offloaded: 2698
+Successfully offloaded: 2699
+Successfully offloaded: 2700
+Successfully offloaded: 2701
+Successfully offloaded: 2702
+Successfully offloaded: 2703
+Successfully offloaded: 2704
+Successfully offloaded: 2705
+Successfully offloaded: 2706
+Successfully offloaded: 2707
+Successfully offloaded: 2708
+Successfully offloaded: 2709
+Successfully offloaded: 2710
+Successfully offloaded: 2711
+Successfully offloaded: 2712
+Successfully offloaded: 2713
+Successfully offloaded: 2714
+Successfully offloaded: 2715
+Successfully offloaded: 2716
+Successfully offloaded: 2717
+Successfully offloaded: 2718
+Successfully offloaded: 2719
+Successfully offloaded: 2720
+Successfully offloaded: 2721
+Successfully offloaded: 2722
+Successfully offloaded: 2723
+Successfully offloaded: 2724
+Successfully offloaded: 2725
+Successfully offloaded: 2726
+Successfully offloaded: 2727
+Successfully offloaded: 2728
+Successfully offloaded: 2729
+Successfully offloaded: 2730
+Successfully offloaded: 2731
+Successfully offloaded: 2732
+Successfully offloaded: 2733
+Successfully offloaded: 2734
+Successfully offloaded: 2735
+Successfully offloaded: 2736
+Successfully offloaded: 2737
+Successfully offloaded: 2738
+Successfully offloaded: 2739
+Successfully offloaded: 2740
+Successfully offloaded: 2741
+Successfully offloaded: 2742
+Successfully offloaded: 2743
+Successfully offloaded: 2744
+Successfully offloaded: 2745
+Successfully offloaded: 2746
+Successfully offloaded: 2747
+Successfully offloaded: 2748
+Successfully offloaded: 2749
+Successfully offloaded: 2750
+Successfully offloaded: 2751
+Successfully offloaded: 2752
+Successfully offloaded: 2753
+Successfully offloaded: 2754
+Successfully offloaded: 2755
+Successfully offloaded: 2756
+Successfully offloaded: 2757
+Successfully offloaded: 2758
+Successfully offloaded: 2759
+Successfully offloaded: 2760
+Successfully offloaded: 2761
+Successfully offloaded: 2762
+Successfully offloaded: 2763
+Successfully offloaded: 2764
+Successfully offloaded: 2765
+Successfully offloaded: 2766
+Successfully offloaded: 2767
+Successfully offloaded: 2768
+Successfully offloaded: 2769
+Successfully offloaded: 2770
+Successfully offloaded: 2771
+Successfully offloaded: 2772
+Successfully offloaded: 2773
+Successfully offloaded: 2774
+Successfully offloaded: 2775
+Successfully offloaded: 2776
+Successfully offloaded: 2777
+Successfully offloaded: 2778
+Successfully offloaded: 2779
+Successfully offloaded: 2780
+Successfully offloaded: 2781
+Successfully offloaded: 2782
+Successfully offloaded: 2783
+Successfully offloaded: 2784
+Successfully offloaded: 2785
+Successfully offloaded: 2786
+Successfully offloaded: 2787
+Successfully offloaded: 2788
+Successfully offloaded: 2789
+Successfully offloaded: 2790
+Successfully offloaded: 2791
+Successfully offloaded: 2792
+Successfully offloaded: 2793
+Successfully offloaded: 2794
+Successfully offloaded: 2795
+Successfully offloaded: 2796
+Successfully offloaded: 2797
+Successfully offloaded: 2798
+Successfully offloaded: 2799
+Successfully offloaded: 2800
+Successfully offloaded: 2801
+Successfully offloaded: 2802
+Successfully offloaded: 2803
+Successfully offloaded: 2804
+Successfully offloaded: 2805
+Successfully offloaded: 2806
+Successfully offloaded: 2807
+Successfully offloaded: 2808
+Successfully offloaded: 2809
+Successfully offloaded: 2810
+Successfully offloaded: 2811
+Successfully offloaded: 2812
+Successfully offloaded: 2813
+Successfully offloaded: 2814
+Successfully offloaded: 2815
+Successfully offloaded: 2816
+Successfully offloaded: 2817
+Successfully offloaded: 2818
+Successfully offloaded: 2819
+Successfully offloaded: 2820
+Successfully offloaded: 2821
+Successfully offloaded: 2822
+Successfully offloaded: 2823
+Successfully offloaded: 2824
+Successfully offloaded: 2825
+Successfully offloaded: 2826
+Successfully offloaded: 2827
+Successfully offloaded: 2828
+Successfully offloaded: 2829
+Successfully offloaded: 2830
+Successfully offloaded: 2831
+Successfully offloaded: 2832
+Successfully offloaded: 2833
+Successfully offloaded: 2834
+Successfully offloaded: 2835
+Successfully offloaded: 2836
+Successfully offloaded: 2837
+Successfully offloaded: 2838
+Successfully offloaded: 2839
+Successfully offloaded: 2840
+Successfully offloaded: 2841
+Successfully offloaded: 2842
+Successfully offloaded: 2843
+Successfully offloaded: 2844
+Successfully offloaded: 2845
+Successfully offloaded: 2846
+Successfully offloaded: 2847
+Successfully offloaded: 2848
+Successfully offloaded: 2849
+Successfully offloaded: 2850
+Successfully offloaded: 2851
+Successfully offloaded: 2852
+Successfully offloaded: 2853
+Successfully offloaded: 2854
+Successfully offloaded: 2855
+Successfully offloaded: 2856
+Successfully offloaded: 2857
+Successfully offloaded: 2858
+Successfully offloaded: 2859
+Successfully offloaded: 2860
+Successfully offloaded: 2861
+Successfully offloaded: 2862
+Successfully offloaded: 2863
+Successfully offloaded: 2864
+Successfully offloaded: 2865
+Successfully offloaded: 2866
+Successfully offloaded: 2867
+Successfully offloaded: 2868
+Successfully offloaded: 2869
+Successfully offloaded: 2870
+Successfully offloaded: 2871
+Successfully offloaded: 2872
+Successfully offloaded: 2873
+Successfully offloaded: 2874
+Successfully offloaded: 2875
+Successfully offloaded: 2876
+Successfully offloaded: 2877
+Successfully offloaded: 2878
+Successfully offloaded: 2879
+Successfully offloaded: 2880
+Successfully offloaded: 2881
+Successfully offloaded: 2882
+Successfully offloaded: 2883
+Successfully offloaded: 2884
+Successfully offloaded: 2885
+Successfully offloaded: 2886
+Successfully offloaded: 2887
+Successfully offloaded: 2888
+Successfully offloaded: 2889
+Successfully offloaded: 2890
+Successfully offloaded: 2891
+Successfully offloaded: 2892
+Successfully offloaded: 2893
+Successfully offloaded: 2894
+Successfully offloaded: 2895
+Successfully offloaded: 2896
+Successfully offloaded: 2897
+Successfully offloaded: 2898
+Successfully offloaded: 2899
+Successfully offloaded: 2900
+Successfully offloaded: 2901
+Successfully offloaded: 2902
+Successfully offloaded: 2903
+Successfully offloaded: 2904
+Successfully offloaded: 2905
+Successfully offloaded: 2906
+Successfully offloaded: 2907
+Successfully offloaded: 2908
+Successfully offloaded: 2909
+Successfully offloaded: 2910
+Successfully offloaded: 2911
+Successfully offloaded: 2912
+Successfully offloaded: 2913
+Successfully offloaded: 2914
+Successfully offloaded: 2915
+Successfully offloaded: 2916
+Successfully offloaded: 2917
+Successfully offloaded: 2918
+Successfully offloaded: 2919
+Successfully offloaded: 2920
+Successfully offloaded: 2921
+Successfully offloaded: 2922
+Successfully offloaded: 2923
+Successfully offloaded: 2924
+Successfully offloaded: 2925
+Successfully offloaded: 2926
+Successfully offloaded: 2927
+Successfully offloaded: 2928
+Successfully offloaded: 2929
+Successfully offloaded: 2930
+Successfully offloaded: 2931
+Successfully offloaded: 2932
+Successfully offloaded: 2933
+Successfully offloaded: 2934
+Successfully offloaded: 2935
+Successfully offloaded: 2936
+Successfully offloaded: 2937
+Successfully offloaded: 2938
+Successfully offloaded: 2939
+Successfully offloaded: 2940
+Successfully offloaded: 2941
+Successfully offloaded: 2942
+Successfully offloaded: 2943
+Successfully offloaded: 2944
+Successfully offloaded: 2945
+Successfully offloaded: 2946
+Successfully offloaded: 2947
+Successfully offloaded: 2948
+Successfully offloaded: 2949
+Successfully offloaded: 2950
+Successfully offloaded: 2951
+Successfully offloaded: 2952
+Successfully offloaded: 2953
+Successfully offloaded: 2954
+Successfully offloaded: 2955
+Successfully offloaded: 2956
+Successfully offloaded: 2957
+Successfully offloaded: 2958
+Successfully offloaded: 2959
+Successfully offloaded: 2960
+Successfully offloaded: 2961
+Successfully offloaded: 2962
+Successfully offloaded: 2963
+Successfully offloaded: 2964
+Successfully offloaded: 2965
+Successfully offloaded: 2966
+Successfully offloaded: 2967
+Successfully offloaded: 2968
+Successfully offloaded: 2969
+Successfully offloaded: 2970
+Successfully offloaded: 2971
+Successfully offloaded: 2972
+Successfully offloaded: 2973
+Successfully offloaded: 2974
+Successfully offloaded: 2975
+Successfully offloaded: 2976
+Successfully offloaded: 2977
+Successfully offloaded: 2978
+Successfully offloaded: 2979
+Successfully offloaded: 2980
+Successfully offloaded: 2981
+Successfully offloaded: 2982
+Successfully offloaded: 2983
+Successfully offloaded: 2984
+Successfully offloaded: 2985
+Successfully offloaded: 2986
+Successfully offloaded: 2987
+Successfully offloaded: 2988
+Successfully offloaded: 2989
+Successfully offloaded: 2990
+Successfully offloaded: 2991
+Successfully offloaded: 2992
+Successfully offloaded: 2993
+Successfully offloaded: 2994
+Successfully offloaded: 2995
+Successfully offloaded: 2996
+Successfully offloaded: 2997
+Successfully offloaded: 2998
+Successfully offloaded: 2999
+Successfully offloaded: 3000
+Successfully offloaded: 3001
+Successfully offloaded: 3002
+Successfully offloaded: 3003
+Successfully offloaded: 3004
+Successfully offloaded: 3005
+Successfully offloaded: 3006
+Successfully offloaded: 3007
+Successfully offloaded: 3008
+Successfully offloaded: 3009
+Successfully offloaded: 3010
+Successfully offloaded: 3011
+Successfully offloaded: 3012
+Successfully offloaded: 3013
+Successfully offloaded: 3014
+Successfully offloaded: 3015
+Successfully offloaded: 3016
+Successfully offloaded: 3017
+Successfully offloaded: 3018
+Successfully offloaded: 3019
+Successfully offloaded: 3020
+Successfully offloaded: 3021
+Successfully offloaded: 3022
+Successfully offloaded: 3023
+Successfully offloaded: 3024
+Successfully offloaded: 3025
+Successfully offloaded: 3026
+Successfully offloaded: 3027
+Successfully offloaded: 3028
+Successfully offloaded: 3029
+Successfully offloaded: 3030
+Successfully offloaded: 3031
+Successfully offloaded: 3032
+Successfully offloaded: 3033
+Successfully offloaded: 3034
+Successfully offloaded: 3035
+Successfully offloaded: 3036
+Successfully offloaded: 3037
+Successfully offloaded: 3038
+Successfully offloaded: 3039
+Successfully offloaded: 3040
+Successfully offloaded: 3041
+Successfully offloaded: 3042
+Successfully offloaded: 3043
+Successfully offloaded: 3044
+Successfully offloaded: 3045
+Successfully offloaded: 3046
+Successfully offloaded: 3047
+Successfully offloaded: 3048
+Successfully offloaded: 3049
+Successfully offloaded: 3050
+Successfully offloaded: 3051
+Successfully offloaded: 3052
+Successfully offloaded: 3053
+Successfully offloaded: 3054
+Successfully offloaded: 3055
+Successfully offloaded: 3056
+Successfully offloaded: 3057
+Successfully offloaded: 3058
+Successfully offloaded: 3059
+Successfully offloaded: 3060
+Successfully offloaded: 3061
+Successfully offloaded: 3062
+Successfully offloaded: 3063
+Successfully offloaded: 3064
+Successfully offloaded: 3065
+Successfully offloaded: 3066
+Successfully offloaded: 3067
+Successfully offloaded: 3068
+Successfully offloaded: 3069
+Successfully offloaded: 3070
+Successfully offloaded: 3071
+Successfully offloaded: 3072
+Successfully offloaded: 3073
+Successfully offloaded: 3074
+Successfully offloaded: 3075
+Successfully offloaded: 3076
+Successfully offloaded: 3077
+Successfully offloaded: 3078
+Successfully offloaded: 3079
+Successfully offloaded: 3080
+Successfully offloaded: 3081
+Successfully offloaded: 3082
+Successfully offloaded: 3083
+Successfully offloaded: 3084
+Successfully offloaded: 3085
+Successfully offloaded: 3086
+Successfully offloaded: 3087
+Successfully offloaded: 3088
+Successfully offloaded: 3089
+Successfully offloaded: 3090
+Successfully offloaded: 3091
+Successfully offloaded: 3092
+Successfully offloaded: 3093
+Successfully offloaded: 3094
+Successfully offloaded: 3095
+Successfully offloaded: 3096
+Successfully offloaded: 3097
+Successfully offloaded: 3098
+Successfully offloaded: 3099
+Successfully offloaded: 3100
+Successfully offloaded: 3101
+Successfully offloaded: 3102
+Successfully offloaded: 3103
+Successfully offloaded: 3104
+Successfully offloaded: 3105
+Successfully offloaded: 3106
+Successfully offloaded: 3107
+Successfully offloaded: 3108
+Successfully offloaded: 3109
+Successfully offloaded: 3110
+Successfully offloaded: 3111
+Successfully offloaded: 3112
+Successfully offloaded: 3113
+Successfully offloaded: 3114
+Successfully offloaded: 3115
+Successfully offloaded: 3116
+Successfully offloaded: 3117
+Successfully offloaded: 3118
+Successfully offloaded: 3119
+Successfully offloaded: 3120
+Successfully offloaded: 3121
+Successfully offloaded: 3122
+Successfully offloaded: 3123
+Successfully offloaded: 3124
+Successfully offloaded: 3125
+Successfully offloaded: 3126
+Successfully offloaded: 3127
+Successfully offloaded: 3128
+Successfully offloaded: 3129
+Successfully offloaded: 3130
+Successfully offloaded: 3131
+Successfully offloaded: 3132
+Successfully offloaded: 3133
+Successfully offloaded: 3134
+Successfully offloaded: 3135
+Successfully offloaded: 3136
+Successfully offloaded: 3137
+Successfully offloaded: 3138
+Successfully offloaded: 3139
+Successfully offloaded: 3140
+Successfully offloaded: 3141
+Successfully offloaded: 3142
+Successfully offloaded: 3143
+Successfully offloaded: 3144
+Successfully offloaded: 3145
+Successfully offloaded: 3146
+Successfully offloaded: 3147
+Successfully offloaded: 3148
+Successfully offloaded: 3149
+Successfully offloaded: 3150Loading checkpoint files:  62%|██████▎   | 5/8 [09:46<05:51, 117.31s/it]
+Successfully offloaded: 3151
+Successfully offloaded: 3152
+Successfully offloaded: 3153
+Successfully offloaded: 3154
+Successfully offloaded: 3155
+Successfully offloaded: 3156
+Successfully offloaded: 3157
+Successfully offloaded: 3158
+Successfully offloaded: 3159
+Successfully offloaded: 3160
+Successfully offloaded: 3161
+Successfully offloaded: 3162
+Successfully offloaded: 3163
+Successfully offloaded: 3164
+Successfully offloaded: 3165
+Successfully offloaded: 3166
+Successfully offloaded: 3167
+Successfully offloaded: 3168
+Successfully offloaded: 3169
+Successfully offloaded: 3170
+Successfully offloaded: 3171
+Successfully offloaded: 3172
+Successfully offloaded: 3173
+Successfully offloaded: 3174
+Successfully offloaded: 3175
+Successfully offloaded: 3176
+Successfully offloaded: 3177
+Successfully offloaded: 3178
+Successfully offloaded: 3179
+Successfully offloaded: 3180
+Successfully offloaded: 3181
+Successfully offloaded: 3182
+Successfully offloaded: 3183
+Successfully offloaded: 3184
+Successfully offloaded: 3185
+Successfully offloaded: 3186
+Successfully offloaded: 3187
+Successfully offloaded: 3188
+Successfully offloaded: 3189
+Successfully offloaded: 3190
+Successfully offloaded: 3191
+Successfully offloaded: 3192
+Successfully offloaded: 3193
+Successfully offloaded: 3194
+Successfully offloaded: 3195
+Successfully offloaded: 3196
+Successfully offloaded: 3197
+Successfully offloaded: 3198
+Successfully offloaded: 3199
+Successfully offloaded: 3200
+Successfully offloaded: 3201
+Successfully offloaded: 3202
+Successfully offloaded: 3203
+Successfully offloaded: 3204
+Successfully offloaded: 3205
+Successfully offloaded: 3206
+Successfully offloaded: 3207
+Successfully offloaded: 3208
+Successfully offloaded: 3209
+Successfully offloaded: 3210
+Successfully offloaded: 3211
+Successfully offloaded: 3212
+Successfully offloaded: 3213
+Successfully offloaded: 3214
+Successfully offloaded: 3215
+Successfully offloaded: 3216
+Successfully offloaded: 3217
+Successfully offloaded: 3218
+Successfully offloaded: 3219
+Successfully offloaded: 3220
+Successfully offloaded: 3221
+Successfully offloaded: 3222
+Successfully offloaded: 3223
+Successfully offloaded: 3224
+Successfully offloaded: 3225
+Successfully offloaded: 3226
+Successfully offloaded: 3227
+Successfully offloaded: 3228
+Successfully offloaded: 3229
+Successfully offloaded: 3230
+Successfully offloaded: 3231
+Successfully offloaded: 3232
+Successfully offloaded: 3233
+Successfully offloaded: 3234
+Successfully offloaded: 3235
+Successfully offloaded: 3236
+Successfully offloaded: 3237
+Successfully offloaded: 3238
+Successfully offloaded: 3239
+Successfully offloaded: 3240
+Successfully offloaded: 3241
+Successfully offloaded: 3242
+Successfully offloaded: 3243
+Successfully offloaded: 3244
+Successfully offloaded: 3245
+Successfully offloaded: 3246
+Successfully offloaded: 3247
+Successfully offloaded: 3248
+Successfully offloaded: 3249
+Successfully offloaded: 3250
+Successfully offloaded: 3251
+Successfully offloaded: 3252
+Successfully offloaded: 3253
+Successfully offloaded: 3254
+Successfully offloaded: 3255
+Successfully offloaded: 3256
+Successfully offloaded: 3257
+Successfully offloaded: 3258
+Successfully offloaded: 3259
+Successfully offloaded: 3260
+Successfully offloaded: 3261
+Successfully offloaded: 3262
+Successfully offloaded: 3263
+Successfully offloaded: 3264
+Successfully offloaded: 3265
+Successfully offloaded: 3266
+Successfully offloaded: 3267
+Successfully offloaded: 3268
+Successfully offloaded: 3269
+Successfully offloaded: 3270
+Successfully offloaded: 3271
+Successfully offloaded: 3272
+Successfully offloaded: 3273
+Successfully offloaded: 3274
+Successfully offloaded: 3275
+Successfully offloaded: 3276
+Successfully offloaded: 3277
+Successfully offloaded: 3278
+Successfully offloaded: 3279
+Successfully offloaded: 3280
+Successfully offloaded: 3281
+Successfully offloaded: 3282
+Successfully offloaded: 3283
+Successfully offloaded: 3284
+Successfully offloaded: 3285
+Successfully offloaded: 3286
+Successfully offloaded: 3287
+Successfully offloaded: 3288
+Successfully offloaded: 3289
+Successfully offloaded: 3290
+Successfully offloaded: 3291
+Successfully offloaded: 3292
+Successfully offloaded: 3293
+Successfully offloaded: 3294
+Successfully offloaded: 3295
+Successfully offloaded: 3296
+Successfully offloaded: 3297
+Successfully offloaded: 3298
+Successfully offloaded: 3299
+Successfully offloaded: 3300
+Successfully offloaded: 3301
+Successfully offloaded: 3302
+Successfully offloaded: 3303
+Successfully offloaded: 3304
+Successfully offloaded: 3305
+Successfully offloaded: 3306
+Successfully offloaded: 3307
+Successfully offloaded: 3308
+Successfully offloaded: 3309
+Successfully offloaded: 3310
+Successfully offloaded: 3311
+Successfully offloaded: 3312
+Successfully offloaded: 3313
+Successfully offloaded: 3314
+Successfully offloaded: 3315
+Successfully offloaded: 3316
+Successfully offloaded: 3317
+Successfully offloaded: 3318
+Successfully offloaded: 3319
+Successfully offloaded: 3320
+Successfully offloaded: 3321
+Successfully offloaded: 3322
+Successfully offloaded: 3323
+Successfully offloaded: 3324
+Successfully offloaded: 3325
+Successfully offloaded: 3326
+Successfully offloaded: 3327
+Successfully offloaded: 3328
+Successfully offloaded: 3329
+Successfully offloaded: 3330
+Successfully offloaded: 3331
+Successfully offloaded: 3332
+Successfully offloaded: 3333
+Successfully offloaded: 3334
+Successfully offloaded: 3335
+Successfully offloaded: 3336
+Successfully offloaded: 3337
+Successfully offloaded: 3338
+Successfully offloaded: 3339
+Successfully offloaded: 3340
+Successfully offloaded: 3341
+Successfully offloaded: 3342
+Successfully offloaded: 3343
+Successfully offloaded: 3344
+Successfully offloaded: 3345
+Successfully offloaded: 3346
+Successfully offloaded: 3347
+Successfully offloaded: 3348
+Successfully offloaded: 3349
+Successfully offloaded: 3350
+Successfully offloaded: 3351
+Successfully offloaded: 3352
+Successfully offloaded: 3353
+Successfully offloaded: 3354
+Successfully offloaded: 3355
+Successfully offloaded: 3356
+Successfully offloaded: 3357
+Successfully offloaded: 3358
+Successfully offloaded: 3359
+Successfully offloaded: 3360
+Successfully offloaded: 3361
+Successfully offloaded: 3362
+Successfully offloaded: 3363
+Successfully offloaded: 3364
+Successfully offloaded: 3365
+Successfully offloaded: 3366
+Successfully offloaded: 3367
+Successfully offloaded: 3368
+Successfully offloaded: 3369
+Successfully offloaded: 3370
+Successfully offloaded: 3371
+Successfully offloaded: 3372
+Successfully offloaded: 3373
+Successfully offloaded: 3374
+Successfully offloaded: 3375
+Successfully offloaded: 3376
+Successfully offloaded: 3377
+Successfully offloaded: 3378
+Successfully offloaded: 3379
+Successfully offloaded: 3380
+Successfully offloaded: 3381
+Successfully offloaded: 3382
+Successfully offloaded: 3383
+Successfully offloaded: 3384
+Successfully offloaded: 3385
+Successfully offloaded: 3386
+Successfully offloaded: 3387
+Successfully offloaded: 3388
+Successfully offloaded: 3389
+Successfully offloaded: 3390
+Successfully offloaded: 3391
+Successfully offloaded: 3392
+Successfully offloaded: 3393
+Successfully offloaded: 3394
+Successfully offloaded: 3395
+Successfully offloaded: 3396
+Successfully offloaded: 3397
+Successfully offloaded: 3398
+Successfully offloaded: 3399
+Successfully offloaded: 3400
+Successfully offloaded: 3401
+Successfully offloaded: 3402
+Successfully offloaded: 3403
+Successfully offloaded: 3404
+Successfully offloaded: 3405
+Successfully offloaded: 3406
+Successfully offloaded: 3407
+Successfully offloaded: 3408
+Successfully offloaded: 3409
+Successfully offloaded: 3410
+Successfully offloaded: 3411
+Successfully offloaded: 3412
+Successfully offloaded: 3413
+Successfully offloaded: 3414
+Successfully offloaded: 3415
+Successfully offloaded: 3416
+Successfully offloaded: 3417
+Successfully offloaded: 3418
+Successfully offloaded: 3419
+Successfully offloaded: 3420
+Successfully offloaded: 3421
+Successfully offloaded: 3422
+Successfully offloaded: 3423
+Successfully offloaded: 3424
+Successfully offloaded: 3425
+Successfully offloaded: 3426
+Successfully offloaded: 3427
+Successfully offloaded: 3428
+Successfully offloaded: 3429
+Successfully offloaded: 3430
+Successfully offloaded: 3431
+Successfully offloaded: 3432
+Successfully offloaded: 3433
+Successfully offloaded: 3434
+Successfully offloaded: 3435
+Successfully offloaded: 3436
+Successfully offloaded: 3437
+Successfully offloaded: 3438
+Successfully offloaded: 3439
+Successfully offloaded: 3440
+Successfully offloaded: 3441
+Successfully offloaded: 3442
+Successfully offloaded: 3443
+Successfully offloaded: 3444
+Successfully offloaded: 3445
+Successfully offloaded: 3446
+Successfully offloaded: 3447
+Successfully offloaded: 3448
+Successfully offloaded: 3449
+Successfully offloaded: 3450
+Successfully offloaded: 3451
+Successfully offloaded: 3452
+Successfully offloaded: 3453
+Successfully offloaded: 3454
+Successfully offloaded: 3455
+Successfully offloaded: 3456
+Successfully offloaded: 3457
+Successfully offloaded: 3458
+Successfully offloaded: 3459
+Successfully offloaded: 3460
+Successfully offloaded: 3461
+Successfully offloaded: 3462
+Successfully offloaded: 3463
+Successfully offloaded: 3464
+Successfully offloaded: 3465
+Successfully offloaded: 3466
+Successfully offloaded: 3467
+Successfully offloaded: 3468
+Successfully offloaded: 3469
+Successfully offloaded: 3470
+Successfully offloaded: 3471
+Successfully offloaded: 3472
+Successfully offloaded: 3473
+Successfully offloaded: 3474
+Successfully offloaded: 3475
+Successfully offloaded: 3476
+Successfully offloaded: 3477
+Successfully offloaded: 3478
+Successfully offloaded: 3479
+Successfully offloaded: 3480
+Successfully offloaded: 3481
+Successfully offloaded: 3482
+Successfully offloaded: 3483
+Successfully offloaded: 3484
+Successfully offloaded: 3485
+Successfully offloaded: 3486
+Successfully offloaded: 3487
+Successfully offloaded: 3488
+Successfully offloaded: 3489
+Successfully offloaded: 3490
+Successfully offloaded: 3491
+Successfully offloaded: 3492
+Successfully offloaded: 3493
+Successfully offloaded: 3494
+Successfully offloaded: 3495
+Successfully offloaded: 3496
+Successfully offloaded: 3497
+Successfully offloaded: 3498
+Successfully offloaded: 3499
+Successfully offloaded: 3500
+Successfully offloaded: 3501
+Successfully offloaded: 3502
+Successfully offloaded: 3503
+Successfully offloaded: 3504
+Successfully offloaded: 3505
+Successfully offloaded: 3506
+Successfully offloaded: 3507
+Successfully offloaded: 3508
+Successfully offloaded: 3509
+Successfully offloaded: 3510
+Successfully offloaded: 3511
+Successfully offloaded: 3512
+Successfully offloaded: 3513
+Successfully offloaded: 3514
+Successfully offloaded: 3515
+Successfully offloaded: 3516
+Successfully offloaded: 3517
+Successfully offloaded: 3518
+Successfully offloaded: 3519
+Successfully offloaded: 3520
+Successfully offloaded: 3521
+Successfully offloaded: 3522
+Successfully offloaded: 3523
+Successfully offloaded: 3524
+Successfully offloaded: 3525
+Successfully offloaded: 3526
+Successfully offloaded: 3527
+Successfully offloaded: 3528
+Successfully offloaded: 3529
+Successfully offloaded: 3530
+Successfully offloaded: 3531
+Successfully offloaded: 3532
+Successfully offloaded: 3533
+Successfully offloaded: 3534
+Successfully offloaded: 3535
+Successfully offloaded: 3536
+Successfully offloaded: 3537
+Successfully offloaded: 3538
+Successfully offloaded: 3539
+Successfully offloaded: 3540
+Successfully offloaded: 3541
+Successfully offloaded: 3542
+Successfully offloaded: 3543
+Successfully offloaded: 3544
+Successfully offloaded: 3545
+Successfully offloaded: 3546
+Successfully offloaded: 3547
+Successfully offloaded: 3548
+Successfully offloaded: 3549
+Successfully offloaded: 3550
+Successfully offloaded: 3551
+Successfully offloaded: 3552
+Successfully offloaded: 3553
+Successfully offloaded: 3554
+Successfully offloaded: 3555
+Successfully offloaded: 3556
+Successfully offloaded: 3557
+Successfully offloaded: 3558
+Successfully offloaded: 3559
+Successfully offloaded: 3560
+Successfully offloaded: 3561
+Successfully offloaded: 3562
+Successfully offloaded: 3563
+Successfully offloaded: 3564
+Successfully offloaded: 3565
+Successfully offloaded: 3566
+Successfully offloaded: 3567
+Successfully offloaded: 3568
+Successfully offloaded: 3569
+Successfully offloaded: 3570
+Successfully offloaded: 3571
+Successfully offloaded: 3572
+Successfully offloaded: 3573
+Successfully offloaded: 3574
+Successfully offloaded: 3575
+Successfully offloaded: 3576
+Successfully offloaded: 3577
+Successfully offloaded: 3578
+Successfully offloaded: 3579
+Successfully offloaded: 3580
+Successfully offloaded: 3581
+Successfully offloaded: 3582
+Successfully offloaded: 3583
+Successfully offloaded: 3584
+Successfully offloaded: 3585
+Successfully offloaded: 3586
+Successfully offloaded: 3587
+Successfully offloaded: 3588
+Successfully offloaded: 3589
+Successfully offloaded: 3590
+Successfully offloaded: 3591
+Successfully offloaded: 3592
+Successfully offloaded: 3593
+Successfully offloaded: 3594
+Successfully offloaded: 3595
+Successfully offloaded: 3596
+Successfully offloaded: 3597
+Successfully offloaded: 3598
+Successfully offloaded: 3599
+Successfully offloaded: 3600
+Successfully offloaded: 3601
+Successfully offloaded: 3602
+Successfully offloaded: 3603
+Successfully offloaded: 3604
+Successfully offloaded: 3605
+Successfully offloaded: 3606
+Successfully offloaded: 3607
+Successfully offloaded: 3608
+Successfully offloaded: 3609
+Successfully offloaded: 3610
+Successfully offloaded: 3611
+Successfully offloaded: 3612
+Successfully offloaded: 3613
+Successfully offloaded: 3614
+Successfully offloaded: 3615
+Successfully offloaded: 3616
+Successfully offloaded: 3617
+Successfully offloaded: 3618
+Successfully offloaded: 3619
+Successfully offloaded: 3620
+Successfully offloaded: 3621
+Successfully offloaded: 3622
+Successfully offloaded: 3623
+Successfully offloaded: 3624
+Successfully offloaded: 3625
+Successfully offloaded: 3626
+Successfully offloaded: 3627
+Successfully offloaded: 3628
+Successfully offloaded: 3629
+Successfully offloaded: 3630
+Successfully offloaded: 3631
+Successfully offloaded: 3632
+Successfully offloaded: 3633
+Successfully offloaded: 3634
+Successfully offloaded: 3635
+Successfully offloaded: 3636
+Successfully offloaded: 3637
+Successfully offloaded: 3638
+Successfully offloaded: 3639
+Successfully offloaded: 3640
+Successfully offloaded: 3641
+Successfully offloaded: 3642
+Successfully offloaded: 3643
+Successfully offloaded: 3644
+Successfully offloaded: 3645
+Successfully offloaded: 3646
+Successfully offloaded: 3647
+Successfully offloaded: 3648
+Successfully offloaded: 3649
+Successfully offloaded: 3650
+Successfully offloaded: 3651
+Successfully offloaded: 3652
+Successfully offloaded: 3653
+Successfully offloaded: 3654
+Successfully offloaded: 3655
+Successfully offloaded: 3656
+Successfully offloaded: 3657
+Successfully offloaded: 3658
+Successfully offloaded: 3659
+Successfully offloaded: 3660
+Successfully offloaded: 3661
+Successfully offloaded: 3662
+Successfully offloaded: 3663
+Successfully offloaded: 3664
+Successfully offloaded: 3665
+Successfully offloaded: 3666
+Successfully offloaded: 3667
+Successfully offloaded: 3668
+Successfully offloaded: 3669
+Successfully offloaded: 3670
+Successfully offloaded: 3671
+Successfully offloaded: 3672
+Successfully offloaded: 3673
+Successfully offloaded: 3674
+Successfully offloaded: 3675
+Successfully offloaded: 3676
+Successfully offloaded: 3677
+Successfully offloaded: 3678
+Successfully offloaded: 3679
+Successfully offloaded: 3680
+Successfully offloaded: 3681
+Successfully offloaded: 3682
+Successfully offloaded: 3683
+Successfully offloaded: 3684
+Successfully offloaded: 3685
+Successfully offloaded: 3686
+Successfully offloaded: 3687
+Successfully offloaded: 3688
+Successfully offloaded: 3689
+Successfully offloaded: 3690
+Successfully offloaded: 3691
+Successfully offloaded: 3692
+Successfully offloaded: 3693
+Successfully offloaded: 3694
+Successfully offloaded: 3695
+Successfully offloaded: 3696
+Successfully offloaded: 3697
+Successfully offloaded: 3698
+Successfully offloaded: 3699
+Successfully offloaded: 3700
+Successfully offloaded: 3701
+Successfully offloaded: 3702
+Successfully offloaded: 3703
+Successfully offloaded: 3704
+Successfully offloaded: 3705
+Successfully offloaded: 3706
+Successfully offloaded: 3707
+Successfully offloaded: 3708
+Successfully offloaded: 3709
+Successfully offloaded: 3710
+Successfully offloaded: 3711
+Successfully offloaded: 3712
+Successfully offloaded: 3713
+Successfully offloaded: 3714
+Successfully offloaded: 3715
+Successfully offloaded: 3716Loading checkpoint files:  75%|███████▌  | 6/8 [11:44<03:54, 117.39s/it]
+Successfully offloaded: 3717
+Successfully offloaded: 3718
+Successfully offloaded: 3719
+Successfully offloaded: 3720
+Successfully offloaded: 3721
+Successfully offloaded: 3722
+Successfully offloaded: 3723
+Successfully offloaded: 3724
+Successfully offloaded: 3725
+Successfully offloaded: 3726
+Successfully offloaded: 3727
+Successfully offloaded: 3728
+Successfully offloaded: 3729
+Successfully offloaded: 3730
+Successfully offloaded: 3731
+Successfully offloaded: 3732
+Successfully offloaded: 3733
+Successfully offloaded: 3734
+Successfully offloaded: 3735
+Successfully offloaded: 3736
+Successfully offloaded: 3737
+Successfully offloaded: 3738
+Successfully offloaded: 3739
+Successfully offloaded: 3740
+Successfully offloaded: 3741
+Successfully offloaded: 3742
+Successfully offloaded: 3743
+Successfully offloaded: 3744
+Successfully offloaded: 3745
+Successfully offloaded: 3746
+Successfully offloaded: 3747
+Successfully offloaded: 3748
+Successfully offloaded: 3749
+Successfully offloaded: 3750
+Successfully offloaded: 3751
+Successfully offloaded: 3752
+Successfully offloaded: 3753
+Successfully offloaded: 3754
+Successfully offloaded: 3755
+Successfully offloaded: 3756
+Successfully offloaded: 3757
+Successfully offloaded: 3758
+Successfully offloaded: 3759
+Successfully offloaded: 3760
+Successfully offloaded: 3761
+Successfully offloaded: 3762
+Successfully offloaded: 3763
+Successfully offloaded: 3764
+Successfully offloaded: 3765
+Successfully offloaded: 3766
+Successfully offloaded: 3767
+Successfully offloaded: 3768
+Successfully offloaded: 3769
+Successfully offloaded: 3770
+Successfully offloaded: 3771
+Successfully offloaded: 3772
+Successfully offloaded: 3773
+Successfully offloaded: 3774
+Successfully offloaded: 3775
+Successfully offloaded: 3776
+Successfully offloaded: 3777
+Successfully offloaded: 3778
+Successfully offloaded: 3779
+Successfully offloaded: 3780
+Successfully offloaded: 3781
+Successfully offloaded: 3782
+Successfully offloaded: 3783
+Successfully offloaded: 3784
+Successfully offloaded: 3785
+Successfully offloaded: 3786
+Successfully offloaded: 3787
+Successfully offloaded: 3788
+Successfully offloaded: 3789
+Successfully offloaded: 3790
+Successfully offloaded: 3791
+Successfully offloaded: 3792
+Successfully offloaded: 3793
+Successfully offloaded: 3794
+Successfully offloaded: 3795
+Successfully offloaded: 3796
+Successfully offloaded: 3797
+Successfully offloaded: 3798
+Successfully offloaded: 3799
+Successfully offloaded: 3800
+Successfully offloaded: 3801
+Successfully offloaded: 3802
+Successfully offloaded: 3803
+Successfully offloaded: 3804
+Successfully offloaded: 3805
+Successfully offloaded: 3806
+Successfully offloaded: 3807
+Successfully offloaded: 3808
+Successfully offloaded: 3809
+Successfully offloaded: 3810
+Successfully offloaded: 3811
+Successfully offloaded: 3812
+Successfully offloaded: 3813
+Successfully offloaded: 3814
+Successfully offloaded: 3815
+Successfully offloaded: 3816
+Successfully offloaded: 3817
+Successfully offloaded: 3818
+Successfully offloaded: 3819
+Successfully offloaded: 3820
+Successfully offloaded: 3821
+Successfully offloaded: 3822
+Successfully offloaded: 3823
+Successfully offloaded: 3824
+Successfully offloaded: 3825
+Successfully offloaded: 3826
+Successfully offloaded: 3827
+Successfully offloaded: 3828
+Successfully offloaded: 3829
+Successfully offloaded: 3830
+Successfully offloaded: 3831
+Successfully offloaded: 3832
+Successfully offloaded: 3833
+Successfully offloaded: 3834
+Successfully offloaded: 3835
+Successfully offloaded: 3836
+Successfully offloaded: 3837
+Successfully offloaded: 3838
+Successfully offloaded: 3839
+Successfully offloaded: 3840
+Successfully offloaded: 3841
+Successfully offloaded: 3842
+Successfully offloaded: 3843
+Successfully offloaded: 3844
+Successfully offloaded: 3845
+Successfully offloaded: 3846
+Successfully offloaded: 3847
+Successfully offloaded: 3848
+Successfully offloaded: 3849
+Successfully offloaded: 3850
+Successfully offloaded: 3851
+Successfully offloaded: 3852
+Successfully offloaded: 3853
+Successfully offloaded: 3854
+Successfully offloaded: 3855
+Successfully offloaded: 3856
+Successfully offloaded: 3857
+Successfully offloaded: 3858
+Successfully offloaded: 3859
+Successfully offloaded: 3860
+Successfully offloaded: 3861
+Successfully offloaded: 3862
+Successfully offloaded: 3863
+Successfully offloaded: 3864
+Successfully offloaded: 3865
+Successfully offloaded: 3866
+Successfully offloaded: 3867
+Successfully offloaded: 3868
+Successfully offloaded: 3869
+Successfully offloaded: 3870
+Successfully offloaded: 3871
+Successfully offloaded: 3872
+Successfully offloaded: 3873
+Successfully offloaded: 3874
+Successfully offloaded: 3875
+Successfully offloaded: 3876
+Successfully offloaded: 3877
+Successfully offloaded: 3878
+Successfully offloaded: 3879
+Successfully offloaded: 3880
+Successfully offloaded: 3881
+Successfully offloaded: 3882
+Successfully offloaded: 3883
+Successfully offloaded: 3884
+Successfully offloaded: 3885
+Successfully offloaded: 3886
+Successfully offloaded: 3887
+Successfully offloaded: 3888
+Successfully offloaded: 3889
+Successfully offloaded: 3890
+Successfully offloaded: 3891
+Successfully offloaded: 3892
+Successfully offloaded: 3893
+Successfully offloaded: 3894
+Successfully offloaded: 3895
+Successfully offloaded: 3896
+Successfully offloaded: 3897
+Successfully offloaded: 3898
+Successfully offloaded: 3899
+Successfully offloaded: 3900
+Successfully offloaded: 3901
+Successfully offloaded: 3902
+Successfully offloaded: 3903
+Successfully offloaded: 3904
+Successfully offloaded: 3905
+Successfully offloaded: 3906
+Successfully offloaded: 3907
+Successfully offloaded: 3908
+Successfully offloaded: 3909
+Successfully offloaded: 3910
+Successfully offloaded: 3911
+Successfully offloaded: 3912
+Successfully offloaded: 3913
+Successfully offloaded: 3914
+Successfully offloaded: 3915
+Successfully offloaded: 3916
+Successfully offloaded: 3917
+Successfully offloaded: 3918
+Successfully offloaded: 3919
+Successfully offloaded: 3920
+Successfully offloaded: 3921
+Successfully offloaded: 3922
+Successfully offloaded: 3923
+Successfully offloaded: 3924
+Successfully offloaded: 3925
+Successfully offloaded: 3926
+Successfully offloaded: 3927
+Successfully offloaded: 3928
+Successfully offloaded: 3929
+Successfully offloaded: 3930
+Successfully offloaded: 3931
+Successfully offloaded: 3932
+Successfully offloaded: 3933
+Successfully offloaded: 3934
+Successfully offloaded: 3935
+Successfully offloaded: 3936
+Successfully offloaded: 3937
+Successfully offloaded: 3938
+Successfully offloaded: 3939
+Successfully offloaded: 3940
+Successfully offloaded: 3941
+Successfully offloaded: 3942
+Successfully offloaded: 3943
+Successfully offloaded: 3944
+Successfully offloaded: 3945
+Successfully offloaded: 3946
+Successfully offloaded: 3947
+Successfully offloaded: 3948
+Successfully offloaded: 3949
+Successfully offloaded: 3950
+Successfully offloaded: 3951
+Successfully offloaded: 3952
+Successfully offloaded: 3953
+Successfully offloaded: 3954
+Successfully offloaded: 3955
+Successfully offloaded: 3956
+Successfully offloaded: 3957
+Successfully offloaded: 3958
+Successfully offloaded: 3959
+Successfully offloaded: 3960
+Successfully offloaded: 3961
+Successfully offloaded: 3962
+Successfully offloaded: 3963
+Successfully offloaded: 3964
+Successfully offloaded: 3965
+Successfully offloaded: 3966
+Successfully offloaded: 3967
+Successfully offloaded: 3968
+Successfully offloaded: 3969
+Successfully offloaded: 3970
+Successfully offloaded: 3971
+Successfully offloaded: 3972
+Successfully offloaded: 3973
+Successfully offloaded: 3974
+Successfully offloaded: 3975
+Successfully offloaded: 3976
+Successfully offloaded: 3977
+Successfully offloaded: 3978
+Successfully offloaded: 3979
+Successfully offloaded: 3980
+Successfully offloaded: 3981
+Successfully offloaded: 3982
+Successfully offloaded: 3983
+Successfully offloaded: 3984
+Successfully offloaded: 3985
+Successfully offloaded: 3986
+Successfully offloaded: 3987
+Successfully offloaded: 3988
+Successfully offloaded: 3989
+Successfully offloaded: 3990
+Successfully offloaded: 3991
+Successfully offloaded: 3992
+Successfully offloaded: 3993
+Successfully offloaded: 3994
+Successfully offloaded: 3995
+Successfully offloaded: 3996
+Successfully offloaded: 3997
+Successfully offloaded: 3998
+Successfully offloaded: 3999
+Successfully offloaded: 4000
+Successfully offloaded: 4001
+Successfully offloaded: 4002
+Successfully offloaded: 4003
+Successfully offloaded: 4004
+Successfully offloaded: 4005
+Successfully offloaded: 4006
+Successfully offloaded: 4007
+Successfully offloaded: 4008
+Successfully offloaded: 4009
+Successfully offloaded: 4010
+Successfully offloaded: 4011
+Successfully offloaded: 4012
+Successfully offloaded: 4013
+Successfully offloaded: 4014
+Successfully offloaded: 4015
+Successfully offloaded: 4016
+Successfully offloaded: 4017
+Successfully offloaded: 4018
+Successfully offloaded: 4019
+Successfully offloaded: 4020
+Successfully offloaded: 4021
+Successfully offloaded: 4022
+Successfully offloaded: 4023
+Successfully offloaded: 4024
+Successfully offloaded: 4025
+Successfully offloaded: 4026
+Successfully offloaded: 4027
+Successfully offloaded: 4028
+Successfully offloaded: 4029
+Successfully offloaded: 4030
+Successfully offloaded: 4031
+Successfully offloaded: 4032
+Successfully offloaded: 4033
+Successfully offloaded: 4034
+Successfully offloaded: 4035
+Successfully offloaded: 4036
+Successfully offloaded: 4037
+Successfully offloaded: 4038
+Successfully offloaded: 4039
+Successfully offloaded: 4040
+Successfully offloaded: 4041
+Successfully offloaded: 4042
+Successfully offloaded: 4043
+Successfully offloaded: 4044
+Successfully offloaded: 4045
+Successfully offloaded: 4046
+Successfully offloaded: 4047
+Successfully offloaded: 4048
+Successfully offloaded: 4049
+Successfully offloaded: 4050
+Successfully offloaded: 4051
+Successfully offloaded: 4052
+Successfully offloaded: 4053
+Successfully offloaded: 4054
+Successfully offloaded: 4055
+Successfully offloaded: 4056
+Successfully offloaded: 4057
+Successfully offloaded: 4058
+Successfully offloaded: 4059
+Successfully offloaded: 4060
+Successfully offloaded: 4061
+Successfully offloaded: 4062
+Successfully offloaded: 4063
+Successfully offloaded: 4064
+Successfully offloaded: 4065
+Successfully offloaded: 4066
+Successfully offloaded: 4067
+Successfully offloaded: 4068
+Successfully offloaded: 4069
+Successfully offloaded: 4070
+Successfully offloaded: 4071
+Successfully offloaded: 4072
+Successfully offloaded: 4073
+Successfully offloaded: 4074
+Successfully offloaded: 4075
+Successfully offloaded: 4076
+Successfully offloaded: 4077
+Successfully offloaded: 4078
+Successfully offloaded: 4079
+Successfully offloaded: 4080
+Successfully offloaded: 4081
+Successfully offloaded: 4082
+Successfully offloaded: 4083
+Successfully offloaded: 4084
+Successfully offloaded: 4085
+Successfully offloaded: 4086
+Successfully offloaded: 4087
+Successfully offloaded: 4088
+Successfully offloaded: 4089
+Successfully offloaded: 4090
+Successfully offloaded: 4091
+Successfully offloaded: 4092
+Successfully offloaded: 4093
+Successfully offloaded: 4094
+Successfully offloaded: 4095
+Successfully offloaded: 4096
+Successfully offloaded: 4097
+Successfully offloaded: 4098
+Successfully offloaded: 4099
+Successfully offloaded: 4100
+Successfully offloaded: 4101
+Successfully offloaded: 4102
+Successfully offloaded: 4103
+Successfully offloaded: 4104
+Successfully offloaded: 4105
+Successfully offloaded: 4106
+Successfully offloaded: 4107
+Successfully offloaded: 4108
+Successfully offloaded: 4109
+Successfully offloaded: 4110
+Successfully offloaded: 4111
+Successfully offloaded: 4112
+Successfully offloaded: 4113
+Successfully offloaded: 4114
+Successfully offloaded: 4115
+Successfully offloaded: 4116
+Successfully offloaded: 4117
+Successfully offloaded: 4118
+Successfully offloaded: 4119
+Successfully offloaded: 4120
+Successfully offloaded: 4121
+Successfully offloaded: 4122
+Successfully offloaded: 4123
+Successfully offloaded: 4124
+Successfully offloaded: 4125
+Successfully offloaded: 4126
+Successfully offloaded: 4127
+Successfully offloaded: 4128
+Successfully offloaded: 4129
+Successfully offloaded: 4130
+Successfully offloaded: 4131
+Successfully offloaded: 4132
+Successfully offloaded: 4133
+Successfully offloaded: 4134
+Successfully offloaded: 4135
+Successfully offloaded: 4136
+Successfully offloaded: 4137
+Successfully offloaded: 4138
+Successfully offloaded: 4139
+Successfully offloaded: 4140
+Successfully offloaded: 4141
+Successfully offloaded: 4142
+Successfully offloaded: 4143
+Successfully offloaded: 4144
+Successfully offloaded: 4145
+Successfully offloaded: 4146
+Successfully offloaded: 4147
+Successfully offloaded: 4148
+Successfully offloaded: 4149
+Successfully offloaded: 4150
+Successfully offloaded: 4151
+Successfully offloaded: 4152
+Successfully offloaded: 4153
+Successfully offloaded: 4154
+Successfully offloaded: 4155
+Successfully offloaded: 4156
+Successfully offloaded: 4157
+Successfully offloaded: 4158
+Successfully offloaded: 4159
+Successfully offloaded: 4160
+Successfully offloaded: 4161
+Successfully offloaded: 4162
+Successfully offloaded: 4163
+Successfully offloaded: 4164
+Successfully offloaded: 4165
+Successfully offloaded: 4166
+Successfully offloaded: 4167
+Successfully offloaded: 4168
+Successfully offloaded: 4169
+Successfully offloaded: 4170
+Successfully offloaded: 4171
+Successfully offloaded: 4172
+Successfully offloaded: 4173
+Successfully offloaded: 4174
+Successfully offloaded: 4175
+Successfully offloaded: 4176
+Successfully offloaded: 4177
+Successfully offloaded: 4178
+Successfully offloaded: 4179
+Successfully offloaded: 4180
+Successfully offloaded: 4181
+Successfully offloaded: 4182
+Successfully offloaded: 4183
+Successfully offloaded: 4184
+Successfully offloaded: 4185
+Successfully offloaded: 4186
+Successfully offloaded: 4187
+Successfully offloaded: 4188
+Successfully offloaded: 4189
+Successfully offloaded: 4190
+Successfully offloaded: 4191
+Successfully offloaded: 4192
+Successfully offloaded: 4193
+Successfully offloaded: 4194
+Successfully offloaded: 4195
+Successfully offloaded: 4196
+Successfully offloaded: 4197
+Successfully offloaded: 4198
+Successfully offloaded: 4199
+Successfully offloaded: 4200
+Successfully offloaded: 4201
+Successfully offloaded: 4202
+Successfully offloaded: 4203
+Successfully offloaded: 4204
+Successfully offloaded: 4205
+Successfully offloaded: 4206
+Successfully offloaded: 4207
+Successfully offloaded: 4208
+Successfully offloaded: 4209
+Successfully offloaded: 4210
+Successfully offloaded: 4211
+Successfully offloaded: 4212
+Successfully offloaded: 4213
+Successfully offloaded: 4214
+Successfully offloaded: 4215
+Successfully offloaded: 4216
+Successfully offloaded: 4217
+Successfully offloaded: 4218
+Successfully offloaded: 4219
+Successfully offloaded: 4220
+Successfully offloaded: 4221
+Successfully offloaded: 4222
+Successfully offloaded: 4223
+Successfully offloaded: 4224
+Successfully offloaded: 4225
+Successfully offloaded: 4226
+Successfully offloaded: 4227
+Successfully offloaded: 4228
+Successfully offloaded: 4229
+Successfully offloaded: 4230
+Successfully offloaded: 4231
+Successfully offloaded: 4232
+Successfully offloaded: 4233
+Successfully offloaded: 4234
+Successfully offloaded: 4235
+Successfully offloaded: 4236
+Successfully offloaded: 4237
+Successfully offloaded: 4238
+Successfully offloaded: 4239
+Successfully offloaded: 4240
+Successfully offloaded: 4241
+Successfully offloaded: 4242
+Successfully offloaded: 4243
+Successfully offloaded: 4244
+Successfully offloaded: 4245
+Successfully offloaded: 4246
+Successfully offloaded: 4247
+Successfully offloaded: 4248
+Successfully offloaded: 4249
+Successfully offloaded: 4250
+Successfully offloaded: 4251
+Successfully offloaded: 4252
+Successfully offloaded: 4253
+Successfully offloaded: 4254
+Successfully offloaded: 4255
+Successfully offloaded: 4256
+Successfully offloaded: 4257
+Successfully offloaded: 4258
+Successfully offloaded: 4259
+Successfully offloaded: 4260
+Successfully offloaded: 4261
+Successfully offloaded: 4262
+Successfully offloaded: 4263
+Successfully offloaded: 4264
+Successfully offloaded: 4265
+Successfully offloaded: 4266
+Successfully offloaded: 4267
+Successfully offloaded: 4268
+Successfully offloaded: 4269
+Successfully offloaded: 4270
+Successfully offloaded: 4271
+Successfully offloaded: 4272
+Successfully offloaded: 4273
+Successfully offloaded: 4274
+Successfully offloaded: 4275
+Successfully offloaded: 4276
+Successfully offloaded: 4277
+Successfully offloaded: 4278
+Successfully offloaded: 4279
+Successfully offloaded: 4280
+Successfully offloaded: 4281
+Successfully offloaded: 4282
+Successfully offloaded: 4283
+Successfully offloaded: 4284
+Successfully offloaded: 4285
+Successfully offloaded: 4286
+Successfully offloaded: 4287
+Successfully offloaded: 4288
+Successfully offloaded: 4289
+Successfully offloaded: 4290
+Successfully offloaded: 4291
+Successfully offloaded: 4292
+Successfully offloaded: 4293
+Successfully offloaded: 4294
+Successfully offloaded: 4295
+Successfully offloaded: 4296
+Successfully offloaded: 4297
+Successfully offloaded: 4298
+Successfully offloaded: 4299
+Successfully offloaded: 4300
+Successfully offloaded: 4301
+Successfully offloaded: 4302
+Successfully offloaded: 4303
+Successfully offloaded: 4304
+Successfully offloaded: 4305
+Successfully offloaded: 4306
+Successfully offloaded: 4307
+Successfully offloaded: 4308
+Successfully offloaded: 4309
+Successfully offloaded: 4310
+Successfully offloaded: 4311
+Successfully offloaded: 4312
+Successfully offloaded: 4313
+Successfully offloaded: 4314
+Successfully offloaded: 4315
+Successfully offloaded: 4316
+Successfully offloaded: 4317
+Successfully offloaded: 4318
+Successfully offloaded: 4319
+Successfully offloaded: 4320
+Successfully offloaded: 4321
+Successfully offloaded: 4322
+Successfully offloaded: 4323
+Successfully offloaded: 4324
+Successfully offloaded: 4325
+Successfully offloaded: 4326
+Successfully offloaded: 4327
+Successfully offloaded: 4328
+Successfully offloaded: 4329
+Successfully offloaded: 4330
+Successfully offloaded: 4331
+Successfully offloaded: 4332
+Successfully offloaded: 4333
+Successfully offloaded: 4334
+Successfully offloaded: 4335
+Successfully offloaded: 4336
+Successfully offloaded: 4337
+Successfully offloaded: 4338
+Successfully offloaded: 4339
+Successfully offloaded: 4340
+Successfully offloaded: 4341
+Successfully offloaded: 4342
+Successfully offloaded: 4343
+Successfully offloaded: 4344
+Successfully offloaded: 4345
+Successfully offloaded: 4346
+Successfully offloaded: 4347
+Successfully offloaded: 4348
+Successfully offloaded: 4349
+Successfully offloaded: 4350
+Successfully offloaded: 4351
+Successfully offloaded: 4352
+Successfully offloaded: 4353
+Successfully offloaded: 4354
+Successfully offloaded: 4355
+Successfully offloaded: 4356
+Successfully offloaded: 4357
+Successfully offloaded: 4358
+Successfully offloaded: 4359
+Successfully offloaded: 4360
+Successfully offloaded: 4361
+Successfully offloaded: 4362
+Successfully offloaded: 4363
+Successfully offloaded: 4364
+Successfully offloaded: 4365
+Successfully offloaded: 4366
+Successfully offloaded: 4367
+Successfully offloaded: 4368
+Successfully offloaded: 4369
+Successfully offloaded: 4370
+Successfully offloaded: 4371
+Successfully offloaded: 4372
+Successfully offloaded: 4373
+Successfully offloaded: 4374
+Successfully offloaded: 4375
+Successfully offloaded: 4376
+Successfully offloaded: 4377
+Successfully offloaded: 4378
+Successfully offloaded: 4379
+Successfully offloaded: 4380
+Successfully offloaded: 4381
+Successfully offloaded: 4382
+Successfully offloaded: 4383
+Successfully offloaded: 4384
+Successfully offloaded: 4385
+Successfully offloaded: 4386
+Successfully offloaded: 4387
+Successfully offloaded: 4388
+Successfully offloaded: 4389
+Successfully offloaded: 4390
+Successfully offloaded: 4391
+Successfully offloaded: 4392
+Successfully offloaded: 4393
+Successfully offloaded: 4394
+Successfully offloaded: 4395
+Successfully offloaded: 4396
+Successfully offloaded: 4397
+Successfully offloaded: 4398
+Successfully offloaded: 4399
+Successfully offloaded: 4400
+Successfully offloaded: 4401
+Successfully offloaded: 4402
+Successfully offloaded: 4403
+Successfully offloaded: 4404
+Successfully offloaded: 4405
+Successfully offloaded: 4406
+Successfully offloaded: 4407
+Successfully offloaded: 4408
+Successfully offloaded: 4409
+Successfully offloaded: 4410
+Successfully offloaded: 4411
+Successfully offloaded: 4412
+Successfully offloaded: 4413
+Successfully offloaded: 4414
+Successfully offloaded: 4415
+Successfully offloaded: 4416
+Successfully offloaded: 4417
+Successfully offloaded: 4418
+Successfully offloaded: 4419
+Successfully offloaded: 4420
+Successfully offloaded: 4421
+Successfully offloaded: 4422
+Successfully offloaded: 4423
+Successfully offloaded: 4424
+Successfully offloaded: 4425
+Successfully offloaded: 4426
+Successfully offloaded: 4427
+Successfully offloaded: 4428
+Successfully offloaded: 4429
+Successfully offloaded: 4430
+Successfully offloaded: 4431
+Successfully offloaded: 4432
+Successfully offloaded: 4433
+Successfully offloaded: 4434
+Successfully offloaded: 4435
+Successfully offloaded: 4436
+Successfully offloaded: 4437
+Successfully offloaded: 4438
+Successfully offloaded: 4439
+Successfully offloaded: 4440
+Successfully offloaded: 4441
+Successfully offloaded: 4442
+Successfully offloaded: 4443
+Successfully offloaded: 4444
+Successfully offloaded: 4445
+Successfully offloaded: 4446
+Successfully offloaded: 4447
+Successfully offloaded: 4448
+Successfully offloaded: 4449
+Successfully offloaded: 4450
+Successfully offloaded: 4451
+Successfully offloaded: 4452
+Successfully offloaded: 4453
+Successfully offloaded: 4454
+Successfully offloaded: 4455
+Successfully offloaded: 4456
+Successfully offloaded: 4457
+Successfully offloaded: 4458
+Successfully offloaded: 4459
+Successfully offloaded: 4460
+Successfully offloaded: 4461
+Successfully offloaded: 4462
+Successfully offloaded: 4463
+Successfully offloaded: 4464
+Successfully offloaded: 4465
+Successfully offloaded: 4466
+Successfully offloaded: 4467
+Successfully offloaded: 4468
+Successfully offloaded: 4469
+Successfully offloaded: 4470
+Successfully offloaded: 4471
+Successfully offloaded: 4472
+Successfully offloaded: 4473
+Successfully offloaded: 4474
+Successfully offloaded: 4475
+Successfully offloaded: 4476
+Successfully offloaded: 4477
+Successfully offloaded: 4478
+Successfully offloaded: 4479
+Successfully offloaded: 4480
+Successfully offloaded: 4481
+Successfully offloaded: 4482
+Successfully offloaded: 4483
+Successfully offloaded: 4484
+Successfully offloaded: 4485
+Successfully offloaded: 4486
+Successfully offloaded: 4487
+Successfully offloaded: 4488
+Successfully offloaded: 4489
+Successfully offloaded: 4490
+Successfully offloaded: 4491
+Successfully offloaded: 4492
+Successfully offloaded: 4493
+Successfully offloaded: 4494
+Successfully offloaded: 4495
+Successfully offloaded: 4496
+Successfully offloaded: 4497
+Successfully offloaded: 4498
+Successfully offloaded: 4499
+Successfully offloaded: 4500
+Successfully offloaded: 4501
+Successfully offloaded: 4502
+Successfully offloaded: 4503
+Successfully offloaded: 4504
+Successfully offloaded: 4505
+Successfully offloaded: 4506
+Successfully offloaded: 4507
+Successfully offloaded: 4508
+Successfully offloaded: 4509
+Successfully offloaded: 4510
+Successfully offloaded: 4511
+Successfully offloaded: 4512
+Successfully offloaded: 4513
+Successfully offloaded: 4514
+Successfully offloaded: 4515
+Successfully offloaded: 4516
+Successfully offloaded: 4517
+Successfully offloaded: 4518
+Successfully offloaded: 4519
+Successfully offloaded: 4520
+Successfully offloaded: 4521
+Successfully offloaded: 4522
+Successfully offloaded: 4523
+Successfully offloaded: 4524
+Successfully offloaded: 4525
+Successfully offloaded: 4526
+Successfully offloaded: 4527
+Successfully offloaded: 4528
+Successfully offloaded: 4529
+Successfully offloaded: 4530
+Successfully offloaded: 4531
+Successfully offloaded: 4532
+Successfully offloaded: 4533
+Successfully offloaded: 4534
+Successfully offloaded: 4535
+Successfully offloaded: 4536
+Successfully offloaded: 4537
+Successfully offloaded: 4538
+Successfully offloaded: 4539
+Successfully offloaded: 4540
+Successfully offloaded: 4541
+Successfully offloaded: 4542
+Successfully offloaded: 4543
+Successfully offloaded: 4544
+Successfully offloaded: 4545
+Successfully offloaded: 4546
+Successfully offloaded: 4547
+Successfully offloaded: 4548
+Successfully offloaded: 4549
+Successfully offloaded: 4550
+Successfully offloaded: 4551
+Successfully offloaded: 4552
+Successfully offloaded: 4553
+Successfully offloaded: 4554
+Successfully offloaded: 4555
+Successfully offloaded: 4556
+Successfully offloaded: 4557
+Successfully offloaded: 4558
+Successfully offloaded: 4559
+Successfully offloaded: 4560
+Successfully offloaded: 4561
+Successfully offloaded: 4562
+Successfully offloaded: 4563
+Successfully offloaded: 4564
+Successfully offloaded: 4565Loading checkpoint files:  88%|████████▊ | 7/8 [13:40<01:57, 117.26s/it]Loading checkpoint files: 100%|██████████| 8/8 [13:45<00:00, 103.22s/it]Loading checkpoint files: 100%|██████████| 8/8 [13:45<00:00, 103.22s/it]
+`torch_dtype` is deprecated! Use `dtype` instead!
+[20260928 01:51:19.745295Z ][4139771 ][INFO  ][ZipMoE] Opened offloaded file:  /home/thor/kcj/ZipMoE/offload/qwen/zipmoe_param - tensor_engine.cpp:351
+[20260928 01:51:20.084359Z ][4139771 ][INFO  ][Initialize] ExpertDispatcher::StartThreads, NumDevices 1 - expert_dispatcher.cpp:84
+[20260928 01:51:20.085027Z ][4139771 ][INFO  ][Initialize] GPUFetchFunc Started. - expert_dispatcher.cpp:97
+[20260928 01:51:20.085026Z ][4145715 ][INFO  ][Initialize] Thread started for GPU:  0 - expert_dispatcher.cpp:286
+[20260928 01:51:20.085317Z ][4139771 ][INFO  ][Initialize] GPUExecFunc Started. - expert_dispatcher.cpp:109
+[20260928 01:51:20.085624Z ][4139771 ][INFO  ][Initialize] OutputThreadFunc Started. - expert_dispatcher.cpp:114
+[20260928 01:51:20.176960Z ][4139771 ][INFO  ]Moving dense parameters to GPU - model_topology.cpp:372
+[20260928 01:51:20.254282Z ][4139771 ][INFO  ]Total dense parameter size:  3717402624 - model_topology.cpp:379
+26 left25 left24 left23 left22 left21 left20 left19 left18 left17 left16 left15 left14 left13 left12 left11 left10 left9 left8 left7 left6 left5 left4 left3 left2 left1 left
+finished: 27/27
+[20260928 01:51:20.858990Z ][4139771 ][INFO  ]Moving sparse parameters to SSD - model_topology.cpp:394
+1439 left1438 left1437 left1436 left1435 left1434 left1433 left1432 left1431 left1430 left1429 left1428 left1427 left1426 left1425 left1424 left1423 left1422 left1421 left1420 left1419 left1418 left1417 left1416 left1415 left1414 left1413 left1412 left1411 left1410 left1409 left1408 left1407 left1406 left1405 left1404 left1403 left1402 left1401 left1400 left1399 left1398 left1397 left1396 left1395 left1394 left1393 left1392 left1391 left1390 left1389 left1388 left1387 left1386 left1385 left1384 left1383 left1382 left1381 left1380 left1379 left1378 left1377 left1376 left1375 left1374 left1373 left1372 left1371 left1370 left1369 left1368 left1367 left1366 left1365 left1364 left1363 left1362 left1361 left1360 left1359 left1358 left1357 left1356 left1355 left1354 left1353 left1352 left1351 left1350 left1349 left1348 left1347 left1346 left1345 left1344 left1343 left1342 left1341 left1340 left1339 left1338 left1337 left1336 left1335 left1334 left1333 left1332 left1331 left1330 left1329 left1328 left1327 left1326 left1325 left1324 left1323 left1322 left1321 left1320 left1319 left1318 left1317 left1316 left1315 left1314 left1313 left1312 left1311 left1310 left1309 left1308 left1307 left1306 left1305 left1304 left1303 left1302 left1301 left1300 left1299 left1298 left1297 left1296 left1295 left1294 left1293 left1292 left1291 left1290 left1289 left1288 left1287 left1286 left1285 left1284 left1283 left1282 left1281 left1280 left1279 left1278 left1277 left1276 left1275 left1274 left1273 left1272 left1271 left1270 left1269 left1268 left1267 left1266 left1265 left1264 left1263 left1262 left1261 left1260 left1259 left1258 left1257 left1256 left1255 left1254 left1253 left1252 left1251 left1250 left1249 left1248 left1247 left1246 left1245 left1244 left1243 left1242 left1241 left1240 left1239 left1238 left1237 left1236 left1235 left1234 left1233 left1232 left1231 left1230 left1229 left1228 left1227 left1226 left1225 left1224 left1223 left1222 left1221 left1220 left1219 left1218 left1217 left1216 left1215 left1214 left1213 left1212 left1211 left1210 left1209 left1208 left1207 left1206 left1205 left1204 left1203 left1202 left1201 left1200 left1199 left1198 left1197 left1196 left1195 left1194 left1193 left1192 left1191 left1190 left1189 left1188 left1187 left1186 left1185 left1184 left1183 left1182 left1181 left1180 left1179 left1178 left1177 left1176 left1175 left1174 left1173 left1172 left1171 left1170 left1169 left1168 left1167 left1166 left1165 left1164 left1163 left1162 left1161 left1160 left1159 left1158 left1157 left1156 left1155 left1154 left1153 left1152 left1151 left1150 left1149 left1148 left1147 left1146 left1145 left1144 left1143 left1142 left1141 left1140 left1139 left1138 left1137 left1136 left1135 left1134 left1133 left1132 left1131 left1130 left1129 left1128 left1127 left1126 left1125 left1124 left1123 left1122 left1121 left1120 left1119 left1118 left1117 left1116 left1115 left1114 left1113 left1112 left1111 left1110 left1109 left1108 left1107 left1106 left1105 left1104 left1103 left1102 left1101 left1100 left1099 left1098 left1097 left1096 left1095 left1094 left1093 left1092 left1091 left1090 left1089 left1088 left1087 left1086 left1085 left1084 left1083 left1082 left1081 left1080 left1079 left1078 left1077 left1076 left1075 left1074 left1073 left1072 left1071 left1070 left1069 left1068 left1067 left1066 left1065 left1064 left1063 left1062 left1061 left1060 left1059 left1058 left1057 left1056 left1055 left1054 left1053 left1052 left1051 left1050 left1049 left1048 left1047 left1046 left1045 left1044 left1043 left1042 left1041 left1040 left1039 left1038 left1037 left1036 left1035 left1034 left1033 left1032 left1031 left1030 left1029 left1028 left1027 left1026 left1025 left1024 left1023 left1022 left1021 left1020 left1019 left1018 left1017 left1016 left1015 left1014 left1013 left1012 left1011 left1010 left1009 left1008 left1007 left1006 left1005 left1004 left1003 left1002 left1001 left1000 left999 left998 left997 left996 left995 left994 left993 left992 left991 left990 left989 left988 left987 left986 left985 left984 left983 left982 left981 left980 left979 left978 left977 left976 left975 left974 left973 left972 left971 left970 left969 left968 left967 left966 left965 left964 left963 left962 left961 left960 left959 left958 left957 left956 left955 left954 left953 left952 left951 left950 left949 left948 left947 left946 left945 left944 left943 left942 left941 left940 left939 left938 left937 left936 left935 left934 left933 left932 left931 left930 left929 left928 left927 left926 left925 left924 left923 left922 left921 left920 left919 left918 left917 left916 left915 left914 left913 left912 left911 left910 left909 left908 left907 left906 left905 left904 left903 left902 left901 left900 left899 left898 left897 left896 left895 left894 left893 left892 left891 left890 left889 left888 left887 left886 left885 left884 left883 left882 left881 left880 left879 left878 left877 left876 left875 left874 left873 left872 left871 left870 left869 left868 left867 left866 left865 left864 left863 left862 left861 left860 left859 left858 left857 left856 left855 left854 left853 left852 left851 left850 left849 left848 left847 left846 left845 left844 left843 left842 left841 left840 left839 left838 left837 left836 left835 left834 left833 left832 left831 left830 left829 left828 left827 left826 left825 left824 left823 left822 left821 left820 left819 left818 left817 left816 left815 left814 left813 left812 left811 left810 left809 left808 left807 left806 left805 left804 left803 left802 left801 left800 left799 left798 left797 left796 left795 left794 left793 left792 left791 left790 left789 left788 left787 left786 left785 left784 left783 left782 left781 left780 left779 left778 left777 left776 left775 left774 left773 left772 left771 left770 left769 left768 left767 left766 left765 left764 left763 left762 left761 left760 left759 left758 left757 left756 left755 left754 left753 left752 left751 left750 left749 left748 left747 left746 left745 left744 left743 left742 left741 left740 left739 left738 left737 left736 left735 left734 left733 left732 left731 left730 left729 left728 left727 left726 left725 left724 left723 left722 left721 left720 left719 left718 left717 left716 left715 left714 left713 left712 left711 left710 left709 left708 left707 left706 left705 left704 left703 left702 left701 left700 left699 left698 left697 left696 left695 left694 left693 left692 left691 left690 left689 left688 left687 left686 left685 left684 left683 left682 left681 left680 left679 left678 left677 left676 left675 left674 left673 left672 left671 left670 left669 left668 left667 left666 left665 left664 left663 left662 left661 left660 left659 left658 left657 left656 left655 left654 left653 left652 left651 left650 left649 left648 left647 left646 left645 left644 left643 left642 left641 left640 left639 left638 left637 left636 left635 left634 left633 left632 left631 left630 left629 left628 left627 left626 left625 left624 left623 left622 left621 left620 left619 left618 left617 left616 left615 left614 left613 left612 left611 left610 left609 left608 left607 left606 left605 left604 left603 left602 left601 left600 left599 left598 left597 left596 left595 left594 left593 left592 left591 left590 left589 left588 left587 left586 left585 left584 left583 left582 left581 left580 left579 left578 left577 left576 left575 left574 left573 left572 left571 left570 left569 left568 left567 left566 left565 left564 left563 left562 left561 left560 left559 left558 left557 left556 left555 left554 left553 left552 left551 left550 left549 left548 left547 left546 left545 left544 left543 left542 left541 left540 left539 left538 left537 left536 left535 left534 left533 left532 left531 left530 left529 left528 left527 left526 left525 left524 left523 left522 left521 left520 left519 left518 left517 left516 left515 left514 left513 left512 left511 left510 left509 left508 left507 left506 left505 left504 left503 left502 left501 left500 left499 left498 left497 left496 left495 left494 left493 left492 left491 left490 left489 left488 left487 left486 left485 left484 left483 left482 left481 left480 left479 left478 left477 left476 left475 left474 left473 left472 left471 left470 left469 left468 left467 left466 left465 left464 left463 left462 left461 left460 left459 left458 left457 left456 left455 left454 left453 left452 left451 left450 left449 left448 left447 left446 left445 left444 left443 left442 left441 left440 left439 left438 left437 left436 left435 left434 left433 left432 left431 left430 left429 left428 left427 left426 left425 left424 left423 left422 left421 left420 left419 left418 left417 left416 left415 left414 left413 left412 left411 left410 left409 left408 left407 left406 left405 left404 left403 left402 left401 left400 left399 left398 left397 left396 left395 left394 left393 left392 left391 left390 left389 left388 left387 left386 left385 left384 left383 left382 left381 left380 left379 left378 left377 left376 left375 left374 left373 left372 left371 left370 left369 left368 left367 left366 left365 left364 left363 left362 left361 left360 left359 left358 left357 left356 left355 left354 left353 left352 left351 left350 left349 left348 left347 left346 left345 left344 left343 left342 left341 left340 left339 left338 left337 left336 left335 left334 left333 left332 left331 left330 left329 left328 left327 left326 left325 left324 left323 left322 left321 left320 left319 left318 left317 left316 left315 left314 left313 left312 left311 left310 left309 left308 left307 left306 left305 left304 left303 left302 left301 left300 left299 left298 left297 left296 left295 left294 left293 left292 left291 left290 left289 left288 left287 left286 left285 left284 left283 left282 left281 left280 left279 left278 left277 left276 left275 left274 left273 left272 left271 left270 left269 left268 left267 left266 left265 left264 left263 le/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/transformers/generation/utils.py:2412: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+
+Successfully offloaded: 4566
+Successfully offloaded: 4567
+Successfully offloaded: 4568
+Successfully offloaded: 4569
+Successfully offloaded: 4570
+Successfully offloaded: 4571
+Successfully offloaded: 4572
+Successfully offloaded: 4573
+Successfully offloaded: 4574
+Successfully offloaded: 4575
+Successfully offloaded: 4576
+Successfully offloaded: 4577
+Successfully offloaded: 4578
+Successfully offloaded: 4579
+Successfully offloaded: 4580
+Successfully offloaded: 4581
+Successfully offloaded: 4582
+Successfully offloaded: 4583
+Successfully offloaded: 4584
+Successfully offloaded: 4585
+Successfully offloaded: 4586
+Successfully offloaded: 4587
+Successfully offloaded: 4588
+Successfully offloaded: 4589
+Successfully offloaded: 4590
+Successfully offloaded: 4591
+Successfully offloaded: 4592
+Successfully offloaded: 4593
+Successfully offloaded: 4594
+Successfully offloaded: 4595
+Successfully offloaded: 4596
+Successfully offloaded: 4597
+Successfully offloaded: 4598
+Successfully offloaded: 4599
+Successfully offloaded: 4600
+Successfully offloaded: 4601
+Successfully offloaded: 4602
+Successfully offloaded: 4603
+Successfully offloaded: 4604
+Successfully offloaded: 4605
+Successfully offloaded: 4606
+Successfully offloaded: 4607
+Successfully offloaded: 4608
+Successfully offloaded: 4609
+Successfully offloaded: 4610
+Successfully offloaded: 4611
+Successfully offloaded: 4612
+Successfully offloaded: 4613
+Successfully offloaded: 4614
+Successfully offloaded: 4615
+Successfully offloaded: 4616
+Successfully offloaded: 4617
+Successfully offloaded: 4618
+Successfully offloaded: 4619
+Successfully offloaded: 4620
+Successfully offloaded: 4621
+Successfully offloaded: 4622
+Successfully offloaded: 4623
+Successfully offloaded: 4624
+Successfully offloaded: 4625
+Successfully offloaded: 4626
+Successfully offloaded: 4627
+Successfully offloaded: 4628
+Successfully offloaded: 4629
+Successfully offloaded: 4630
+Successfully offloaded: 4631
+Successfully offloaded: 4632
+Successfully offloaded: 4633
+Successfully offloaded: 4634
+Successfully offloaded: 4635
+Successfully offloaded: 4636
+Successfully offloaded: 4637
+Successfully offloaded: 4638
+Successfully offloaded: 4639
+Successfully offloaded: 4640
+Successfully offloaded: 4641
+Successfully offloaded: 4642
+Successfully offloaded: 4643
+Successfully offloaded: 4644
+Successfully offloaded: 4645
+Successfully offloaded: 4646
+Successfully offloaded: 4647
+Successfully offloaded: 4648
+Successfully offloaded: 4649
+Successfully offloaded: 4650
+Successfully offloaded: 4651
+Successfully offloaded: 4652
+Successfully offloaded: 4653
+Successfully offloaded: 4654
+Successfully offloaded: 4655
+Successfully offloaded: 4656
+Successfully offloaded: 4657
+Successfully offloaded: 4658
+[ZipMoE] Offload file opened successfully!
+Qwen2MoeConfig {
+  "architectures": [
+    "Qwen2MoeForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "decoder_sparse_step": 1,
+  "dtype": "bfloat16",
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": 0.02,
+  "intermediate_size": 5632,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "mlp_only_layers": [],
+  "model_type": "qwen2_moe",
+  "moe_intermediate_size": 1408,
+  "norm_topk_prob": false,
+  "num_attention_heads": 16,
+  "num_experts": 60,
+  "num_experts_per_tok": 4,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "output_router_logits": false,
+  "qkv_bias": true,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "router_aux_loss_coef": 0.001,
+  "shared_expert_intermediate_size": 5632,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.56.2",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+
+[Warmup complete] Benmarking starts.
+ 
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  The arguments should be written in a formal, academic tone and should be based on research and evidence. Argument 1: The Importance of Mental Health Support on College Campuses
+
+In recent years, the mental health crisis on college campuses has become a pressing issue. According to a study by the American College Health Association, one
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 1 / 24 batches processed.
+Time-To-First-Token = 1.4942s 
+Time-Per-Output-Token = 0.2459s 
+End-To-End Latency (Avg) = 16.9849s 
+Tokens Generated = 64
+Throughput = 3.77 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  It seems like a good outline to me, but there are a few things you might want to consider:
+
+1. **Error Handling**: It's always a good idea to include error handling in your code. For example, if the face detection or tracking fails, your program might crash. You could handle these cases gracefully by
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 2 / 24 batches processed.
+Time-To-First-Token = 1.6006s 
+Time-Per-Output-Token = 0.2449s 
+End-To-End Latency (Avg) = 17.0277s 
+Tokens Generated = 64
+Throughput = 3.76 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] ?
+Um einen Direkt-Marketing-Funnel für Hochpreisdienstleistungen mit WordPress zu erstellen, gibt es einige Schritte, die Sie beachten sollten. Hier sind einige best-practice Lösungen:
+
+1. Zielgruppenanalyse: Erstellen Sie eine detaillierte Analyse
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 3 / 24 batches processed.
+Time-To-First-Token = 1.2004s 
+Time-Per-Output-Token = 0.2451s 
+End-To-End Latency (Avg) = 16.6413s 
+Tokens Generated = 64
+Throughput = 3.85 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+Reply: Sure, I'd be happy to help you with building a REST API system using Python and Django Rest Framework. Here's a brief overview of the steps involved:
+
+  1. Preparation:
+
+    * Install Python and set up a virtual environment: You can use an IDE like PyCharm or Visual Studio
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 4 / 24 batches processed.
+Time-To-First-Token = 2.1108s 
+Time-Per-Output-Token = 0.2379s 
+End-To-End Latency (Avg) = 17.0988s 
+Tokens Generated = 64
+Throughput = 3.74 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 。
+作为互联网行业的科技从业者，我计划在香港充分发挥我的专业技能和经验，为香港的科技发展和创新做出贡献。我计划将我所在行业的前沿技术，如人工智能、大数据和云计算等，与香港的产业相结合，推动数字化转型，助力香港企业提升竞争力。同时，我希望能
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 5 / 24 batches processed.
+Time-To-First-Token = 1.3886s 
+Time-Per-Output-Token = 0.2499s 
+End-To-End Latency (Avg) = 17.1344s 
+Tokens Generated = 64
+Throughput = 3.74 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+To implement a persistance layer using Sequelize and SQLite in your Nx monorepo, you can follow these steps:
+
+1. Create a new directory called `database` in your `lib` folder.
+2. Inside the `database` directory, create a TypeScript file for your Sequelize model. For example, let's
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 6 / 24 batches processed.
+Time-To-First-Token = 1.6328s 
+Time-Per-Output-Token = 0.2473s 
+End-To-End Latency (Avg) = 17.2103s 
+Tokens Generated = 64
+Throughput = 3.72 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  Great! You have just turned on your Game Boy and are now ready to embark on a new adventure. You find yourself in the small town of Pallet, where you will begin your journey to become the best Pokémon trainer in the world. You have a Pikachu as your partner, and you're eager to start catching new
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 7 / 24 batches processed.
+Time-To-First-Token = 1.3377s 
+Time-Per-Output-Token = 0.2418s 
+End-To-End Latency (Avg) = 16.5709s 
+Tokens Generated = 64
+Throughput = 3.86 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  of sleep and I can't fall asleep again
+
+Here is a plan to help you sleep better:
+
+  1. Establish a bedtime routine: Go to bed and wake up at the same time every day, even on weekends. This helps regulate your body's internal clock and can improve the quality of your sleep.
+ 
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 8 / 24 batches processed.
+Time-To-First-Token = 1.1466s 
+Time-Per-Output-Token = 0.2405s 
+End-To-End Latency (Avg) = 16.2988s 
+Tokens Generated = 64
+Throughput = 3.93 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+
+Create a new Spring Boot project with the Spring Web and Spring WebFlux dependencies.
+```java
+// build.gradle
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}
+```
+1. Create a new
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 9 / 24 batches processed.
+Time-To-First-Token = 1.3360s 
+Time-Per-Output-Token = 0.2431s 
+End-To-End Latency (Avg) = 16.6539s 
+Tokens Generated = 64
+Throughput = 3.84 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] illo Information Technology is een belangrijk onderdeel van de Carajillo organisatie, omdat de IT-systemen de productie van koffie en de klantervaring van de klanten beïnvloeden. De IT-organisatie heeft een belangrijke rol in het beheer van
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 10 / 24 batches processed.
+Time-To-First-Token = 2.1156s 
+Time-Per-Output-Token = 0.2524s 
+End-To-End Latency (Avg) = 18.0159s 
+Tokens Generated = 64
+Throughput = 3.55 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+1. 什么是消失模铸造工艺？
+2. 消失模铸造工艺的优点是什么？
+3. 消失模铸造工艺的适用范围是什么？
+4. 在消失模铸造过程中，如何保证铸件的质量？
+5. 消失模铸造与传统砂型铸造相比，有哪些优势
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 11 / 24 batches processed.
+Time-To-First-Token = 1.1676s 
+Time-Per-Output-Token = 0.2536s 
+End-To-End Latency (Avg) = 17.1426s 
+Tokens Generated = 64
+Throughput = 3.73 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  Shippo and ShipStation are both shipping and logistics platforms that help e-commerce businesses manage their shipping processes. However, they have some key differences in terms of features, pricing, and target audience.
+
+1. Features:
+
+* Shippo: Shippo offers a wide range of shipping options, including USPS, UPS, FedEx,
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 12 / 24 batches processed.
+Time-To-First-Token = 1.6183s 
+Time-Per-Output-Token = 0.2462s 
+End-To-End Latency (Avg) = 17.1292s 
+Tokens Generated = 64
+Throughput = 3.74 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  
+00007FF96AD8415F mov qword ptr [rbp+50h],0 
+00007FF96AD84164 mov rax,qword ptr [rbp+50h] 
+00007FF
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 13 / 24 batches processed.
+Time-To-First-Token = 1.8654s 
+Time-Per-Output-Token = 0.2528s 
+End-To-End Latency (Avg) = 17.7946s 
+Tokens Generated = 64
+Throughput = 3.60 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  It’s also made me more aware of the impact of my actions and how they can be leveraged to achieve those outcomes.
+
+It’s also made me more aware of the impact of my actions and how they can be leveraged to achieve those outcomes. Can you please help me write the post? Sure, here's a
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 14 / 24 batches processed.
+Time-To-First-Token = 1.3753s 
+Time-Per-Output-Token = 0.2458s 
+End-To-End Latency (Avg) = 16.8608s 
+Tokens Generated = 64
+Throughput = 3.80 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  na podstawie podanych informacji:
+
+- Przedmiot: Kluczowe wyzwania i kompetencje lidera w czasach niepokoju
+- Tematy:
+  - Wpływ pandemii na organizacje i ich liderów
+  - Wyższe wymagania
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 15 / 24 batches processed.
+Time-To-First-Token = 1.4180s 
+Time-Per-Output-Token = 0.2480s 
+End-To-End Latency (Avg) = 17.0448s 
+Tokens Generated = 64
+Throughput = 3.75 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  구글 확장프로그램은 구글의 플랫폼으로, 개발자들이 구글의 서비스를 확장하고, 추가 기능을 추가할 수 있는 기능을 제공하는 프로그램입니다. 이를 통해 구글의 서비스를 더욱 다양한 방식으로 이용할 수 있는 새로운 기
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 16 / 24 batches processed.
+Time-To-First-Token = 1.3689s 
+Time-Per-Output-Token = 0.2500s 
+End-To-End Latency (Avg) = 17.1167s 
+Tokens Generated = 64
+Throughput = 3.74 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+基于你的专业背景和经验，以下是一些可能的创业方向，你可以根据自己的兴趣和市场需求进行选择：
+
+1. 法律科技创业：你可以开发一款基于AI的法律服务应用，提供在线法律咨询、合同审查、法律文件生成等服务。这在当前的法律服务市场
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 17 / 24 batches processed.
+Time-To-First-Token = 1.5258s 
+Time-Per-Output-Token = 0.2433s 
+End-To-End Latency (Avg) = 16.8561s 
+Tokens Generated = 64
+Throughput = 3.80 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  Aunque no tengo emociones, puedo ayudarte a organizar tus pensamientos y sugerirte algunos temas que podrían incluir en tu libro. ¿Qué tipo de libro estás interesado en escribir? ¿Es una novela, un libro de no ficción, un manual de instrucciones o
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 18 / 24 batches processed.
+Time-To-First-Token = 1.0789s 
+Time-Per-Output-Token = 0.2429s 
+End-To-End Latency (Avg) = 16.3845s 
+Tokens Generated = 64
+Throughput = 3.91 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  I'm sorry, but as an AI language model, I cannot be classified as an AGI (Artificial General Intelligence) or a machine that can determine if another AI is an AGI or not. AGI is a hypothetical concept that refers to an AI that can perform any intellectual task that a human can do,
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 19 / 24 batches processed.
+Time-To-First-Token = 1.1307s 
+Time-Per-Output-Token = 0.2513s 
+End-To-End Latency (Avg) = 16.9615s 
+Tokens Generated = 64
+Throughput = 3.77 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+To perform a paging query without using the `offset` parameter in Spring Boot with Spring Data JPA and MongoDB, you can use the `limit` and `skip` methods provided by the `Pageable` interface. Here's a step-by-step guide on how to do this:
+
+1. First, make sure
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 20 / 24 batches processed.
+Time-To-First-Token = 1.4967s 
+Time-Per-Output-Token = 0.2398s 
+End-To-End Latency (Avg) = 16.6019s 
+Tokens Generated = 64
+Throughput = 3.85 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  1. Veri toplama ve analiz: UX Researcher'in her seviye performansını değerlendirmek için, veri toplama ve analiz yapma yeteneğine odaklanır. Bu, kullanıcı deneyimlerini incelemek, kullanıcıların ihtiyaç
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 21 / 24 batches processed.
+Time-To-First-Token = 0.9558s 
+Time-Per-Output-Token = 0.2468s 
+End-To-End Latency (Avg) = 16.5032s 
+Tokens Generated = 64
+Throughput = 3.88 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+
+Sure! A mathematical function is like a recipe for a math problem. Imagine you want to make a cake, and someone gives you a recipe that tells you exactly what ingredients to use and how much of each ingredient to add. In math, a function is like that recipe. It tells you how to turn one number
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 22 / 24 batches processed.
+Time-To-First-Token = 1.1382s 
+Time-Per-Output-Token = 0.2377s 
+End-To-End Latency (Avg) = 16.1155s 
+Tokens Generated = 64
+Throughput = 3.97 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  If so, can you provide a brief overview of how it is played and what are the objective of the game?
+
+Unfortunately, as an AI language model, I am not able to play games like Go or provide you with a live update of the game. However, I can provide you with a brief overview of the
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: ZipMoE
+
+[Benchmark Result]: 23 / 24 batches processed.
+Time-To-First-Token = 0.7568s 
+Time-Per-Output-Token = 0.2358s 
+End-To-End Latency (Avg) = 15.6117s 
+Tokens Generated = 64
+Throughput = 4.10 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CZipMoE-20260928-015125.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+cgroup_io_read_gib=2.159
+cgroup_cpu_s=3374.5 cgroup_user_s=3218.3 cgroup_sys_s=156.2

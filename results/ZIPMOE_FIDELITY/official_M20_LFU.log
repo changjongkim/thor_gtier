@@ -1,0 +1,505 @@
+[20260928 02:29:51.913762Z ][4162177 ][INFO  ]Loading index file from  /home/thor/kcj/ZipMoE/offload/qwen/zipmoe_index - zipmoe_tensor_handle.cpp:45
+[20260928 02:29:51.917865Z ][4162177 ][INFO  ]Index file size  4659 - zipmoe_tensor_handle.cpp:51
+[20260928 02:29:53.061756Z ][4162177 ][INFO  ]number of full-cache slots:  944 - cache.cpp:114
+[20260928 02:29:53.061774Z ][4162177 ][INFO  ]number of SM-cache slots:  100 - cache.cpp:115
+[Pool] Thread index 3 initialized.
+[Pool] Thread index 6 initialized.
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 5 initialized.
+`torch_dtype` is deprecated! Use `dtype` instead!
+Arch: qwen2moeforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE] Loading model from offload_path ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+[20260928 02:29:53.068810Z ][4162177 ][INFO  ][ZipMoE] Opened offloaded file:  /home/thor/kcj/ZipMoE/offload/qwen/zipmoe_param - tensor_engine.cpp:351
+[20260928 02:29:53.401520Z ][4162177 ][INFO  ][Initialize] ExpertDispatcher::StartThreads, NumDevices 1 - expert_dispatcher.cpp:84
+[20260928 02:29:53.404608Z ][4162177 ][INFO  ][Initialize] GPUFetchFunc Started. - expert_dispatcher.cpp:97
+[20260928 02:29:53.404611Z ][4162325 ][INFO  ][Initialize] Thread started for GPU:  0 - expert_dispatcher.cpp:286
+[20260928 02:29:53.404913Z ][4162177 ][INFO  ][Initialize] GPUExecFunc Started. - expert_dispatcher.cpp:109
+[20260928 02:29:53.405155Z ][4162177 ][INFO  ][Initialize] OutputThreadFunc Started. - expert_dispatcher.cpp:114
+[20260928 02:29:53.497553Z ][4162177 ][INFO  ]Moving dense parameters to GPU - model_topology.cpp:372
+[20260928 02:29:53.582428Z ][4162177 ][INFO  ]Total dense parameter size:  3717402624 - model_topology.cpp:379
+26 left25 left24 left23 left22 left21 left20 left19 left18 left17 left16 left15 left14 left13 left12 left11 left10 left9 left8 left7 left6 left5 left4 left3 left2 left1 left
+finished: 27/27
+[20260928 02:29:55.368004Z ][4162177 ][INFO  ]Moving sparse parameters to SSD - model_topology.cpp:394
+1439 left1438 left1437 left1436 left1435 left1434 left1433 left1432 left1431 left1430 left1429 left1428 left1427 left1426 left1425 left1424 left1423 left1422 left1421 left1420 left1419 left1418 left1417 left1416 left1415 left1414 left1413 left1412 left1411 left1410 left1409 left1408 left1407 left1406 left1405 left1404 left1403 left1402 left1401 left1400 left1399 left1398 left1397 left1396 left1395 left1394 left1393 left1392 left1391 left1390 left1389 left1388 left1387 left1386 left1385 left1384 left1383 left1382 left1381 left1380 left1379 left1378 left1377 left1376 left1375 left1374 left1373 left1372 left1371 left1370 left1369 left1368 left1367 left1366 left1365 left1364 left1363 left1362 left1361 left1360 left1359 left1358 left1357 left1356 left1355 left1354 left1353 left1352 left1351 left1350 left1349 left1348 left1347 left1346 left1345 left1344 left1343 left1342 left1341 left1340 left1339 left1338 left1337 left1336 left1335 left1334 left1333 left1332 left1331 left1330 left1329 left1328 left1327 left1326 left1325 left1324 left1323 left1322 left1321 left1320 left1319 left1318 left1317 left1316 left1315 left1314 left1313 left1312 left1311 left1310 left1309 left1308 left1307 left1306 left1305 left1304 left1303 left1302 left1301 left1300 left1299 left1298 left1297 left1296 left1295 left1294 left1293 left1292 left1291 left1290 left1289 left1288 left1287 left1286 left1285 left1284 left1283 left1282 left1281 left1280 left1279 left1278 left1277 left1276 left1275 left1274 left1273 left1272 left1271 left1270 left1269 left1268 left1267 left1266 left1265 left1264 left1263 left1262 left1261 left1260 left1259 left1258 left1257 left1256 left1255 left1254 left1253 left1252 left1251 left1250 left1249 left1248 left1247 left1246 left1245 left1244 left1243 left1242 left1241 left1240 left1239 left1238 left1237 left1236 left1235 left1234 left1233 left1232 left1231 left1230 left1229 left1228 left1227 left1226 left1225 left1224 left1223 left1222 left1221 left1220 left1219 left1218 left1217 left1216 left1215 left1214 left1213 left1212 left1211 left1210 left1209 left1208 left1207 left1206 left1205 left1204 left1203 left1202 left1201 left1200 left1199 left1198 left1197 left1196 left1195 left1194 left1193 left1192 left1191 left1190 left1189 left1188 left1187 left1186 left1185 left1184 left1183 left1182 left1181 left1180 left1179 left1178 left1177 left1176 left1175 left1174 left1173 left1172 left1171 left1170 left1169 left1168 left1167 left1166 left1165 left1164 left1163 left1162 left1161 left1160 left1159 left1158 left1157 left1156 left1155 left1154 left1153 left1152 left1151 left1150 left1149 left1148 left1147 left1146 left1145 left1144 left1143 left1142 left1141 left1140 left1139 left1138 left1137 left1136 left1135 left1134 left1133 left1132 left1131 left1130 left1129 left1128 left1127 left1126 left1125 left1124 left1123 left1122 left1121 left1120 left1119 left1118 left1117 left1116 left1115 left1114 left1113 left1112 left1111 left1110 left1109 left1108 left1107 left1106 left1105 left1104 left1103 left1102 left1101 left1100 left1099 left1098 left1097 left1096 left1095 left1094 left1093 left1092 left1091 left1090 left1089 left1088 left1087 left1086 left1085 left1084 left1083 left1082 left1081 left1080 left1079 left1078 left1077 left1076 left1075 left1074 left1073 left1072 left1071 left1070 left1069 left1068 left1067 left1066 left1065 left1064 left1063 left1062 left1061 left1060 left1059 left1058 left1057 left1056 left1055 left1054 left1053 left1052 left1051 left1050 left1049 left1048 left1047 left1046 left1045 left1044 left1043 left1042 left1041 left1040 left1039 left1038 left1037 left1036 left1035 left1034 left1033 left1032 left1031 left1030 left1029 left1028 left1027 left1026 left1025 left1024 left1023 left1022 left1021 left1020 left1019 left1018 left1017 left1016 left1015 left1014 left1013 left1012 left1011 left1010 left1009 left1008 left1007 left1006 left1005 left1004 left1003 left1002 left1001 left1000 left999 left998 left997 left996 left995 left994 left993 left992 left991 left990 left989 left988 left987 left986 left985 left984 left983 left982 left981 left980 left979 left978 left977 left976 left975 left974 left973 left972 left971 left970 left969 left968 left967 left966 left965 left964 left963 left962 left961 left960 left959 left958 left957 left956 left955 left954 left953 left952 left951 left950 left949 left948 left947 left946 left945 left944 left943 left942 left941 left940 left939 left938 left937 left936 left935 left934 left933 left932 left931 left930 left929 left928 left927 left926 left925 left924 left923 left922 left921 left920 left919 left918 left917 left916 left915 left914 left913 left912 left911 left910 left909 left908 left907 left906 left905 left904 left903 left902 left901 left900 left899 left898 left897 left896 left895 left894 left893 left892 left891 left890 left889 left888 left887 left886 left885 left884 left883 left882 left881 left880 left879 left878 left877 left876 left875 left874 left873 left872 left871 left870 left869 left868 left867 left866 left865 left864 left863 left862 left861 left860 left859 left858 left857 left856 left855 left854 left853 left852 left851 left850 left849 left848 left847 left846 left845 left844 left843 left842 left841 left840 left839 left838 left837 left836 left835 left834 left833 left832 left831 left830 left829 left828 left827 left826 left825 left824 left823 left822 left821 left820 left819 left818 left817 left816 left815 left814 left813 left812 left811 left810 left809 left808 left807 left806 left805 left804 left803 left802 left801 left800 left799 left798 left797 left796 left795 left794 left793 left792 left791 left790 left789 left788 left787 left786 left785 left784 left783 left782 left781 left780 left779 left778 left777 left776 left775 left774 left773 left772 left771 left770 left769 left768 left767 left766 left765 left764 left763 left762 left761 left760 left759 left758 left757 left756 left755 left754 left753 left752 left751 left750 left749 left748 left747 left746 left745 left744 left743 left742 left741 left740 left739 left738 left737 left736 left735 left734 left733 left732 left731 left730 left729 left728 left727 left726 left725 left724 left723 left722 left721 left720 left719 left718 left717 left716 left715 left714 left713 left712 left711 left710 left709 left708 left707 left706 left705 left704 left703 left702 left701 left700 left699 left698 left697 left696 left695 left694 left693 left692 left691 left690 left689 left688 left687 left686 left685 left684 left683 left682 left681 left680 left679 left678 left677 left676 left675 left674 left673 left672 left671 left670 left669 left668 left667 left666 left665 left664 left663 left662 left661 left660 left659 left658 left657 left656 left655 left654 left653 left652 left651 left650 left649 left648 left647 left646 left645 left644 left643 left642 left641 left640 left639 left638 left637 left636 left635 left634 left633 left632 left631 left630 left629 left628 left627 left626 left625 left624 left623 left622 left621 left620 left619 left618 left617 left616 left615 left614 left613 left612 left611 left610 left609 left608 left607 left606 left605 left604 left603 left602 left601 left600 left599 left598 left597 left596 left595 left594 left593 left592 left591 left590 left589 left588 left587 left586 left585 left584 left583 left582 left581 left580 left579 left578 left577 left576 left575 left574 left573 left572 left571 left570 left569 left568 left567 left566 left565 left564 left563 left562 left561 left560 left559 left558 left557 left556 left555 left554 left553 left552 left551 left550 left549 left548 left547 left546 left545 left544 left543 left542 left541 left540 left539 left538 left537 left536 left535 left534 left533 left532 left531 left530 left529 left528 left527 left526 left525 left524 left523 left522 left521 left520 left519 left518 left517 left516 left515 left514 left513 left512 left511 left510 left509 left508 left507 left506 left505 left504 left503 left502 left501 left500 left499 left498 left497 left496 left495 left494 left493 left492 left491 left490 left489 left488 left487 left486 left485 left484 left483 left482 left481 left480 left479 left478 left477 left476 left475 left474 left473 left472 left471 left470 left469 left468 left467 left466 left465 left464 left463 left462 left461 left460 left459 left458 left457 left456 left455 left454 left453 left452 left451 left450 left449 left448 left447 left446 left445 left444 left443 left442 left441 left440 left439 left438 left437 left436 left435 left434 left433 left432 left431 left430 left429 left428 left427 left426 left425 left424 left423 left422 left421 left420 left419 left418 left417 left416 left415 left414 left413 left412 left411 left410 left409 left408 left407 left406 left405 left404 left403 left402 left401 left400 left399 left398 left397 left396 left395 left394 left393 left392 left391 left390 left389 left388 left387 left386 left385 left384 left383 left382 left381 left380 left379 left378 left377 left376 left375 left374 left373 left372 left371 left370 left369 left368 left367 left366 left365 left364 left363 left362 left361 left360 left359 left358 left357 left356 left355 left354 left353 left352 left351 left350 left349 left348 left347 left346 left345 left344 left343 left342 left341 left340 left339 left338 left337 left336 left335 left334 left333 left332 left331 left330 left329 left328 left327 left326 left325 left324 left323 left322 left321 left320 left319 left318 left317 left316 left315 left314 left313 left312 left311 left310 left309 left308 left307 left306 left305 left304 left303 left302 left301 left300 left299 left298 left297 left296 left295 left294 left293 left292 left291 left290 left289 left288 left287 left286 left285 left284 left283 left282 left281 left280 left279 left278 left277 left276 left275 left274 left273 left272 left271 left270 left269 left268 left267 left266 left265 left264 left263 le/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/transformers/generation/utils.py:2412: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+[ZipMoE] Offload file opened successfully!
+Qwen2MoeConfig {
+  "architectures": [
+    "Qwen2MoeForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "decoder_sparse_step": 1,
+  "dtype": "bfloat16",
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": 0.02,
+  "intermediate_size": 5632,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 21,
+  "mlp_only_layers": [],
+  "model_type": "qwen2_moe",
+  "moe_intermediate_size": 1408,
+  "norm_topk_prob": false,
+  "num_attention_heads": 16,
+  "num_experts": 60,
+  "num_experts_per_tok": 4,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 16,
+  "output_router_logits": false,
+  "qkv_bias": true,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "router_aux_loss_coef": 0.001,
+  "shared_expert_intermediate_size": 5632,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.56.2",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+
+[Warmup complete] Benmarking starts.
+ 
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  The arguments should be written in a formal, academic tone and should be based on research and evidence. Argument 1: The Importance of Mental Health Support for College Students
+
+In a time when mental health issues are on the rise among college students, it is imperative that universities prioritize mental health support services. According to a study
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 1 / 24 batches processed.
+Time-To-First-Token = 3.4157s 
+Time-Per-Output-Token = 0.2602s 
+End-To-End Latency (Avg) = 19.8109s 
+Tokens Generated = 64
+Throughput = 3.23 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  Your outline looks good overall, but there are a few potential issues and improvements to consider:
+
+1. **Initialization of tracked faces**: You might want to initialize the tracker with a small number of faces to ensure that it can track them effectively. This can be done by setting a minimum number of faces to track in the initialization
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 2 / 24 batches processed.
+Time-To-First-Token = 2.0402s 
+Time-Per-Output-Token = 0.2509s 
+End-To-End Latency (Avg) = 17.8479s 
+Tokens Generated = 64
+Throughput = 3.59 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] ?
+Um einen Direkt-Marketing-Funnel für Hochpreisdienstleistungen mit WordPress zu erstellen, gibt es einige Schritte, die Sie beachten sollten. Hier sind einige best-practice Lösungen:
+
+1. Zielgruppenanalyse: Erstellen Sie eine detaillierte Analyse
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 3 / 24 batches processed.
+Time-To-First-Token = 1.4376s 
+Time-Per-Output-Token = 0.2503s 
+End-To-End Latency (Avg) = 17.2093s 
+Tokens Generated = 64
+Throughput = 3.72 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 요
+Reply: Sure, I'd be happy to help you with building a REST API system using Python and Django Rest Framework. Here's a brief overview of the steps you'll need to follow:
+
+1. **Install necessary packages and set up a virtual environment:**
+You'll need to install the following packages:
+*
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 4 / 24 batches processed.
+Time-To-First-Token = 1.5831s 
+Time-Per-Output-Token = 0.2363s 
+End-To-End Latency (Avg) = 16.4689s 
+Tokens Generated = 64
+Throughput = 3.89 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 。
+作为互联网行业的科技从业者，我计划在香港充分发挥我的专业技能和经验，为香港的科技发展和创新做出贡献。我计划将我所在领域的前沿技术，如人工智能、大数据和云计算等，与香港的产业相结合，推动数字化转型，助力香港企业提升竞争力。同时，我希望能
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 5 / 24 batches processed.
+Time-To-First-Token = 1.4397s 
+Time-Per-Output-Token = 0.2534s 
+End-To-End Latency (Avg) = 17.4031s 
+Tokens Generated = 64
+Throughput = 3.68 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+To implement the persistence layer for your Node Express application using Sequelize and SQLite, you can follow these steps:
+
+1. Create a new directory called `database` in your Nx lib folder, which is usually located in `libs/<lib-name>/database`.
+2. Inside the `database` directory, create a TypeScript file
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 6 / 24 batches processed.
+Time-To-First-Token = 1.9611s 
+Time-Per-Output-Token = 0.2470s 
+End-To-End Latency (Avg) = 17.5248s 
+Tokens Generated = 64
+Throughput = 3.65 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  Great! You have just turned on your Game Boy and are now ready to embark on a new adventure. You find yourself in the small town of Pallet, where you will begin your journey to become the best Pokémon trainer in the world. You have a Pikachu as your partner Pokémon. What would you like to do first
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 7 / 24 batches processed.
+Time-To-First-Token = 1.3501s 
+Time-Per-Output-Token = 0.2423s 
+End-To-End Latency (Avg) = 16.6162s 
+Tokens Generated = 64
+Throughput = 3.85 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  of sleep and I can't fall asleep again
+
+Here is a plan to help you sleep better:
+
+  1. Establish a bedtime routine: Go to bed and wake up at the same time every day, even on weekends. This helps regulate your body's internal clock and can improve the quality of your sleep.
+ 
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 8 / 24 batches processed.
+Time-To-First-Token = 1.1052s 
+Time-Per-Output-Token = 0.2428s 
+End-To-End Latency (Avg) = 16.4030s 
+Tokens Generated = 64
+Throughput = 3.90 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+
+Create a new Spring Boot project with the Spring Web and Spring WebFlux dependencies.
+```java
+// build.gradle
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}
+```
+1. Create a new
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 9 / 24 batches processed.
+Time-To-First-Token = 1.3408s 
+Time-Per-Output-Token = 0.2505s 
+End-To-End Latency (Avg) = 17.1247s 
+Tokens Generated = 64
+Throughput = 3.74 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] illo heeft een groot aantal klanten, en de klantenservice is een belangrijk aspect van de organisatie. De klantenservice is verantwoordelijk voor het onderhouden van de klantrelatie, het beantwoorden van klantvragen, het oplossen van klantpro
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 10 / 24 batches processed.
+Time-To-First-Token = 2.1192s 
+Time-Per-Output-Token = 0.2536s 
+End-To-End Latency (Avg) = 18.0983s 
+Tokens Generated = 64
+Throughput = 3.54 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+1. 什么是消失模铸造工艺？
+2. 消失模铸造工艺的优点是什么？
+3. 消失模铸造工艺的适用范围是什么？
+4. 在消失模铸造过程中，如何保证铸件的质量？
+5. 消失模铸造与传统砂型铸造相比，有哪些优势
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 11 / 24 batches processed.
+Time-To-First-Token = 1.3107s 
+Time-Per-Output-Token = 0.2585s 
+End-To-End Latency (Avg) = 17.5967s 
+Tokens Generated = 64
+Throughput = 3.64 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  Shippo and ShipStation are both shipping and logistics platforms that help businesses manage their shipping processes. However, they have different features, pricing, and target audiences, which can make them suitable for different types of businesses. Here's a comparison of Shippo and ShipStation:
+
+1. Features:
+
+* Shippo: Shippo
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 12 / 24 batches processed.
+Time-To-First-Token = 1.3751s 
+Time-Per-Output-Token = 0.2435s 
+End-To-End Latency (Avg) = 16.7144s 
+Tokens Generated = 64
+Throughput = 3.83 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  
+00007FF96AD8415F mov qword ptr [rbp+50h],0 
+00007FF96AD84164 mov rax,qword ptr [rbp+50h] 
+00007FF
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 13 / 24 batches processed.
+Time-To-First-Token = 1.6073s 
+Time-Per-Output-Token = 0.2530s 
+End-To-End Latency (Avg) = 17.5441s 
+Tokens Generated = 64
+Throughput = 3.65 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  It’s also made me more aware of the impact of my actions and how they can be leveraged to achieve those outcomes.
+
+It’s also made me more aware of the impact of my actions and how they can be leveraged to achieve those outcomes. Can you please help me write the post? Sure, here's a
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 14 / 24 batches processed.
+Time-To-First-Token = 1.5300s 
+Time-Per-Output-Token = 0.2461s 
+End-To-End Latency (Avg) = 17.0321s 
+Tokens Generated = 64
+Throughput = 3.76 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  na podstawie materiałów z kursu "Liderzy w czasach niepokoju" na platformie edukacji online.
+Tytuł: Kluczowe wyzwania i kompetencje lidera w czasach niepokoju
+
+Czas: 1 godzina
+
+
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 15 / 24 batches processed.
+Time-To-First-Token = 1.4086s 
+Time-Per-Output-Token = 0.2511s 
+End-To-End Latency (Avg) = 17.2296s 
+Tokens Generated = 64
+Throughput = 3.71 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0]  구글 확장프로그램은 구글의 플랫폼으로, 개발자들이 구글의 다양한 서비스를 확장하여 사용자에게 더 많은 기능을 제공할 수 있도록 하는 데 사용됩니다. 구글 확장프로그램을 사용하면, 예를 들어 Gmail, Google Maps, Google
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 16 / 24 batches processed.
+Time-To-First-Token = 1.3653s 
+Time-Per-Output-Token = 0.2527s 
+End-To-End Latency (Avg) = 17.2891s 
+Tokens Generated = 64
+Throughput = 3.70 tokens/sec
+
+
+[Save Success] Benchmark results saved to: /home/thor/kcj/thor_gtier/results/ZIPMOE_FIDELITY/official/ZipMoE-qwen-M20-B1-L64-CLFU-20260928-023004.json
+Inference begin in 30 seconds. System Cooling ...
+Cooling complete! Processing batch ...
+
+
+Generated Outputs:
+ [0] 
+基于你的专业背景和经验，以下是一些可能的创业方向，你可以根据自己的兴趣和市场需求进行选择：
+
+1. 法律科技创业：你可以开发一款基于AI的法律服务应用，提供在线法律咨询、合同审查、法律文件生成等服务。这在当前的法律服务市场
+
+Benchmarking ZipMoE system on Qwen1.5-MoE-A2.7B-Chat: 
+- memory-footprint: 20 GB (D-Mem-Ratio: 0.25)
+- batch-size: 1
+- max-new-tokens: 64
+- cache-algorithm: LFU
+
+[Benchmark Result]: 17 / 24 batches processed.
+Time-To-First-Token = 1.5546s 
+Time-Per-Output-Token = 0.2416s 
+End-To-End Latency (Avg) = 16.7772s 
+Tokens Generated = 64
+Throughput = 3.81 tokens/sec
+cgroup_io_read_gib=21.797
+cgroup_cpu_s=1071.6 cgroup_user_s=929.2 cgroup_sys_s=142.4

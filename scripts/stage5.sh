@@ -16,6 +16,10 @@ ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python
 OPY=/home/thor/kcj/envs/oldhf/bin/python
 say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
+# wait (up to 3 min) until the previous run's memory is back: a run started
+# while a killed one still releases pinned memory can trip the host guard
+settle(){ local i; for i in $(seq 1 36); do
+  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ] && return 0; sleep 5; done; }
 # run <name> <budget> <out-prefix> <cmd...>: capped run; RESULT line decides success
 run(){
   local name=$1 b=$2 o=$3; shift 3
@@ -31,7 +35,7 @@ run(){
   # cap: the run's memory bound in GiB (CAP_GIB, set per nominal budget by the
   # caller; see capfor), plus 0.5.  Without it, the budget argument itself.
   local cap=$(awk -v b=${CAP_GIB:-$b} 'BEGIN{printf "%.0f", (b+0.5)*1073741824}')
-  say "run  $name"; drop
+  settle; say "run  $name"; drop
   timeout 21600 "$R/scripts/in_cgroup.sh" m5 $cap "$@" > "$o.txt" 2>&1
   local rc=$?
   awk '{printf "cgroup_peak_gib=%.2f\n", $1/1073741824}' /sys/fs/cgroup/ledger_bench/m5/memory.peak >> "$o.txt" 2>/dev/null
@@ -201,8 +205,11 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
     # conversions that could not coexist with the Qwen3-30B stores: token check and
     # smoke for ZipMoE and MoE-Infinity here; a system that fails is left out
     P=results/PREP; mkdir -p /home/thor/kcj/offload_tmp/$m
-    drop; timeout 14400 scripts/in_cgroup.sh prep max $ZPY scripts/check_tokens.py zipmoe $ck mixtral 39.15 $P/tok_zipmoe_mixtral.json > $P/tok_zipmoe_mixtral.log 2>&1 \
-      || { systems=${systems/zipmoe/}; say "ZipMoE/Mixtral token check failed: left out"; }
+    # once: a passed check (tokens identical to stock) is not repeated on a restart
+    if ! python3 -c "import json,sys;sys.exit(0 if json.load(open('$P/tok_zipmoe_mixtral.json'))==json.load(open('$P/tok_stock_mixtral.json')) else 1)" 2>/dev/null; then
+      settle; drop; timeout 14400 scripts/in_cgroup.sh prep max $ZPY scripts/check_tokens.py zipmoe $ck mixtral 39.15 $P/tok_zipmoe_mixtral.json > $P/tok_zipmoe_mixtral.log 2>&1 \
+        || { systems=${systems/zipmoe/}; say "ZipMoE/Mixtral token check failed: left out"; }
+    fi
   fi
   # MoE-Infinity keeps the whole model pinned in host memory and adds its GPU
   # cache on top (device_memory_ratio), so on a unified pool it needs more

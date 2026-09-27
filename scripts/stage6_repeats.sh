@@ -12,6 +12,8 @@ ST=$R/results/PIPELINE; LOG=$ST/pipeline.log
 ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python; OPY=/home/thor/kcj/envs/oldhf/bin/python
 say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
+settle(){ local i; for i in $(seq 1 36); do
+  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ] && return 0; sleep 5; done; }
 # stage 5's run(), capfor(), sys_cmd(), fm_weights(), held()
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p; /^sys_cmd(){/,/^}/p; /^fm_weights(){/,/^}/p; /^held(){/p' scripts/stage5.sh)"
 

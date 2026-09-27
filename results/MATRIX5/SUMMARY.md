@@ -117,3 +117,25 @@ E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 | ShareGPT | FlashMoE* | 1.16; 27.67 | 1.94; 65.93 | 2.46; 104.09 |
 | ShareGPT | DuoServe* | 0.59; 54.51 | 1.18; 108.77 | 1.40; 182.76 |
 
+## Mixtral-8x7B bf16
+
+### MMLU
+
+| system | 25% (21.8 GiB) | 45% (39.1 GiB) | 65% (56.6 GiB) | 108% (94.0 GiB) |
+|---|---|---|---|---|
+
+### ShareGPT
+
+| system | 25% (21.8 GiB) | 45% (39.1 GiB) | 65% (56.6 GiB) | 108% (94.0 GiB) |
+|---|---|---|---|---|
+
+### LongBench
+
+| system | 25% (21.8 GiB) | 45% (39.1 GiB) | 65% (56.6 GiB) | 108% (94.0 GiB) |
+|---|---|---|---|---|
+
+### E2: small budgets (MMLU, each system at its own setting)
+
+| system | 20% (17.40 GiB) | 15% (13.05 GiB) | 10% (8.70 GiB) | 5% (4.35 GiB) |
+|---|---|---|---|---|
+

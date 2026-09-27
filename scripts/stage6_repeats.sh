@@ -19,8 +19,8 @@ until grep -q "=== stage 5 done ===" "$LOG"; do sleep 120; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 trap 'sudo -n nvme set-feature /dev/nvme0 --feature-id=2 --value=0 >/dev/null 2>&1' EXIT   # never leave the SSD slowed
 say "=== stage 6 (repeats at 45%) start ==="
-for spec in "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,flashmoe,duoserve,fiddler,mixoff" \
-            "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,flashmoe,duoserve"; do
+# Qwen3 only: a Mixtral run takes 3-10x longer (decided 09-27: Mixtral runs E1 and E7)
+for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,flashmoe,duoserve"; do
   set -- $spec; m=$1 ck=$2 zt=$3 slot=$4 win=$5 gb=$6 systems=${7//,/ }
   O=results/MATRIX5/$m; export SCRUB_GLOB="$ck/*.safetensors /home/thor/kcj/ZipMoE/offload/$zt/*"
   if [ $m = qwen30b ]; then

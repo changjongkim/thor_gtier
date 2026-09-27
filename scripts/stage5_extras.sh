@@ -65,6 +65,8 @@ for w in mmlu sharegpt longbench; do
   run "s5x_${m}_${w}_phasor_profile" $b45 $X/e5/${w}_phasor $ZPY phasor_hf/phasor_serve.py --checkpoint $ck \
     --workload results/WORKLOADS/$w.json --budget-gib $b45 --slot-mib $slot --window-gib $win --profile --out $X/e5/${w}_phasor.json
 done
+# E9 and E3: Qwen3 only (Mixtral runs E1, E7, E7b and E5)
+if [ $m != mixtral8x7b ]; then
 # E9: window
 for x in 0.5 2 4; do
   wn=$(awk -v a=$win -v x=$x 'BEGIN{printf "%.3g", a*x}')
@@ -91,6 +93,7 @@ for B in 4 8; do
     done
   done
 done
+fi
 git add -A $X >/dev/null 2>&1
 git diff --cached --quiet || { git commit -q -m "Extras ($m): E5 breakdown, E9 window, E3 batch
 

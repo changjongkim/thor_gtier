@@ -82,7 +82,8 @@ system(){  # system <sys> <model> <ckpt> <zt> <slot> <win> <w> <b> <out>  -> run
     fi
   fi
   # reference run at the system's own setting (it may exceed the budget; its peak shows by how much)
-  if [ "$s" != phasor ] && [ "$w" = mmlu ]; then
+  # (Qwen3 only: on Mixtral a run takes 3-10x longer and the reference adds nothing new)
+  if [ "$s" != phasor ] && [ "$w" = mmlu ] && [ "$m" != mixtral8x7b ]; then
     run "s5_${m}_${w}_${s}_nominal_$nb" $nb ${o}_nominal $(sys_cmd $s $m $ck $zt $slot $win $w $nb ${o}_nominal) || true
   fi
   case $s in
@@ -256,7 +257,8 @@ for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor
   done
   unset CAP_GIB
   # E2: smallest budget, MMLU (shortest requests); a system stops at its first budget it cannot run at
-  for s in $systems; do
+  # (Qwen3 only: Mixtral runs E1 and E7; its runs take 3-10x longer)
+  [ $m != mixtral8x7b ] && for s in $systems; do
     for f in 0.20 0.15 0.10 0.05; do
       b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
       system $s $m $ck $zt $slot $win mmlu $b $O/mmlu/${s}_$f || break

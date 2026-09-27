@@ -1,0 +1,223 @@
+scrub: 22 files
+Arch: mixtralforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE Cache Pool Planning] Loading trace...
+[Coverage To Weight] Converged in 13 iterations.
+Bernoulli probs sum: 3.7302
+Total memory available per layer: 1664299827.2
+Max potential full slots: 4
+[ZipMoE Invocation Modeling] Ratio Full: 0.22 | Avg Delay: 3425.4854
+[ZipMoE Invocation Modeling] Ratio Full: 0.23 | Avg Delay: 3425.4854
+[ZipMoE Invocation Modeling] Ratio Full: 0.24 | Avg Delay: 3425.4854
+[ZipMoE Invocation Modeling] Ratio Full: 0.25 | Avg Delay: 3425.4854
+[ZipMoE Invocation Modeling] Ratio Full: 0.26 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.27 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.28 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.29 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.30 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.31 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.32 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.33 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.34 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.35 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.36 | Avg Delay: 3538.0885
+[ZipMoE Invocation Modeling] Ratio Full: 0.37 | Avg Delay: 3732.3227
+[ZipMoE Invocation Modeling] Ratio Full: 0.38 | Avg Delay: 3732.3227
+[ZipMoE Invocation Modeling] Ratio Full: 0.39 | Avg Delay: 3732.3227
+[ZipMoE Invocation Modeling] Ratio Full: 0.40 | Avg Delay: 3732.3227
+[ZipMoE Invocation Modeling] Ratio Full: 0.41 | Avg Delay: 3732.3227
+[ZipMoE Invocation Modeling] Ratio Full: 0.42 | Avg Delay: 3732.3227
+[ZipMoE Invocation Modeling] Ratio Full: 0.43 | Avg Delay: 2818.6850
+[ZipMoE Invocation Modeling] Ratio Full: 0.44 | Avg Delay: 2818.6850
+[ZipMoE Invocation Modeling] Ratio Full: 0.45 | Avg Delay: 2818.6850
+[ZipMoE Invocation Modeling] Ratio Full: 0.46 | Avg Delay: 2818.6850
+[ZipMoE Invocation Modeling] Ratio Full: 0.47 | Avg Delay: 2818.6850
+[ZipMoE Invocation Modeling] Ratio Full: 0.48 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.49 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.50 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.51 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.52 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.53 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.54 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.55 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.56 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.57 | Avg Delay: 3043.0523
+[ZipMoE Invocation Modeling] Ratio Full: 0.58 | Avg Delay: 3365.3466
+[ZipMoE Invocation Modeling] Ratio Full: 0.59 | Avg Delay: 3365.3466
+[ZipMoE Invocation Modeling] Ratio Full: 0.60 | Avg Delay: 3365.3466
+[ZipMoE Invocation Modeling] Ratio Full: 0.61 | Avg Delay: 3365.3466
+[ZipMoE Invocation Modeling] Ratio Full: 0.62 | Avg Delay: 3365.3466
+[ZipMoE Invocation Modeling] Ratio Full: 0.63 | Avg Delay: 3365.3466
+[ZipMoE Invocation Modeling] Ratio Full: 0.64 | Avg Delay: 2439.5343
+[ZipMoE Invocation Modeling] Ratio Full: 0.65 | Avg Delay: 2439.5343
+[ZipMoE Invocation Modeling] Ratio Full: 0.66 | Avg Delay: 2439.5343
+[ZipMoE Invocation Modeling] Ratio Full: 0.67 | Avg Delay: 2439.5343
+[ZipMoE Invocation Modeling] Ratio Full: 0.68 | Avg Delay: 2439.5343
+[ZipMoE Invocation Modeling] Ratio Full: 0.69 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.70 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.71 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.72 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.73 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.74 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.75 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.76 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.77 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.78 | Avg Delay: 2791.5983
+[ZipMoE Invocation Modeling] Ratio Full: 0.79 | Avg Delay: 3257.3891
+[ZipMoE Invocation Modeling] Ratio Full: 0.80 | Avg Delay: 3257.3891
+[ZipMoE Invocation Modeling] Ratio Full: 0.81 | Avg Delay: 3257.3891
+[ZipMoE Invocation Modeling] Ratio Full: 0.82 | Avg Delay: 3257.3891
+[ZipMoE Invocation Modeling] Ratio Full: 0.83 | Avg Delay: 3257.3891
+[ZipMoE Invocation Modeling] Ratio Full: 0.84 | Avg Delay: 3257.3891
+[ZipMoE Invocation Modeling] Ratio Full: 0.85 | Avg Delay: 2284.2900
+[ZipMoE Invocation Modeling] Ratio Full: 0.86 | Avg Delay: 2284.2900
+[ZipMoE Invocation Modeling] Ratio Full: 0.87 | Avg Delay: 2284.2900
+[ZipMoE Invocation Modeling] Ratio Full: 0.88 | Avg Delay: 2284.2900
+[ZipMoE Invocation Modeling] Ratio Full: 0.89 | Avg Delay: 2284.2900
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.22,  Cost = 3425.485412544408
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.23,  Cost = 3425.485412544408
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.24,  Cost = 3448.0060201793094
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.25,  Cost = 3470.5266278142108
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.26,  Cost = 3493.0472354491117
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.27,  Cost = 3515.5678430840126
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.28,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.29,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.3,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.31,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.32,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.33,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.34,  Cost = 3538.088450718914
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.35000000000000003,  Cost = 3576.935309700907
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.36,  Cost = 3615.782168682901
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.37,  Cost = 3654.6290276648942
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.38,  Cost = 3693.4758866468883
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.39,  Cost = 3732.3227456288814
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.4,  Cost = 3732.3227456288814
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.41000000000000003,  Cost = 3549.595187933276
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.42,  Cost = 3366.8676302376707
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.43,  Cost = 3184.1400725420654
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.44,  Cost = 3001.41251484646
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.45,  Cost = 2818.6849571508546
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.46,  Cost = 2863.5584335595245
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.47000000000000003,  Cost = 2908.431909968195
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.48,  Cost = 2953.3053863768646
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.49,  Cost = 2998.1788627855353
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5,  Cost = 3043.052339194205
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.51,  Cost = 3043.052339194205
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.52,  Cost = 3043.052339194205
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.53,  Cost = 3043.052339194205
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.54,  Cost = 3043.052339194205
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.55,  Cost = 3043.052339194205
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.56,  Cost = 3107.5111990516184
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5700000000000001,  Cost = 3171.970058909032
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.58,  Cost = 3236.428918766445
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.59,  Cost = 3300.887778623859
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6,  Cost = 3365.346638481272
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.61,  Cost = 3365.346638481272[20260928 00:27:52.345894Z ][4109591 ][INFO  ]Loading index file from  /home/thor/kcj/ZipMoE/offload/mixtral/zipmoe_index - zipmoe_tensor_handle.cpp:45
+[20260928 00:27:52.346984Z ][4109591 ][INFO  ]Index file size  995 - zipmoe_tensor_handle.cpp:51
+[20260928 00:27:53.227501Z ][4109591 ][INFO  ][ZipMoECacheHandle] Applying Cache Pool Planning. - cache.cpp:37
+[20260928 00:27:57.600048Z ][4109591 ][INFO  ]number of full-cache slots:  132 - cache.cpp:114
+[20260928 00:27:57.600063Z ][4109591 ][INFO  ]number of SM-cache slots:  40 - cache.cpp:115
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 5 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 6 initialized.
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 3 initialized.
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.62,  Cost = 3180.1841767112105
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.63,  Cost = 2995.0217149411496
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.64,  Cost = 2809.8592531710883
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.65,  Cost = 2624.6967914010274
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.66,  Cost = 2439.534329630966
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.67,  Cost = 2509.947127137818
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.68,  Cost = 2580.3599246446693
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6900000000000001,  Cost = 2650.77272215152
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.7000000000000001,  Cost = 2721.1855196583715
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.71,  Cost = 2791.598317165223
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.72,  Cost = 2791.598317165223
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.73,  Cost = 2791.598317165223
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.74,  Cost = 2791.598317165223
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.75,  Cost = 2791.598317165223
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.76,  Cost = 2791.598317165223
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.77,  Cost = 2884.756464787893
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.78,  Cost = 2977.9146124105637
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.79,  Cost = 3071.0727600332343
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8,  Cost = 3164.2309076559045
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.81,  Cost = 3257.3890552785747
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8200000000000001,  Cost = 3257.3890552785747
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8300000000000001,  Cost = 3062.7692453149875
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.84,  Cost = 2868.1494353514
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.85,  Cost = 2673.529625387813
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.86,  Cost = 2478.909815424226
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.87,  Cost = 2284.290005460639
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.88,  Cost = 2284.290005460639
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.89,  Cost = 2284.290005460639
+[ZipMoE Cache Pool Planning] Best ratio: 0.87
+[ZipMoE] Loading model from offload_path ...
+`torch_dtype` is deprecated! Use `dtype` instead!
+/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/transformers/generation/utils.py:2412: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+[ZipMoE] Offload file opened successfully!
+MixtralConfig {
+  "architectures": [
+    "MixtralForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 1,
+  "dtype": "bfloat16",
+  "eos_token_id": 2,
+  "head_dim": null,
+  "hidden_act": "silu",
+  "hidden_size": 4096,
+  "initializer_range": 0.02,
+  "intermediate_size": 14336,
+  "max_position_embeddings": 32768,
+  "model_type": "mixtral",
+  "num_attention_heads": 32,
+  "num_experts_per_tok": 2,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 8,
+  "num_local_experts": 8,
+  "output_router_logits": false,
+  "rms_norm_eps": 1e-05,
+  "rope_theta": 1000000.0,
+  "router_aux_loss_coef": 0.02,
+  "router_jitter_noise": 0.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.56.2",
+  "use_cache": true,
+  "vocab_size": 32000
+}
+
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 24.009147882461548, "tpot_ms": 2653.9347852979386, "request_s": 42.587677001953125}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 682, "new_tok": 8, "ttft_s": 12.642366647720337, "tpot_ms": 1883.8469300951276, "request_s": 25.83020257949829}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 690, "new_tok": 8, "ttft_s": 10.399999141693115, "tpot_ms": 1917.9067611694336, "request_s": 23.826268911361694}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 740, "new_tok": 8, "ttft_s": 9.881824016571045, "tpot_ms": 1830.6751591818672, "request_s": 22.697659492492676}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 426, "new_tok": 8, "ttft_s": 9.632595300674438, "tpot_ms": 2383.3607264927455, "request_s": 26.317049741744995}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 468, "new_tok": 8, "ttft_s": 9.621101140975952, "tpot_ms": 2377.7006353650772, "request_s": 26.266199827194214}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 421, "new_tok": 8, "ttft_s": 9.496350526809692, "tpot_ms": 2467.3460211072647, "request_s": 26.76895236968994}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 463, "new_tok": 8, "ttft_s": 9.52230715751648, "tpot_ms": 2224.801540374756, "request_s": 25.096907377243042}
+REQ {"name": "mmlu_machine_learning_8", "prompt_tok": 706, "new_tok": 8, "ttft_s": 9.763910055160522, "tpot_ms": 2259.3244825090683, "request_s": 25.580106735229492}
+REQ {"name": "mmlu_machine_learning_9", "prompt_tok": 500, "new_tok": 8, "ttft_s": 9.70016598701477, "tpot_ms": 2141.8020044054306, "request_s": 24.693787574768066}
+REQ {"name": "mmlu_machine_learning_10", "prompt_tok": 499, "new_tok": 8, "ttft_s": 9.785088300704956, "tpot_ms": 2022.3511968340192, "request_s": 23.942450046539307}
+REQ {"name": "mmlu_machine_learning_11", "prompt_tok": 508, "new_tok": 8, "ttft_s": 9.659756660461426, "tpot_ms": 2085.707800728934, "request_s": 24.260666847229004}
+REQ {"name": "mmlu_professional_medicine_12", "prompt_tok": 968, "new_tok": 8, "ttft_s": 9.785974502563477, "tpot_ms": 2125.0883511134557, "request_s": 24.662431240081787}
+REQ {"name": "mmlu_professional_medicine_13", "prompt_tok": 1271, "new_tok": 8, "ttft_s": 9.52433466911316, "tpot_ms": 2175.37099974496, "request_s": 24.75292682647705}
+REQ {"name": "mmlu_professional_medicine_14", "prompt_tok": 1092, "new_tok": 8, "ttft_s": 9.612553596496582, "tpot_ms": 2080.7398046766007, "request_s": 24.17862343788147}
+REQ {"name": "mmlu_professional_medicine_15", "prompt_tok": 1079, "new_tok": 8, "ttft_s": 9.803958177566528, "tpot_ms": 2019.7763102395193, "request_s": 23.94305396080017}
+REQ {"name": "mmlu_computer_security_16", "prompt_tok": 451, "new_tok": 8, "ttft_s": 9.611322164535522, "tpot_ms": 1992.1998296465192, "request_s": 23.557318449020386}
+REQ {"name": "mmlu_computer_security_17", "prompt_tok": 483, "new_tok": 8, "ttft_s": 9.584951400756836, "tpot_ms": 1959.1235092708043, "request_s": 23.299686670303345}
+REQ {"name": "mmlu_computer_security_18", "prompt_tok": 671, "new_tok": 8, "ttft_s": 9.590047836303711, "tpot_ms": 2015.8945832933698, "request_s": 23.702251434326172}
+REQ {"name": "mmlu_computer_security_19", "prompt_tok": 578, "new_tok": 8, "ttft_s": 9.752335786819458, "tpot_ms": 1990.0174140930176, "request_s": 23.68326187133789}
+REQ {"name": "mmlu_high_school_psychology_20", "prompt_tok": 381, "new_tok": 8, "ttft_s": 9.72632622718811, "tpot_ms": 1816.7245388031006, "request_s": 22.444512367248535}
+REQ {"name": "mmlu_high_school_psychology_21", "prompt_tok": 433, "new_tok": 8, "ttft_s": 9.627933025360107, "tpot_ms": 1896.7241900307793, "request_s": 22.905924081802368}
+REQ {"name": "mmlu_high_school_psychology_22", "prompt_tok": 432, "new_tok": 8, "ttft_s": 9.786601066589355, "tpot_ms": 2008.7449550628662, "request_s": 23.848859310150146}
+REQ {"name": "mmlu_high_school_psychology_23", "prompt_tok": 492, "new_tok": 8, "ttft_s": 17.869174480438232, "tpot_ms": 2827.6029995509557, "request_s": 37.66324710845947}
+RESULT policy=zipmoe budget=49.60 requests=24 ttft_s=10.7663 tpot_ms=2131.532 request_s=25.6879 footprint_gib=61.96 peak_gib=64.10 compute=measured
+cgroup_io_read_gib=1529.660
+cgroup_cpu_s=2130.5 cgroup_user_s=1127.0 cgroup_sys_s=1003.4
+cgroup_peak_gib=11.58

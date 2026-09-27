@@ -151,7 +151,10 @@ if [ ! -f $ST/s5_selftest_extras.done ]; then
   [ $okall = 1 ] && touch $ST/s5_selftest_extras.done
 fi
 for spec in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b qwen3 4 0.5 57.0 phasor,zipmoe,moeinf,flashmoe,duoserve" \
-            "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,moeinf,flashmoe,duoserve,fiddler,mixoff"; do
+            "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 mixtral 128 1.5 87.0 phasor,zipmoe,flashmoe,duoserve,fiddler,mixoff"; do
+  # MoE-Infinity is not run on Mixtral: it cannot run within any budget on this
+  # device (results/PREP/MOE_INFINITY.md), and its first run would write an
+  # 87 GB offload store next to ZipMoE's (disk: ~120 GB free)
   # Queued SSD-idle work (e.g. CPU-cost measurements) runs here, between
   # models, under this script's lock; each hook runs once.
   for h in $ST/hooks/*.sh; do

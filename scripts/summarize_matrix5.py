@@ -93,6 +93,19 @@ for m, mname, gb in MODELS:
                     print(f"- {n}: {d['request_s']:.2f} s ({d['request_s'] / base['request_s'] - 1:+.0%}), "
                           f"TTFT {d['ttft_s']:.2f} s, TPOT {d['tpot_ms']:.0f} ms, peak {d.get('peak_gib', 0):.1f} GiB")
         print()
+    # repeats (stage 6): mean and spread of the three runs at 45%
+    rep_rows = []
+    for w, wname in WL:
+        for k, name in SYS:
+            xs = [d["request_s"] for d in [e1(m, w, k, "0.45")[0]] + [load(f"{R}/{m}/repeats/{w}/{k}_0.45_r{r}")[0] for r in (2, 3)]
+                  if d and d != "norun"]
+            if len(xs) >= 2:
+                mu = sum(xs) / len(xs); sd = (sum((x - mu) ** 2 for x in xs) / (len(xs) - 1)) ** 0.5
+                rep_rows.append(f"| {wname} | {name} | {len(xs)} | {mu:.2f} | {sd:.2f} | {sd / mu:.1%} |")
+    if rep_rows:
+        print("### Repeats at 45% (request s over E1 + stage 6 runs)\n")
+        print("| workload | system | runs | mean | sd | cv |"); print("|---|---|---:|---:|---:|---:|")
+        print("\n".join(rep_rows)); print()
     # E2
     print("### E2: small budgets (MMLU, each system at its own setting)\n")
     print("| system | " + " | ".join(f"{float(f):.0%} ({gb * float(f):.2f} GiB)" for f in SMALL) + " |")

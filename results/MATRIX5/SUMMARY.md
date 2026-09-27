@@ -5,6 +5,8 @@ Same prompts for every system. Each baseline runs at the knob memcal found to ma
 that budget (two MMLU prompts); every run is capped at 1.05 x that peak + 0.5 GiB. `(over)`: the run's peak
 exceeded 1.05 x PHASOR's peak (memory it grew into on longer workloads). `(knob xK)`: the calibrated run hit
 the cap and the cell is its retry at K x the calibrated knob. `*` = reimplemented (no released code).
+Requests: MMLU 24, ShareGPT 24, LongBench 21 on Qwen3-30B; on Mixtral, ShareGPT and LongBench use their first
+12 (the same 12 for every system; a Mixtral run takes 3-10x longer).
 
 ## Qwen3-30B-A3B bf16
 
@@ -126,6 +128,7 @@ E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 | PHASOR | 40.53 / 14.71 / 3688 / 26.8 | - | - | - |
 | ZipMoE | 58.53 / 20.86 / 5382 / 26.7 [1.44x] | - | - | - |
 | FlashMoE* | 97.51 / 36.94 / 8653 / 20.7 [2.41x] | - | - | - |
+| DuoServe* | 184.25 / 49.53 / 19247 / 25.8 [4.55x] | - | - | - |
 
 Reference: each baseline at its own setting for the nominal budget (not equal memory):
 

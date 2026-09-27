@@ -1,0 +1,11 @@
+scrub: 19 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "lb_gov_report_0", "prompt_tok": 6570, "new_tok": 32, "ttft_s": 61.58396792411804, "tpot_ms": 231.7819595336914, "request_s": 68.7696921825409, "read_gib": 43.4091796875}
+REQ {"name": "lb_multi_news_1", "prompt_tok": 5205, "new_tok": 32, "ttft_s": 8.298588991165161, "tpot_ms": 192.27178635135775, "request_s": 14.25944209098816, "read_gib": 3.919921875}
+REQ {"name": "lb_passage_count_2", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 6.846382141113281, "tpot_ms": 205.9129899547946, "request_s": 13.230190753936768, "read_gib": 1.44140625}
+REQ {"name": "lb_vcsum_3", "prompt_tok": 5530, "new_tok": 32, "ttft_s": 4.830578088760376, "tpot_ms": 204.18882369995117, "request_s": 11.160929203033447, "read_gib": 1.0283203125}
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 58: 3771692 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=98.994
+cgroup_cpu_s=159.1 cgroup_user_s=48.9 cgroup_sys_s=110.1
+cgroup_peak_gib=71.01
+NORUN budget=52.33 reason=oom-under-cap

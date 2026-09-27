@@ -1,0 +1,7 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+CAPTHRASH kill: unreclaimable 45727 MiB >= 97% of the 46120 MiB cap for 120 s
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 53: 2495946 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=97.060
+cgroup_cpu_s=463.7 cgroup_user_s=17.6 cgroup_sys_s=446.1
+cgroup_peak_gib=45.04
+NORUN budget=37.05 reason=oom-under-cap

@@ -1,0 +1,16 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 601, "new_tok": 8, "ttft_s": 67.66109108924866, "tpot_ms": 300.77273505074635, "request_s": 69.76708126068115, "read_gib": 43.3125}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 589, "new_tok": 8, "ttft_s": 2.2679924964904785, "tpot_ms": 225.1890046255929, "request_s": 3.8448452949523926, "read_gib": 0.509765625}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 600, "new_tok": 8, "ttft_s": 1.7709827423095703, "tpot_ms": 204.7053064618792, "request_s": 3.204401731491089, "read_gib": 0.17578125}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 637, "new_tok": 8, "ttft_s": 2.0251028537750244, "tpot_ms": 203.98555483136857, "request_s": 3.453505277633667, "read_gib": 0.2724609375}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 391, "new_tok": 8, "ttft_s": 6.765429735183716, "tpot_ms": 273.74935150146484, "request_s": 8.682202100753784, "read_gib": 3.0146484375}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 434, "new_tok": 8, "ttft_s": 1.8357932567596436, "tpot_ms": 208.57810974121094, "request_s": 3.2963452339172363, "read_gib": 0.2373046875}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 386, "new_tok": 8, "ttft_s": 1.5467898845672607, "tpot_ms": 207.81591960362024, "request_s": 3.001974582672119, "read_gib": 0.140625}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 425, "new_tok": 8, "ttft_s": 1.7801499366760254, "tpot_ms": 203.08252743312292, "request_s": 3.20223331451416, "read_gib": 0.1318359375}
+REQ {"name": "mmlu_machine_learning_8", "prompt_tok": 636, "new_tok": 8, "ttft_s": 9.564814329147339, "tpot_ms": 230.2816935947963, "request_s": 11.177279710769653, "read_gib": 3.6826171875}
+CAPTHRASH kill: unreclaimable 72097 MiB >= 97% of the 72714 MiB cap for 120 s
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 53: 2508921 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=157.480
+cgroup_cpu_s=228.6 cgroup_user_s=46.1 cgroup_sys_s=182.5
+cgroup_peak_gib=71.01
+NORUN budget=61.56 reason=oom-under-cap

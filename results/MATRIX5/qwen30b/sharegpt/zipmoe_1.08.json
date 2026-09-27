@@ -1,0 +1,206 @@
+{
+ "system": "ZipMoE",
+ "budget_gib": 61.56,
+ "load_s": 7.967853307723999,
+ "footprint_gib": 72.16098022460938,
+ "requests": 24,
+ "ttft_s": 3.7823786437511444,
+ "tpot_ms": 425.08431628186213,
+ "request_s": 16.960800538460415,
+ "rows": [
+  {
+   "name": "sg_jKqNBVf_0_t2",
+   "prompt_tok": 1059,
+   "new_tok": 32,
+   "ttft_s": 22.553179502487183,
+   "tpot_ms": 360.59842571135493,
+   "request_s": 33.73230457305908
+  },
+  {
+   "name": "sg_jKqNBVf_0_t3",
+   "prompt_tok": 1237,
+   "new_tok": 32,
+   "ttft_s": 3.4030685424804688,
+   "tpot_ms": 414.70895274992915,
+   "request_s": 16.259855031967163
+  },
+  {
+   "name": "sg_cSz8Ik6_0_t2",
+   "prompt_tok": 67,
+   "new_tok": 32,
+   "ttft_s": 2.3406360149383545,
+   "tpot_ms": 421.8771457672119,
+   "request_s": 15.419432878494263
+  },
+  {
+   "name": "sg_cSz8Ik6_0_t3",
+   "prompt_tok": 391,
+   "new_tok": 32,
+   "ttft_s": 2.7955920696258545,
+   "tpot_ms": 426.5775526723554,
+   "request_s": 16.02034091949463
+  },
+  {
+   "name": "sg_zcq8Evp_0_t2",
+   "prompt_tok": 164,
+   "new_tok": 32,
+   "ttft_s": 2.4665651321411133,
+   "tpot_ms": 427.76494641457833,
+   "request_s": 15.728299379348755
+  },
+  {
+   "name": "sg_zcq8Evp_0_t3",
+   "prompt_tok": 223,
+   "new_tok": 32,
+   "ttft_s": 2.539520502090454,
+   "tpot_ms": 416.06028618351104,
+   "request_s": 15.438231706619263
+  },
+  {
+   "name": "sg_5cVpTKS_0_t2",
+   "prompt_tok": 246,
+   "new_tok": 32,
+   "ttft_s": 2.667365074157715,
+   "tpot_ms": 402.864686904415,
+   "request_s": 15.157047748565674
+  },
+  {
+   "name": "sg_V4wpuJu_0_t2",
+   "prompt_tok": 614,
+   "new_tok": 32,
+   "ttft_s": 3.6218810081481934,
+   "tpot_ms": 415.4501422759025,
+   "request_s": 16.501710653305054
+  },
+  {
+   "name": "sg_V4wpuJu_0_t3",
+   "prompt_tok": 1240,
+   "new_tok": 32,
+   "ttft_s": 3.643181324005127,
+   "tpot_ms": 492.9255670116794,
+   "request_s": 18.92469048500061
+  },
+  {
+   "name": "sg_k7ymHcr_21_t2",
+   "prompt_tok": 1012,
+   "new_tok": 32,
+   "ttft_s": 3.399465322494507,
+   "tpot_ms": 419.4898297709803,
+   "request_s": 16.404249906539917
+  },
+  {
+   "name": "sg_k7ymHcr_21_t3",
+   "prompt_tok": 1797,
+   "new_tok": 32,
+   "ttft_s": 4.157329797744751,
+   "tpot_ms": 427.67060956647316,
+   "request_s": 17.41599702835083
+  },
+  {
+   "name": "sg_MuZDUct_0_t2",
+   "prompt_tok": 109,
+   "new_tok": 32,
+   "ttft_s": 2.367074966430664,
+   "tpot_ms": 370.7978417796473,
+   "request_s": 13.862520933151245
+  },
+  {
+   "name": "sg_MuZDUct_0_t3",
+   "prompt_tok": 377,
+   "new_tok": 32,
+   "ttft_s": 2.63433837890625,
+   "tpot_ms": 367.65527725219727,
+   "request_s": 14.032513856887817
+  },
+  {
+   "name": "sg_CcQ9JCK_25_t2",
+   "prompt_tok": 823,
+   "new_tok": 32,
+   "ttft_s": 2.9006941318511963,
+   "tpot_ms": 424.773508502591,
+   "request_s": 16.069570302963257
+  },
+  {
+   "name": "sg_9EM9xb8_25_t2",
+   "prompt_tok": 379,
+   "new_tok": 32,
+   "ttft_s": 2.6765615940093994,
+   "tpot_ms": 404.1677751848774,
+   "request_s": 15.206418991088867
+  },
+  {
+   "name": "sg_9EM9xb8_25_t3",
+   "prompt_tok": 1853,
+   "new_tok": 32,
+   "ttft_s": 4.252032041549683,
+   "tpot_ms": 404.92263917000065,
+   "request_s": 16.805428504943848
+  },
+  {
+   "name": "sg_f9XBWSi_15_t2",
+   "prompt_tok": 442,
+   "new_tok": 32,
+   "ttft_s": 2.7195146083831787,
+   "tpot_ms": 420.23288050005516,
+   "request_s": 15.747653722763062
+  },
+  {
+   "name": "sg_f9XBWSi_15_t3",
+   "prompt_tok": 759,
+   "new_tok": 32,
+   "ttft_s": 2.902338743209839,
+   "tpot_ms": 440.06152306833576,
+   "request_s": 16.545194149017334
+  },
+  {
+   "name": "sg_3O3k7Ni_0_t2",
+   "prompt_tok": 260,
+   "new_tok": 32,
+   "ttft_s": 2.9127705097198486,
+   "tpot_ms": 441.42947658415767,
+   "request_s": 16.597952365875244
+  },
+  {
+   "name": "sg_3O3k7Ni_0_t3",
+   "prompt_tok": 798,
+   "new_tok": 32,
+   "ttft_s": 3.026628017425537,
+   "tpot_ms": 488.1824216535015,
+   "request_s": 18.160961627960205
+  },
+  {
+   "name": "sg_zZRzzTy_16_t2",
+   "prompt_tok": 199,
+   "new_tok": 32,
+   "ttft_s": 2.734592914581299,
+   "tpot_ms": 498.650397023847,
+   "request_s": 18.193564653396606
+  },
+  {
+   "name": "sg_zZRzzTy_16_t3",
+   "prompt_tok": 393,
+   "new_tok": 32,
+   "ttft_s": 2.633999824523926,
+   "tpot_ms": 495.0706958770752,
+   "request_s": 17.982016801834106
+  },
+  {
+   "name": "sg_RtCgJK2_47_t2",
+   "prompt_tok": 415,
+   "new_tok": 32,
+   "ttft_s": 2.6907386779785156,
+   "tpot_ms": 433.1458537809311,
+   "request_s": 16.119046926498413
+  },
+  {
+   "name": "sg_RtCgJK2_47_t3",
+   "prompt_tok": 684,
+   "new_tok": 32,
+   "ttft_s": 2.738018751144409,
+   "tpot_ms": 386.94515535908357,
+   "request_s": 14.734209775924683
+  }
+ ],
+ "peak_gib": 72.17877578735352,
+ "batch": 1
+}

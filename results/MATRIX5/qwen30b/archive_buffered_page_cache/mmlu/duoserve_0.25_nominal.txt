@@ -1,0 +1,25 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 601, "new_tok": 8, "ttft_s": 50.35231304168701, "tpot_ms": 2367.522648402623, "request_s": 66.9287805557251, "read_gib": 57.919921875}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 589, "new_tok": 8, "ttft_s": 37.460981369018555, "tpot_ms": 2277.77521950858, "request_s": 53.40899682044983, "read_gib": 55.3447265625}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 600, "new_tok": 8, "ttft_s": 37.26030373573303, "tpot_ms": 2272.514581680298, "request_s": 53.170647621154785, "read_gib": 55.3095703125}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 637, "new_tok": 8, "ttft_s": 37.36752462387085, "tpot_ms": 2151.8480437142507, "request_s": 52.43434143066406, "read_gib": 54.2021484375}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 391, "new_tok": 8, "ttft_s": 34.09492468833923, "tpot_ms": 2646.517378943307, "request_s": 52.623629093170166, "read_gib": 53.9208984375}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 434, "new_tok": 8, "ttft_s": 34.79356026649475, "tpot_ms": 2749.961546489171, "request_s": 54.04757285118103, "read_gib": 54.966796875}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 386, "new_tok": 8, "ttft_s": 34.54042077064514, "tpot_ms": 2725.4094736916677, "request_s": 53.621134757995605, "read_gib": 54.6767578125}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 425, "new_tok": 8, "ttft_s": 34.51966857910156, "tpot_ms": 1951.1218411581856, "request_s": 48.1803662776947, "read_gib": 49.2978515625}
+REQ {"name": "mmlu_machine_learning_8", "prompt_tok": 636, "new_tok": 8, "ttft_s": 40.44477891921997, "tpot_ms": 2297.635998044695, "request_s": 56.53105187416077, "read_gib": 58.6845703125}
+REQ {"name": "mmlu_machine_learning_9", "prompt_tok": 442, "new_tok": 8, "ttft_s": 37.216559410095215, "tpot_ms": 2265.9312316349574, "request_s": 53.081440687179565, "read_gib": 54.28125}
+REQ {"name": "mmlu_machine_learning_10", "prompt_tok": 433, "new_tok": 8, "ttft_s": 36.687997341156006, "tpot_ms": 2274.785109928676, "request_s": 52.615251541137695, "read_gib": 54.10546875}
+REQ {"name": "mmlu_machine_learning_11", "prompt_tok": 444, "new_tok": 8, "ttft_s": 38.03928017616272, "tpot_ms": 2304.0362766810827, "request_s": 54.17045617103577, "read_gib": 55.3359375}
+REQ {"name": "mmlu_professional_medicine_12", "prompt_tok": 862, "new_tok": 8, "ttft_s": 37.36089277267456, "tpot_ms": 2303.295850753784, "request_s": 53.4873423576355, "read_gib": 54.2548828125}
+REQ {"name": "mmlu_professional_medicine_13", "prompt_tok": 1127, "new_tok": 8, "ttft_s": 38.1204993724823, "tpot_ms": 2328.957693917411, "request_s": 54.42669224739075, "read_gib": 54.826171875}
+REQ {"name": "mmlu_professional_medicine_14", "prompt_tok": 964, "new_tok": 8, "ttft_s": 37.671547651290894, "tpot_ms": 2286.346367427281, "request_s": 53.679314374923706, "read_gib": 54.1669921875}
+REQ {"name": "mmlu_professional_medicine_15", "prompt_tok": 958, "new_tok": 8, "ttft_s": 37.41405415534973, "tpot_ms": 2317.708935056414, "request_s": 53.64093780517578, "read_gib": 54.6416015625}
+REQ {"name": "mmlu_computer_security_16", "prompt_tok": 392, "new_tok": 8, "ttft_s": 37.20523238182068, "tpot_ms": 2360.4121889386856, "request_s": 53.731889486312866, "read_gib": 55.3447265625}
+REQ {"name": "mmlu_computer_security_17", "prompt_tok": 421, "new_tok": 8, "ttft_s": 37.37542772293091, "tpot_ms": 2284.6764155796595, "request_s": 53.371060848236084, "read_gib": 54.8349609375}
+REQ {"name": "mmlu_computer_security_18", "prompt_tok": 564, "new_tok": 8, "ttft_s": 41.21147155761719, "tpot_ms": 2267.9172924586705, "request_s": 57.09057378768921, "read_gib": 58.8603515625}
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 35: 2427004 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 36: iately: command not found
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 56: syntax error near unexpected token `done'
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 56: `done'
+cgroup_peak_gib=20.99

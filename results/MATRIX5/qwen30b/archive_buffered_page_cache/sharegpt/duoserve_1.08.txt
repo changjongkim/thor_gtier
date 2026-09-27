@@ -1,0 +1,13 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "sg_jKqNBVf_0_t2", "prompt_tok": 1059, "new_tok": 32, "ttft_s": 72.13795804977417, "tpot_ms": 270.3924717441682, "request_s": 80.5206127166748, "read_gib": 46.9951171875}
+REQ {"name": "sg_jKqNBVf_0_t3", "prompt_tok": 1237, "new_tok": 32, "ttft_s": 2.740018606185913, "tpot_ms": 244.6236072048064, "request_s": 10.323784112930298, "read_gib": 1.5029296875}
+REQ {"name": "sg_cSz8Ik6_0_t2", "prompt_tok": 67, "new_tok": 32, "ttft_s": 2.297977924346924, "tpot_ms": 212.64950690730925, "request_s": 8.890603065490723, "read_gib": 1.0546875}
+REQ {"name": "sg_cSz8Ik6_0_t3", "prompt_tok": 391, "new_tok": 32, "ttft_s": 2.4691967964172363, "tpot_ms": 203.758139764109, "request_s": 8.786222219467163, "read_gib": 0.755859375}
+REQ {"name": "sg_zcq8Evp_0_t2", "prompt_tok": 164, "new_tok": 32, "ttft_s": 2.1424167156219482, "tpot_ms": 196.46260815282022, "request_s": 8.233262538909912, "read_gib": 0.615234375}
+REQ {"name": "sg_zcq8Evp_0_t3", "prompt_tok": 223, "new_tok": 32, "ttft_s": 1.2599399089813232, "tpot_ms": 196.46583834002095, "request_s": 7.35086464881897, "read_gib": 0.0615234375}
+CAPTHRASH kill: unreclaimable 72102 MiB >= 97% of the 72714 MiB cap for 120 s
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 53: 2589391 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=117.452
+cgroup_cpu_s=436.8 cgroup_user_s=60.6 cgroup_sys_s=376.2
+cgroup_peak_gib=71.01
+NORUN budget=61.56 reason=oom-under-cap

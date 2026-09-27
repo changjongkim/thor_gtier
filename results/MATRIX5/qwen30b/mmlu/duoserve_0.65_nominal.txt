@@ -1,0 +1,7 @@
+scrub: 19 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 58: 3425583 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=38.745
+cgroup_cpu_s=68.1 cgroup_user_s=18.7 cgroup_sys_s=49.4
+cgroup_peak_gib=45.04
+NORUN budget=37.05 reason=oom-under-cap

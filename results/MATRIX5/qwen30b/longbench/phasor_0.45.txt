@@ -1,0 +1,26 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "lb_gov_report_0", "prompt_tok": 6570, "new_tok": 32, "ttft_s": 15.060149669647217, "tpot_ms": 224.9770164489746, "request_s": 22.034906148910522, "hits": 10986.0, "misses": 5763.0, "read_gib": 50.6513671875}
+REQ {"name": "lb_multi_news_1", "prompt_tok": 5205, "new_tok": 32, "ttft_s": 7.301663875579834, "tpot_ms": 188.23603660829605, "request_s": 13.137422561645508, "hits": 14115.0, "misses": 2887.0, "read_gib": 25.3740234375}
+REQ {"name": "lb_passage_count_2", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.614530801773071, "tpot_ms": 255.51962083385837, "request_s": 17.536168813705444, "hits": 13650.0, "misses": 3467.0, "read_gib": 30.4716796875}
+REQ {"name": "lb_vcsum_3", "prompt_tok": 5530, "new_tok": 32, "ttft_s": 7.623266220092773, "tpot_ms": 233.48558333612257, "request_s": 14.861864805221558, "hits": 13457.0, "misses": 3119.0, "read_gib": 27.4130859375}
+REQ {"name": "lb_repobench-p_4", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 11.689147233963013, "tpot_ms": 391.60210855545535, "request_s": 23.829373836517334, "hits": 12282.0, "misses": 5361.0, "read_gib": 47.1181640625}
+REQ {"name": "lb_qasper_5", "prompt_tok": 5635, "new_tok": 32, "ttft_s": 9.009411334991455, "tpot_ms": 344.9675652288621, "request_s": 19.70391845703125, "hits": 12775.0, "misses": 4740.0, "read_gib": 41.66015625}
+REQ {"name": "lb_hotpotqa_6", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.86188793182373, "tpot_ms": 213.43574985381093, "request_s": 16.478943586349487, "hits": 13912.0, "misses": 3110.0, "read_gib": 27.333984375}
+REQ {"name": "lb_musique_7", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.759926080703735, "tpot_ms": 247.97584164527157, "request_s": 17.4477059841156, "hits": 13725.0, "misses": 3464.0, "read_gib": 30.4453125}
+REQ {"name": "lb_qmsum_8", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.148656129837036, "tpot_ms": 193.0524149248677, "request_s": 15.133829355239868, "hits": 13979.0, "misses": 2666.0, "read_gib": 23.431640625}
+REQ {"name": "lb_multifieldqa_zh_9", "prompt_tok": 1753, "new_tok": 32, "ttft_s": 5.712162256240845, "tpot_ms": 268.9376800291, "request_s": 14.049726724624634, "hits": 13393.0, "misses": 2942.0, "read_gib": 25.857421875}
+REQ {"name": "lb_multifieldqa_en_10", "prompt_tok": 1327, "new_tok": 32, "ttft_s": 6.468904733657837, "tpot_ms": 281.9128728681995, "request_s": 15.208842039108276, "hits": 12914.0, "misses": 3760.0, "read_gib": 33.046875}
+REQ {"name": "lb_narrativeqa_11", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.74087381362915, "tpot_ms": 193.0653126009049, "request_s": 15.726394176483154, "hits": 13788.0, "misses": 2909.0, "read_gib": 25.5673828125}
+REQ {"name": "lb_passage_retrieval_en_12", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.666027307510376, "tpot_ms": 188.22626913747482, "request_s": 15.501586675643921, "hits": 14191.0, "misses": 2923.0, "read_gib": 25.6904296875}
+REQ {"name": "lb_lsht_13", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 10.369850158691406, "tpot_ms": 200.84500312805176, "request_s": 16.596542358398438, "hits": 13932.0, "misses": 3305.0, "read_gib": 29.0478515625}
+REQ {"name": "lb_trec_14", "prompt_tok": 6153, "new_tok": 32, "ttft_s": 8.748953819274902, "tpot_ms": 229.47030682717602, "request_s": 15.863053560256958, "hits": 13704.0, "misses": 3571.0, "read_gib": 31.3857421875}
+REQ {"name": "lb_passage_retrieval_zh_15", "prompt_tok": 4449, "new_tok": 32, "ttft_s": 7.574943780899048, "tpot_ms": 241.3250400174049, "request_s": 15.056548118591309, "hits": 13705.0, "misses": 3532.0, "read_gib": 31.04296875}
+REQ {"name": "lb_dureader_16", "prompt_tok": 8030, "new_tok": 32, "ttft_s": 10.236669301986694, "tpot_ms": 194.31860216202273, "request_s": 16.261109352111816, "hits": 14080.0, "misses": 3528.0, "read_gib": 31.0078125}
+REQ {"name": "lb_triviaqa_17", "prompt_tok": 4750, "new_tok": 32, "ttft_s": 7.57134747505188, "tpot_ms": 231.45388018700382, "request_s": 14.746952772140503, "hits": 13628.0, "misses": 3462.0, "read_gib": 30.427734375}
+REQ {"name": "lb_lcc_18", "prompt_tok": 1943, "new_tok": 32, "ttft_s": 7.702347040176392, "tpot_ms": 263.3856650321714, "request_s": 15.867910146713257, "hits": 13062.0, "misses": 3959.0, "read_gib": 34.7958984375}
+REQ {"name": "lb_samsum_19", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.982788801193237, "tpot_ms": 203.7875498494794, "request_s": 16.300623655319214, "hits": 13979.0, "misses": 3182.0, "read_gib": 27.966796875}
+REQ {"name": "lb_2wikimqa_20", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 9.033090114593506, "tpot_ms": 176.70850599965743, "request_s": 14.511540651321411, "hits": 14262.0, "misses": 2568.0, "read_gib": 22.5703125}
+RESULT policy=phasor-hf-phasor budget=25.65 requests=21 batch=1 ttft_s=9.1370 tpot_ms=236.509 request_s=16.4693 footprint_gib=31.91 peak_gib=31.94 compute=measured
+cgroup_io_read_gib=655.331
+cgroup_cpu_s=219.0 cgroup_user_s=134.1 cgroup_sys_s=84.9
+cgroup_peak_gib=29.67

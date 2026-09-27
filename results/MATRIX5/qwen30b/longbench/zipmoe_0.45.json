@@ -1,0 +1,182 @@
+{
+ "system": "ZipMoE",
+ "budget_gib": 23.23,
+ "load_s": 7.199246168136597,
+ "footprint_gib": 67.57183074951172,
+ "requests": 21,
+ "ttft_s": 26.306322801680793,
+ "tpot_ms": 1238.9218528882334,
+ "request_s": 64.71389987355187,
+ "rows": [
+  {
+   "name": "lb_gov_report_0",
+   "prompt_tok": 6570,
+   "new_tok": 32,
+   "ttft_s": 33.140549659729004,
+   "tpot_ms": 1017.8928605971797,
+   "request_s": 64.69628620147705
+  },
+  {
+   "name": "lb_multi_news_1",
+   "prompt_tok": 5205,
+   "new_tok": 32,
+   "ttft_s": 20.411062240600586,
+   "tpot_ms": 1173.4787110359437,
+   "request_s": 56.78994607925415
+  },
+  {
+   "name": "lb_passage_count_2",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 31.660301446914673,
+   "tpot_ms": 1219.1739774519397,
+   "request_s": 69.45563411712646
+  },
+  {
+   "name": "lb_vcsum_3",
+   "prompt_tok": 5530,
+   "new_tok": 32,
+   "ttft_s": 19.69276523590088,
+   "tpot_ms": 1309.7261305778259,
+   "request_s": 60.295284271240234
+  },
+  {
+   "name": "lb_repobench-p_4",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 34.02639651298523,
+   "tpot_ms": 1660.3904616448185,
+   "request_s": 85.49952411651611
+  },
+  {
+   "name": "lb_qasper_5",
+   "prompt_tok": 5635,
+   "new_tok": 32,
+   "ttft_s": 24.13442587852478,
+   "tpot_ms": 1225.3707762687438,
+   "request_s": 62.12196922302246
+  },
+  {
+   "name": "lb_hotpotqa_6",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 30.93836998939514,
+   "tpot_ms": 1101.5378198316018,
+   "request_s": 65.08703088760376
+  },
+  {
+   "name": "lb_musique_7",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 31.890458345413208,
+   "tpot_ms": 1439.210461032006,
+   "request_s": 76.50697350502014
+  },
+  {
+   "name": "lb_qmsum_8",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 30.178992748260498,
+   "tpot_ms": 1126.4161294506443,
+   "request_s": 65.09891676902771
+  },
+  {
+   "name": "lb_multifieldqa_zh_9",
+   "prompt_tok": 1753,
+   "new_tok": 32,
+   "ttft_s": 11.714857816696167,
+   "tpot_ms": 1342.4353907185216,
+   "request_s": 53.33138680458069
+  },
+  {
+   "name": "lb_multifieldqa_en_10",
+   "prompt_tok": 1327,
+   "new_tok": 32,
+   "ttft_s": 13.107850074768066,
+   "tpot_ms": 1270.9999853564846,
+   "request_s": 52.509875774383545
+  },
+  {
+   "name": "lb_narrativeqa_11",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 30.292860746383667,
+   "tpot_ms": 1123.7487562241092,
+   "request_s": 65.13005137443542
+  },
+  {
+   "name": "lb_passage_retrieval_en_12",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 31.286471843719482,
+   "tpot_ms": 1081.7704046926192,
+   "request_s": 64.822345495224
+  },
+  {
+   "name": "lb_lsht_13",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 31.992990493774414,
+   "tpot_ms": 1422.1102960648075,
+   "request_s": 76.07941341400146
+  },
+  {
+   "name": "lb_trec_14",
+   "prompt_tok": 6153,
+   "new_tok": 32,
+   "ttft_s": 25.179739236831665,
+   "tpot_ms": 1128.3301384218278,
+   "request_s": 60.15892720222473
+  },
+  {
+   "name": "lb_passage_retrieval_zh_15",
+   "prompt_tok": 4449,
+   "new_tok": 32,
+   "ttft_s": 20.434340000152588,
+   "tpot_ms": 1339.5595627446328,
+   "request_s": 61.96169710159302
+  },
+  {
+   "name": "lb_dureader_16",
+   "prompt_tok": 8030,
+   "new_tok": 32,
+   "ttft_s": 33.89164066314697,
+   "tpot_ms": 1433.2638479048205,
+   "request_s": 78.32375931739807
+  },
+  {
+   "name": "lb_triviaqa_17",
+   "prompt_tok": 4750,
+   "new_tok": 32,
+   "ttft_s": 19.820449352264404,
+   "tpot_ms": 1088.5685413114486,
+   "request_s": 53.567076444625854
+  },
+  {
+   "name": "lb_lcc_18",
+   "prompt_tok": 1943,
+   "new_tok": 32,
+   "ttft_s": 15.743077516555786,
+   "tpot_ms": 1260.7428027737526,
+   "request_s": 54.82707238197327
+  },
+  {
+   "name": "lb_samsum_19",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 32.07341933250427,
+   "tpot_ms": 1225.4917852340207,
+   "request_s": 70.06463027000427
+  },
+  {
+   "name": "lb_2wikimqa_20",
+   "prompt_tok": 8192,
+   "new_tok": 32,
+   "ttft_s": 30.821759700775146,
+   "tpot_ms": 1027.1400713151502,
+   "request_s": 62.66409659385681
+  }
+ ],
+ "peak_gib": 68.60237121582031,
+ "batch": 1
+}

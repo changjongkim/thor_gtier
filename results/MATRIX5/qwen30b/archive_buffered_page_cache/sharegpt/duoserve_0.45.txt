@@ -1,0 +1,29 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "sg_jKqNBVf_0_t2", "prompt_tok": 1059, "new_tok": 32, "ttft_s": 50.49220323562622, "tpot_ms": 702.067252128355, "request_s": 72.2568588256836, "read_gib": 65.671875}
+REQ {"name": "sg_jKqNBVf_0_t3", "prompt_tok": 1237, "new_tok": 32, "ttft_s": 30.175891160964966, "tpot_ms": 1102.3629173155753, "request_s": 64.34981489181519, "read_gib": 76.5791015625}
+REQ {"name": "sg_cSz8Ik6_0_t2", "prompt_tok": 67, "new_tok": 32, "ttft_s": 17.17473840713501, "tpot_ms": 784.9962711334229, "request_s": 41.51026749610901, "read_gib": 45.6943359375}
+REQ {"name": "sg_cSz8Ik6_0_t3", "prompt_tok": 391, "new_tok": 32, "ttft_s": 24.1274995803833, "tpot_ms": 1019.4885807652627, "request_s": 55.73235750198364, "read_gib": 64.5029296875}
+REQ {"name": "sg_zcq8Evp_0_t2", "prompt_tok": 164, "new_tok": 32, "ttft_s": 20.25571060180664, "tpot_ms": 831.4742272899996, "request_s": 46.0320611000061, "read_gib": 52.2509765625}
+REQ {"name": "sg_zcq8Evp_0_t3", "prompt_tok": 223, "new_tok": 32, "ttft_s": 20.51524543762207, "tpot_ms": 731.3942601603846, "request_s": 43.189093351364136, "read_gib": 48.076171875}
+REQ {"name": "sg_5cVpTKS_0_t2", "prompt_tok": 246, "new_tok": 32, "ttft_s": 23.481849670410156, "tpot_ms": 1130.183704437748, "request_s": 58.518211126327515, "read_gib": 68.1328125}
+REQ {"name": "sg_V4wpuJu_0_t2", "prompt_tok": 614, "new_tok": 32, "ttft_s": 30.9438533782959, "tpot_ms": 909.3768212103075, "request_s": 59.13521146774292, "read_gib": 70.3212890625}
+REQ {"name": "sg_V4wpuJu_0_t3", "prompt_tok": 1240, "new_tok": 32, "ttft_s": 33.29493522644043, "tpot_ms": 1230.979404141826, "request_s": 71.45602130889893, "read_gib": 85.0869140625}
+REQ {"name": "sg_k7ymHcr_21_t2", "prompt_tok": 1012, "new_tok": 32, "ttft_s": 32.50116419792175, "tpot_ms": 1216.647509605654, "request_s": 70.21792387962341, "read_gib": 83.56640625}
+REQ {"name": "sg_k7ymHcr_21_t3", "prompt_tok": 1797, "new_tok": 32, "ttft_s": 33.484861612319946, "tpot_ms": 1223.9531778520154, "request_s": 71.42803287506104, "read_gib": 84.287109375}
+REQ {"name": "sg_MuZDUct_0_t2", "prompt_tok": 109, "new_tok": 32, "ttft_s": 18.75399923324585, "tpot_ms": 969.240004016507, "request_s": 48.80114555358887, "read_gib": 54.31640625}
+REQ {"name": "sg_MuZDUct_0_t3", "prompt_tok": 377, "new_tok": 32, "ttft_s": 23.04863929748535, "tpot_ms": 1081.8106666687997, "request_s": 56.585399866104126, "read_gib": 64.16015625}
+REQ {"name": "sg_CcQ9JCK_25_t2", "prompt_tok": 823, "new_tok": 32, "ttft_s": 26.477760314941406, "tpot_ms": 808.305601919851, "request_s": 51.535826444625854, "read_gib": 57.7529296875}
+REQ {"name": "sg_9EM9xb8_25_t2", "prompt_tok": 379, "new_tok": 32, "ttft_s": 24.558409690856934, "tpot_ms": 788.3582422810216, "request_s": 48.99820017814636, "read_gib": 54.6591796875}
+REQ {"name": "sg_9EM9xb8_25_t3", "prompt_tok": 1853, "new_tok": 32, "ttft_s": 29.288763999938965, "tpot_ms": 776.0966208673292, "request_s": 53.3484673500061, "read_gib": 60.4423828125}
+REQ {"name": "sg_f9XBWSi_15_t2", "prompt_tok": 442, "new_tok": 32, "ttft_s": 25.86350989341736, "tpot_ms": 905.9123992919922, "request_s": 53.94759225845337, "read_gib": 61.03125}
+REQ {"name": "sg_f9XBWSi_15_t3", "prompt_tok": 759, "new_tok": 32, "ttft_s": 27.682379722595215, "tpot_ms": 840.5803941911266, "request_s": 53.74106192588806, "read_gib": 61.189453125}
+REQ {"name": "sg_3O3k7Ni_0_t2", "prompt_tok": 260, "new_tok": 32, "ttft_s": 22.16819667816162, "tpot_ms": 1121.5253414646272, "request_s": 56.9361252784729, "read_gib": 63.5625}
+REQ {"name": "sg_3O3k7Ni_0_t3", "prompt_tok": 798, "new_tok": 32, "ttft_s": 28.087627172470093, "tpot_ms": 846.9778491604712, "request_s": 54.34459829330444, "read_gib": 61.2685546875}
+REQ {"name": "sg_zZRzzTy_16_t2", "prompt_tok": 199, "new_tok": 32, "ttft_s": 20.095410585403442, "tpot_ms": 822.8236552207701, "request_s": 45.60358715057373, "read_gib": 49.18359375}
+REQ {"name": "sg_zZRzzTy_16_t3", "prompt_tok": 393, "new_tok": 32, "ttft_s": 22.851303339004517, "tpot_ms": 1035.0421167189074, "request_s": 54.93819308280945, "read_gib": 60.609375}
+REQ {"name": "sg_RtCgJK2_47_t2", "prompt_tok": 415, "new_tok": 32, "ttft_s": 24.828690767288208, "tpot_ms": 898.0161374615084, "request_s": 52.66783356666565, "read_gib": 58.8251953125}
+REQ {"name": "sg_RtCgJK2_47_t3", "prompt_tok": 684, "new_tok": 32, "ttft_s": 26.553296089172363, "tpot_ms": 1031.7025953723537, "request_s": 58.53672766685486, "read_gib": 65.9091796875}
+RESULT policy=duoserve budget=19.68 requests=24 ttft_s=26.5294 tpot_ms=950.388 request_s=55.9921 footprint_gib=32.00 peak_gib=32.02 compute=measured
+cgroup_io_read_gib=1582.126
+cgroup_cpu_s=999.0 cgroup_user_s=282.1 cgroup_sys_s=717.0
+cgroup_peak_gib=33.48

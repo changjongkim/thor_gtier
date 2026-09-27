@@ -1,0 +1,230 @@
+{
+ "system": "duoserve",
+ "budget_gib": 43.09,
+ "load_s": 16.010157585144043,
+ "footprint_gib": 63.86853790283203,
+ "requests": 24,
+ "ttft_s": 12.264671206474304,
+ "tpot_ms": 247.00319057419188,
+ "request_s": 13.994250237941742,
+ "rows": [
+  {
+   "name": "mmlu_professional_psychology_0",
+   "prompt_tok": 601,
+   "new_tok": 8,
+   "ttft_s": 66.11693835258484,
+   "tpot_ms": 261.7781843457903,
+   "request_s": 67.94995284080505,
+   "read_gib": 43.3564453125
+  },
+  {
+   "name": "mmlu_professional_psychology_1",
+   "prompt_tok": 589,
+   "new_tok": 8,
+   "ttft_s": 19.70378279685974,
+   "tpot_ms": 244.14246422903878,
+   "request_s": 21.413334846496582,
+   "read_gib": 26.5078125
+  },
+  {
+   "name": "mmlu_professional_psychology_2",
+   "prompt_tok": 600,
+   "new_tok": 8,
+   "ttft_s": 19.865357875823975,
+   "tpot_ms": 225.96819060189384,
+   "request_s": 21.44772982597351,
+   "read_gib": 26.6396484375
+  },
+  {
+   "name": "mmlu_professional_psychology_3",
+   "prompt_tok": 637,
+   "new_tok": 8,
+   "ttft_s": 19.8718101978302,
+   "tpot_ms": 227.59389877319336,
+   "request_s": 21.465532064437866,
+   "read_gib": 26.595703125
+  },
+  {
+   "name": "mmlu_abstract_algebra_4",
+   "prompt_tok": 391,
+   "new_tok": 8,
+   "ttft_s": 6.5060789585113525,
+   "tpot_ms": 271.852970123291,
+   "request_s": 8.409658670425415,
+   "read_gib": 7.7080078125
+  },
+  {
+   "name": "mmlu_abstract_algebra_5",
+   "prompt_tok": 434,
+   "new_tok": 8,
+   "ttft_s": 1.9472830295562744,
+   "tpot_ms": 216.3118634905134,
+   "request_s": 3.462017774581909,
+   "read_gib": 0.703125
+  },
+  {
+   "name": "mmlu_abstract_algebra_6",
+   "prompt_tok": 386,
+   "new_tok": 8,
+   "ttft_s": 1.6224989891052246,
+   "tpot_ms": 209.06121390206474,
+   "request_s": 3.086454391479492,
+   "read_gib": 0.4482421875
+  },
+  {
+   "name": "mmlu_abstract_algebra_7",
+   "prompt_tok": 425,
+   "new_tok": 8,
+   "ttft_s": 1.5568137168884277,
+   "tpot_ms": 197.2752298627581,
+   "request_s": 2.938251495361328,
+   "read_gib": 0.3427734375
+  },
+  {
+   "name": "mmlu_machine_learning_8",
+   "prompt_tok": 636,
+   "new_tok": 8,
+   "ttft_s": 14.881709814071655,
+   "tpot_ms": 398.46529279436385,
+   "request_s": 17.67155432701111,
+   "read_gib": 21.0146484375
+  },
+  {
+   "name": "mmlu_machine_learning_9",
+   "prompt_tok": 442,
+   "new_tok": 8,
+   "ttft_s": 19.209054708480835,
+   "tpot_ms": 226.25456537519182,
+   "request_s": 20.793383836746216,
+   "read_gib": 26.015625
+  },
+  {
+   "name": "mmlu_machine_learning_10",
+   "prompt_tok": 433,
+   "new_tok": 8,
+   "ttft_s": 1.8851261138916016,
+   "tpot_ms": 216.4302212851388,
+   "request_s": 3.4007046222686768,
+   "read_gib": 0.66796875
+  },
+  {
+   "name": "mmlu_machine_learning_11",
+   "prompt_tok": 444,
+   "new_tok": 8,
+   "ttft_s": 10.536077499389648,
+   "tpot_ms": 267.5785677773612,
+   "request_s": 12.409690380096436,
+   "read_gib": 13.763671875
+  },
+  {
+   "name": "mmlu_professional_medicine_12",
+   "prompt_tok": 862,
+   "new_tok": 8,
+   "ttft_s": 19.60649299621582,
+   "tpot_ms": 242.19036102294922,
+   "request_s": 21.302380800247192,
+   "read_gib": 26.103515625
+  },
+  {
+   "name": "mmlu_professional_medicine_13",
+   "prompt_tok": 1127,
+   "new_tok": 8,
+   "ttft_s": 2.5220494270324707,
+   "tpot_ms": 214.87631116594588,
+   "request_s": 4.026736497879028,
+   "read_gib": 0.896484375
+  },
+  {
+   "name": "mmlu_professional_medicine_14",
+   "prompt_tok": 964,
+   "new_tok": 8,
+   "ttft_s": 1.8556792736053467,
+   "tpot_ms": 225.68930898393904,
+   "request_s": 3.4360578060150146,
+   "read_gib": 0.421875
+  },
+  {
+   "name": "mmlu_professional_medicine_15",
+   "prompt_tok": 958,
+   "new_tok": 8,
+   "ttft_s": 2.1720449924468994,
+   "tpot_ms": 225.67146165030343,
+   "request_s": 3.7523140907287598,
+   "read_gib": 0.5185546875
+  },
+  {
+   "name": "mmlu_computer_security_16",
+   "prompt_tok": 392,
+   "new_tok": 8,
+   "ttft_s": 17.19183921813965,
+   "tpot_ms": 252.50169209071566,
+   "request_s": 18.959897756576538,
+   "read_gib": 23.16796875
+  },
+  {
+   "name": "mmlu_computer_security_17",
+   "prompt_tok": 421,
+   "new_tok": 8,
+   "ttft_s": 2.1320793628692627,
+   "tpot_ms": 216.9309343610491,
+   "request_s": 3.6511971950531006,
+   "read_gib": 0.9755859375
+  },
+  {
+   "name": "mmlu_computer_security_18",
+   "prompt_tok": 564,
+   "new_tok": 8,
+   "ttft_s": 22.44894313812256,
+   "tpot_ms": 400.834390095302,
+   "request_s": 25.255395650863647,
+   "read_gib": 32.8447265625
+  },
+  {
+   "name": "mmlu_computer_security_19",
+   "prompt_tok": 492,
+   "new_tok": 8,
+   "ttft_s": 23.00202989578247,
+   "tpot_ms": 383.2709789276123,
+   "request_s": 25.68555212020874,
+   "read_gib": 33.8466796875
+  },
+  {
+   "name": "mmlu_high_school_psychology_20",
+   "prompt_tok": 334,
+   "new_tok": 8,
+   "ttft_s": 14.052524328231812,
+   "tpot_ms": 213.2477079119001,
+   "request_s": 15.545779943466187,
+   "read_gib": 18.580078125
+  },
+  {
+   "name": "mmlu_high_school_psychology_21",
+   "prompt_tok": 380,
+   "new_tok": 8,
+   "ttft_s": 1.840991735458374,
+   "tpot_ms": 197.08146367754256,
+   "request_s": 3.2210538387298584,
+   "read_gib": 0.5625
+  },
+  {
+   "name": "mmlu_high_school_psychology_22",
+   "prompt_tok": 379,
+   "new_tok": 8,
+   "ttft_s": 2.044081687927246,
+   "tpot_ms": 201.0613509586879,
+   "request_s": 3.4520249366760254,
+   "read_gib": 0.80859375
+  },
+  {
+   "name": "mmlu_high_school_psychology_23",
+   "prompt_tok": 433,
+   "new_tok": 8,
+   "ttft_s": 1.7808208465576172,
+   "tpot_ms": 192.0079503740583,
+   "request_s": 3.125349998474121,
+   "read_gib": 0.421875
+  }
+ ],
+ "peak_gib": 64.97938537597656,
+ "batch": 1
+}

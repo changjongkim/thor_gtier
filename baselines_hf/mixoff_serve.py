@@ -65,7 +65,8 @@ for w in work:
     ttft = (gen[0] - ts) if gen else te - ts
     tpot = ((gen[-1] - gen[0]) / (len(gen) - 1)) if len(gen) > 1 else 0.0
     rows.append({"name": w["name"], "prompt_tok": int(ids.shape[1]), "new_tok": int(out.shape[1] - ids.shape[1]),
-                 "ttft_s": ttft, "tpot_ms": tpot * 1e3, "request_s": te - ts})
+                 "ttft_s": ttft, "tpot_ms": tpot * 1e3, "request_s": te - ts,
+                 "out_ids": out[0, ids.shape[1]:].tolist()})   # quality check against bf16 (it is 2-bit)
     print("REQ " + json.dumps(rows[-1]), flush=True)
 n = len(rows)
 res = {"system": "mixtral-offloading", "budget_gib": a.budget_gib, "load_s": load_s, "requests": n,

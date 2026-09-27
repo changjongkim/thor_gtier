@@ -79,7 +79,8 @@ for w in work:
                  "new_tok": int(out.shape[1] - ids.shape[1]), "ttft_s": ttft,
                  "tpot_ms": tpot * 1e3, "request_s": te - ts,
                  "hits": s1[0] - s0[0], "misses": s1[1] - s0[1],
-                 "read_gib": (s1[2] - s0[2]) / 2**30})
+                 "read_gib": (s1[2] - s0[2]) / 2**30,
+                 "out_ids": out[0, ids.shape[1]:].tolist()})   # generated tokens (equal to stock transformers)
     print("REQ " + json.dumps(rows[-1]), flush=True)
 n = len(rows)
 res = {"system": "PHASOR-HF", "policy": a.policy, "budget_gib": a.budget_gib,

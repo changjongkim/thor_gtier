@@ -125,10 +125,12 @@ E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 
 | system | 25% (21.8 GiB) | 45% (39.1 GiB) | 65% (56.6 GiB) | 108% (94.0 GiB) |
 |---|---|---|---|---|
-| PHASOR | 40.53 / 14.71 / 3688 / 26.8 | - | - | - |
-| ZipMoE | 58.53 / 20.86 / 5382 / 26.7 [1.44x] | - | - | - |
-| FlashMoE* | 97.51 / 36.94 / 8653 / 20.7 [2.41x] | - | - | - |
-| DuoServe* | 184.25 / 49.53 / 19247 / 25.8 [4.55x] | - | - | - |
+| PHASOR | 40.53 / 14.71 / 3688 / 26.8 | 27.91 / 11.51 / 2344 / 44.4 | - | - |
+| ZipMoE | 58.53 / 20.86 / 5382 / 26.7 [1.44x] | 40.64 / 14.20 / 3778 / 45.6 [1.46x] | - | - |
+| FlashMoE* | 97.51 / 36.94 / 8653 / 20.7 [2.41x] | 60.41 / 26.84 / 4795 / 41.7 [2.16x] | - | - |
+| DuoServe* | 188.93 / 50.90 / 19719 / 25.0 [4.66x] | 138.84 / 42.18 / 13809 / 43.2 [4.97x] | - | - |
+| Fiddler | cannot run (oom-under-cap) | - | - | - |
+| Mixtral-offloading (2-bit) | 7.65 / 5.10 / 364 / 22.7 [0.19x] | - | - | - |
 
 Reference: each baseline at its own setting for the nominal budget (not equal memory):
 

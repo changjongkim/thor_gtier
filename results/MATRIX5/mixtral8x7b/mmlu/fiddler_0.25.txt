@@ -1,0 +1,12 @@
+scrub: 22 files
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+Loading checkpoint shards:   0%|          | 0/19 [00:00<?, ?it/s]Loading checkpoint shards:   5%|▌         | 1/19 [00:01<00:32,  1.78s/it]Loading checkpoint shards:  11%|█         | 2/19 [00:03<00:30,  1.78s/it]Loading checkpoint shards:  16%|█▌        | 3/19 [00:05<00:28,  1.78s/it]Loading checkpoint shards:  21%|██        | 4/19 [00:07<00:28,  1.87s/it]Loading checkpoint shards:  26%|██▋       | 5/19 [00:10<00:31,  2.23s/it]/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 58: 4053082 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=38.271
+cgroup_cpu_s=860.9 cgroup_user_s=12.0 cgroup_sys_s=848.9
+cgroup_peak_gib=28.37
+NORUN budget=21.75 reason=oom-under-cap

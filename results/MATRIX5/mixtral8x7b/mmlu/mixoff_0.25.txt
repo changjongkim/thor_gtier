@@ -1,0 +1,41 @@
+scrub: 22 files
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/transformers/utils/generic.py:441: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/transformers/utils/generic.py:309: FutureWarning: `torch.utils._pytree._register_pytree_node` is deprecated. Please use `torch.utils._pytree.register_pytree_node` instead.
+  _torch_pytree._register_pytree_node(
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/home/thor/kcj/envs/oldhf/lib/python3.12/site-packages/torch/utils/_device.py:122: UserWarning: Initializing zero-element tensors is a no-op
+  return func(*args, **kwargs)
+hqq_aten package not installed. HQQBackend.ATEN backend will not work unless you install the hqq_aten lib in hqq/kernels.
+Loading experts:   0%|          | 0/32 [00:00<?, ?it/s]Loading experts:   3%|▎         | 1/32 [00:00<00:11,  2.64it/s]Loading experts:   6%|▋         | 2/32 [00:00<00:11,  2.51it/s]Loading experts:   9%|▉         | 3/32 [00:01<00:11,  2.45it/s]Loading experts:  12%|█▎        | 4/32 [00:01<00:11,  2.42it/s]Loading experts:  16%|█▌        | 5/32 [00:02<00:13,  2.07it/s]Loading experts:  19%|█▉        | 6/32 [00:02<00:12,  2.05it/s]Loading experts:  22%|██▏       | 7/32 [00:03<00:13,  1.92it/s]Loading experts:  25%|██▌       | 8/32 [00:03<00:13,  1.82it/s]Loading experts:  28%|██▊       | 9/32 [00:04<00:11,  2.02it/s]Loading experts:  31%|███▏      | 10/32 [00:04<00:10,  2.14it/s]Loading experts:  34%|███▍      | 11/32 [00:05<00:09,  2.24it/s]Loading experts:  38%|███▊      | 12/32 [00:05<00:08,  2.31it/s]Loading experts:  41%|████      | 13/32 [00:05<00:08,  2.34it/s]Loading experts:  44%|████▍     | 14/32 [00:06<00:07,  2.29it/s]Loading experts:  47%|████▋     | 15/32 [00:06<00:08,  2.12it/s]Loading experts:  50%|█████     | 16/32 [00:07<00:08,  1.86it/s]Loading experts:  53%|█████▎    | 17/32 [00:08<00:07,  1.97it/s]Loading experts:  56%|█████▋    | 18/32 [00:08<00:06,  2.14it/s]Loading experts:  59%|█████▉    | 19/32 [00:08<00:05,  2.25it/s]Loading experts:  62%|██████▎   | 20/32 [00:09<00:05,  2.33it/s]Loading experts:  66%|██████▌   | 21/32 [00:09<00:04,  2.38it/s]Loading experts:  69%|██████▉   | 22/32 [00:10<00:04,  2.35it/s]Loading experts:  72%|███████▏  | 23/32 [00:10<00:04,  2.24it/s]Loading experts:  75%|███████▌  | 24/32 [00:11<00:03,  2.06it/s]Loading experts:  78%|███████▊  | 25/32 [00:11<00:03,  2.18it/s]Loading experts:  81%|████████▏ | 26/32 [00:11<00:02,  2.30it/s]Loading experts:  84%|████████▍ | 27/32 [00:12<00:02,  2.35it/s]Loading experts:  88%|████████▊ | 28/32 [00:12<00:01,  2.37it/s]Loading experts:  91%|█████████ | 29/32 [00:13<00:01,  2.40it/s]Loading experts:  94%|█████████▍| 30/32 [00:13<00:00,  2.35it/s]Loading experts:  97%|█████████▋| 31/32 [00:14<00:00,  2.17it/s]Loading experts: 100%|██████████| 32/32 [00:14<00:00,  2.02it/s]Loading experts: 100%|██████████| 32/32 [00:14<00:00,  2.18it/s]
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 6.383123397827148, "tpot_ms": 371.08002390180314, "request_s": 8.981582403182983}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 682, "new_tok": 8, "ttft_s": 5.42176079750061, "tpot_ms": 351.9970348903111, "request_s": 7.886594295501709}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 690, "new_tok": 8, "ttft_s": 5.480344533920288, "tpot_ms": 358.98477690560475, "request_s": 7.994156360626221}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 740, "new_tok": 8, "ttft_s": 5.841226577758789, "tpot_ms": 359.53824860709057, "request_s": 8.358884334564209}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 426, "new_tok": 8, "ttft_s": 3.7109384536743164, "tpot_ms": 370.112453188215, "request_s": 6.302608251571655}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 468, "new_tok": 8, "ttft_s": 3.9747884273529053, "tpot_ms": 362.4645301273891, "request_s": 6.512899160385132}
+REQ {"name": "mmlu_abstract_algebra_6", "prompt_tok": 421, "new_tok": 8, "ttft_s": 3.633640766143799, "tpot_ms": 369.0062250409807, "request_s": 6.217609882354736}
+REQ {"name": "mmlu_abstract_algebra_7", "prompt_tok": 463, "new_tok": 8, "ttft_s": 3.9495203495025635, "tpot_ms": 368.8488687787737, "request_s": 6.532373905181885}
+REQ {"name": "mmlu_machine_learning_8", "prompt_tok": 706, "new_tok": 8, "ttft_s": 5.592463731765747, "tpot_ms": 369.0181459699358, "request_s": 8.176498651504517}
+REQ {"name": "mmlu_machine_learning_9", "prompt_tok": 500, "new_tok": 8, "ttft_s": 4.203080415725708, "tpot_ms": 368.26648030962264, "request_s": 6.781883001327515}
+REQ {"name": "mmlu_machine_learning_10", "prompt_tok": 499, "new_tok": 8, "ttft_s": 4.2132697105407715, "tpot_ms": 369.37410490853443, "request_s": 6.799893140792847}
+REQ {"name": "mmlu_machine_learning_11", "prompt_tok": 508, "new_tok": 8, "ttft_s": 4.246365547180176, "tpot_ms": 368.5750280107771, "request_s": 6.827282905578613}
+REQ {"name": "mmlu_professional_medicine_12", "prompt_tok": 968, "new_tok": 8, "ttft_s": 7.138531684875488, "tpot_ms": 353.851386478969, "request_s": 9.616522789001465}
+REQ {"name": "mmlu_professional_medicine_13", "prompt_tok": 1271, "new_tok": 8, "ttft_s": 9.18017578125, "tpot_ms": 361.79494857788086, "request_s": 11.713612079620361}
+REQ {"name": "mmlu_professional_medicine_14", "prompt_tok": 1092, "new_tok": 8, "ttft_s": 7.98177170753479, "tpot_ms": 354.0875571114676, "request_s": 10.461224555969238}
+REQ {"name": "mmlu_professional_medicine_15", "prompt_tok": 1079, "new_tok": 8, "ttft_s": 7.894688844680786, "tpot_ms": 354.71510887145996, "request_s": 10.378545045852661}
+REQ {"name": "mmlu_computer_security_16", "prompt_tok": 451, "new_tok": 8, "ttft_s": 3.855318069458008, "tpot_ms": 367.8369181496756, "request_s": 6.43108606338501}
+REQ {"name": "mmlu_computer_security_17", "prompt_tok": 483, "new_tok": 8, "ttft_s": 4.069867372512817, "tpot_ms": 357.4470111301967, "request_s": 6.572935104370117}
+REQ {"name": "mmlu_computer_security_18", "prompt_tok": 671, "new_tok": 8, "ttft_s": 5.370222806930542, "tpot_ms": 364.4303594316755, "request_s": 7.922173976898193}
+REQ {"name": "mmlu_computer_security_19", "prompt_tok": 578, "new_tok": 8, "ttft_s": 4.770828485488892, "tpot_ms": 363.6197362627302, "request_s": 7.317018747329712}
+REQ {"name": "mmlu_high_school_psychology_20", "prompt_tok": 381, "new_tok": 8, "ttft_s": 3.414102077484131, "tpot_ms": 372.46383939470564, "request_s": 6.02229642868042}
+REQ {"name": "mmlu_high_school_psychology_21", "prompt_tok": 433, "new_tok": 8, "ttft_s": 3.8364977836608887, "tpot_ms": 369.3774768284389, "request_s": 6.4230592250823975}
+REQ {"name": "mmlu_high_school_psychology_22", "prompt_tok": 432, "new_tok": 8, "ttft_s": 4.193863391876221, "tpot_ms": 360.3731564113072, "request_s": 6.717298269271851}
+REQ {"name": "mmlu_high_school_psychology_23", "prompt_tok": 492, "new_tok": 8, "ttft_s": 4.152333498001099, "tpot_ms": 357.1030752999442, "request_s": 6.652953863143921}
+RESULT policy=mixtral-offloading budget=21.75 requests=24 ttft_s=5.1045 tpot_ms=363.515 request_s=7.6500 peak_gib=22.72 compute=measured
+cgroup_io_read_gib=18.451
+cgroup_cpu_s=87.2 cgroup_user_s=69.9 cgroup_sys_s=17.3
+cgroup_peak_gib=28.37

@@ -1,0 +1,1 @@
+NORUN budget=93.96 reason=host-safety-ceiling (needs ~105 GiB cap + 12 GiB margin > 104.4 GiB ceiling of a 122.8 GiB host; the whole bf16 model resident leaves the OS <20 GiB. memcal's 2-prompt probes at this budget: PHASOR 99.96, ZipMoE 99.40, FlashMoE* 90.11, DuoServe* 102.21 GiB peak)

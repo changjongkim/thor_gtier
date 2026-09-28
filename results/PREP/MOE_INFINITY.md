@@ -1,5 +1,12 @@
 # MoE-Infinity on the unified-memory Thor: cannot run within any evaluated budget
 
+Version note (09-28): the result below is for its current release (96695c9, 2026-09-23). Since c098c15
+(2026-02-16, "Upstream (#72)") it copies every expert into its host pool at load. Its last release with an
+SSD tier, 48bb3bc (2025-02-13), kept experts in the offload store and moved them SSD -> host pool -> GPU on
+demand -- the mode ZipMoE (ICML'26) compared against. That release supports Mixtral but not Qwen3; stage 12
+(`scripts/stage12_moeinf_legacy.sh`) runs it in the Mixtral MMLU generality check, and its outcome is
+appended below.
+
 - Code: its release (`/home/thor/kcj/MoE-Infinity`, t26 venv), run unmodified through `scripts/sota_serve.py`.
 - Design: at load it copies **every expert** from its offload store into a host memory pool
   (`core/model/model_topology.cpp:683`, `kHostMemoryPool->AllocateMemory` per sparse node), reading each

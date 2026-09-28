@@ -1,5 +1,7 @@
 #!/bin/bash
-# Stage 11q: the Qwen3-30B half of stage 11 again (copy of stage11_llamacpp.sh), after stage 12.
+# Stage 11q: stage 11 again (copy of stage11_llamacpp.sh), after stage 12, Mixtral first (its GGUF exists).
+# Its 09-28 22:43 Mixtral smoke met the host guard: llama.cpp's load mode "auto" disables mmap on an iGPU
+# and read the whole model into memory; the runner now passes --load-mode mmap.
 # On 09-28 22:35 the converter's Qwen3 pass met the host guard (> 100 GiB at the start of writing; the
 # Mixtral pass stayed low); here it writes through a temporary file (--use-temp-file), and the disk it
 # needs (GGUF + temporary copy, ~125 GB) is freed first by removing stage 12's MoE-Infinity offload
@@ -30,10 +32,8 @@ eval "$(sed -n '/^cal(){/,/^}/p; /^flag14(){/,/^}/p; /^over14(){/,/^}/p; /^becau
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 11q (llama.cpp, Qwen3-30B) start ==="
 free_gb(){ df -BG --output=avail /home/thor/kcj | tail -1 | tr -dc 0-9; }
-if [ $(free_gb) -lt 130 ]; then
-  rm -rf /home/thor/kcj/offload_tmp/mixtral8x7b_2502; rm -f /home/thor/kcj/models/gguf_bf16/mixtral8x7b_bf16.gguf /home/thor/kcj/models/gguf_bf16/*.part
-  say "stage 11q: removed stage 12's MoE-Infinity offload store and leftover GGUFs for disk ($(free_gb) GB free)"
-fi
+rm -rf /home/thor/kcj/offload_tmp/mixtral8x7b_2502; rm -f /home/thor/kcj/models/gguf_bf16/*.part
+say "stage 11q: removed stage 12's MoE-Infinity offload store (ours, regenerable) for disk ($(free_gb) GB free)"
 mkdir -p $P/llamacpp $G
 export SCRUB_GLOB=""    # its page cache is its cache: bounded by the cgroup, not scrubbed
 note(){ echo "$*" >> $P/LLAMACPP.md; }
@@ -66,11 +66,11 @@ conv(){  # conv <ckpt> <out.gguf>
 }
 LC(){  # LC <gguf> <tokenizer ckpt> <workload> : the runner up to --budget-gib/--out
   echo "$ZPY scripts/llamacpp_serve.py --server $BIN --gguf $1 --tokenizer $2 --workload results/WORKLOADS/$3.json"; }
-for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench" \
-         ; do
+for M in "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 87.0 mmlu" \
+         "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench"; do
   set -- $M; m=$1; ck=$2; gb=$3; WLS=${4//,/ }; O=results/MATRIX5/$m; gg=$G/${m}_bf16.gguf
-  if [ $m = mixtral8x7b ] && [ ! -s $gg ] && [ $(df -BG --output=avail /home/thor/kcj | tail -1 | tr -dc 0-9) -lt 100 ] && [ -f $ST/ok_delete_gguf ]; then
-    rm -f "$G/qwen30b_bf16.gguf"; say "stage 11: removed the Qwen3 bf16 GGUF (done with it; approved) for the Mixtral conversion"
+  if [ $m = qwen30b ] && [ ! -s $gg ] && [ $(free_gb) -lt 130 ] && [ -f $ST/ok_delete_gguf ]; then
+    rm -f "$G/mixtral8x7b_bf16.gguf"; say "stage 11q: removed the Mixtral bf16 GGUF (done with it; approved) for the Qwen3 conversion"
   fi
   conv $ck $gg || { for w in $WLS; do for f in 0.25 0.45 0.65 1.08; do echo "NORUN budget=- reason=gguf-conversion-failed" > $O/$w/llamacpp_$f.txt; done; done; continue; }
   # 1 smoke
@@ -160,7 +160,7 @@ done
 python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
 git add -f $P/LLAMACPP.md $P/llamacpp scripts/stage11_llamacpp.sh scripts/llamacpp_serve.py results/MATRIX5/*/*/llamacpp_* \
   results/MATRIX5/*/memcal/llamacpp_* results/MATRIX5/*/extras/e3/*llamacpp* results/MATRIX5/SUMMARY.md 2>/dev/null
-git commit -q -m "llama.cpp (stock mmap offloading) baseline: Qwen3-30B E1/E2/E3
+git commit -q -m "llama.cpp (stock mmap offloading) baseline: Qwen3-30B E1/E2/E3, Mixtral MMLU
 
 Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>" && timeout 300 git push -q origin HEAD
 say "=== stage 11q done ==="

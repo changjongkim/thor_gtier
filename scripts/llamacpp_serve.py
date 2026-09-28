@@ -76,7 +76,11 @@ tok = AutoTokenizer.from_pretrained(a.tokenizer)
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]
 ctx = a.batch * (a.max_prompt + a.max_new + 64)
-cmd = [a.server, "-m", a.gguf, "--cpu-moe", "-ngl", "999", "-c", str(ctx), "-np", str(a.batch),
+# --load-mode mmap: its "auto" turns mmap off when a device is an iGPU (ggml-cuda: mmap_support =
+# type != IGPU, llama.cpp #28160), and then reads the whole model into anonymous memory -- 87 GiB for
+# Mixtral, which exhausted the pool (09-28 22:43).  The experts stay on the CPU (--cpu-moe), so the GPU
+# never touches the mapped pages; the mapping is what makes the page cache the expert cache.
+cmd = [a.server, "-m", a.gguf, "--load-mode", "mmap", "--cpu-moe", "-ngl", "999", "-c", str(ctx), "-np", str(a.batch),
        "-t", str(a.threads), "--host", "127.0.0.1", "--port", str(a.port)]
 print("SERVER " + " ".join(cmd), flush=True)
 t0 = time.time()

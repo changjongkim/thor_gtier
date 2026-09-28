@@ -1,7 +1,7 @@
 #!/bin/bash
 # Stage 7: MoE-APEX* (ASPLOS'26; reimplemented from the paper, bf16 mode) on
 # Qwen3-30B: self-test, memcal at the four budgets, E1 (three workloads x four
-# budgets).  Same caps,
+# budgets), E3 (batch 4/8 at 45%).  Same caps,
 # scrubbing and run() as stage 5.  Starts after stage 6 and 6b.
 set -u
 R=/home/thor/kcj/thor_gtier; cd "$R"
@@ -39,9 +39,18 @@ for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
   if [ "$kb" = none ]; then echo "NORUN budget=$nb reason=exceeds-phasor-memory-at-every-setting" > $O/$w/apex_$f.txt; continue; fi
   CAP_GIB=$(capfor $nb) run "s5_${m}_${w}_apex_$nb" $kb $O/$w/apex_$f $(APEX $w $kb $O/$w/apex_$f)
 done; done
+# E3: batch 4 and 8 at 45% (MMLU, ShareGPT), E1's equal-memory knob, cap + 8 GiB for batch KV
+b45=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); mkdir -p $O/extras/e3
+kb45=$(python3 -c "import json;v=json.load(open('$O/memcal/apex_$b45.json'))['budget_gib'];print(v if v else 'none')")
+if [ "$kb45" != none ]; then
+  for B in 4 8; do for w in mmlu sharegpt; do
+    o=$O/extras/e3/${w}_apex_b$B
+    CAP_GIB=$(awk -v c=$(capfor $b45) 'BEGIN{printf "%.2f", c+8}') run "s5x_${m}_${w}_apex_b$B" $kb45 $o $(APEX $w $kb45 $o) --batch $B
+  done; done
+fi
 python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
 git add -f baselines_hf/apex_hf.py baselines_hf/offload_hf.py baselines_hf/baseline_serve.py scripts/apex_build_store.py scripts/stage7_apex.sh \
-  $O/*/apex_* $O/memcal/apex_* results/MATRIX5/SUMMARY.md 2>/dev/null
+  $O/*/apex_* $O/memcal/apex_* $O/extras/e3/*apex* results/MATRIX5/SUMMARY.md 2>/dev/null
 git commit -q -m "MoE-APEX* (ASPLOS'26, reimplemented from HOBBIT) on Qwen3-30B: E1
 
 Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>" && timeout 300 git push -q origin HEAD

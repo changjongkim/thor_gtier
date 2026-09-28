@@ -25,6 +25,7 @@ ap.add_argument("--device-memory-ratio", type=float, default=0.0, help="nominal:
 ap.add_argument("--max-prompt", type=int, default=8192)
 ap.add_argument("--max-new", type=int, default=32)
 ap.add_argument("--limit", type=int, default=0)
+ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
 ap.add_argument("--out")
 a = ap.parse_args()
 sys.path.insert(0, "/home/thor/kcj/thor_gtier/scripts")
@@ -60,6 +61,12 @@ class Clock:
 
 
 rows = []
+if a.batch > 1:
+    import batchgen
+    def _st():
+        c = model.engine.cache.stats; return {"hits": c.hits, "misses": c.misses}
+    rows = batchgen.serve(model.generate, tok, work, a.batch, a.max_prompt, a.max_new, _st)
+    work = []
 for w in work:
     ids = tok(w["prompt"], return_tensors="pt").input_ids[:, :a.max_prompt]
     new = min(a.max_new, int(w.get("max_new", a.max_new)))
@@ -88,7 +95,9 @@ n = len(rows)
 res = {"system": "finemoe", "budget_gib": a.budget_gib, "cache_size": opts.get("cache_size"),
        "load_s": load_s, "requests": n,
        "ttft_s": sum(r["ttft_s"] for r in rows) / n, "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
-       "request_s": sum(r["request_s"] for r in rows) / n, "peak_gib": _mw.peak_gib(), "rows": rows}
+       "request_s": sum(r["request_s"] for r in rows) / n, "peak_gib": _mw.peak_gib(), "rows": rows,
+       "batch": a.batch}
+if a.batch > 1: res.update(batchgen.summary(rows))
 if a.out:
     json.dump(res, open(a.out, "w"), indent=1)
     print(f"RESULT policy=finemoe budget={a.budget_gib:.2f} requests={n} ttft_s={res['ttft_s']:.4f} "

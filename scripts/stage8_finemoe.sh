@@ -100,12 +100,23 @@ for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
       awk -v p=$pk -v t=$T 'BEGIN{exit !(p>1.4*t)}' && echo "NORUN budget=$nb reason=exceeds-1.4x-phasor-peak (peak $pk vs $T)" >> $o.txt; fi
   fi
 done; done
+# E3: batch 4 and 8 at 45% (MMLU, ShareGPT) when 45% ran within its memory
+b45=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); mkdir -p $O/extras/e3
+kb45=$(python3 -c "import json;v=json.load(open('$O/memcal/finemoe_$b45.json'))['budget_gib'];print(v if v else 'none')" 2>/dev/null || echo none)
+if [ "$kb45" != none ]; then
+  for B in 4 8; do for w in mmlu sharegpt; do
+    o=$O/extras/e3/${w}_finemoe_b$B
+    CAP_GIB=$(awk -v c=$(capfor $b45) 'BEGIN{printf "%.2f", c+8}') run "s8x_${m}_${w}_finemoe_b$B" $kb45 $o $(FM) --workload results/WORKLOADS/$w.json --maps $F/maps/${m}_$w --budget-gib $kb45 --batch $B --out $o.json
+  done; done
+else
+  for B in 4 8; do for w in mmlu sharegpt; do echo "NORUN budget=$b45 reason=no-setting-within-phasor-memory-at-45%" > $O/extras/e3/${w}_finemoe_b$B.txt; done; done
+fi
 # 6 nominal reference (FineMoE sizes its GPU cache from free memory itself)
 settle; drop
 timeout 7200 scripts/in_cgroup.sh prep max $(FM) --workload results/WORKLOADS/mmlu.json --maps $F/maps/${m}_mmlu --device-memory-ratio 0.8 --out $O/mmlu/finemoe_nominal.json > $O/mmlu/finemoe_nominal.txt 2>&1
 python3 scripts/finemoe_report.py > $P/FINEMOE.md 2>>"$LOG"
 python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
-git add -f $P/FINEMOE.md $P/finemoe $F $O/*/finemoe_* $O/memcal/finemoe_* results/MATRIX5/SUMMARY.md scripts/finemoe_serve.py \
+git add -f $P/FINEMOE.md $P/finemoe $F $O/*/finemoe_* $O/memcal/finemoe_* $O/extras/e3/*finemoe* results/MATRIX5/SUMMARY.md scripts/finemoe_serve.py \
   scripts/finemoe_fidelity.py scripts/finemoe_report.py scripts/stage8_finemoe.sh third_party/finemoe_qwen3_sm110.patch 2>/dev/null
 git commit -q -m "FineMoE (EuroSys'26) on Qwen3-30B: tokens, maps, fidelity, E1
 

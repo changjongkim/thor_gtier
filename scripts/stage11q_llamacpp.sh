@@ -28,7 +28,9 @@ settle(){ local i=0; until [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /pr
   i=$((i+1)); [ $i = 120 ] && say "waiting for >= 100 GiB available"; sleep 5; done; }   # outside memory pressure would say nothing
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
 eval "$(sed -n '/^cal(){/,/^}/p; /^flag14(){/,/^}/p; /^over14(){/,/^}/p; /^because(){/,/^}/p' scripts/stage_helpers.sh)"
-[ -n "${NOWAIT:-}" ] || until [ $(grep -c "=== stage 12 done" "$LOG") -ge 2 ]; do sleep 120; done
+# SKIP_E2=1: all but Qwen3's E2 (09-29 02:40, user: E2 last); ONLY_E2=1: Qwen3's E2 alone, after stage 12b
+if [ -n "${ONLY_E2:-}" ]; then [ -n "${NOWAIT:-}" ] || until grep -q "=== stage 12b done" "$LOG"; do sleep 120; done
+else [ -n "${NOWAIT:-}" ] || until [ $(grep -c "=== stage 12 done" "$LOG") -ge 2 ]; do sleep 120; done; fi
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 11q (llama.cpp, Qwen3-30B) start ==="
 free_gb(){ df -BG --output=avail /home/thor/kcj | tail -1 | tr -dc 0-9; }
@@ -71,6 +73,7 @@ LC(){  # LC <gguf> <tokenizer ckpt> <workload> : the runner up to --budget-gib/-
 for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench" \
          "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 87.0 mmlu"; do
   set -- $M; m=$1; ck=$2; gb=$3; WLS=${4//,/ }; O=results/MATRIX5/$m; gg=$G/${m}_bf16.gguf
+  [ -n "${ONLY_E2:-}" ] && [ $m != qwen30b ] && continue
   # Qwen3: llama.cpp's converter needs > 110 GiB to merge its 18,867 per-expert tensors (met the host guard
   # twice, 09-28 22:35 and 23:52), so the public bf16 conversion of the same checkpoint made with that
   # converter (unsloth/Qwen3-30B-A3B-GGUF, BF16, two splits) is used; the token check below compares it
@@ -84,6 +87,7 @@ for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longben
   fi
   conv $ck $gg || { for w in $WLS; do for f in 0.25 0.45 0.65 1.08; do echo "NORUN budget=- reason=gguf-conversion-failed" > $O/$w/llamacpp_$f.txt; done; done; continue; }
   # 1 smoke
+  if [ -z "${ONLY_E2:-}" ]; then
   settle; drop
   timeout 7200 scripts/in_cgroup.sh prep max $(LC $gg $ck mmlu) --budget-gib 20 --limit 2 --out $P/llamacpp/smoke_$m.json > $P/llamacpp/smoke_$m.log 2>&1
   if ! grep -q '^RESULT' $P/llamacpp/smoke_$m.log; then
@@ -93,8 +97,9 @@ for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longben
     continue
   fi
   say "stage 11: smoke $m $(grep -h '^RESULT' $P/llamacpp/smoke_$m.log | cut -c1-140)"
+  fi
   # 2 tokens (Qwen3: the two prompts of check_tokens.py against stock transformers)
-  if [ $m = qwen30b ]; then
+  if [ $m = qwen30b ] && [ -z "${ONLY_E2:-}" ]; then
     python3 - <<'PY'
 import json
 ps = ["Explain why the sky is blue in two sentences.", "Write a Python function that returns the n-th Fibonacci number."]
@@ -148,7 +153,8 @@ PY
   fi
   # E2: MMLU 20/15/10/5%, cap = budget (its own setting), stop at the first budget it cannot run at
   stop=""
-  for f in 0.20 0.15 0.10 0.05; do
+  [ -n "${SKIP_E2:-}" ] && say "stage 11q: Qwen3 E2 deferred to after stage 12b"
+  [ -n "${SKIP_E2:-}" ] || for f in 0.20 0.15 0.10 0.05; do
     b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}'); o=$O/mmlu/llamacpp_$f
     T=$(python3 -c "import json;print(round(json.load(open('$O/mmlu/phasor_$f.json'))['peak_gib'],2))")
     if [ -n "$stop" ]; then echo "NORUN budget=$b reason=not-tried (did not run at $stop)" > $o.txt; continue; fi
@@ -160,7 +166,7 @@ PY
   # E3: batch 4 and 8 at 45% (MMLU, ShareGPT), E1's cap, run cap + 8 GiB
   b45=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); mkdir -p $O/extras/e3
   kb45=$(python3 -c "import json;v=json.load(open('$O/memcal/llamacpp_$b45.json'))['budget_gib'];print(v if v else 'none')" 2>/dev/null || echo none)
-  for B in 4 8; do for w in mmlu sharegpt; do
+  [ -n "${ONLY_E2:-}" ] || for B in 4 8; do for w in mmlu sharegpt; do
     o=$O/extras/e3/${w}_llamacpp_b$B
     if [ "$kb45" = none ]; then echo "NORUN budget=$b45 reason=no-setting-within-phasor-memory-at-45%" > $o.txt; continue; fi
     CAP_GIB=$(awk -v c=$(capfor $b45) 'BEGIN{printf "%.2f", c+8}') run "s11x_${m}_${w}_llamacpp_b$B" $kb45 $o $(LC $gg $ck $w) --budget-gib $kb45 --batch $B --out $o.json
@@ -173,4 +179,4 @@ git add -f $P/LLAMACPP.md $P/llamacpp scripts/stage11_llamacpp.sh scripts/llamac
 git commit -q -m "llama.cpp (stock mmap offloading) baseline: Qwen3-30B E1/E2/E3, Mixtral MMLU
 
 Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>" && timeout 300 git push -q origin HEAD
-say "=== stage 11q done ==="
+if [ -n "${ONLY_E2:-}" ]; then say "=== stage 11q-E2 done ==="; else say "=== stage 11q done ==="; fi

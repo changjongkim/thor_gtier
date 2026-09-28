@@ -1,0 +1,51 @@
+{
+ "system": "llamacpp",
+ "budget_gib": 88.94,
+ "load_s": 6.119944095611572,
+ "requests": 2,
+ "batch": 1,
+ "ttft_s": 181.81355810165405,
+ "tpot_ms": 387.7526521682739,
+ "request_s": 184.52806866168976,
+ "peak_gib": 1.701690673828125,
+ "peak_drop_gib": 1.6998062133789062,
+ "peak_cgroup_file_gib": 0.00188446044921875,
+ "rows": [
+  {
+   "name": "mmlu_professional_psychology_0",
+   "prompt_tok": 601,
+   "new_tok": 8,
+   "ttft_s": 183.55175805091858,
+   "tpot_ms": 384.2879363468715,
+   "request_s": 186.24209809303284,
+   "out_ids": [
+    356,
+    271,
+    14582,
+    25,
+    576,
+    1429,
+    4185,
+    943
+   ]
+  },
+  {
+   "name": "mmlu_professional_psychology_1",
+   "prompt_tok": 589,
+   "new_tok": 8,
+   "ttft_s": 180.07535815238953,
+   "tpot_ms": 391.21736798967635,
+   "request_s": 182.81403923034668,
+   "out_ids": [
+    362,
+    271,
+    14582,
+    25,
+    15920,
+    315,
+    279,
+    2701
+   ]
+  }
+ ]
+}

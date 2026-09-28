@@ -63,6 +63,15 @@ if a.mem_cap_gib > 0 and CG and "ledger_bench" in CG:   # only lowers the cap in
         subprocess.run(["sudo", "-n", "tee", f"{CG}/memory.max"], input=str(want).encode(),
                        stdout=subprocess.DEVNULL, check=True)
 
+# every run starts cold, as run() drops the page cache for every system: a probe that
+# follows another (memcal) would otherwise find the GGUF pages already cached, charged to
+# the previous run's (removed) cgroup, and its measured footprint would miss them
+# (09-29 01:30: 65% probes read 1.7 GiB after a 42 GiB one)
+import glob as _glob
+for _p in _glob.glob(os.path.join(os.path.dirname(os.path.abspath(a.gguf)), "*.gguf")):
+    try:
+        _fd = os.open(_p, os.O_RDONLY); os.posix_fadvise(_fd, 0, 0, os.POSIX_FADV_DONTNEED); os.close(_fd)
+    except OSError: pass
 a0 = avail(); peak = {"total": 0, "drop": 0, "file": 0}; stop = False
 def sampler():
     while not stop:

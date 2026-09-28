@@ -1,0 +1,213 @@
+scrub: 18 files
+Arch: qwen3moeforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE Cache Pool Planning] Loading trace...
+[Coverage To Weight] Converged in 44 iterations.
+Bernoulli probs sum: 28.0559
+Total memory available per layer: 519646303.5733333
+Max potential full slots: 55
+[ZipMoE Invocation Modeling] Ratio Full: 0.06 | Avg Delay: 36013.2317
+[ZipMoE Invocation Modeling] Ratio Full: 0.07 | Avg Delay: 36013.2317
+[ZipMoE Invocation Modeling] Ratio Full: 0.08 | Avg Delay: 34740.1537
+[ZipMoE Invocation Modeling] Ratio Full: 0.09 | Avg Delay: 34740.1537
+[ZipMoE Invocation Modeling] Ratio Full: 0.10 | Avg Delay: 33500.3571
+[ZipMoE Invocation Modeling] Ratio Full: 0.11 | Avg Delay: 32292.3593
+[ZipMoE Invocation Modeling] Ratio Full: 0.12 | Avg Delay: 32292.3593
+[ZipMoE Invocation Modeling] Ratio Full: 0.13 | Avg Delay: 31115.9629
+[ZipMoE Invocation Modeling] Ratio Full: 0.14 | Avg Delay: 31115.9629
+[ZipMoE Invocation Modeling] Ratio Full: 0.15 | Avg Delay: 29968.8893
+[ZipMoE Invocation Modeling] Ratio Full: 0.16 | Avg Delay: 29968.8893
+[ZipMoE Invocation Modeling] Ratio Full: 0.17 | Avg Delay: 28849.3283
+[ZipMoE Invocation Modeling] Ratio Full: 0.18 | Avg Delay: 28849.3283
+[ZipMoE Invocation Modeling] Ratio Full: 0.19 | Avg Delay: 27755.7812
+[ZipMoE Invocation Modeling] Ratio Full: 0.20 | Avg Delay: 26688.2481
+[ZipMoE Invocation Modeling] Ratio Full: 0.21 | Avg Delay: 26688.2481
+[ZipMoE Invocation Modeling] Ratio Full: 0.22 | Avg Delay: 25645.5969
+[ZipMoE Invocation Modeling] Ratio Full: 0.23 | Avg Delay: 25645.5969
+[ZipMoE Invocation Modeling] Ratio Full: 0.24 | Avg Delay: 24626.3145
+[ZipMoE Invocation Modeling] Ratio Full: 0.25 | Avg Delay: 24626.3145
+[ZipMoE Invocation Modeling] Ratio Full: 0.26 | Avg Delay: 23631.0733
+[ZipMoE Invocation Modeling] Ratio Full: 0.27 | Avg Delay: 23631.0733
+[ZipMoE Invocation Modeling] Ratio Full: 0.28 | Avg Delay: 22658.4924
+[ZipMoE Invocation Modeling] Ratio Full: 0.29 | Avg Delay: 22658.4924
+[ZipMoE Invocation Modeling] Ratio Full: 0.30 | Avg Delay: 21708.9931
+[ZipMoE Invocation Modeling] Ratio Full: 0.31 | Avg Delay: 20781.3075
+[ZipMoE Invocation Modeling] Ratio Full: 0.32 | Avg Delay: 20781.3075
+[ZipMoE Invocation Modeling] Ratio Full: 0.33 | Avg Delay: 19874.2360
+[ZipMoE Invocation Modeling] Ratio Full: 0.34 | Avg Delay: 19874.2360
+[ZipMoE Invocation Modeling] Ratio Full: 0.35 | Avg Delay: 18988.0880
+[ZipMoE Invocation Modeling] Ratio Full: 0.36 | Avg Delay: 18988.0880
+[ZipMoE Invocation Modeling] Ratio Full: 0.37 | Avg Delay: 18124.3504
+[ZipMoE Invocation Modeling] Ratio Full: 0.38 | Avg Delay: 18124.3504
+[ZipMoE Invocation Modeling] Ratio Full: 0.39 | Avg Delay: 17283.1546
+[ZipMoE Invocation Modeling] Ratio Full: 0.40 | Avg Delay: 16462.3252
+[ZipMoE Invocation Modeling] Ratio Full: 0.41 | Avg Delay: 16462.3258
+[ZipMoE Invocation Modeling] Ratio Full: 0.42 | Avg Delay: 15661.3375
+[ZipMoE Invocation Modeling] Ratio Full: 0.43 | Avg Delay: 15661.3386
+[ZipMoE Invocation Modeling] Ratio Full: 0.44 | Avg Delay: 14880.4017
+[ZipMoE Invocation Modeling] Ratio Full: 0.45 | Avg Delay: 14880.4044
+[ZipMoE Invocation Modeling] Ratio Full: 0.46 | Avg Delay: 14119.0019
+[ZipMoE Invocation Modeling] Ratio Full: 0.47 | Avg Delay: 14119.0080
+[ZipMoE Invocation Modeling] Ratio Full: 0.48 | Avg Delay: 13378.7749
+[ZipMoE Invocation Modeling] Ratio Full: 0.49 | Avg Delay: 13378.7878
+[ZipMoE Invocation Modeling] Ratio Full: 0.50 | Avg Delay: 12660.0413
+[ZipMoE Invocation Modeling] Ratio Full: 0.51 | Avg Delay: 11964.7338
+[ZipMoE Invocation Modeling] Ratio Full: 0.52 | Avg Delay: 11964.7818
+[ZipMoE Invocation Modeling] Ratio Full: 0.53 | Avg Delay: 11290.9951
+[ZipMoE Invocation Modeling] Ratio Full: 0.54 | Avg Delay: 11291.0786
+[ZipMoE Invocation Modeling] Ratio Full: 0.55 | Avg Delay: 10638.1318
+[ZipMoE Invocation Modeling] Ratio Full: 0.56 | Avg Delay: 10638.2710
+[ZipMoE Invocation Modeling] Ratio Full: 0.57 | Avg Delay: 10006.1284
+[ZipMoE Invocation Modeling] Ratio Full: 0.58 | Avg Delay: 10006.3566
+[ZipMoE Invocation Modeling] Ratio Full: 0.59 | Avg Delay: 9396.5033
+[ZipMoE Invocation Modeling] Ratio Full: 0.60 | Avg Delay: 8807.8247
+[ZipMoE Invocation Modeling] Ratio Full: 0.61 | Avg Delay: 8808.8812
+[ZipMoE Invocation Modeling] Ratio Full: 0.62 | Avg Delay: 8242.8298
+[ZipMoE Invocation Modeling] Ratio Full: 0.63 | Avg Delay: 8243.6998
+[ZipMoE Invocation Modeling] Ratio Full: 0.64 | Avg Delay: 7698.5285
+[ZipMoE Invocation Modeling] Ratio Full: 0.65 | Avg Delay: 7699.7563
+[ZipMoE Invocation Modeling] Ratio Full: 0.66 | Avg Delay: 7175.8763
+[ZipMoE Invocation Modeling] Ratio Full: 0.67 | Avg Delay: 7177.6299
+[ZipMoE Invocation Modeling] Ratio Full: 0.68 | Avg Delay: 6678.0262
+[ZipMoE Invocation Modeling] Ratio Full: 0.69 | Avg Delay: 6680.6032
+[ZipMoE Invocation Modeling] Ratio Full: 0.70 | Avg Delay: 6205.7543
+[ZipMoE Invocation Modeling] Ratio Full: 0.71 | Avg Delay: 5755.4406
+[ZipMoE Invocation Modeling] Ratio Full: 0.72 | Avg Delay: 5760.3301
+[ZipMoE Invocation Modeling] Ratio Full: 0.73 | Avg Delay: 5329.0969
+[ZipMoE Invocation Modeling] Ratio Full: 0.74 | Avg Delay: 5336.1447
+[ZipMoE Invocation Modeling] Ratio Full: 0.75 | Avg Delay: 4926.9822
+[ZipMoE Invocation Modeling] Ratio Full: 0.76 | Avg Delay: 4936.0498
+[ZipMoE Invocation Modeling] Ratio Full: 0.77 | Avg Delay: 4549.0058
+[ZipMoE Invocation Modeling] Ratio Full: 0.78 | Avg Delay: 4560.6901
+[ZipMoE Invocation Modeling] Ratio Full: 0.79 | Avg Delay: 4195.3962
+[ZipMoE Invocation Modeling] Ratio Full: 0.80 | Avg Delay: 3852.0282
+[ZipMoE Invocation Modeling] Ratio Full: 0.81 | Avg Delay: 3889.1812
+[ZipMoE Invocation Modeling] Ratio Full: 0.82 | Avg Delay: 3572.4935
+[ZipMoE Invocation Modeling] Ratio Full: 0.83 | Avg Delay: 3599.3118
+[ZipMoE Invocation Modeling] Ratio Full: 0.84 | Avg Delay: 3305.6208
+[ZipMoE Invocation Modeling] Ratio Full: 0.85 | Avg Delay: 3340.1801
+[ZipMoE Invocation Modeling] Ratio Full: 0.86 | Avg Delay: 3067.3417
+[ZipMoE Invocation Modeling] Ratio Full: 0.87 | Avg Delay: 3111.7746
+[ZipMoE Invocation Modeling] Ratio Full: 0.88 | Avg Delay: 2861.3972
+[ZipMoE Invocation Modeling] Ratio Full: 0.89 | Avg Delay: 2625.9201
+[ZipMoE Invocation Modeling] Ratio Full: 0.90 | Avg Delay: 2680.6871
+[ZipMoE Invocation Modeling] Ratio Full: 0.91 | Avg Delay: 2529.4378
+[ZipMoE Invocation Modeling] Ratio Full: 0.92 | Avg Delay: 2604.3030
+[ZipMoE Invocation Modeling] Ratio Full: 0.93 | Avg Delay: 2407.1461
+[ZipMoE Invocation Modeling] Ratio Full: 0.94 | Avg Delay: 2498.9355
+[ZipMoE Invocation Modeling] Ratio Full: 0.95 | Avg Delay: 2318.5805
+[ZipMoE Invocation Modeling] Ratio Full: 0.96 | Avg Delay: 2426.7867
+[ZipMoE Invocation Modeling] Ratio Full: 0.97 | Avg Delay: 2264.2463
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.06,  Cost = 35588.87234527025
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.07,  Cost = 35376.69267216581
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.08,  Cost = 35001.425563332086
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.09,  Cost = 34257.25107834351
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.1,  Cost = 33513.07659335491
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.11,  Cost = 32788.238447931835
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.12,  Cost = 32063.40030250876
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.13,  Cost = 31357.106741783304
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.14,  Cost = 30892.412753350054
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.15,  Cost = 30203.806557778928
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.16,  Cost = 29750.47963036761
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.17,  Cost = 29078.443292042262
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.18,  Cost = 28422.315051863283
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.19,  Cost = 27766.18681168431
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.2,  Cost = 27125.440525980237
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.21,  Cost = 26484.694240276156
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.22,  Cost = 25858.800902016545
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.23,  Cost = 25446.41418588401
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.24,  Cost = 24834.97922810939[20260928 05:49:18.889519Z ][50812 ][INFO  ]Loading index file from  /home/thor/kcj/ZipMoE/offload/qwen3/zipmoe_index - zipmoe_tensor_handle.cpp:45
+[20260928 05:49:18.892105Z ][50812 ][INFO  ]Index file size  2090 - zipmoe_tensor_handle.cpp:51
+[20260928 05:49:19.315604Z ][50812 ][INFO  ][ZipMoECacheHandle] Applying Cache Pool Planning. - cache.cpp:37
+[20260928 05:49:20.201205Z ][50812 ][INFO  ]number of full-cache slots:  2564 - cache.cpp:114
+[20260928 05:49:20.201231Z ][50812 ][INFO  ]number of SM-cache slots:  159 - cache.cpp:115
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 6 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 3 initialized.
+[Pool] Thread index 5 initialized.
+`torch_dtype` is deprecated! Use `dtype` instead!
+
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.25,  Cost = 24432.07452299776
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.26,  Cost = 23834.653637393483
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.27,  Cost = 23441.089215259177
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.28,  Cost = 22857.62491753119
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.29,  Cost = 22287.67175838167
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.3,  Cost = 21717.718599299376
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.31,  Cost = 21160.86730856161
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.32,  Cost = 20604.016018165767
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.33,  Cost = 20059.834998435257
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.34,  Cost = 19701.19108312247
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.35000000000000003,  Cost = 19169.79964897887
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.36,  Cost = 18819.822532355454
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.37,  Cost = 18301.606249775115
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.38,  Cost = 17796.453703139225
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.39,  Cost = 17291.301263703834
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.4,  Cost = 16798.698697322405
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.41000000000000003,  Cost = 16306.096329209788
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.42,  Cost = 15825.545749574589
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.43,  Cost = 15509.161594999514
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.44,  Cost = 15040.496819784437
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.45,  Cost = 14732.030911684178
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.46,  Cost = 14275.518171125794
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.47000000000000003,  Cost = 13975.195391700046
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.48,  Cost = 13531.122765223292
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.49,  Cost = 13100.269156501265
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5,  Cost = 12669.423913174303
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.51,  Cost = 12251.867958634222
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.52,  Cost = 11834.326121313901
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.53,  Cost = 11429.944214488252
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.54,  Cost = 11164.651653993007
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.55,  Cost = 10772.920968588436
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.56,  Cost = 10515.993264609619
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.5700000000000001,  Cost = 10137.078199143916
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.58,  Cost = 9771.016774313834
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.59,  Cost = 9405.138799931317
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6,  Cost = 9052.479092466237
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.61,  Cost = 8699.94774356839
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.62,  Cost = 8360.35278523717
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.63,  Cost = 8138.739122930502
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.64,  Cost = 7812.138157496823
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.65,  Cost = 7599.0981733859735
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.66,  Cost = 7285.963443743419
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.67,  Cost = 7082.3783951186515
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.68,  Cost = 6783.577994619967
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.6900000000000001,  Cost = 6499.490838845322
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.7000000000000001,  Cost = 6216.030882997058
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.71,  Cost = 5946.245039544523
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.72,  Cost = 5677.353342609405
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.73,  Cost = 5421.598914913829
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.74,  Cost = 5257.720753464146
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.75,  Cost = 5015.455894515408
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.76,  Cost = 4861.7745194081035
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.77,  Cost = 4633.624807357263
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.78,  Cost = 4418.634011540362
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.79,  Cost = 4209.260293201798
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8,  Cost = 4013.9578251479797
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.81,  Cost = 3821.6821612197105
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8200000000000001,  Cost = 3643.727088776599
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.8300000000000001,  Cost = 3541.3574687558744
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.84,  Cost = 3376.9895714040044
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.85,  Cost = 3284.8457956427383
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.86,  Cost = 3137.2628853200217
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.87,  Cost = 3001.3227449360434
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.88,  Cost = 2869.424141734113
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.89,  Cost = 2761.8433669672154
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9,  Cost = 2660.3490406925825
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.91,  Cost = 2569.498827934152
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.92,  Cost = 2544.1019063262056
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.93,  Cost = 2471.6805851093673
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9400000000000001,  Cost = 2451.1503570610885
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.9500000000000001,  Cost = 2383.139015295895
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.96,  Cost = 2377.1372344111073
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.97,  Cost = 2336.5378105014165
+[ZipMoE Cache Pool Planning] Best ratio: 0.97
+[ZipMoE] Creating model from scratch ...
+Loading checkpoint files:   0%|          | 0/16 [00:00<?, ?it/s]HOSTGUARD kill: MemAvailable 12170 MiB < 12 GiB (cgroup charges do not include cudaMalloc)
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 59: 50812 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=2.564
+cgroup_cpu_s=10.4 cgroup_user_s=6.6 cgroup_sys_s=3.9
+cgroup_peak_gib=3.14
+NORUN budget=23.23 reason=oom-under-cap

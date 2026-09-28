@@ -1,0 +1,4 @@
+scrub: 18 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "sg_jKqNBVf_0_t2", "prompt_tok": 1059, "new_tok": 32, "ttft_s": 32.432968616485596, "tpot_ms": 715.8445542858492, "request_s": 54.62482261657715, "read_gib": 68.0537109375}
+Terminated

@@ -1,0 +1,27 @@
+scrub: 18 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "lb_gov_report_0", "prompt_tok": 6570, "new_tok": 32, "ttft_s": 30.13660764694214, "tpot_ms": 935.655209325975, "request_s": 59.14265465736389, "read_gib": 74.3203125}
+REQ {"name": "lb_multi_news_1", "prompt_tok": 5205, "new_tok": 32, "ttft_s": 22.269492864608765, "tpot_ms": 848.8157795321557, "request_s": 48.58350157737732, "read_gib": 60.1875}
+REQ {"name": "lb_passage_count_2", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 24.044901371002197, "tpot_ms": 1192.722305174797, "request_s": 61.02002239227295, "read_gib": 75.814453125}
+REQ {"name": "lb_vcsum_3", "prompt_tok": 5530, "new_tok": 32, "ttft_s": 21.1459641456604, "tpot_ms": 1003.7246750247093, "request_s": 52.262144804000854, "read_gib": 64.16015625}
+REQ {"name": "lb_repobench-p_4", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 33.67482805252075, "tpot_ms": 1587.1030822876962, "request_s": 82.8757677078247, "read_gib": 99.650390625}
+REQ {"name": "lb_qasper_5", "prompt_tok": 5635, "new_tok": 32, "ttft_s": 25.33567190170288, "tpot_ms": 1254.9642824357556, "request_s": 64.24045157432556, "read_gib": 82.810546875}
+REQ {"name": "lb_hotpotqa_6", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 24.0254545211792, "tpot_ms": 1008.8880600467804, "request_s": 55.301740646362305, "read_gib": 66.708984375}
+REQ {"name": "lb_musique_7", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 24.891069412231445, "tpot_ms": 1031.4990705059422, "request_s": 56.86854934692383, "read_gib": 68.9677734375}
+REQ {"name": "lb_qmsum_8", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 22.607691526412964, "tpot_ms": 1049.4225640450754, "request_s": 55.14069128036499, "read_gib": 65.5927734375}
+REQ {"name": "lb_multifieldqa_zh_9", "prompt_tok": 1753, "new_tok": 32, "ttft_s": 19.133174419403076, "tpot_ms": 1032.218325522638, "request_s": 51.13264465332031, "read_gib": 62.9912109375}
+REQ {"name": "lb_multifieldqa_en_10", "prompt_tok": 1327, "new_tok": 32, "ttft_s": 21.83504033088684, "tpot_ms": 1264.8675441741943, "request_s": 61.04671621322632, "read_gib": 78.6533203125}
+REQ {"name": "lb_narrativeqa_11", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 23.474207162857056, "tpot_ms": 913.7195079557357, "request_s": 51.80050611495972, "read_gib": 61.787109375}
+REQ {"name": "lb_passage_retrieval_en_12", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 24.35235333442688, "tpot_ms": 946.4712527490431, "request_s": 53.69390654563904, "read_gib": 65.53125}
+REQ {"name": "lb_lsht_13", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 24.974738359451294, "tpot_ms": 898.0862248328424, "request_s": 52.8161518573761, "read_gib": 63.94921875}
+REQ {"name": "lb_trec_14", "prompt_tok": 6153, "new_tok": 32, "ttft_s": 24.697997570037842, "tpot_ms": 1027.8820837697676, "request_s": 56.56311583518982, "read_gib": 69.6005859375}
+REQ {"name": "lb_passage_retrieval_zh_15", "prompt_tok": 4449, "new_tok": 32, "ttft_s": 23.91761612892151, "tpot_ms": 979.0121432273619, "request_s": 54.26772618293762, "read_gib": 67.341796875}
+REQ {"name": "lb_dureader_16", "prompt_tok": 8030, "new_tok": 32, "ttft_s": 26.648383855819702, "tpot_ms": 872.0854097797026, "request_s": 53.68374705314636, "read_gib": 66.392578125}
+REQ {"name": "lb_triviaqa_17", "prompt_tok": 4750, "new_tok": 32, "ttft_s": 23.688387155532837, "tpot_ms": 1052.648921166697, "request_s": 56.3212411403656, "read_gib": 70.119140625}
+REQ {"name": "lb_lcc_18", "prompt_tok": 1943, "new_tok": 32, "ttft_s": 24.41301465034485, "tpot_ms": 1134.2208923832063, "request_s": 59.57467794418335, "read_gib": 76.552734375}
+REQ {"name": "lb_samsum_19", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 25.332443952560425, "tpot_ms": 859.2084223224272, "request_s": 51.968669176101685, "read_gib": 62.8154296875}
+REQ {"name": "lb_2wikimqa_20", "prompt_tok": 8192, "new_tok": 32, "ttft_s": 23.384341716766357, "tpot_ms": 922.9303021584789, "request_s": 51.99592065811157, "read_gib": 61.734375}
+RESULT policy=flashmoe budget=13.19 requests=21 ttft_s=24.4754 tpot_ms=1038.864 request_s=56.6810 footprint_gib=21.13 peak_gib=23.51 compute=measured
+cgroup_io_read_gib=1712.633
+cgroup_cpu_s=712.2 cgroup_user_s=186.3 cgroup_sys_s=525.9
+cgroup_peak_gib=3.01

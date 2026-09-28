@@ -1,0 +1,14 @@
+scrub: 18 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 601, "new_tok": 8, "ttft_s": 31.79046320915222, "tpot_ms": 819.3892070225307, "request_s": 37.52691721916199, "read_gib": 48.7265625}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 589, "new_tok": 8, "ttft_s": 14.582216024398804, "tpot_ms": 436.211313520159, "request_s": 17.636404514312744, "read_gib": 21.884765625}
+REQ {"name": "mmlu_professional_psychology_2", "prompt_tok": 600, "new_tok": 8, "ttft_s": 14.25391674041748, "tpot_ms": 195.04162243434362, "request_s": 15.61977219581604, "read_gib": 20.00390625}
+REQ {"name": "mmlu_professional_psychology_3", "prompt_tok": 637, "new_tok": 8, "ttft_s": 14.792168378829956, "tpot_ms": 216.44629750932967, "request_s": 16.307913541793823, "read_gib": 20.3818359375}
+REQ {"name": "mmlu_abstract_algebra_4", "prompt_tok": 391, "new_tok": 8, "ttft_s": 14.410043239593506, "tpot_ms": 567.5103664398193, "request_s": 18.383333683013916, "read_gib": 22.5439453125}
+REQ {"name": "mmlu_abstract_algebra_5", "prompt_tok": 434, "new_tok": 8, "ttft_s": 14.861599206924438, "tpot_ms": 434.98689787728443, "request_s": 17.90722632408142, "read_gib": 21.603515625}
+HOSTGUARD kill: MemAvailable 11262 MiB < 12 GiB (cgroup charges do not include cudaMalloc)
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 59: 51194 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=198.506
+cgroup_cpu_s=136.0 cgroup_user_s=69.2 cgroup_sys_s=66.8
+cgroup_peak_gib=4.44
+NORUN budget=23.83 reason=oom-under-cap

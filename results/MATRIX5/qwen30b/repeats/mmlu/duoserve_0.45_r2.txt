@@ -1,0 +1,8 @@
+scrub: 18 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+HOSTGUARD kill: MemAvailable 12281 MiB < 12 GiB (cgroup charges do not include cudaMalloc)
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 59: 52530 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=42.678
+cgroup_cpu_s=54.6 cgroup_user_s=18.8 cgroup_sys_s=35.8
+cgroup_peak_gib=29.72
+NORUN budget=19.68 reason=oom-under-cap

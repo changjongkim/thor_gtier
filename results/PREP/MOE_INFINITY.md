@@ -53,3 +53,12 @@ appended below.
   host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
 
 ## Version 48bb3bc (2025-02, SSD tier), Mixtral-8x7B: does not serve: KeyError: (0, tensor([[5, 1],
+
+## 48bb3bc run (09-28 23:01): fails at its first request
+
+Built with the compatibility fixes above, it loaded Mixtral and built its offload store, then stopped at
+the first request: `moe_infinity/models/mixtral.py:71` passes the routed expert tensor itself to
+`fetch_experts_lock_cache`, which uses each row as a dict key (`KeyError: (0, tensor([[5, 1], ...]))`,
+`results/PREP/moeinf2502/smoke.log`). 48bb3bc is a dev-branch merge; the release before it, 350f0dd
+(2024-08-15), has the predictor + prefetch path there and the same SSD tier. Stage 12b runs 350f0dd after
+stage 11q (`scripts/stage12b_moeinf_legacy.sh`).

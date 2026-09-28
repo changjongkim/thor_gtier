@@ -1,1 +1,1 @@
-NORUN budget=21.75 reason=does-not-serve:-KeyError:-(0,-tensor([[5,-1], (results/PREP/MOE_INFINITY.md)
+NORUN budget=21.75 reason=fails-at-first-request (2025-02 dev snapshot 48bb3bc: KeyError in models/mixtral.py:71; the 2024-08 release runs as moeinf2408; results/PREP/MOE_INFINITY.md)

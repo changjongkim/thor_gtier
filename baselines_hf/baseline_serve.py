@@ -8,7 +8,7 @@ usage: baseline_serve.py --system flashmoe|duoserve --checkpoint DIR --workload 
 import argparse, json, os, sys, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
-ap.add_argument("--system", required=True, choices=["flashmoe", "duoserve"])
+ap.add_argument("--system", required=True, choices=["flashmoe", "duoserve", "apex"])
 ap.add_argument("--checkpoint", required=True)
 ap.add_argument("--workload", required=True)
 ap.add_argument("--budget-gib", type=float, required=True)
@@ -18,6 +18,7 @@ ap.add_argument("--trace", nargs="*", default=[])
 ap.add_argument("--max-prompt", type=int, default=8192)
 ap.add_argument("--max-new", type=int, default=32)
 ap.add_argument("--limit", type=int, default=0)
+ap.add_argument("--calib-workload", help="apex: held-out prompts to profile the unimportance-score thresholds T1/T2")
 ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
@@ -40,6 +41,28 @@ class Clock:
 m0 = mem_avail_gib(); t0 = time.time()
 model, tok, cache = offload_hf.build(a.checkpoint, a.system, a.budget_gib, weights=a.weights,
                                      predictor=a.predictor, traces=a.trace)
+if a.system == "apex":
+    # MoE-APEX* thresholds: profile the unimportance-score distribution on
+    # held-out prompts with every expert in high precision, then take the
+    # paper's split (67% high, 30% low, 3% skip) as quantiles; cached per model
+    store = a.weights or (a.checkpoint.rstrip("/") + "_int4")
+    thf = os.path.join(store, "thresholds.json")
+    if not os.path.exists(thf) and a.calib_workload:
+        import numpy as _np
+        cache.t1 = cache.t2 = float("inf"); cache.calib = []
+        for w in json.load(open(a.calib_workload))[:2]:
+            ids = tok(w["prompt"], return_tensors="pt").input_ids[:, :1024].to("cuda:0")
+            with torch.no_grad():
+                model.generate(ids, max_new_tokens=16, min_new_tokens=16, do_sample=False,
+                               attention_mask=torch.ones_like(ids), pad_token_id=tok.eos_token_id)
+        v = _np.array(cache.calib)
+        th = {"t1": float(_np.quantile(v, 0.67 / 1.0)), "t2": float(_np.quantile(v, 0.97)), "n": int(v.size),
+              "note": "quantiles of the unimportance score s over non-top-1 selections (HOBBIT 3.2 split 67/30/3)"}
+        json.dump(th, open(thf, "w"))
+    if os.path.exists(thf):
+        th = json.load(open(thf)); cache.t1, cache.t2 = th["t1"], th["t2"]
+    cache.calib = None; cache.high.clear(); cache.low.clear(); cache.reset()
+    cache.hits = cache.misses = cache.skips = cache.low_loads = 0; cache.r.bytes_read = 0
 load_s = time.time() - t0
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]
@@ -63,13 +86,18 @@ for w in work:
     tpot = ((gen[-1] - gen[0]) / (len(gen) - 1)) if len(gen) > 1 else 0.0
     rows.append({"name": w["name"], "prompt_tok": int(ids.shape[1]), "new_tok": int(out.shape[1] - ids.shape[1]),
                  "ttft_s": ttft, "tpot_ms": tpot * 1e3, "request_s": te - ts,
-                 "read_gib": (cache.r.bytes_read - b0) / 2**30})
+                 "read_gib": (cache.r.bytes_read - b0) / 2**30,
+                 "out_ids": out[0, ids.shape[1]:].tolist()})
     print("REQ " + json.dumps(rows[-1]), flush=True)
 n = len(rows)
 res = {"system": a.system, "budget_gib": a.budget_gib, "load_s": load_s, "footprint_gib": m0 - mem_avail_gib(),
        "requests": n, "ttft_s": sum(r["ttft_s"] for r in rows) / n, "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
 res["peak_gib"] = _mw.peak_gib()
+if a.system == "apex":
+    res["apex"] = {"t1": cache.t1, "t2": cache.t2, "hits": cache.hits, "misses": cache.misses,
+                   "low_loads": cache.low_loads, "skips": cache.skips,
+                   "low_read_gib": cache.lr.bytes_read / 2**30}
 if hasattr(cache, "dec_hits"):
     res["cache"] = {"hits": cache.hits, "misses": cache.misses, "decode_hits": cache.dec_hits, "decode_misses": cache.dec_misses}
 res["batch"] = a.batch

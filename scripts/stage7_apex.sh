@@ -1,0 +1,53 @@
+#!/bin/bash
+# Stage 7: MoE-APEX* (ASPLOS'26; reimplemented from HOBBIT, arXiv 2411.01433)
+# on Qwen3-30B: int4 store, self-test, threshold profiling on held-out prompts,
+# memcal at the four budgets, E1 (three workloads x four budgets).  Same caps,
+# scrubbing and run() as stage 5.  Starts after stage 6 and 6b.
+set -u
+R=/home/thor/kcj/thor_gtier; cd "$R"
+. scripts/torch_env.sh; . scripts/memguard.sh
+ST=$R/results/PIPELINE; LOG=$ST/pipeline.log
+ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python; OPY=/home/thor/kcj/envs/oldhf/bin/python
+say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
+drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
+settle(){ local i; for i in $(seq 1 36); do
+  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ] && return 0; sleep 5; done; }
+eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
+until [ $(grep -c "=== stage 6 done ===" "$LOG") -ge 2 ]; do sleep 120; done     # stage 6, then 6b
+exec 9>/tmp/gtier_pipeline.lock; flock 9
+say "=== stage 7 (MoE-APEX* on Qwen3-30B) start ==="
+m=qwen30b; ck=/home/thor/kcj/models/qwen3_30b_a3b; gb=57.0; O=results/MATRIX5/$m; ST4=${ck}_int4
+CALIB=results/ZIPMOE_FIDELITY/prompts24.json          # ShareGPT prompts outside our workloads
+if [ ! -s $ST4/index.json ]; then
+  drop; say "stage 7: building the int4 expert store"
+  timeout 7200 scripts/in_cgroup.sh prep max $ZPY scripts/apex_build_store.py $ck $ST4 > results/PREP/apex_store.log 2>&1
+  say "stage 7: $(tail -1 results/PREP/apex_store.log)"
+fi
+export SCRUB_GLOB="$ck/*.safetensors $ST4/*.bin"
+APEX(){ echo "$ZPY baselines_hf/baseline_serve.py --system apex --checkpoint $ck --weights $ST4 --calib-workload $CALIB --workload results/WORKLOADS/$1.json --budget-gib $2 --out $3.json"; }
+# self-test (also profiles T1/T2 once, into $ST4/thresholds.json)
+drop; timeout 3600 scripts/in_cgroup.sh prep max $(APEX mmlu 25.65 results/PREP/selftest/apex) --limit 2 > results/PREP/selftest/apex.log 2>&1
+say "stage 7: selftest $(grep -h '^RESULT' results/PREP/selftest/apex.log | cut -c1-120) thresholds $(cat $ST4/thresholds.json 2>/dev/null | cut -c1-80)"
+grep -q '^RESULT' results/PREP/selftest/apex.log || { say "stage 7: MoE-APEX* self-test FAILED"; exit 1; }
+# memcal: the knob whose peak matches PHASOR's at each budget
+for f in 0.25 0.45 0.65 1.08; do
+  b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}'); c=$O/memcal/apex_$b.json
+  T=$(python3 -c "import json;print(round(json.load(open('$O/memcal/phasor_$b.json'))['peak_gib'],2))")
+  [ -s $c ] || { settle; drop; timeout 14400 python3 scripts/memcal.py $T $b $c -- $(APEX mmlu {B} {OUT}) --limit 2 > $c.log 2>&1; }
+  say "memcal $m $f apex: $(tail -1 $c.log)"
+done
+# E1
+for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
+  nb=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}'); cal=$O/memcal/apex_$nb.json
+  kb=$(python3 -c "import json;v=json.load(open('$cal'))['budget_gib'];print(v if v else 'none')")
+  if [ "$kb" = none ]; then echo "NORUN budget=$nb reason=exceeds-phasor-memory-at-every-setting" > $O/$w/apex_$f.txt; continue; fi
+  CAP_GIB=$(capfor $nb) run "s5_${m}_${w}_apex_$nb" $kb $O/$w/apex_$f $(APEX $w $kb $O/$w/apex_$f)
+done; done
+cp $ST4/thresholds.json $O/memcal/apex_thresholds.json 2>/dev/null
+python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
+git add -f baselines_hf/apex_hf.py baselines_hf/offload_hf.py baselines_hf/baseline_serve.py scripts/apex_build_store.py scripts/stage7_apex.sh \
+  $O/*/apex_* $O/memcal/apex_* results/MATRIX5/SUMMARY.md 2>/dev/null
+git commit -q -m "MoE-APEX* (ASPLOS'26, reimplemented from HOBBIT) on Qwen3-30B: E1
+
+Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>" && timeout 300 git push -q origin HEAD
+say "=== stage 7 done ==="

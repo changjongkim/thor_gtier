@@ -5,7 +5,8 @@ R = "/home/thor/kcj/thor_gtier/results/MATRIX5"
 MODELS = [("qwen30b", "Qwen3-30B-A3B bf16", 57.0), ("mixtral8x7b", "Mixtral-8x7B bf16", 87.0)]
 WL = [("mmlu", "MMLU"), ("sharegpt", "ShareGPT"), ("longbench", "LongBench")]
 SYS = [("phasor", "PHASOR"), ("zipmoe", "ZipMoE"), ("moeinf", "MoE-Infinity"), ("flashmoe", "FlashMoE*"),
-       ("duoserve", "DuoServe*"), ("fiddler", "Fiddler"), ("mixoff", "Mixtral-offloading (2-bit)")]
+       ("duoserve", "DuoServe*"), ("apex", "MoE-APEX* (mixed int4, lossy)"), ("fiddler", "Fiddler"),
+       ("mixoff", "Mixtral-offloading (2-bit)")]
 ABL = [("pfall", "prefill admitted by value (no free-slot rule)"), ("lru", "LRU (value and admission)"),
        ("lrupfree", "LRU value, PHASOR admission"), ("count", "count utility"),
        ("pread", "pread+copy data path (same memory)"), ("copy", "extra device copy (arena kept)"),

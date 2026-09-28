@@ -211,7 +211,23 @@ class BaselineMoE(nn.Module):
         prefill = s > 1                     # a batched decode step is decode
         experts = torch.unique(sel).tolist()
         out = torch.zeros_like(x)
-        if self.kind == "flashmoe":
+        if self.kind == "apex":
+            from apex_hf import dequant_int4
+            if prefill and self.layer == 0: self.cache.reset()
+            if not prefill and b == 1:
+                wd = {e: 0.0 for e in experts}
+                for e, v in zip(sel[0].tolist(), w[0].float().tolist()): wd[e] = v
+                ws = self.cache.get(self.layer, experts, np.array([wd[e] for e in experts]), False)
+            else:        # prefill, or a batched decode step: every expert in high precision
+                ws = self.cache.get(self.layer, experts, None, True)
+            for e, (prec, t) in ws.items():
+                if prec == "h": g, u, d = t
+                else: g, u, d = [dequant_int4(pk, sc, r, c) for pk, sc, r, c in t]
+                tok, kk = torch.where(sel == e)
+                out.index_add_(0, tok, expert_ffn(x[tok], g, u, d) * w[tok, kk, None])
+            if not prefill and b == 1:
+                self.cache.prefetch(self.layer, x, self.norm)
+        elif self.kind == "flashmoe":
             ws = self.cache.get(self.layer, experts, prefill)
             for e in experts:
                 tok, kk = torch.where(sel == e)
@@ -242,7 +258,16 @@ def build(ckpt, kind, budget_gib, weights=None, predictor=None, traces=()):
         raise RuntimeError(arch)
     reader = ExpertReader(ckpt, moe_attr, names, L, E)
     units = int(budget_gib * (1 << 30) // reader.unit_bytes)
-    if kind == "flashmoe":
+    if kind == "apex":
+        from apex_hf import ApexCache, Int4Reader, build_int4_store
+        store = weights or os.path.join(ckpt + "_int4")
+        if not os.path.exists(os.path.join(store, "index.json")):
+            build_int4_store(reader, store, L, E)
+        gates = []           # filled below, once the gates exist
+        th = json.load(open(os.path.join(store, "thresholds.json"))) if os.path.exists(os.path.join(store, "thresholds.json")) else {}
+        cache = ApexCache(reader, Int4Reader(store), L, E, K, budget_gib * (1 << 30), gates,
+                          t1=th.get("t1", 0.6), t2=th.get("t2", 0.9))
+    elif kind == "flashmoe":
         cache = FlashMoECache(reader, L, E, units // L, weights)
     else:
         pop = np.zeros((L, E)); aff = np.zeros((max(L - 1, 1), E, E))
@@ -270,6 +295,7 @@ def build(ckpt, kind, budget_gib, weights=None, predictor=None, traces=()):
         old = getattr(layer, moe_attr)
         gate = nn.Linear(old.gate.in_features, old.gate.out_features, bias=False, device="cuda", dtype=torch.bfloat16)
         setattr(layer, moe_attr, BaselineMoE(gate, l, E, K, norm, cache, kind, rl))
+        if kind == "apex": cache.gates.append(gate)
     for sp in sorted(os.path.join(ckpt, f) for f in os.listdir(ckpt) if f.endswith(".safetensors")):
         with safe_open(sp, framework="pt", device="cpu") as f:
             for k in f.keys():

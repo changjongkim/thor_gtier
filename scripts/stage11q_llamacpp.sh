@@ -71,6 +71,14 @@ LC(){  # LC <gguf> <tokenizer ckpt> <workload> : the runner up to --budget-gib/-
 for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench" \
          "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 87.0 mmlu"; do
   set -- $M; m=$1; ck=$2; gb=$3; WLS=${4//,/ }; O=results/MATRIX5/$m; gg=$G/${m}_bf16.gguf
+  # Qwen3: llama.cpp's converter needs > 110 GiB to merge its 18,867 per-expert tensors (met the host guard
+  # twice, 09-28 22:35 and 23:52), so the public bf16 conversion of the same checkpoint made with that
+  # converter (unsloth/Qwen3-30B-A3B-GGUF, BF16, two splits) is used; the token check below compares it
+  # with stock transformers
+  if [ $m = qwen30b ] && [ -s $G/qwen3_split/Qwen3-30B-A3B-BF16-00002-of-00002.gguf ]; then
+    gg=$G/qwen3_split/Qwen3-30B-A3B-BF16-00001-of-00002.gguf
+    grep -q "unsloth/Qwen3-30B-A3B-GGUF" $P/LLAMACPP.md 2>/dev/null || note "- Qwen3-30B GGUF: unsloth/Qwen3-30B-A3B-GGUF BF16 (llama.cpp's converter needs > 110 GiB for this checkpoint's 18,867 per-expert tensors; the public conversion of the same weights is used, checked against stock tokens)"
+  fi
   if [ $m = qwen30b ] && [ ! -s $gg ] && [ $(free_gb) -lt 125 ] && [ -f $ST/ok_delete_gguf ]; then
     rm -f "$G/mixtral8x7b_bf16.gguf"; say "stage 11q: removed the Mixtral bf16 GGUF (done with it; approved) for the Qwen3 conversion"
   fi

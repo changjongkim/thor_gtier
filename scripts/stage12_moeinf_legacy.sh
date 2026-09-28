@@ -23,7 +23,7 @@ settle(){ local i=0; until [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /pr
   i=$((i+1)); [ $i = 120 ] && say "waiting for >= 100 GiB available"; sleep 5; done; }   # outside memory pressure would say nothing
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
 eval "$(sed -n '/^cal(){/,/^}/p; /^flag14(){/,/^}/p; /^over14(){/,/^}/p; /^because(){/,/^}/p' scripts/stage_helpers.sh)"
-[ -n "${NOWAIT:-}" ] || until grep -q "=== stage 11 done" "$LOG"; do sleep 120; done
+[ -n "${NOWAIT:-}" ] || until [ $(grep -c "=== stage 11 done" "$LOG") -ge ${WAIT_N:-1} ]; do sleep 120; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 12 (MoE-Infinity 2025-02, SSD tier, Mixtral MMLU) start ==="
 m=mixtral8x7b; ck=/home/thor/kcj/models/mixtral8x7b_bf16; gb=87.0; O=results/MATRIX5/$m; w=mmlu
@@ -48,22 +48,28 @@ if [ $(free_gb) -lt 100 ]; then
   [ $(free_gb) -ge 100 ] || fail "not enough disk for its offload store ($(free_gb) GB free, needs ~100)"
 fi
 # build: the release at 48bb3bc, its own ops, in its own venv on the t26 torch
-if ! $MPY -c "import moe_infinity" 2>/dev/null; then
+if ! $MPY -c "import moe_infinity,sys; sys.exit(0 if '/envs/moeinf2502/' in moe_infinity.__file__ else 1)" 2>/dev/null; then
   [ -d $SRC/.git ] || timeout 1800 git clone -q https://github.com/EfficientMoE/MoE-Infinity $SRC
   ( cd $SRC && git checkout -q 48bb3bc ) || fail "checkout of 48bb3bc failed"
   [ -x $MPY ] || { $TORCH_VENV/bin/python -m venv $V && echo "$TORCH_VENV/lib/python3.12/site-packages" > $V/lib/python3.12/site-packages/t26.pth; }
   # its requirements that the t26 venv does not satisfy (transformers >= 4.37.1, < 4.47; pydantic 1)
-  timeout 3600 $MPY -m pip install -q "transformers>=4.37.1,<4.47" "pydantic==1.10.12" hjson py-cpuinfo ninja "accelerate<1.3" "optimum<1.24" > $P/moeinf2502/pip.log 2>&1
+  timeout 3600 $MPY -m pip install -q "transformers>=4.37.1,<4.47" "pydantic==1.10.12" hjson py-cpuinfo ninja "accelerate<1.3" "optimum<1.24" "setuptools<75" > $P/moeinf2502/pip.log 2>&1
+  timeout 3600 $MPY -m pip install -q --no-deps "peft==0.13.2" gekko >> $P/moeinf2502/pip.log 2>&1
+  # build compatibility only (third_party/moeinf2502_build.patch): its log buffer constant assumes x86's
+  # 80-bit long double (aarch64: 33 digits), and GCC 13's headers no longer pull <string> in transitively
+  ( cd $SRC && git apply --check $R/third_party/moeinf2502_build.patch 2>/dev/null && git apply $R/third_party/moeinf2502_build.patch )
   BUILD_CUDA_EXT=0 timeout 3600 $MPY -m pip install -q --no-deps --no-build-isolation "auto-gptq==0.7.1" >> $P/moeinf2502/pip.log 2>&1
   ( cd $SRC && BUILD_OPS=1 TORCH_CUDA_ARCH_LIST="11.0" MAX_JOBS=8 \
-      CFLAGS="-DHOST_MEMORY_RATIO=0.04" CXXFLAGS="-DHOST_MEMORY_RATIO=0.04" NVCC_APPEND_FLAGS="-DHOST_MEMORY_RATIO=0.04" \
+      CFLAGS="-include string -DHOST_MEMORY_RATIO=0.04" CXXFLAGS="-include string -DHOST_MEMORY_RATIO=0.04" NVCC_APPEND_FLAGS="-include string -DHOST_MEMORY_RATIO=0.04" \
       timeout 7200 $MPY -m pip install --no-deps --no-build-isolation . > $P/moeinf2502/build.log 2>&1 )
-  $MPY -c "import moe_infinity" > $P/moeinf2502/import.log 2>&1 || fail "does not build or import on CUDA 13 / sm_110: $(grep -hE 'error|Error' $P/moeinf2502/build.log $P/moeinf2502/import.log | tail -1 | cut -c1-120)"
+  $MPY -c "import moe_infinity,sys; from moe_infinity import MoE; sys.exit(0 if '/envs/moeinf2502/' in moe_infinity.__file__ else 1)" > $P/moeinf2502/import.log 2>&1 || fail "does not build or import on CUDA 13 / sm_110: $(grep -hE 'error|Error' $P/moeinf2502/build.log $P/moeinf2502/import.log | tail -1 | cut -c1-120)"
 fi
 rec ""; rec "## Version 48bb3bc (2025-02-13): the last release with an SSD tier"
 rec "- Experts stay in its offload store on the SSD and move SSD -> host pool -> GPU on demand; the preloading"
 rec "  (\"Moving sparse parameters to CPU\") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3."
-rec "- Built unmodified in its own venv (transformers < 4.47 as it requires); HOST_MEMORY_RATIO (its build-time"
+rec "- Built in its own venv (transformers 4.46.3, < 4.47 as it requires) with build-compatibility fixes only:"
+rec "  \`-include string\` (GCC 13) and its log buffer constant kMaxNumericSize 32 -> 48 (aarch64 long double;"
+rec "  third_party/moeinf2502_build.patch). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time"
 rec "  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio."
 export SCRUB_GLOB="$ck/*.safetensors $OFF/*"
 MI(){ echo "$MPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload results/WORKLOADS/$w.json --offload-dir $OFF"; }

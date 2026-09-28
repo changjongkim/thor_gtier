@@ -1,0 +1,13 @@
+diff --git a/core/base/log_stream.h b/core/base/log_stream.h
+index 8f48093..b699b54 100644
+--- a/core/base/log_stream.h
++++ b/core/base/log_stream.h
+@@ -142,7 +142,7 @@ class LogStream : noncopyable {
+ 
+   Buffer buffer_;
+ 
+-  static const int kMaxNumericSize = 32;
++  static const int kMaxNumericSize = 48;  // thor_gtier: aarch64 long double has 33 digits (x86: 18)
+ };
+ 
+ class Fmt  // : noncopyable

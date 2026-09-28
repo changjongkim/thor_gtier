@@ -30,5 +30,8 @@ appended below.
   instantiation" and the errors that follow (`results/PREP/moeinf2502/build.log`), so the 2025-02 release was
   never installed. (Stage 12's smoke then imported the current release, which the venv also sees, and failed
   on its transformers pin; that ImportError is a consequence, not the cause.)
-- Result: the 2025-02 SSD-tier release cannot be built here unmodified; not run. Its current release preloads
+- Build fixed 09-28 22:40 with build-compatibility changes only (`-include string`; log constant
+  kMaxNumericSize 32 -> 48 for aarch64's 128-bit long double; `third_party/moeinf2502_build.patch`); it builds
+  and imports. Its run (stage 12 again, after stage 11) replaces this entry:
+- (superseded) the 2025-02 SSD-tier release cannot be built here unmodified; not run. Its current release preloads
   every expert (above). Recorded as cannot run on Mixtral (`results/MATRIX5/mixtral8x7b/mmlu/moeinf2502_*.txt`).

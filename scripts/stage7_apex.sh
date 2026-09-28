@@ -30,7 +30,8 @@ grep -q '^RESULT' results/PREP/selftest/apex.log || { say "stage 7: MoE-APEX* se
 for f in 0.25 0.45 0.65 1.08; do
   b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}'); c=$O/memcal/apex_$b.json
   T=$(python3 -c "import json;print(round(json.load(open('$O/memcal/phasor_$b.json'))['peak_gib'],2))")
-  cal $c $T $b $(APEX mmlu {B} {OUT}) --limit 2
+  # memcal reads the probe's result at {OUT} itself (APEX() appends .json for run())
+  cal $c $T $b $ZPY baselines_hf/baseline_serve.py --system apex --weights bf16 --checkpoint $ck --workload results/WORKLOADS/mmlu.json --budget-gib {B} --out {OUT} --limit 2
   say "memcal $m $f apex: $(tail -1 $c.log)"
 done
 # E1

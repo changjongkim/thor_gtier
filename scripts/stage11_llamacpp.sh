@@ -21,19 +21,22 @@ settle(){ local i=0; until [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /pr
   i=$((i+1)); [ $i = 120 ] && say "waiting for >= 100 GiB available"; sleep 5; done; }   # outside memory pressure would say nothing
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
 eval "$(sed -n '/^cal(){/,/^}/p; /^flag14(){/,/^}/p; /^over14(){/,/^}/p; /^because(){/,/^}/p' scripts/stage_helpers.sh)"
-[ -n "${NOWAIT:-}" ] || until grep -q "=== stage 10 done ===" "$LOG"; do sleep 120; done
+[ -n "${NOWAIT:-}" ] || until grep -q "${WAIT_FOR:-=== stage 10 done ===}" "$LOG"; do sleep 120; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 11 (llama.cpp, stock mmap offloading) start ==="
 mkdir -p $P/llamacpp $G
 export SCRUB_GLOB=""    # its page cache is its cache: bounded by the cgroup, not scrubbed
 note(){ echo "$*" >> $P/LLAMACPP.md; }
+[ -n "${FRESH:-}" ] && rm -f $P/LLAMACPP.md
 [ -f $P/LLAMACPP.md ] || printf '# llama.cpp (stock) on the unified-memory Thor\n\n' > $P/LLAMACPP.md
 # 0 build and convert
 if [ ! -x $BIN ]; then
   [ -d $L/.git ] || timeout 1800 git clone -q https://github.com/ggml-org/llama.cpp $L
-  ( cd $L && PATH=/usr/local/cuda/bin:$PATH cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=110 -DCMAKE_BUILD_TYPE=Release \
-      -DLLAMA_CURL=OFF > $P/llamacpp/cmake.log 2>&1 && \
-    PATH=/usr/local/cuda/bin:$PATH cmake --build build -j 12 --target llama-server > $P/llamacpp/build.log 2>&1 )
+  # the CUDA 13.0 toolkit: /usr/local/cuda (13.2) here has no cuBLAS (09-28 22:26: "CUDA::cublas not found")
+  CT=/usr/local/cuda-13.0; rm -rf "${L:?}/build"
+  ( cd $L && PATH=$CT/bin:$PATH CUDACXX=$CT/bin/nvcc cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=110 \
+      -DCUDAToolkit_ROOT=$CT -DCMAKE_BUILD_TYPE=Release -DLLAMA_CURL=OFF > $P/llamacpp/cmake.log 2>&1 && \
+    PATH=$CT/bin:$PATH cmake --build build -j 12 --target llama-server > $P/llamacpp/build.log 2>&1 )
 fi
 if [ ! -x $BIN ]; then
   say "stage 11: llama.cpp build FAILED: $(grep -hiE 'error' $P/llamacpp/cmake.log $P/llamacpp/build.log 2>/dev/null | head -1 | cut -c1-150)"
@@ -56,6 +59,9 @@ LC(){  # LC <gguf> <tokenizer ckpt> <workload> : the runner up to --budget-gib/-
 for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench" \
          "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 87.0 mmlu"; do
   set -- $M; m=$1; ck=$2; gb=$3; WLS=${4//,/ }; O=results/MATRIX5/$m; gg=$G/${m}_bf16.gguf
+  if [ $m = mixtral8x7b ] && [ ! -s $gg ] && [ $(df -BG --output=avail /home/thor/kcj | tail -1 | tr -dc 0-9) -lt 100 ] && [ -f $ST/ok_delete_gguf ]; then
+    rm -f "$G/qwen30b_bf16.gguf"; say "stage 11: removed the Qwen3 bf16 GGUF (done with it; approved) for the Mixtral conversion"
+  fi
   conv $ck $gg || { for w in $WLS; do for f in 0.25 0.45 0.65 1.08; do echo "NORUN budget=- reason=gguf-conversion-failed" > $O/$w/llamacpp_$f.txt; done; done; continue; }
   # 1 smoke
   settle; drop

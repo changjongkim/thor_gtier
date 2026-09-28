@@ -85,9 +85,23 @@ PHASOR stays fastest at every bandwidth (1.7x FlashMoE*, 2.9x DuoServe* at PS2) 
 (4.4x from PS0 to PS2 vs 2.7x / 2.9x): it moves more bytes per request and is therefore the most
 bandwidth-sensitive. ZipMoE (compressed reads) is pending: stage 6b.
 
-## Pending (09-28 14:00)
+## Pending (09-28 14:05)
 
-- Stage 6b: ZipMoE store rebuild + its slower-SSD runs; waiting for >= 100 GiB available (an IDE language
-  server outside the experiments grew back to 84 GB and the rebuild met the host guard).
-- Stage 7: MoE-APEX* (bf16) memcal, E1, E3. Stage 8: FineMoE load test, then (if it serves) tokens, maps,
-  fidelity, memcal, E1, E3, nominal; else PREP/FINEMOE.md.
+Restarted 14:01 in order (`scripts/resume_chain.sh`), nothing else running meanwhile:
+- Stage 6b: ZipMoE store rebuild + its slower-SSD runs.
+- Stage 7: MoE-APEX* (bf16) memcal, E1, E1 retries, E3.
+- Stage 8: FineMoE load test, then (if it serves) tokens, maps, fidelity, memcal, E1, E3, nominal; else
+  PREP/FINEMOE.md.
+- Stage 9 (for Fig. 9/10, 4.1, 4.3): MoE-APEX* and FineMoE E2 at 20/15/10/5% (MMLU,
+  `mmlu/{apex,finemoe}_{0.05..0.20}`), MoE-APEX* at its own setting for 25/45/65/108%
+  (`mmlu/apex_{f}_nominal`; at 5-20% the E2 run is that setting), causes recorded for any E1/E3 cell
+  without a result.
+- E2 is run as for the other systems in stage 5: each system at its own setting (cache = budget), no memcal
+  (the stage-5 E2 cells have `budget_gib` = the budget and peaks above PHASOR's). A run of MoE-APEX* or
+  FineMoE whose peak exceeds 1.4 x PHASOR's is recorded as not fitting (NORUN line; its json is kept).
+  Under the same rule ZipMoE's existing 5% cell (12.0 vs 7.7 GiB, 1.56x) would not fit; SUMMARY's E2 table
+  marks every such cell `(>1.4x)` for the paper to decide.
+- Method note: 13:51-13:52 stage 6b and stage 7's self-test were stopped by the host guard while an IDE
+  language server outside the experiments held 110 GB. `in_cgroup.sh` now tells such a stop from a run that
+  does not fit (after the kill, memory that does not come back = held outside) and reruns it; no result so
+  far was recorded from such a stop.

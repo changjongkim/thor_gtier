@@ -1,0 +1,5 @@
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+hqq 0.2.8.post1 requires einops, which is not installed.
+moe-infinity 0.0.0 requires pydantic<2,>=1.10.19, but you have pydantic 1.10.12 which is incompatible.
+moe-infinity 0.0.0 requires transformers<6,>=5.3.0, but you have transformers 4.46.3 which is incompatible.
+openai 3.19.0 requires pydantic!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,<3,>=1.10.13, but you have pydantic 1.10.12 which is incompatible.

@@ -1,0 +1,15 @@
+Processing /home/thor/kcj/MoE-Infinity-2408
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: moe_infinity
+  Building wheel for moe_infinity (pyproject.toml): started
+  Building wheel for moe_infinity (pyproject.toml): finished with status 'done'
+  Created wheel for moe_infinity: filename=moe_infinity-0.0.1-cp312-cp312-linux_aarch64.whl size=21138965 sha256=a4429eee7956a0625164337a4968a46c1d1850873a0d2fa81198f6e63ea2dd4c
+  Stored in directory: /home/thor/.cache/pip/wheels/cb/a9/7a/bf04ad612d16c90b7cfb8e9650d4d25281a17dd021e5b7e915
+Successfully built moe_infinity
+Installing collected packages: moe_infinity
+  Attempting uninstall: moe_infinity
+    Found existing installation: moe_infinity 0.0.0
+    Not uninstalling moe-infinity at /home/thor/Envs/t26/lib/python3.12/site-packages, outside environment /home/thor/kcj/envs/moeinf2408
+    Can't uninstall 'moe_infinity'. No files were found to uninstall.
+Successfully installed moe_infinity-0.0.1

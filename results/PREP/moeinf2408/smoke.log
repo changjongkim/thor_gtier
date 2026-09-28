@@ -1,0 +1,21 @@
+scrub: 19 files
+/home/thor/kcj/envs/moeinf2408/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/thor/kcj/envs/moeinf2408/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+Traceback (most recent call last):
+  File "/home/thor/kcj/thor_gtier/scripts/sota_serve.py", line 60, in <module>
+    total = torch.cuda.get_device_properties(0).total_memory / 2**30
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/cuda/__init__.py", line 686, in get_device_properties
+    _lazy_init()  # will define _get_device_properties
+    ^^^^^^^^^^^^
+  File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+cgroup_io_read_gib=0.847
+cgroup_cpu_s=6.4 cgroup_user_s=5.7 cgroup_sys_s=0.7

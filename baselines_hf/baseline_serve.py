@@ -41,11 +41,11 @@ class Clock:
 m0 = mem_avail_gib(); t0 = time.time()
 model, tok, cache = offload_hf.build(a.checkpoint, a.system, a.budget_gib, weights=a.weights,
                                      predictor=a.predictor, traces=a.trace)
-if a.system == "apex":
-    # MoE-APEX* thresholds: profile the unimportance-score distribution on
-    # held-out prompts with every expert in high precision, then take the
+if a.system == "apex" and cache.mixed:
+    # MoE-APEX* (mixed mode) thresholds: profile the cumulative-score distribution
+    # on held-out prompts with every expert in high precision, then take the
     # paper's split (67% high, 30% low, 3% skip) as quantiles; cached per model
-    store = a.weights or (a.checkpoint.rstrip("/") + "_int4")
+    store = a.weights.split(":", 1)[1] if ":" in a.weights else a.checkpoint.rstrip("/") + "_int2"
     thf = os.path.join(store, "thresholds.json")
     if not os.path.exists(thf) and a.calib_workload:
         import numpy as _np
@@ -63,6 +63,7 @@ if a.system == "apex":
         th = json.load(open(thf)); cache.t1, cache.t2 = th["t1"], th["t2"]
     cache.calib = None; cache.high.clear(); cache.low.clear(); cache.reset()
     cache.hits = cache.misses = cache.skips = cache.low_loads = 0; cache.r.bytes_read = 0
+    if cache.lr: cache.lr.bytes_read = 0
 load_s = time.time() - t0
 work = json.load(open(a.workload))
 if a.limit: work = work[:a.limit]
@@ -95,9 +96,9 @@ res = {"system": a.system, "budget_gib": a.budget_gib, "load_s": load_s, "footpr
        "request_s": sum(r["request_s"] for r in rows) / n, "rows": rows}
 res["peak_gib"] = _mw.peak_gib()
 if a.system == "apex":
-    res["apex"] = {"t1": cache.t1, "t2": cache.t2, "hits": cache.hits, "misses": cache.misses,
-                   "low_loads": cache.low_loads, "skips": cache.skips,
-                   "low_read_gib": cache.lr.bytes_read / 2**30}
+    res["apex"] = {"mode": "mixed" if cache.mixed else "bf16", "t1": cache.t1, "t2": cache.t2,
+                   "hits": cache.hits, "misses": cache.misses, "low_loads": cache.low_loads, "skips": cache.skips,
+                   "low_read_gib": cache.lr.bytes_read / 2**30 if cache.lr else 0.0}
 if hasattr(cache, "dec_hits"):
     res["cache"] = {"hits": cache.hits, "misses": cache.misses, "decode_hits": cache.dec_hits, "decode_misses": cache.dec_misses}
 res["batch"] = a.batch

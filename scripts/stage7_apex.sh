@@ -1,7 +1,7 @@
 #!/bin/bash
-# Stage 7: MoE-APEX* (ASPLOS'26; reimplemented from HOBBIT, arXiv 2411.01433)
-# on Qwen3-30B: int4 store, self-test, threshold profiling on held-out prompts,
-# memcal at the four budgets, E1 (three workloads x four budgets).  Same caps,
+# Stage 7: MoE-APEX* (ASPLOS'26; reimplemented from the paper, bf16 mode) on
+# Qwen3-30B: self-test, memcal at the four budgets, E1 (three workloads x four
+# budgets).  Same caps,
 # scrubbing and run() as stage 5.  Starts after stage 6 and 6b.
 set -u
 R=/home/thor/kcj/thor_gtier; cd "$R"
@@ -16,18 +16,14 @@ eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
 until [ $(grep -c "=== stage 6 done ===" "$LOG") -ge 2 ]; do sleep 120; done     # stage 6, then 6b
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 7 (MoE-APEX* on Qwen3-30B) start ==="
-m=qwen30b; ck=/home/thor/kcj/models/qwen3_30b_a3b; gb=57.0; O=results/MATRIX5/$m; ST4=${ck}_int4
-CALIB=results/ZIPMOE_FIDELITY/prompts24.json          # ShareGPT prompts outside our workloads
-if [ ! -s $ST4/index.json ]; then
-  drop; say "stage 7: building the int4 expert store"
-  timeout 7200 scripts/in_cgroup.sh prep max $ZPY scripts/apex_build_store.py $ck $ST4 > results/PREP/apex_store.log 2>&1
-  say "stage 7: $(tail -1 results/PREP/apex_store.log)"
-fi
-export SCRUB_GLOB="$ck/*.safetensors $ST4/*.bin"
-APEX(){ echo "$ZPY baselines_hf/baseline_serve.py --system apex --checkpoint $ck --weights $ST4 --calib-workload $CALIB --workload results/WORKLOADS/$1.json --budget-gib $2 --out $3.json"; }
-# self-test (also profiles T1/T2 once, into $ST4/thresholds.json)
+m=qwen30b; ck=/home/thor/kcj/models/qwen3_30b_a3b; gb=57.0; O=results/MATRIX5/$m
+# the evaluation runs MoE-APEX* in bf16 mode: precision adaptation off (outputs
+# equal the original model, as for every system here); LCU caching and the
+# adaptive prefetcher are the paper's.  The mixed (int2) mode is not run here.
+export SCRUB_GLOB="$ck/*.safetensors"
+APEX(){ echo "$ZPY baselines_hf/baseline_serve.py --system apex --weights bf16 --checkpoint $ck --workload results/WORKLOADS/$1.json --budget-gib $2 --out $3.json"; }
 drop; timeout 3600 scripts/in_cgroup.sh prep max $(APEX mmlu 25.65 results/PREP/selftest/apex) --limit 2 > results/PREP/selftest/apex.log 2>&1
-say "stage 7: selftest $(grep -h '^RESULT' results/PREP/selftest/apex.log | cut -c1-120) thresholds $(cat $ST4/thresholds.json 2>/dev/null | cut -c1-80)"
+say "stage 7: selftest $(grep -h '^RESULT' results/PREP/selftest/apex.log | cut -c1-140)"
 grep -q '^RESULT' results/PREP/selftest/apex.log || { say "stage 7: MoE-APEX* self-test FAILED"; exit 1; }
 # memcal: the knob whose peak matches PHASOR's at each budget
 for f in 0.25 0.45 0.65 1.08; do
@@ -43,7 +39,6 @@ for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
   if [ "$kb" = none ]; then echo "NORUN budget=$nb reason=exceeds-phasor-memory-at-every-setting" > $O/$w/apex_$f.txt; continue; fi
   CAP_GIB=$(capfor $nb) run "s5_${m}_${w}_apex_$nb" $kb $O/$w/apex_$f $(APEX $w $kb $O/$w/apex_$f)
 done; done
-cp $ST4/thresholds.json $O/memcal/apex_thresholds.json 2>/dev/null
 python3 scripts/summarize_matrix5.py > results/MATRIX5/SUMMARY.md 2>>"$LOG"
 git add -f baselines_hf/apex_hf.py baselines_hf/offload_hf.py baselines_hf/baseline_serve.py scripts/apex_build_store.py scripts/stage7_apex.sh \
   $O/*/apex_* $O/memcal/apex_* results/MATRIX5/SUMMARY.md 2>/dev/null

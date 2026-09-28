@@ -212,7 +212,7 @@ class BaselineMoE(nn.Module):
         experts = torch.unique(sel).tolist()
         out = torch.zeros_like(x)
         if self.kind == "apex":
-            from apex_hf import dequant_int4
+            from apex_hf import dequant_int2
             if prefill and self.layer == 0: self.cache.reset()
             if not prefill and b == 1:
                 wd = {e: 0.0 for e in experts}
@@ -222,7 +222,7 @@ class BaselineMoE(nn.Module):
                 ws = self.cache.get(self.layer, experts, None, True)
             for e, (prec, t) in ws.items():
                 if prec == "h": g, u, d = t
-                else: g, u, d = [dequant_int4(pk, sc, r, c) for pk, sc, r, c in t]
+                else: g, u, d = [dequant_int2(pk, sc, mn, r, c) for pk, sc, mn, r, c in t]
                 tok, kk = torch.where(sel == e)
                 out.index_add_(0, tok, expert_ffn(x[tok], g, u, d) * w[tok, kk, None])
             if not prefill and b == 1:
@@ -259,14 +259,20 @@ def build(ckpt, kind, budget_gib, weights=None, predictor=None, traces=()):
     reader = ExpertReader(ckpt, moe_attr, names, L, E)
     units = int(budget_gib * (1 << 30) // reader.unit_bytes)
     if kind == "apex":
-        from apex_hf import ApexCache, Int4Reader, build_int4_store
-        store = weights or os.path.join(ckpt + "_int4")
-        if not os.path.exists(os.path.join(store, "index.json")):
-            build_int4_store(reader, store, L, E)
+        # weights: "bf16" (precision adaptation off, the evaluation's) or "mixed:<int2 store dir>"
+        from apex_hf import ApexCache, LowReader, build_low_store
+        mixed = bool(weights) and weights.startswith("mixed")
+        low, th = None, {}
+        if mixed:
+            store = weights.split(":", 1)[1] if ":" in weights else ckpt.rstrip("/") + "_int2"
+            if not os.path.exists(os.path.join(store, "index.json")):
+                build_low_store(reader, store, L, E)
+            low = LowReader(store)
+            thf = os.path.join(store, "thresholds.json")
+            th = json.load(open(thf)) if os.path.exists(thf) else {}
         gates = []           # filled below, once the gates exist
-        th = json.load(open(os.path.join(store, "thresholds.json"))) if os.path.exists(os.path.join(store, "thresholds.json")) else {}
-        cache = ApexCache(reader, Int4Reader(store), L, E, K, budget_gib * (1 << 30), gates,
-                          t1=th.get("t1", 0.6), t2=th.get("t2", 0.9))
+        cache = ApexCache(reader, low, L, E, K, budget_gib * (1 << 30), gates,
+                          t1=th.get("t1", 0.6), t2=th.get("t2", 0.9), mixed=mixed)
     elif kind == "flashmoe":
         cache = FlashMoECache(reader, L, E, units // L, weights)
     else:

@@ -25,7 +25,10 @@ appended below.
 ## Version 48bb3bc (2025-02-13): the last release with an SSD tier
 - Experts stay in its offload store on the SSD and move SSD -> host pool -> GPU on demand; the preloading
   ("Moving sparse parameters to CPU") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3.
-- Built unmodified in its own venv (transformers < 4.47 as it requires); HOST_MEMORY_RATIO (its build-time
-  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
-
-## Version 48bb3bc (2025-02, SSD tier), Mixtral-8x7B: does not serve: ImportError: cannot import name 'DeepseekV2ForCausalLM' from 'transformers' (/home/thor/kcj/envs/moeinf2502/lib/python3.
+- Build: its C++ ops do not compile with this host's toolchain (GCC 13.3, libstdc++ 13):
+  `core/aio/archer_prio_aio_handle.cpp:18` -- "partial specialization of struct std::hash<std::string> after
+  instantiation" and the errors that follow (`results/PREP/moeinf2502/build.log`), so the 2025-02 release was
+  never installed. (Stage 12's smoke then imported the current release, which the venv also sees, and failed
+  on its transformers pin; that ImportError is a consequence, not the cause.)
+- Result: the 2025-02 SSD-tier release cannot be built here unmodified; not run. Its current release preloads
+  every expert (above). Recorded as cannot run on Mixtral (`results/MATRIX5/mixtral8x7b/mmlu/moeinf2502_*.txt`).

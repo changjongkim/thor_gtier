@@ -1,0 +1,21 @@
+SERVER /home/thor/kcj/llama.cpp/build/bin/llama-server -m /home/thor/kcj/models/gguf_bf16/mixtral8x7b_bf16.gguf --load-mode mmap --cpu-moe -ngl 999 -c 8288 -np 1 -t 14 --host 127.0.0.1 --port 18080
+0.00.038.608 I srv  llama_server: initializing ...
+0.00.038.632 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.039.193 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.041.407 I srv    load_model: loading model '/home/thor/kcj/models/gguf_bf16/mixtral8x7b_bf16.gguf'
+0.00.232.577 W llama_model_loader: tensor overrides to CPU are used with mmap enabled - consider using --load-mode none for better performance
+2.59.526.291 I cmn          init: llama threadpool init, n_threads = 14
+5.38.234.957 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8448, kv_unified = 'false'
+5.38.278.275 I srv  llama_server: model loaded
+5.38.278.286 I srv  llama_server: listening on http://127.0.0.1:18080
+5.38.875.656 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+5.38.875.893 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+19.52.895.478 I slot print_timing: id  0 | task 0 | prompt eval time =  640022.74 ms /   694 tokens (  922.22 ms per token,     1.08 tokens per second)
+19.52.895.483 I slot print_timing: id  0 | task 0 |        eval time =  213987.79 ms /     8 tokens (30569.68 ms per token,     0.03 tokens per second)
+19.52.895.484 I slot print_timing: id  0 | task 0 |       total time =  854010.53 ms /   702 tokens
+19.52.905.986 I slot print_timing: id  0 | task 0 |    graphs reused =          7
+19.52.907.781 I slot      release: id  0 | task 0 | stop processing: n_tokens = 701, truncated = 0
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 640.029545545578, "tpot_ms": 30569.13379260472, "request_s": 854.0370609760284}
+19.52.916.790 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.905 (> 0.100 thold), f_keep = 0.880
+19.52.922.713 I slot launch_slot_: id  0 | task 9 | processing task, is_child = 0
+scripts/in_cgroup.sh: line 1: 590956 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )

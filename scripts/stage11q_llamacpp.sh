@@ -66,10 +66,12 @@ conv(){  # conv <ckpt> <out.gguf>
 }
 LC(){  # LC <gguf> <tokenizer ckpt> <workload> : the runner up to --budget-gib/--out
   echo "$ZPY scripts/llamacpp_serve.py --server $BIN --gguf $1 --tokenizer $2 --workload results/WORKLOADS/$3.json"; }
-for M in "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 87.0 mmlu" \
-         "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench"; do
+# Qwen3 first (09-28 23:45): a Mixtral request took 854 s at a 20 GiB cap (each token needs ~22 GB of
+# experts; the page cache refetches them through 4 KiB faults), so Mixtral runs last
+for M in "qwen30b /home/thor/kcj/models/qwen3_30b_a3b 57.0 mmlu,sharegpt,longbench" \
+         "mixtral8x7b /home/thor/kcj/models/mixtral8x7b_bf16 87.0 mmlu"; do
   set -- $M; m=$1; ck=$2; gb=$3; WLS=${4//,/ }; O=results/MATRIX5/$m; gg=$G/${m}_bf16.gguf
-  if [ $m = qwen30b ] && [ ! -s $gg ] && [ $(free_gb) -lt 130 ] && [ -f $ST/ok_delete_gguf ]; then
+  if [ $m = qwen30b ] && [ ! -s $gg ] && [ $(free_gb) -lt 125 ] && [ -f $ST/ok_delete_gguf ]; then
     rm -f "$G/mixtral8x7b_bf16.gguf"; say "stage 11q: removed the Mixtral bf16 GGUF (done with it; approved) for the Qwen3 conversion"
   fi
   conv $ck $gg || { for w in $WLS; do for f in 0.25 0.45 0.65 1.08; do echo "NORUN budget=- reason=gguf-conversion-failed" > $O/$w/llamacpp_$f.txt; done; done; continue; }

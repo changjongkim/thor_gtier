@@ -20,7 +20,7 @@ drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
 settle(){ local i; for i in $(seq 1 36); do
   [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ] && return 0; sleep 5; done; }
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
-until grep -q "=== stage 7 done ===" "$LOG"; do sleep 120; done
+until grep -qE "=== stage 7 done ===|stage 7: MoE-APEX\* self-test FAILED" "$LOG"; do sleep 120; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 8 (FineMoE on Qwen3-30B) start ==="
 m=qwen30b; ck=/home/thor/kcj/models/qwen3_30b_a3b; gb=57.0; O=results/MATRIX5/$m; F=results/FINEMOE; mkdir -p $F/maps $P/finemoe

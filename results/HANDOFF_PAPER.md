@@ -48,6 +48,19 @@ On its own model (Qwen1.5-MoE-A2.7B-Chat) and harness: our runner matches its ha
 20 GB (same prompts, memory). Its paper's caching-vs-LRU/LFU advantage does not reproduce on Thor
 (ZipMoE -1.6% to +10.1% vs LRU/LFU at 10-30 GB).
 
+## Added baselines (queued, 09-28)
+
+- **MoE-APEX\*** (ASPLOS'26, no code released): reimplemented from the paper on the same stack
+  (`baselines_hf/apex_hf.py`): LCU caching (eq. 3-4), adaptive prefetch (p = 2). Evaluated with
+  precision adaptation off (bf16 mode), so outputs equal the original model like every compared system
+  and what is compared is its caching and prefetching -- the same ground on which Mixtral-offloading
+  (2-bit) is set apart. The int2 mixed mode is implemented but not run. Stage 7: memcal + Qwen3 E1.
+- **FineMoE** (EuroSys'26, bib `yu2026finemoe`): released code with a Qwen3-MoE port
+  (`third_party/finemoe_qwen3_sm110.patch`). It loads the checkpoint to CPU and pins every expert in host
+  memory (54 GiB for Qwen3-30B) before its GPU cache; on the unified pool it may not serve at all, in which
+  case `results/PREP/FINEMOE.md` records why (as for MoE-Infinity). Otherwise: token check, expert maps
+  from the other workloads, fidelity against its own measure(), memcal + E1, nominal reference. Stage 8.
+
 ## Pending
 
 - Qwen3 repeats at 45% (r2, r3): paused 09-28 05:36 -- an IDE language server outside the experiments

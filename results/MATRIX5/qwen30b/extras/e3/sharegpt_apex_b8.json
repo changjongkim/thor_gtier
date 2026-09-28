@@ -1,0 +1,112 @@
+{
+ "system": "apex",
+ "budget_gib": 21.17,
+ "load_s": 14.484455347061157,
+ "footprint_gib": 28.30316162109375,
+ "requests": 3,
+ "ttft_s": 44.45517563819885,
+ "tpot_ms": 3970.4897352444227,
+ "request_s": 167.5411684513092,
+ "rows": [
+  {
+   "names": [
+    "sg_jKqNBVf_0_t2",
+    "sg_jKqNBVf_0_t3",
+    "sg_cSz8Ik6_0_t2",
+    "sg_cSz8Ik6_0_t3",
+    "sg_zcq8Evp_0_t2",
+    "sg_zcq8Evp_0_t3",
+    "sg_5cVpTKS_0_t2",
+    "sg_V4wpuJu_0_t2"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    1059,
+    1237,
+    67,
+    391,
+    164,
+    223,
+    246,
+    614
+   ],
+   "new_tok": 32,
+   "ttft_s": 50.872617959976196,
+   "tpot_ms": 3960.9323778460102,
+   "request_s": 173.66224789619446,
+   "tok_per_s": 1.4741257993678767,
+   "read_gib": 155.3203125
+  },
+  {
+   "names": [
+    "sg_V4wpuJu_0_t3",
+    "sg_k7ymHcr_21_t2",
+    "sg_k7ymHcr_21_t3",
+    "sg_MuZDUct_0_t2",
+    "sg_MuZDUct_0_t3",
+    "sg_CcQ9JCK_25_t2",
+    "sg_9EM9xb8_25_t2",
+    "sg_9EM9xb8_25_t3"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    1240,
+    1012,
+    1797,
+    109,
+    377,
+    823,
+    379,
+    1853
+   ],
+   "new_tok": 32,
+   "ttft_s": 45.15934705734253,
+   "tpot_ms": 3660.8063021013813,
+   "request_s": 158.64515209197998,
+   "tok_per_s": 1.613664184655168,
+   "read_gib": 141.943359375
+  },
+  {
+   "names": [
+    "sg_f9XBWSi_15_t2",
+    "sg_f9XBWSi_15_t3",
+    "sg_3O3k7Ni_0_t2",
+    "sg_3O3k7Ni_0_t3",
+    "sg_zZRzzTy_16_t2",
+    "sg_zZRzzTy_16_t3",
+    "sg_RtCgJK2_47_t2",
+    "sg_RtCgJK2_47_t3"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    442,
+    759,
+    260,
+    798,
+    199,
+    393,
+    415,
+    684
+   ],
+   "new_tok": 32,
+   "ttft_s": 37.33356189727783,
+   "tpot_ms": 4289.730525785877,
+   "request_s": 170.31610536575317,
+   "tok_per_s": 1.5030874470164814,
+   "read_gib": 142.3212890625
+  }
+ ],
+ "peak_gib": 29.74130630493164,
+ "apex": {
+  "mode": "bf16",
+  "t1": 0.6,
+  "t2": 0.9,
+  "hits": 130630,
+  "misses": 50015,
+  "low_loads": 0,
+  "skips": 0,
+  "low_read_gib": 0.0
+ },
+ "batch": 8,
+ "tok_per_s": 1.5279826586287577
+}

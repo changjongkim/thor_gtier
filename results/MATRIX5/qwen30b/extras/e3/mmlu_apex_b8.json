@@ -1,0 +1,112 @@
+{
+ "system": "apex",
+ "budget_gib": 21.17,
+ "load_s": 14.418818950653076,
+ "footprint_gib": 31.572662353515625,
+ "requests": 3,
+ "ttft_s": 40.04195634524027,
+ "tpot_ms": 2280.170520146688,
+ "request_s": 56.00408991177877,
+ "rows": [
+  {
+   "names": [
+    "mmlu_professional_psychology_0",
+    "mmlu_professional_psychology_1",
+    "mmlu_professional_psychology_2",
+    "mmlu_professional_psychology_3",
+    "mmlu_abstract_algebra_4",
+    "mmlu_abstract_algebra_5",
+    "mmlu_abstract_algebra_6",
+    "mmlu_abstract_algebra_7"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    601,
+    589,
+    600,
+    637,
+    391,
+    434,
+    386,
+    425
+   ],
+   "new_tok": 8,
+   "ttft_s": 38.13254737854004,
+   "tpot_ms": 2581.290108816964,
+   "request_s": 56.20274019241333,
+   "tok_per_s": 1.1387345133154059,
+   "read_gib": 63.896484375
+  },
+  {
+   "names": [
+    "mmlu_machine_learning_8",
+    "mmlu_machine_learning_9",
+    "mmlu_machine_learning_10",
+    "mmlu_machine_learning_11",
+    "mmlu_professional_medicine_12",
+    "mmlu_professional_medicine_13",
+    "mmlu_professional_medicine_14",
+    "mmlu_professional_medicine_15"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    636,
+    442,
+    433,
+    444,
+    862,
+    1127,
+    964,
+    958
+   ],
+   "new_tok": 8,
+   "ttft_s": 44.51696538925171,
+   "tpot_ms": 2273.0849470411026,
+   "request_s": 60.429383277893066,
+   "tok_per_s": 1.0590874261563608,
+   "read_gib": 59.0888671875
+  },
+  {
+   "names": [
+    "mmlu_computer_security_16",
+    "mmlu_computer_security_17",
+    "mmlu_computer_security_18",
+    "mmlu_computer_security_19",
+    "mmlu_high_school_psychology_20",
+    "mmlu_high_school_psychology_21",
+    "mmlu_high_school_psychology_22",
+    "mmlu_high_school_psychology_23"
+   ],
+   "batch": 8,
+   "prompt_tok": [
+    392,
+    421,
+    564,
+    492,
+    334,
+    380,
+    379,
+    433
+   ],
+   "new_tok": 8,
+   "ttft_s": 37.47635626792908,
+   "tpot_ms": 1986.1365045819964,
+   "request_s": 51.38014626502991,
+   "tok_per_s": 1.2456173182122556,
+   "read_gib": 57.1025390625
+  }
+ ],
+ "peak_gib": 31.61856460571289,
+ "apex": {
+  "mode": "bf16",
+  "t1": 0.6,
+  "t2": 0.9,
+  "hits": 11645,
+  "misses": 20490,
+  "low_loads": 0,
+  "skips": 0,
+  "low_read_gib": 0.0
+ },
+ "batch": 8,
+ "tok_per_s": 1.1427736813653593
+}

@@ -1,0 +1,9 @@
+scrub: 16 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"names": ["sg_jKqNBVf_0_t2", "sg_jKqNBVf_0_t3", "sg_cSz8Ik6_0_t2", "sg_cSz8Ik6_0_t3", "sg_zcq8Evp_0_t2", "sg_zcq8Evp_0_t3", "sg_5cVpTKS_0_t2", "sg_V4wpuJu_0_t2"], "batch": 8, "prompt_tok": [1059, 1237, 67, 391, 164, 223, 246, 614], "new_tok": 32, "ttft_s": 50.872617959976196, "tpot_ms": 3960.9323778460102, "request_s": 173.66224789619446, "tok_per_s": 1.4741257993678767, "read_gib": 155.3203125}
+REQ {"names": ["sg_V4wpuJu_0_t3", "sg_k7ymHcr_21_t2", "sg_k7ymHcr_21_t3", "sg_MuZDUct_0_t2", "sg_MuZDUct_0_t3", "sg_CcQ9JCK_25_t2", "sg_9EM9xb8_25_t2", "sg_9EM9xb8_25_t3"], "batch": 8, "prompt_tok": [1240, 1012, 1797, 109, 377, 823, 379, 1853], "new_tok": 32, "ttft_s": 45.15934705734253, "tpot_ms": 3660.8063021013813, "request_s": 158.64515209197998, "tok_per_s": 1.613664184655168, "read_gib": 141.943359375}
+REQ {"names": ["sg_f9XBWSi_15_t2", "sg_f9XBWSi_15_t3", "sg_3O3k7Ni_0_t2", "sg_3O3k7Ni_0_t3", "sg_zZRzzTy_16_t2", "sg_zZRzzTy_16_t3", "sg_RtCgJK2_47_t2", "sg_RtCgJK2_47_t3"], "batch": 8, "prompt_tok": [442, 759, 260, 798, 199, 393, 415, 684], "new_tok": 32, "ttft_s": 37.33356189727783, "tpot_ms": 4289.730525785877, "request_s": 170.31610536575317, "tok_per_s": 1.5030874470164814, "read_gib": 142.3212890625}
+RESULT policy=apex budget=21.17 requests=3 ttft_s=44.4552 tpot_ms=3970.490 request_s=167.5412 footprint_gib=28.30 peak_gib=29.74 compute=measured
+cgroup_io_read_gib=516.164
+cgroup_cpu_s=343.1 cgroup_user_s=137.6 cgroup_sys_s=205.5
+cgroup_peak_gib=2.90

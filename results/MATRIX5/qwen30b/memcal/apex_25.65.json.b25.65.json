@@ -1,0 +1,62 @@
+{
+ "system": "apex",
+ "budget_gib": 25.65,
+ "load_s": 14.723769664764404,
+ "footprint_gib": 33.54629135131836,
+ "requests": 2,
+ "ttft_s": 32.900136947631836,
+ "tpot_ms": 970.7082339695521,
+ "request_s": 39.69604432582855,
+ "rows": [
+  {
+   "name": "mmlu_professional_psychology_0",
+   "prompt_tok": 601,
+   "new_tok": 8,
+   "ttft_s": 33.52255153656006,
+   "tpot_ms": 965.0368690490723,
+   "request_s": 40.27866291999817,
+   "read_gib": 49.9130859375,
+   "out_ids": [
+    356,
+    271,
+    14582,
+    25,
+    576,
+    1429,
+    4185,
+    943
+   ]
+  },
+  {
+   "name": "mmlu_professional_psychology_1",
+   "prompt_tok": 589,
+   "new_tok": 8,
+   "ttft_s": 32.27772235870361,
+   "tpot_ms": 976.3795988900321,
+   "request_s": 39.113425731658936,
+   "read_gib": 45.0087890625,
+   "out_ids": [
+    362,
+    271,
+    14582,
+    25,
+    15920,
+    315,
+    279,
+    2701
+   ]
+  }
+ ],
+ "peak_gib": 35.890541076660156,
+ "apex": {
+  "mode": "bf16",
+  "t1": 0.6,
+  "t2": 0.9,
+  "hits": 4690,
+  "misses": 10473,
+  "low_loads": 0,
+  "skips": 0,
+  "low_read_gib": 0.0
+ },
+ "batch": 1
+}

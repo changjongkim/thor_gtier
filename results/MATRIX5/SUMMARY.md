@@ -81,12 +81,32 @@ E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 - no prompt-routing term: 16.63 s (+1%), TTFT 8.92 s, TPOT 249 ms, peak 31.9 GiB
 - admit every staged decode unit: 16.28 s (-1%), TTFT 9.05 s, TPOT 233 ms, peak 31.9 GiB
 
-### Repeats at 45% (request s over E1 + stage 6 runs)
+### Repeats (request s over E1 + stage 6 runs)
 
-| workload | system | runs | mean | sd | cv |
-|---|---|---:|---:|---:|---:|
-| MMLU | PHASOR | 2 | 6.97 | 0.42 | 6.0% |
-| ShareGPT | PHASOR | 2 | 10.91 | 0.25 | 2.3% |
+Timing only: the 25% repeats ran while an IDE language server outside the experiments held ~60 GB,
+which moves the system-wide MemAvailable drop the peak is measured from; their peaks are not used.
+
+| budget | workload | system | runs | mean | sd | cv |
+|---|---|---|---:|---:|---:|---:|
+| 25% | MMLU | PHASOR | 3 | 9.80 | 0.22 | 2.2% |
+| 25% | MMLU | FlashMoE* | 3 | 26.07 | 0.17 | 0.6% |
+| 25% | MMLU | DuoServe* | 3 | 42.46 | 0.81 | 1.9% |
+| 25% | ShareGPT | PHASOR | 3 | 21.62 | 0.48 | 2.2% |
+| 25% | ShareGPT | FlashMoE* | 3 | 49.30 | 1.36 | 2.8% |
+| 25% | ShareGPT | DuoServe* | 3 | 78.82 | 0.31 | 0.4% |
+| 25% | LongBench | PHASOR | 3 | 24.07 | 0.28 | 1.1% |
+| 25% | LongBench | FlashMoE* | 3 | 56.33 | 0.70 | 1.2% |
+| 25% | LongBench | DuoServe* | 3 | 86.79 | 1.35 | 1.6% |
+| 45% | MMLU | PHASOR | 2 | 6.97 | 0.42 | 6.0% |
+| 45% | ShareGPT | PHASOR | 2 | 10.91 | 0.25 | 2.3% |
+
+### Slower SSD at 25% (MMLU; NVMe operational power states)
+
+| system | PS0 (E1) | PS1 (1.347 GiB/s) | PS2 (0.733 GiB/s) |
+|---|---:|---:|---:|
+| PHASOR | 9.55 / 7.77 / 254 / 19.3 | 26.84 / 23.46 / 483 / 18.8 | 41.75 / 36.83 / 702 / 19.5 |
+| FlashMoE* | 26.26 / 21.47 / 684 / 21.3 | 46.36 / 38.12 / 1178 / 21.7 | 71.18 / 59.10 / 1725 / 21.0 |
+| DuoServe* | 41.55 / 28.35 / 1887 / 21.2 | 80.10 / 55.12 / 3569 / 21.7 | 119.97 / 83.07 / 5272 / 21.5 |
 
 ### E2: small budgets (MMLU, each system at its own setting)
 

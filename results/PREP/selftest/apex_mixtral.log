@@ -1,0 +1,7 @@
+scrub: 19 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 42.3796284198761, "tpot_ms": 7353.039877755301, "request_s": 93.85205340385437, "read_gib": 213.609375, "out_ids": [334, 13, 13, 24994, 28747, 9595, 302, 272]}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 682, "new_tok": 8, "ttft_s": 40.231483459472656, "tpot_ms": 7518.969093050276, "request_s": 92.86509871482849, "read_gib": 210.984375, "out_ids": [330, 13, 13, 24994, 28747, 9595, 302, 272]}
+RESULT policy=apex budget=21.75 requests=2 ttft_s=41.3056 tpot_ms=7436.004 request_s=93.3586 footprint_gib=30.27 peak_gib=30.86 compute=measured
+cgroup_io_read_gib=430.072
+cgroup_cpu_s=186.3 cgroup_user_s=11.9 cgroup_sys_s=174.4

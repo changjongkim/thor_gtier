@@ -126,7 +126,7 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | FlashMoE* | 27.47 / 22.13 / 763 / 20.2 | 30.28 / 23.55 / 962 / 16.9 | 33.26 / 24.55 / 1244 / 13.9 | 39.60 / 26.92 / 1811 / 9.2 |
 | DuoServe* | 41.95 / 28.76 / 1884 / 21.1 | 44.47 / 29.13 / 2191 / 18.5 | 48.99 / 29.16 / 2834 / 13.4 | 58.34 / 29.64 / 4100 / 9.9 |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 40.40 / 31.09 / 1330 / 22.1 | 41.80 / 32.12 / 1383 / 15.5 | 41.44 / 31.26 / 1454 / 12.1 | 41.89 / 30.42 / 1639 / 10.6 |
-| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (not-tried) | cannot run (not-tried) | cannot run (not-tried) |
+| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
 
 ### E5: PHASOR latency breakdown at 45%
 
@@ -171,6 +171,7 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | ZipMoE | 58.53 / 20.86 / 5382 / 26.7 [1.44x] | 40.64 / 14.20 / 3778 / 45.6 [1.46x] | 25.69 / 10.77 / 2132 / 64.1 [1.50x] | cannot run (host-safety-ceiling) |
 | FlashMoE* | 97.51 / 36.94 / 8653 / 20.7 [2.41x] | 60.41 / 26.84 / 4795 / 41.7 [2.16x] | 32.05 / 17.87 / 2024 / 61.0 [1.88x] | cannot run (host-safety-ceiling) |
 | DuoServe* | 188.93 / 50.90 / 19719 / 25.0 [4.66x] | 138.84 / 42.18 / 13809 / 43.2 [4.97x] | 99.48 / 38.39 / 8727 / 62.2 [5.82x] | cannot run (host-safety-ceiling) |
+| MoE-APEX* (bf16: LCU cache + prefetch) | 98.67 / 43.76 / 7844 / 28.6 (over) [2.43x] | 83.79 / 41.56 / 6033 / 45.6 [3.00x] | 60.86 / 33.12 / 3963 / 61.8 [3.56x] | cannot run (host-safety-ceiling) |
 | FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
 | Fiddler | cannot run (oom-under-cap) | - | - | - |
 | Mixtral-offloading (2-bit) | 7.65 / 5.10 / 364 / 22.7 [0.19x] | - | - | - |

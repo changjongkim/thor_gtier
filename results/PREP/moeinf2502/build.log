@@ -1,0 +1,965 @@
+Processing /home/thor/kcj/MoE-Infinity-2502
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: moe_infinity
+  Building wheel for moe_infinity (pyproject.toml): started
+  Building wheel for moe_infinity (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Building wheel for moe_infinity (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [948 lines of output]
+      /home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+        @custom_fwd
+      /home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+        @custom_bwd
+      /home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+        @custom_fwd(cast_inputs=torch.float16)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/dist.py:765: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+      !!
+      
+              ********************************************************************************
+              Please consider removing the following classifiers in favor of a SPDX license expression:
+      
+              License :: OSI Approved :: Apache Software License
+      
+              See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+              ********************************************************************************
+      
+      !!
+        self._finalize_license_expression()
+      find_packages: ['moe_infinity', 'op_builder', 'moe_infinity.common', 'moe_infinity.entrypoints', 'moe_infinity.runtime', 'moe_infinity.utils', 'moe_infinity.ops', 'moe_infinity.memory', 'moe_infinity.distributed', 'moe_infinity.models', 'moe_infinity.ops.prefetch', 'moe_infinity.ops.op_builder', 'moe_infinity.models.modeling_grok', 'moe_infinity.models.modeling_deepseek_v3', 'moe_infinity.models.modeling_deepseek', 'moe_infinity.models.modeling_arctic']
+      running bdist_wheel
+      running build
+      running build_py
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity
+      copying moe_infinity/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/common
+      copying moe_infinity/common/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/common
+      copying moe_infinity/common/constants.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/common
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/entrypoints
+      copying moe_infinity/entrypoints/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/entrypoints
+      copying moe_infinity/entrypoints/big_modeling.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/entrypoints
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/runtime
+      copying moe_infinity/runtime/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/runtime
+      copying moe_infinity/runtime/model_offload.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/runtime
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/utils
+      copying moe_infinity/utils/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/utils
+      copying moe_infinity/utils/hf_config.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/utils
+      copying moe_infinity/utils/arguments.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/utils
+      copying moe_infinity/utils/checkpoints.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/utils
+      copying moe_infinity/utils/config.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/utils
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops
+      copying moe_infinity/ops/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/expert_tracer.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/expert_priority_score.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/expert_cache.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/expert_predictor.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/expert_entry.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      copying moe_infinity/memory/expert_prefetcher.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/memory
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/distributed
+      copying moe_infinity/distributed/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/distributed
+      copying moe_infinity/distributed/devicemap_manager.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/distributed
+      copying moe_infinity/distributed/expert_executor.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/distributed
+      copying moe_infinity/distributed/expert_prefetcher.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/distributed
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/nllb_moe.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/deepseek.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/arctic.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/grok.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/switch_transformers.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/model_utils.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      copying moe_infinity/models/mixtral.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/prefetch
+      copying moe_infinity/ops/prefetch/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/prefetch
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/op_builder
+      copying moe_infinity/ops/op_builder/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/op_builder
+      copying moe_infinity/ops/op_builder/builder.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/op_builder
+      copying moe_infinity/ops/op_builder/all_ops.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/op_builder
+      copying moe_infinity/ops/op_builder/prefetch.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/op_builder
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_grok
+      copying moe_infinity/models/modeling_grok/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_grok
+      copying moe_infinity/models/modeling_grok/modeling_grok1.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_grok
+      copying moe_infinity/models/modeling_grok/modeling_grok1_outputs.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_grok
+      copying moe_infinity/models/modeling_grok/configuration_grok1.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_grok
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek_v3
+      copying moe_infinity/models/modeling_deepseek_v3/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek_v3
+      copying moe_infinity/models/modeling_deepseek_v3/configuration_deepseek.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek_v3
+      copying moe_infinity/models/modeling_deepseek_v3/modeling_deepseek.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek_v3
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek
+      copying moe_infinity/models/modeling_deepseek/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek
+      copying moe_infinity/models/modeling_deepseek/configuration_deepseek.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek
+      copying moe_infinity/models/modeling_deepseek/tokenization_deepseek_fast.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek
+      copying moe_infinity/models/modeling_deepseek/modeling_deepseek.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_deepseek
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_arctic
+      copying moe_infinity/models/modeling_arctic/__init__.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_arctic
+      copying moe_infinity/models/modeling_arctic/tokenization_arctic.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_arctic
+      copying moe_infinity/models/modeling_arctic/modeling_arctic.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_arctic
+      copying moe_infinity/models/modeling_arctic/configuration_arctic.py -> build/lib.linux-aarch64-cpython-312/moe_infinity/models/modeling_arctic
+      running egg_info
+      creating moe_infinity.egg-info
+      writing moe_infinity.egg-info/PKG-INFO
+      writing dependency_links to moe_infinity.egg-info/dependency_links.txt
+      writing requirements to moe_infinity.egg-info/requires.txt
+      writing top-level names to moe_infinity.egg-info/top_level.txt
+      writing manifest file 'moe_infinity.egg-info/SOURCES.txt'
+      reading manifest file 'moe_infinity.egg-info/SOURCES.txt'
+      reading manifest template 'MANIFEST.in'
+      adding license file 'LICENSE'
+      writing manifest file 'moe_infinity.egg-info/SOURCES.txt'
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.aio' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.aio' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.aio' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.aio' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.aio' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.base' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.base' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.base' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.base' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.base' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.common' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.common' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.common' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.common' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.common' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.memory' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.memory' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.memory' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.memory' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.memory' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.model' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.model' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.model' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.model' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.model' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.parallel' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.parallel' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.parallel' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.parallel' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.parallel' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.prefetch' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.prefetch' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.prefetch' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.prefetch' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.prefetch' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.python' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.python' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.python' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.python' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.python' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      /home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_py.py:215: _Warning: Package 'moe_infinity.ops.core.utils' is absent from the `packages` configuration.
+      !!
+      
+              ********************************************************************************
+              ############################
+              # Package would be ignored #
+              ############################
+              Python recognizes 'moe_infinity.ops.core.utils' as an importable package[^1],
+              but it is absent from setuptools' `packages` configuration.
+      
+              This leads to an ambiguous overall configuration. If you want to distribute this
+              package, please make sure that 'moe_infinity.ops.core.utils' is explicitly added
+              to the `packages` configuration field.
+      
+              Alternatively, you can also rely on setuptools' discovery methods
+              (for example by using `find_namespace_packages(...)`/`find_namespace:`
+              instead of `find_packages(...)`/`find:`).
+      
+              You can read more about "package discovery" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+      
+              If you don't want 'moe_infinity.ops.core.utils' to be distributed and are
+              already explicitly excluding 'moe_infinity.ops.core.utils' via
+              `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+              you can try to use `exclude_package_data`, or `include-package-data=False` in
+              combination with a more fine grained `package-data` configuration.
+      
+              You can read more about "package data files" on setuptools documentation page:
+      
+              - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+      
+      
+              [^1]: For Python, any directory (with suitable naming) can be imported,
+                    even if it does not contain any `.py` files.
+                    On the other hand, currently there is no concept of package data
+                    directory, all directories are treated like packages.
+              ********************************************************************************
+      
+      !!
+        check.warn(importable)
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/archer_prefetch_handle.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_scheduler.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/archer_prefetch_handle.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_thread.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_scheduler.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/model
+      copying moe_infinity/ops/core/model/model_topology.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/model
+      copying moe_infinity/ops/core/model/model_topology.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/model
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/time.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/pytorch.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/status.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/types.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_handle.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_prio_aio_handle.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_index.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_utils.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_thread.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_index.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_handle.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_prio_aio_handle.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_utils.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_threadpool.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_threadpool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/process_info.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_file.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timestamp.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/exception.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/process_info.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/date.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/file_util.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/countdown_latch.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/countdown_latch.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timezone.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_file.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timestamp.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_stream.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/file_util.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/string_piece.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timezone.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_stream.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/noncopyable.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/logging.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/current_thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/exception.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/types.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/logging.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/thread.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/copyable.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/date.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/logger.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/cuda_utils.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/cuda_utils.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/logger.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/simple_object_pool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/device_caching_allocator.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/host_caching_allocator.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/memory_pool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/host_caching_allocator.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/stream_pool.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/stream_pool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/memory_pool.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/device_caching_allocator.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/python
+      copying moe_infinity/ops/core/python/py_archer_prefetch.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/python
+      creating build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_module.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_dispatcher.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_module.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_dispatcher.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/aio/archer_aio_thread.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_threadpool.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_threadpool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_utils.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_aio_utils.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_prio_aio_handle.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_prio_aio_handle.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_handle.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_handle.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_index.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/aio/archer_tensor_index.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/aio
+      copying moe_infinity/ops/core/base/copyable.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/countdown_latch.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/countdown_latch.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/current_thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/date.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/date.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/exception.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/exception.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/file_util.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/file_util.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_file.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_file.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_stream.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/log_stream.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/logging.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/logging.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/noncopyable.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/process_info.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/process_info.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/string_piece.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/thread.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timestamp.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timestamp.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timezone.cc -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/timezone.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/base/types.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/base
+      copying moe_infinity/ops/core/common/pytorch.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/status.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/time.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/common/types.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/common
+      copying moe_infinity/ops/core/memory/device_caching_allocator.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/device_caching_allocator.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/host_caching_allocator.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/host_caching_allocator.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/memory_pool.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/memory_pool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/stream_pool.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/memory/stream_pool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/memory
+      copying moe_infinity/ops/core/model/model_topology.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/model
+      copying moe_infinity/ops/core/model/model_topology.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/model
+      copying moe_infinity/ops/core/parallel/expert_dispatcher.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_dispatcher.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_module.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/parallel/expert_module.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/parallel
+      copying moe_infinity/ops/core/prefetch/archer_prefetch_handle.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/archer_prefetch_handle.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_scheduler.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_scheduler.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_thread.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/prefetch/task_thread.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/prefetch
+      copying moe_infinity/ops/core/python/py_archer_prefetch.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/python
+      copying moe_infinity/ops/core/utils/cuda_utils.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/cuda_utils.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/logger.cpp -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/logger.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      copying moe_infinity/ops/core/utils/simple_object_pool.h -> build/lib.linux-aarch64-cpython-312/moe_infinity/ops/core/utils
+      running build_ext
+      building 'moe_infinity.ops.prefetch.prefetch_op' extension
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/memory
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/model
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/parallel
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/prefetch
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/python
+      creating /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/utils
+      [1/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/countdown_latch.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/countdown_latch.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/countdown_latch.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [2/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/date.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/date.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/date.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [3/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/exception.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/exception.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/exception.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [4/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_aio_threadpool.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_aio_threadpool.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_aio_threadpool.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      In file included from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_aio_threadpool.cpp:8:
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:14:1: warning: multi-line comment [-Wcomment]
+         14 | // #define PRINT_ARGS(...)                    \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:97:1: warning: multi-line comment [-Wcomment]
+         97 | // #define DLOG_DEBUG(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:106:1: warning: multi-line comment [-Wcomment]
+        106 | // #define DLOG_INFO(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:115:1: warning: multi-line comment [-Wcomment]
+        115 | // #define DLOG_ERROR(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:124:1: warning: multi-line comment [-Wcomment]
+        124 | // #define DLOG_WARN(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:133:1: warning: multi-line comment [-Wcomment]
+        133 | // #define DLOG_FATAL(...)                                     \
+            | ^
+      [5/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/file_util.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/file_util.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/file_util.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [6/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_prio_aio_handle.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_prio_aio_handle.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      FAILED: /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_prio_aio_handle.o
+      c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_prio_aio_handle.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_prio_aio_handle.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      In file included from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp:12:
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:14:1: warning: multi-line comment [-Wcomment]
+         14 | // #define PRINT_ARGS(...)                    \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:97:1: warning: multi-line comment [-Wcomment]
+         97 | // #define DLOG_DEBUG(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:106:1: warning: multi-line comment [-Wcomment]
+        106 | // #define DLOG_INFO(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:115:1: warning: multi-line comment [-Wcomment]
+        115 | // #define DLOG_ERROR(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:124:1: warning: multi-line comment [-Wcomment]
+        124 | // #define DLOG_WARN(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:133:1: warning: multi-line comment [-Wcomment]
+        133 | // #define DLOG_FATAL(...)                                     \
+            | ^
+      In file included from /usr/include/c++/13/string:54,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/base/log_stream.h:7,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/base/logging.h:4,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:11:
+      /usr/include/c++/13/bits/basic_string.h:4414:12: error: partial specialization of ‘struct std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, _Alloc> >’ after instantiation of ‘struct std::hash<std::__cxx11::basic_string<char> >’ [-fpermissive]
+       4414 |     struct hash<basic_string<char, char_traits<char>, _Alloc>>
+            |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/basic_string.h:4453:21: error: specialization of ‘std::__is_fast_hash<std::hash<std::__cxx11::basic_string<char> > >’ after instantiation
+       4453 |   template<> struct __is_fast_hash<hash<string>> : std::false_type { };
+            |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/basic_string.h:4453:21: error: redefinition of ‘struct std::__is_fast_hash<std::hash<std::__cxx11::basic_string<char> > >’
+      In file included from /usr/include/c++/13/bits/shared_ptr_base.h:56,
+                       from /usr/include/c++/13/bits/shared_ptr.h:53,
+                       from /usr/include/c++/13/condition_variable:45,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.h:9,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp:6:
+      /usr/include/c++/13/bits/functional_hash.h:295:12: note: previous definition of ‘struct std::__is_fast_hash<std::hash<std::__cxx11::basic_string<char> > >’
+        295 |     struct __is_fast_hash : public std::true_type
+            |            ^~~~~~~~~~~~~~
+      /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp: In constructor ‘ArcherPrioAioHandle::ArcherPrioAioHandle(const std::string&)’:
+      /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp:18:50: error: use of deleted function ‘std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::unordered_map() [with _Key = std::__cxx11::basic_string<char>; _Tp = int; _Hash = std::hash<std::__cxx11::basic_string<char> >; _Pred = std::equal_to<std::__cxx11::basic_string<char> >; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >]’
+         18 |   : aio_context_(kBlockSize), time_to_exit_(false)
+            |                                                  ^
+      In file included from /usr/include/c++/13/unordered_map:41,
+                       from /usr/include/c++/13/functional:63,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.h:10:
+      /usr/include/c++/13/bits/unordered_map.h:148:7: note: ‘std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::unordered_map() [with _Key = std::__cxx11::basic_string<char>; _Tp = int; _Hash = std::hash<std::__cxx11::basic_string<char> >; _Pred = std::equal_to<std::__cxx11::basic_string<char> >; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >]’ is implicitly deleted because the default definition would be ill-formed:
+        148 |       unordered_map() = default;
+            |       ^~~~~~~~~~~~~
+      /usr/include/c++/13/bits/unordered_map.h:148:7: error: use of deleted function ‘std::_Hashtable<_Key, _Value, _Alloc, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _RehashPolicy, _Traits>::_Hashtable() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >; _ExtractKey = std::__detail::_Select1st; _Equal = std::equal_to<std::__cxx11::basic_string<char> >; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; _RehashPolicy = std::__detail::_Prime_rehash_policy; _Traits = std::__detail::_Hashtable_traits<true, false, true>]’
+      In file included from /usr/include/c++/13/bits/unordered_map.h:33:
+      /usr/include/c++/13/bits/hashtable.h:530:7: note: ‘std::_Hashtable<_Key, _Value, _Alloc, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _RehashPolicy, _Traits>::_Hashtable() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >; _ExtractKey = std::__detail::_Select1st; _Equal = std::equal_to<std::__cxx11::basic_string<char> >; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; _RehashPolicy = std::__detail::_Prime_rehash_policy; _Traits = std::__detail::_Hashtable_traits<true, false, true>]’ is implicitly deleted because the default definition would be ill-formed:
+        530 |       _Hashtable() = default;
+            |       ^~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable.h:530:7: error: use of deleted function ‘std::__detail::_Hashtable_base<_Key, _Value, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _Traits>::_Hashtable_base() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _ExtractKey = std::__detail::_Select1st; _Equal = std::equal_to<std::__cxx11::basic_string<char> >; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; _Traits = std::__detail::_Hashtable_traits<true, false, true>]’
+      In file included from /usr/include/c++/13/bits/hashtable.h:35:
+      /usr/include/c++/13/bits/hashtable_policy.h:1701:7: note: ‘std::__detail::_Hashtable_base<_Key, _Value, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _Traits>::_Hashtable_base() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _ExtractKey = std::__detail::_Select1st; _Equal = std::equal_to<std::__cxx11::basic_string<char> >; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; _Traits = std::__detail::_Hashtable_traits<true, false, true>]’ is implicitly deleted because the default definition would be ill-formed:
+       1701 |       _Hashtable_base() = default;
+            |       ^~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1701:7: error: use of deleted function ‘std::__detail::_Hash_code_base<_Key, _Value, _ExtractKey, _Hash, _RangeHash, _Unused, __cache_hash_code>::_Hash_code_base() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _ExtractKey = std::__detail::_Select1st; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; bool __cache_hash_code = true]’
+      /usr/include/c++/13/bits/hashtable_policy.h: In instantiation of ‘std::__detail::_Hashtable_ebo_helper<_Nm, _Tp, true>::_Hashtable_ebo_helper() [with int _Nm = 1; _Tp = std::hash<std::__cxx11::basic_string<char> >]’:
+      /usr/include/c++/13/bits/hashtable_policy.h:1301:7:   required from here
+      /usr/include/c++/13/bits/hashtable_policy.h:1218:49: error: use of deleted function ‘std::hash<std::__cxx11::basic_string<char> >::hash()’
+       1218 |       _Hashtable_ebo_helper() noexcept(noexcept(_Tp())) : _Tp() { }
+            |                                                 ^~~~~
+      /usr/include/c++/13/bits/functional_hash.h:102:12: note: ‘std::hash<std::__cxx11::basic_string<char> >::hash()’ is implicitly deleted because the default definition would be ill-formed:
+        102 |     struct hash : __hash_enum<_Tp>
+            |            ^~~~
+      /usr/include/c++/13/bits/functional_hash.h:102:12: error: no matching function for call to ‘std::__hash_enum<std::__cxx11::basic_string<char>, false>::__hash_enum()’
+      /usr/include/c++/13/bits/functional_hash.h:83:7: note: candidate: ‘std::__hash_enum<_Tp, <anonymous> >::__hash_enum(std::__hash_enum<_Tp, <anonymous> >&&) [with _Tp = std::__cxx11::basic_string<char>; bool <anonymous> = false]’
+         83 |       __hash_enum(__hash_enum&&);
+            |       ^~~~~~~~~~~
+      /usr/include/c++/13/bits/functional_hash.h:83:7: note:   candidate expects 1 argument, 0 provided
+      /usr/include/c++/13/bits/functional_hash.h:102:12: error: ‘std::__hash_enum<_Tp, <anonymous> >::~__hash_enum() [with _Tp = std::__cxx11::basic_string<char>; bool <anonymous> = false]’ is private within this context
+        102 |     struct hash : __hash_enum<_Tp>
+            |            ^~~~
+      /usr/include/c++/13/bits/functional_hash.h:84:7: note: declared private here
+         84 |       ~__hash_enum();
+            |       ^
+      /usr/include/c++/13/bits/hashtable_policy.h:1301:7: note: ‘std::__detail::_Hash_code_base<_Key, _Value, _ExtractKey, _Hash, _RangeHash, _Unused, __cache_hash_code>::_Hash_code_base() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _ExtractKey = std::__detail::_Select1st; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; bool __cache_hash_code = true]’ is implicitly deleted because the default definition would be ill-formed:
+       1301 |       _Hash_code_base() = default;
+            |       ^~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1301:7: error: use of deleted function ‘std::__detail::_Hashtable_ebo_helper<1, std::hash<std::__cxx11::basic_string<char> >, true>::~_Hashtable_ebo_helper()’
+      /usr/include/c++/13/bits/hashtable_policy.h:1215:12: note: ‘std::__detail::_Hashtable_ebo_helper<1, std::hash<std::__cxx11::basic_string<char> >, true>::~_Hashtable_ebo_helper()’ is implicitly deleted because the default definition would be ill-formed:
+       1215 |     struct _Hashtable_ebo_helper<_Nm, _Tp, true>
+            |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1215:12: error: use of deleted function ‘std::hash<std::__cxx11::basic_string<char> >::~hash()’
+      /usr/include/c++/13/bits/functional_hash.h:102:12: note: ‘std::hash<std::__cxx11::basic_string<char> >::~hash()’ is implicitly deleted because the default definition would be ill-formed:
+        102 |     struct hash : __hash_enum<_Tp>
+            |            ^~~~
+      /usr/include/c++/13/bits/functional_hash.h:102:12: error: ‘std::__hash_enum<_Tp, <anonymous> >::~__hash_enum() [with _Tp = std::__cxx11::basic_string<char>; bool <anonymous> = false]’ is private within this context
+      /usr/include/c++/13/bits/functional_hash.h:84:7: note: declared private here
+         84 |       ~__hash_enum();
+            |       ^
+      /usr/include/c++/13/bits/hashtable_policy.h:1701:7: error: use of deleted function ‘std::__detail::_Hash_code_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::__detail::_Select1st, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, true>::~_Hash_code_base()’
+       1701 |       _Hashtable_base() = default;
+            |       ^~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1279:12: note: ‘std::__detail::_Hash_code_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::__detail::_Select1st, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, true>::~_Hash_code_base()’ is implicitly deleted because the default definition would be ill-formed:
+       1279 |     struct _Hash_code_base
+            |            ^~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1279:12: error: use of deleted function ‘std::__detail::_Hashtable_ebo_helper<1, std::hash<std::__cxx11::basic_string<char> >, true>::~_Hashtable_ebo_helper()’
+      /usr/include/c++/13/bits/hashtable.h:530:7: error: use of deleted function ‘std::__detail::_Hashtable_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char> >, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable_base()’
+        530 |       _Hashtable() = default;
+            |       ^~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1658:12: note: ‘std::__detail::_Hashtable_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char> >, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable_base()’ is implicitly deleted because the default definition would be ill-formed:
+       1658 |     struct _Hashtable_base
+            |            ^~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1658:12: error: use of deleted function ‘std::__detail::_Hash_code_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::__detail::_Select1st, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, true>::~_Hash_code_base()’
+      /usr/include/c++/13/bits/hashtable.h:530:7: error: use of deleted function ‘constexpr std::_Enable_default_constructor<false, _Tag>::_Enable_default_constructor() [with _Tag = std::__detail::_Hash_node_base]’
+        530 |       _Hashtable() = default;
+            |       ^~~~~~~~~~
+      In file included from /usr/include/c++/13/bits/hashtable.h:36:
+      /usr/include/c++/13/bits/enable_special_members.h:113:15: note: declared here
+        113 |     constexpr _Enable_default_constructor() noexcept = delete;
+            |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable.h: In instantiation of ‘std::_Hashtable<_Key, _Value, _Alloc, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _RehashPolicy, _Traits>::~_Hashtable() [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >; _ExtractKey = std::__detail::_Select1st; _Equal = std::equal_to<std::__cxx11::basic_string<char> >; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; _RehashPolicy = std::__detail::_Prime_rehash_policy; _Traits = std::__detail::_Hashtable_traits<true, false, true>]’:
+      /usr/include/c++/13/bits/unordered_map.h:109:11:   required from here
+      /usr/include/c++/13/bits/hashtable.h:1610:5: error: use of deleted function ‘std::__detail::_Hashtable_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char> >, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Hashtable_traits<true, false, true> >::~_Hashtable_base()’
+       1610 |     }
+            |     ^
+      /usr/include/c++/13/bits/hashtable.h:1602:21: error: static assertion failed: Cache the hash code or qualify your functors involved in hash code and bucket index computation with noexcept
+       1602 |       static_assert(noexcept(declval<const __hash_code_base_access&>()
+            |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       1603 |                         ._M_bucket_index(declval<const __node_value_type&>(),
+            |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       1604 |                                          (std::size_t)0)),
+            |                                          ~~~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable.h:1602:21: note: ‘false’ evaluates to false
+      /usr/include/c++/13/bits/hashtable_policy.h: In instantiation of ‘std::__detail::_Hash_code_base<_Key, _Value, _ExtractKey, _Hash, _RangeHash, _Unused, __cache_hash_code>::__hash_code std::__detail::_Hash_code_base<_Key, _Value, _ExtractKey, _Hash, _RangeHash, _Unused, __cache_hash_code>::_M_hash_code(const _Key&) const [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _ExtractKey = std::__detail::_Select1st; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; bool __cache_hash_code = true; __hash_code = long unsigned int]’:
+      /usr/include/c++/13/bits/hashtable.h:1677:46:   required from ‘std::_Hashtable<_Key, _Value, _Alloc, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _RehashPolicy, _Traits>::iterator std::_Hashtable<_Key, _Value, _Alloc, _ExtractKey, _Equal, _Hash, _RangeHash, _Unused, _RehashPolicy, _Traits>::find(const key_type&) [with _Key = std::__cxx11::basic_string<char>; _Value = std::pair<const std::__cxx11::basic_string<char>, int>; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >; _ExtractKey = std::__detail::_Select1st; _Equal = std::equal_to<std::__cxx11::basic_string<char> >; _Hash = std::hash<std::__cxx11::basic_string<char> >; _RangeHash = std::__detail::_Mod_range_hashing; _Unused = std::__detail::_Default_ranged_hash; _RehashPolicy = std::__detail::_Prime_rehash_policy; _Traits = std::__detail::_Hashtable_traits<true, false, true>; iterator = std::__detail::_Insert_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char> >, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::iterator; key_type = std::__cxx11::basic_string<char>]’
+      /usr/include/c++/13/bits/unordered_map.h:876:25:   required from ‘std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::iterator std::unordered_map<_Key, _Tp, _Hash, _Pred, _Alloc>::find(const key_type&) [with _Key = std::__cxx11::basic_string<char>; _Tp = int; _Hash = std::hash<std::__cxx11::basic_string<char> >; _Pred = std::equal_to<std::__cxx11::basic_string<char> >; _Alloc = std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >; iterator = std::__detail::_Insert_base<std::__cxx11::basic_string<char>, std::pair<const std::__cxx11::basic_string<char>, int>, std::allocator<std::pair<const std::__cxx11::basic_string<char>, int> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char> >, std::hash<std::__cxx11::basic_string<char> >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true> >::iterator; key_type = std::__cxx11::basic_string<char>]’
+      /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_prio_aio_handle.cpp:45:31:   required from here
+      /usr/include/c++/13/bits/hashtable_policy.h:1308:23: error: static assertion failed: hash function must be invocable with an argument of key type
+       1308 |         static_assert(__is_invocable<const _Hash&, const _Key&>{},
+            |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      /usr/include/c++/13/bits/hashtable_policy.h:1308:23: note: ‘std::__is_invocable<const std::hash<std::__cxx11::basic_string<char> >&, const std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>()’ evaluates to false
+      /usr/include/c++/13/bits/hashtable_policy.h:1310:25: error: no match for call to ‘(const std::hash<std::__cxx11::basic_string<char> >) (const std::__cxx11::basic_string<char>&)’
+       1310 |         return _M_hash()(__k);
+            |                ~~~~~~~~~^~~~~
+      [7/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_aio_thread.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_aio_thread.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_aio_thread.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      In file included from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_aio_thread.cpp:8:
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:14:1: warning: multi-line comment [-Wcomment]
+         14 | // #define PRINT_ARGS(...)                    \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:97:1: warning: multi-line comment [-Wcomment]
+         97 | // #define DLOG_DEBUG(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:106:1: warning: multi-line comment [-Wcomment]
+        106 | // #define DLOG_INFO(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:115:1: warning: multi-line comment [-Wcomment]
+        115 | // #define DLOG_ERROR(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:124:1: warning: multi-line comment [-Wcomment]
+        124 | // #define DLOG_WARN(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:133:1: warning: multi-line comment [-Wcomment]
+        133 | // #define DLOG_FATAL(...)                                     \
+            | ^
+      [8/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_stream.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/log_stream.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_stream.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      FAILED: /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_stream.o
+      c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_stream.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/log_stream.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_stream.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      /home/thor/kcj/MoE-Infinity-2502/core/base/log_stream.cc: In member function ‘void base::LogStream::staticCheck()’:
+      /home/thor/kcj/MoE-Infinity-2502/core/base/log_stream.cc:90:28: error: static assertion failed: kMaxNumericSize is large enough
+         90 |       kMaxNumericSize - 10 > std::numeric_limits<long double>::digits10,
+            |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      /home/thor/kcj/MoE-Infinity-2502/core/base/log_stream.cc:90:28: note: the comparison reduces to ‘(22 > 33)’
+      [9/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_file.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/log_file.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/log_file.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [10/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/logging.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/base/logging.cc -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/base/logging.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [11/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_aio_utils.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_aio_utils.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_aio_utils.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      In file included from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_aio_utils.cpp:10:
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:14:1: warning: multi-line comment [-Wcomment]
+         14 | // #define PRINT_ARGS(...)                    \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:97:1: warning: multi-line comment [-Wcomment]
+         97 | // #define DLOG_DEBUG(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:106:1: warning: multi-line comment [-Wcomment]
+        106 | // #define DLOG_INFO(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:115:1: warning: multi-line comment [-Wcomment]
+        115 | // #define DLOG_ERROR(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:124:1: warning: multi-line comment [-Wcomment]
+        124 | // #define DLOG_WARN(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:133:1: warning: multi-line comment [-Wcomment]
+        133 | // #define DLOG_FATAL(...)                                     \
+            | ^
+      [12/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_tensor_index.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_tensor_index.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_tensor_index.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      [13/30] c++ -MMD -MF /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_tensor_handle.o.d -DHOST_MEMORY_RATIO=0.04 -fPIC -I/home/thor/kcj/MoE-Infinity-2502/core -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include -I/home/thor/Envs/t26/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/thor/kcj/envs/moeinf2502/include -I/usr/include/python3.12 -c -c /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_tensor_handle.cpp -o /home/thor/kcj/MoE-Infinity-2502/build/temp.linux-aarch64-cpython-312/core/aio/archer_tensor_handle.o -g -Wall -O2 -std=c++17 -shared -fPIC -Wno-reorder -march=native -fopenmp -D__SCALAR__ -I/usr/local/cuda/include -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lpthread -DTORCH_API_INCLUDE_EXTENSION_H -DTORCH_EXTENSION_NAME=prefetch_op
+      In file included from /home/thor/kcj/MoE-Infinity-2502/core/memory/memory_pool.h:16,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/model/model_topology.h:18,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/prefetch/task_scheduler.h:18,
+                       from /home/thor/kcj/MoE-Infinity-2502/core/aio/archer_tensor_handle.cpp:12:
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:14:1: warning: multi-line comment [-Wcomment]
+         14 | // #define PRINT_ARGS(...)                    \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:97:1: warning: multi-line comment [-Wcomment]
+         97 | // #define DLOG_DEBUG(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:106:1: warning: multi-line comment [-Wcomment]
+        106 | // #define DLOG_INFO(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:115:1: warning: multi-line comment [-Wcomment]
+        115 | // #define DLOG_ERROR(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:124:1: warning: multi-line comment [-Wcomment]
+        124 | // #define DLOG_WARN(...)                                     \
+            | ^
+      /home/thor/kcj/MoE-Infinity-2502/core/utils/logger.h:133:1: warning: multi-line comment [-Wcomment]
+        133 | // #define DLOG_FATAL(...)                                     \
+            | ^
+      ninja: build stopped: subcommand failed.
+      Traceback (most recent call last):
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2774, in _run_ninja_build
+          subprocess.run(
+        File "/usr/lib/python3.12/subprocess.py", line 571, in run
+          raise CalledProcessError(retcode, process.args,
+      subprocess.CalledProcessError: Command '['ninja', '-v', '-j', '8']' returned non-zero exit status 1.
+      
+      The above exception was the direct cause of the following exception:
+      
+      Traceback (most recent call last):
+        File "/home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+          main()
+        File "/home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 251, in build_wheel
+          return _build_backend().build_wheel(wheel_directory, config_settings,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/build_meta.py", line 441, in build_wheel
+          return _build(['bdist_wheel', '--dist-info-dir', str(metadata_directory)])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/build_meta.py", line 429, in _build
+          return self._build_with_temp_dir(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/build_meta.py", line 410, in _build_with_temp_dir
+          self.run_setup()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
+          exec(code, locals())
+        File "<string>", line 84, in <module>
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/__init__.py", line 117, in setup
+          return distutils.core.setup(**attrs)  # type: ignore[return-value]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/core.py", line 186, in setup
+          return run_commands(dist)
+                 ^^^^^^^^^^^^^^^^^^
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/core.py", line 202, in run_commands
+          dist.run_commands()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1000, in run_commands
+          self.run_command(cmd)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/dist.py", line 1107, in run_command
+          super().run_command(command)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1019, in run_command
+          cmd_obj.run()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/bdist_wheel.py", line 370, in run
+          self.run_command("build")
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/cmd.py", line 341, in run_command
+          self.distribution.run_command(command)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/dist.py", line 1107, in run_command
+          super().run_command(command)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1019, in run_command
+          cmd_obj.run()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/command/build.py", line 135, in run
+          self.run_command(cmd_name)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/cmd.py", line 341, in run_command
+          self.distribution.run_command(command)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/dist.py", line 1107, in run_command
+          super().run_command(command)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/dist.py", line 1019, in run_command
+          cmd_obj.run()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_ext.py", line 97, in run
+          _build_ext.run(self)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 367, in run
+          self.build_extensions()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 1184, in build_extensions
+          build_ext.build_extensions(self)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 483, in build_extensions
+          self._build_extensions_serial()
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 509, in _build_extensions_serial
+          self.build_extension(ext)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/command/build_ext.py", line 262, in build_extension
+          _build_ext.build_extension(self, ext)
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/setuptools/_distutils/command/build_ext.py", line 564, in build_extension
+          objects = self.compiler.compile(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 924, in unix_wrap_ninja_compile
+          _write_ninja_file_and_compile_objects(
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2361, in _write_ninja_file_and_compile_objects
+          _run_ninja_build(
+        File "/home/thor/Envs/t26/lib/python3.12/site-packages/torch/utils/cpp_extension.py", line 2791, in _run_ninja_build
+          raise RuntimeError(message) from e
+      RuntimeError: Error compiling objects for extension
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for moe_infinity
+Failed to build moe_infinity
+ERROR: Could not build wheels for moe_infinity, which is required to install pyproject.toml-based projects

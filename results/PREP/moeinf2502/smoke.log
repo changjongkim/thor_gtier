@@ -1,0 +1,14 @@
+scrub: 19 files
+Traceback (most recent call last):
+  File "/home/thor/kcj/thor_gtier/scripts/sota_serve.py", line 62, in <module>
+    model = MoE(a.checkpoint, {"offload_path": a.offload_dir,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thor/Envs/t26/lib/python3.12/site-packages/moe_infinity/entrypoints/big_modeling.py", line 99, in __init__
+    from moe_store.registry.constants import MODEL_MAPPING_NAMES
+  File "/home/thor/Envs/t26/lib/python3.12/site-packages/moe_store/registry/__init__.py", line 5, in <module>
+    from moe_store.registry.constants import (
+  File "/home/thor/Envs/t26/lib/python3.12/site-packages/moe_store/registry/constants.py", line 1, in <module>
+    from transformers import (
+ImportError: cannot import name 'DeepseekV2ForCausalLM' from 'transformers' (/home/thor/kcj/envs/moeinf2502/lib/python3.12/site-packages/transformers/__init__.py)
+cgroup_io_read_gib=0.719
+cgroup_cpu_s=7.5 cgroup_user_s=6.2 cgroup_sys_s=1.3

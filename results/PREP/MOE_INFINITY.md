@@ -21,3 +21,11 @@ appended below.
   MemAvailable criterion that applies to every system, so it is reported as **cannot run within budget**
   at all budgets, with this evidence, rather than tuned or modified.
 - Logs: `results/PREP/smoke_mi_qwen30b.log`, `results/MATRIX4/qwen30b/` stage 4 smoke, `results/PIPELINE/pipeline.log`.
+
+## Version 48bb3bc (2025-02-13): the last release with an SSD tier
+- Experts stay in its offload store on the SSD and move SSD -> host pool -> GPU on demand; the preloading
+  ("Moving sparse parameters to CPU") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3.
+- Built unmodified in its own venv (transformers < 4.47 as it requires); HOST_MEMORY_RATIO (its build-time
+  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
+
+## Version 48bb3bc (2025-02, SSD tier), Mixtral-8x7B: does not serve: ImportError: cannot import name 'DeepseekV2ForCausalLM' from 'transformers' (/home/thor/kcj/envs/moeinf2502/lib/python3.

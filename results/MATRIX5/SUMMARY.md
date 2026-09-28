@@ -102,7 +102,7 @@ which moves the system-wide MemAvailable drop the peak is measured from; their p
 
 ### Slower SSD at 25% (MMLU; NVMe operational power states)
 
-| system | PS0 (E1) | PS1 (1.347 GiB/s) | PS2 (0.733 GiB/s) |
+| system | PS0 (E1) | PS1 (1.212 GiB/s) | PS2 (0.733 GiB/s) |
 |---|---:|---:|---:|
 | PHASOR | 9.55 / 7.77 / 254 / 19.3 | 26.84 / 23.46 / 483 / 18.8 | 41.75 / 36.83 / 702 / 19.5 |
 | FlashMoE* | 26.26 / 21.47 / 684 / 21.3 | 46.36 / 38.12 / 1178 / 21.7 | 71.18 / 59.10 / 1725 / 21.0 |

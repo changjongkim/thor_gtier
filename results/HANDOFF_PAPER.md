@@ -61,9 +61,33 @@ On its own model (Qwen1.5-MoE-A2.7B-Chat) and harness: our runner matches its ha
   case `results/PREP/FINEMOE.md` records why (as for MoE-Infinity). Otherwise: token check, expert maps
   from the other workloads, fidelity against its own measure(), memcal + E1, nominal reference. Stage 8.
 
-## Pending
+## Repeats (Qwen3-30B, 25%, three runs each, request time; timing only)
 
-- Qwen3 repeats at 45% (r2, r3): paused 09-28 05:36 -- an IDE language server outside the experiments
-  holds 57-66 GB; resumes automatically when memory is back.
-- Slower SSD (4.8): NVMe power states PS1 1.33 / PS2 0.73 GiB/s, Qwen3 MMLU at 45%, all systems; after
-  the repeats.
+| workload | PHASOR | FlashMoE* | DuoServe* |
+|---|---:|---:|---:|
+| MMLU | 9.80 +- 0.22 s | 26.07 +- 0.17 s | 42.46 +- 0.81 s |
+| ShareGPT | 21.62 +- 0.48 s | 49.30 +- 1.36 s | 78.82 +- 0.31 s |
+| LongBench | 24.07 +- 0.28 s | 56.33 +- 0.70 s | 86.79 +- 1.35 s |
+
+Coefficient of variation 0.4-2.8%. Run at 25% instead of the planned 45% while an IDE language server
+outside the experiments held ~60 GB (45% runs met the host guard); peaks of these runs are not used.
+ZipMoE's repeats were dropped (its Qwen3 store had to be rebuilt).
+
+## Slower SSD (4.8; Qwen3-30B, MMLU, 25%; NVMe operational power states)
+
+| system | PS0 (~3.4 GiB/s) | PS1 (1.35 GiB/s) | PS2 (0.73 GiB/s) |
+|---|---:|---:|---:|
+| PHASOR | 9.55 s | 26.84 s | 41.75 s |
+| FlashMoE* | 26.26 s | 46.36 s | 71.18 s |
+| DuoServe* | 41.55 s | 80.10 s | 119.97 s |
+
+PHASOR stays fastest at every bandwidth (1.7x FlashMoE*, 2.9x DuoServe* at PS2) but slows the most
+(4.4x from PS0 to PS2 vs 2.7x / 2.9x): it moves more bytes per request and is therefore the most
+bandwidth-sensitive. ZipMoE (compressed reads) is pending: stage 6b.
+
+## Pending (09-28 14:00)
+
+- Stage 6b: ZipMoE store rebuild + its slower-SSD runs; waiting for >= 100 GiB available (an IDE language
+  server outside the experiments grew back to 84 GB and the rebuild met the host guard).
+- Stage 7: MoE-APEX* (bf16) memcal, E1, E3. Stage 8: FineMoE load test, then (if it serves) tokens, maps,
+  fidelity, memcal, E1, E3, nominal; else PREP/FINEMOE.md.

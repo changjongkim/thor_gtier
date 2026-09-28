@@ -35,3 +35,21 @@ appended below.
   and imports. Its run (stage 12 again, after stage 11) replaces this entry:
 - (superseded) the 2025-02 SSD-tier release cannot be built here unmodified; not run. Its current release preloads
   every expert (above). Recorded as cannot run on Mixtral (`results/MATRIX5/mixtral8x7b/mmlu/moeinf2502_*.txt`).
+
+## Version 48bb3bc (2025-02-13): the last release with an SSD tier
+- Experts stay in its offload store on the SSD and move SSD -> host pool -> GPU on demand; the preloading
+  ("Moving sparse parameters to CPU") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3.
+- Built in its own venv (transformers 4.46.3, < 4.47 as it requires) with build-compatibility fixes only:
+  `-include string` (GCC 13) and its log buffer constant kMaxNumericSize 32 -> 48 (aarch64 long double;
+  third_party/moeinf2502_build.patch). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time
+  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
+
+## Version 48bb3bc (2025-02-13): the last release with an SSD tier
+- Experts stay in its offload store on the SSD and move SSD -> host pool -> GPU on demand; the preloading
+  ("Moving sparse parameters to CPU") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3.
+- Built in its own venv (transformers 4.46.3, < 4.47 as it requires) with build-compatibility fixes only:
+  `-include string` (GCC 13) and its log buffer constant kMaxNumericSize 32 -> 48 (aarch64 long double;
+  third_party/moeinf2502_build.patch). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time
+  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
+
+## Version 48bb3bc (2025-02, SSD tier), Mixtral-8x7B: does not serve: KeyError: (0, tensor([[5, 1],

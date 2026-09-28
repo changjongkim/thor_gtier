@@ -12,8 +12,8 @@ ST=$R/results/PIPELINE; LOG=$ST/pipeline.log
 ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python; OPY=/home/thor/kcj/envs/oldhf/bin/python
 say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
-settle(){ local i; for i in $(seq 1 36); do
-  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 45 ] && return 0; sleep 5; done; }
+settle(){ local i=0; until [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ]; do   # no time limit: a run under
+  i=$((i+1)); [ $i = 120 ] && say "waiting for >= 100 GiB available"; sleep 5; done; }   # outside memory pressure would say nothing
 # stage 5's run(), capfor(), sys_cmd(), fm_weights(), held()
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p; /^sys_cmd(){/,/^}/p; /^fm_weights(){/,/^}/p; /^held(){/p' scripts/stage5.sh)"
 

@@ -10,14 +10,27 @@
 # host (seen: MoE-Infinity, 58.7 GiB pinned + its GPU cache, left the kernel
 # compacting for 95 min at 10 GiB available).  If MemAvailable falls below
 # GUARD_GIB (default 12) the whole cgroup is killed and the run reports it.
+#
+# The guard only speaks for the run when the run took the memory.  Once a
+# killed run is gone its memory returns within a minute; if MemAvailable stays
+# >= 8 GiB below where the run started, a process outside the experiments grew
+# during the run (seen 09-28: an IDE language server at 60-110 GB) and the kill
+# says nothing about the system.  Then the run starts over once >= 100 GiB is
+# available again (at most 5 attempts), instead of being reported as not fitting.
 CG=/sys/fs/cgroup/ledger_bench/$1; shift
 MAX=$1; shift
 GUARD_KIB=$(awk -v g="${GUARD_GIB:-12}" 'BEGIN{printf "%d", g*1048576}')
+avail(){ awk '/^MemAvailable:/{print $2}' /proc/meminfo; }
+killcg(){ echo 1 | sudo -n tee "$CG/cgroup.kill" >/dev/null 2>&1; }
+trap 'killcg; wait $pid; exit 143' TERM INT
+attempt=0
+while :; do
+attempt=$((attempt+1))
 sudo -n rmdir "$CG" 2>/dev/null
 sudo -n mkdir -p "$CG" || exit 97
 echo "$MAX" | sudo -n tee "$CG/memory.max" >/dev/null
 echo 0 | sudo -n tee "$CG/memory.swap.max" >/dev/null 2>&1
-killcg(){ echo 1 | sudo -n tee "$CG/cgroup.kill" >/dev/null 2>&1; }
+a0=$(avail)
 # the subshell moves itself into the cgroup, then becomes the command; the
 # guard loop below stays outside it so cgroup.kill does not take it down
 ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98
@@ -29,7 +42,6 @@ if [ -n "${SCRUB_GLOB:-}" ]; then
   python3 /home/thor/kcj/thor_gtier/scripts/scrub_cache.py $pid $SCRUB_GLOB &
   spid=$!
 fi
-trap 'killcg; wait $pid; exit 143' TERM INT
 guard=0; pinned_since=0; tick=0
 maxb=$(cat "$CG/memory.max")
 while kill -0 $pid 2>/dev/null; do
@@ -49,14 +61,25 @@ while kill -0 $pid 2>/dev/null; do
       fi
     else pinned_since=0; fi
   fi
-  a=$(awk '/^MemAvailable:/{print $2}' /proc/meminfo)
+  a=$(avail)
   if [ "$a" -lt "$GUARD_KIB" ]; then
-    echo "HOSTGUARD kill: MemAvailable $((a/1024)) MiB < ${GUARD_GIB:-12} GiB (cgroup charges do not include cudaMalloc)" >&2
-    killcg; guard=1; break
+    gmsg="HOSTGUARD kill: MemAvailable $((a/1024)) MiB < ${GUARD_GIB:-12} GiB (cgroup charges do not include cudaMalloc)"
+    killcg; guard=2; break
   fi
   sleep 0.5
 done
 wait $pid; rc=$?
+if [ $guard = 2 ]; then
+  ext=1; for i in $(seq 1 12); do [ "$(avail)" -ge $((a0 - 8388608)) ] && { ext=0; break; }; sleep 5; done
+  if [ $ext = 1 ] && [ $attempt -lt 5 ]; then
+    echo "HOSTPRESSURE (outside this run): MemAvailable $((a/1024)) MiB during the run, $(($(avail)/1024)) MiB a minute after it was stopped, $((a0/1024)) MiB at its start; run restarted when >= 100 GiB is available (attempt $((attempt+1)))" >&2
+    until [ "$(avail)" -ge 104857600 ]; do sleep 30; done
+    continue
+  fi
+  echo "$gmsg" >&2; guard=1
+fi
+break
+done
 # E4/E6 accounting for the whole run (every process and thread of the system):
 # bytes read from block devices, and CPU time
 awk '{for(i=2;i<=NF;i++) if($i ~ /^rbytes=/){split($i,a,"="); s+=a[2]}} END{printf "cgroup_io_read_gib=%.3f\n", s/1073741824}' "$CG/io.stat" 2>/dev/null

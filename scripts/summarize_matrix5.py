@@ -16,12 +16,13 @@ FR = ["0.25", "0.45", "0.65", "1.08"]
 SMALL = ["0.20", "0.15", "0.10", "0.05"]
 
 
-def load(prefix):
-    """(result dict | 'norun' | None, note)"""
+def load(prefix, strict=True):
+    """(result dict | 'norun' | None, note).  strict: a run whose peak exceeded 1.4 x PHASOR's
+    (smallest-cache fallback, stages 7-9) counts as not fitting."""
     t = prefix + ".txt"; j = prefix + ".json"
     txt = open(t).read() if os.path.exists(t) else ""
-    if "NORUN" in txt and "RESULT" not in txt:
-        return "norun", re.search(r"reason=(\S+)", txt).group(1) if "reason=" in txt else ""
+    if "NORUN" in txt and ("RESULT" not in txt or (strict and "exceeds-1.4x-phasor-peak" in txt)):
+        return "norun", re.findall(r"reason=(\S+)", txt)[-1] if "reason=" in txt else ""
     if not os.path.exists(j): return None, ""
     try: d = json.load(open(j))
     except Exception: return None, ""
@@ -33,6 +34,9 @@ def load(prefix):
 def e1(m, w, k, f):
     """The E1 cell, falling back to a lowered-knob retry when the calibrated run hit the cap."""
     d, why = load(f"{R}/{m}/{w}/{k}_{f}")
+    t = f"{R}/{m}/{w}/{k}_{f}.txt"
+    if d and d != "norun" and os.path.exists(t) and "NOTE smallest-cache" in open(t).read():
+        why = "smallest cache; no setting within PHASOR's peak"
     if d == "norun":
         for kk in ("0.85", "0.7", "0.55"):
             r, _ = load(f"{R}/{m}/{w}/{k}_{f}_k{kk}")
@@ -81,12 +85,12 @@ for m, mname, gb in MODELS:
         if w == "mmlu":
             nom = []
             for k, name in SYS[1:]:
-                row = [cell(*load(f"{R}/{m}/{w}/{k}_{f}_nominal"), None, target(m, f, gb)) for f in FR]
+                row = [cell(*load(f"{R}/{m}/{w}/{k}_{f}_nominal", strict=False), None, None) for f in SMALL[::-1] + FR]
                 if any(c != "-" for c in row): nom.append(f"| {name} (own setting) | " + " | ".join(row) + " |")
             if nom:
                 print("\nReference: each baseline at its own setting for the nominal budget (not equal memory):\n")
-                print("| system | " + " | ".join(f"{float(f):.0%}" for f in FR) + " |")
-                print("|---" * (len(FR) + 1) + "|"); print("\n".join(nom))
+                print("| system | " + " | ".join(f"{float(f):.0%}" for f in SMALL[::-1] + FR) + " |")
+                print("|---" * (len(SMALL) + len(FR) + 1) + "|"); print("\n".join(nom))
         base, _ = load(f"{R}/{m}/{w}/phasor_0.45")
         rows = [(n, load(f"{R}/{m}/{w}/abl_{k}")[0]) for k, n in ABL]
         if base and base != "norun" and any(d for _, d in rows):
@@ -133,10 +137,19 @@ for m, mname, gb in MODELS:
         print()
     # E2
     print("### E2: small budgets (MMLU, each system at its own setting)\n")
+    print("`(>1.4x)`: peak above 1.4 x PHASOR's peak at that budget (stages 7-9 record such a run of")
+    print("MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every system).\n")
     print("| system | " + " | ".join(f"{float(f):.0%} ({gb * float(f):.2f} GiB)" for f in SMALL) + " |")
     print("|---" * (len(SMALL) + 1) + "|")
+    e2p = {f: load(f"{R}/{m}/mmlu/phasor_{f}")[0] for f in SMALL}
     for k, name in SYS:
-        row = [cell(*load(f"{R}/{m}/mmlu/{k}_{f}"), None, None) for f in SMALL]
+        row = []
+        for f in SMALL:
+            d, why = load(f"{R}/{m}/mmlu/{k}_{f}", strict=False)
+            c = cell(d, why, None, None); p = e2p[f]
+            if d and d != "norun" and k != "phasor" and p and p != "norun" and d.get("peak_gib", 0) > 1.4 * p["peak_gib"]:
+                c += " (>1.4x)"
+            row.append(c)
         if any(c != "-" for c in row): print(f"| {name} | " + " | ".join(row) + " |")
     print()
     X = f"{R}/{m}/extras"

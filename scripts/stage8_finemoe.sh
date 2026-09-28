@@ -17,9 +17,10 @@ ZPY=/home/thor/kcj/envs/zipmoe/bin/python; TPY=$TORCH_VENV/bin/python; OPY=/home
 FPY=/home/thor/kcj/envs/finemoe/bin/python
 say(){ echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 drop(){ sync; echo 3 | sudo -n tee /proc/sys/vm/drop_caches >/dev/null 2>&1; }
-settle(){ local i; for i in $(seq 1 36); do
-  [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ] && return 0; sleep 5; done; }
+settle(){ local i=0; until [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /proc/meminfo) -ge 100 ]; do   # no time limit: a run under
+  i=$((i+1)); [ $i = 120 ] && say "waiting for >= 100 GiB available"; sleep 5; done; }   # outside memory pressure would say nothing
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
+eval "$(sed -n '/^cal(){/,/^}/p; /^flag14(){/,/^}/p; /^over14(){/,/^}/p' scripts/stage_helpers.sh)"
 until grep -qE "=== stage 7 done ===|stage 7: MoE-APEX\* self-test FAILED" "$LOG"; do sleep 120; done
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 8 (FineMoE on Qwen3-30B) start ==="
@@ -83,7 +84,7 @@ say "stage 8: fidelity theirs $(python3 -c "import json;print(round(json.load(op
 for f in 0.25 0.45 0.65 1.08; do
   b=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}'); c=$O/memcal/finemoe_$b.json
   T=$(python3 -c "import json;print(round(json.load(open('$O/memcal/phasor_$b.json'))['peak_gib'],2))")
-  [ -s $c ] || { settle; drop; timeout 14400 python3 scripts/memcal.py $T $b $c -- $(FM) --workload results/WORKLOADS/mmlu.json --maps $F/maps/${m}_mmlu --budget-gib {B} --limit 2 --out {OUT} > $c.log 2>&1; }
+  cal $c $T $b $(FM) --workload results/WORKLOADS/mmlu.json --maps $F/maps/${m}_mmlu --budget-gib {B} --limit 2 --out {OUT}
   say "memcal $m $f finemoe: $(tail -1 $c.log)"
 done
 for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
@@ -95,10 +96,20 @@ for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
     CAP_GIB=$(capfor $nb) run "s8_${m}_${w}_finemoe_$nb" $kb $o $(FM) --workload results/WORKLOADS/$w.json --maps $F/maps/${m}_$w --budget-gib $kb --out $o.json
   else   # no knob within PHASOR's peak: the smallest cache (1 GiB) under 1.4 x that peak
     CAP_GIB=$(awk -v t=$T 'BEGIN{printf "%.2f", 1.4*t}') run "s8_${m}_${w}_finemoe_$nb" 1 $o $(FM) --workload results/WORKLOADS/$w.json --maps $F/maps/${m}_$w --budget-gib 1 --out $o.json
-    if grep -q '^NORUN' $o.txt 2>/dev/null; then sed -i 's/reason=oom-under-cap/reason=exceeds-1.4x-phasor-peak/' $o.txt; fi
-    if grep -q '^RESULT' $o.txt 2>/dev/null; then pk=$(grep -o 'peak_gib=[0-9.]* compute' $o.txt | grep -o '[0-9.]*'); \
-      awk -v p=$pk -v t=$T 'BEGIN{exit !(p>1.4*t)}' && echo "NORUN budget=$nb reason=exceeds-1.4x-phasor-peak (peak $pk vs $T)" >> $o.txt; fi
+    over14 $o $T $nb
   fi
+done; done
+# E1 retries, as for the other baselines (stage 5 extras): a calibrated run that hit
+# the cap is retried with its cache at x0.85, x0.7, x0.55, stopping at the first that runs
+for w in mmlu sharegpt longbench; do for f in 0.25 0.45 0.65 1.08; do
+  nb=$(awk -v g=$gb -v f=$f 'BEGIN{printf "%.2f", g*f}')
+  grep -q "^NORUN.*oom-under-cap" $O/$w/finemoe_$f.txt 2>/dev/null || continue
+  k0=$(python3 -c "import json;v=json.load(open('$O/memcal/finemoe_$nb.json'))['budget_gib'];print(v if v else 'none')" 2>/dev/null || echo none)
+  [ "$k0" = none ] && continue
+  for k in 0.85 0.7 0.55; do
+    kb=$(awk -v a=$k0 -v k=$k 'BEGIN{printf "%.2f", a*k}'); o=$O/$w/finemoe_${f}_k$k
+    CAP_GIB=$(capfor $nb) run "s8_${m}_${w}_finemoe_${nb}_k$k" $kb $o $(FM) --workload results/WORKLOADS/$w.json --maps $F/maps/${m}_$w --budget-gib $kb --out $o.json && break
+  done
 done; done
 # E3: batch 4 and 8 at 45% (MMLU, ShareGPT) when 45% ran within its memory
 b45=$(awk -v g=$gb 'BEGIN{printf "%.2f", g*0.45}'); mkdir -p $O/extras/e3

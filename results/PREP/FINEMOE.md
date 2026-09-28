@@ -11,8 +11,18 @@
 ## Result: cannot serve on this device
 
 - Load test (2 MMLU prompts, 4 GiB GPU cache, host guard at 12 GiB available): HOSTGUARD kill: MemAvailable 12264 MiB < 12 GiB (cgroup charges do not include cudaMalloc)
+- The stop was the run's own memory: within a minute of the kill, MemAvailable was back at 117 GiB (the
+  host guard's outside-pressure check, `scripts/in_cgroup.sh`, did not fire; nothing else ran). It was
+  still in `from_pretrained` ("Loading weights"), after reading 99 GiB from the SSD, before serving any
+  request (09-28 18:12).
 - Loading needs the CPU copy of the checkpoint and the pinned expert buffer at once, above what the
   pool holds beside the OS; FineMoE is reported as cannot run within any budget here, with this
   evidence, rather than modified.
+
+## Mixtral-8x7B
+
+Not run. The release has no Mixtral model code (Qwen models only), and the same design would pin 84.0 GiB
+of experts after loading the 87 GiB checkpoint to CPU -- more than the Qwen3 load that already exhausts
+the pool. Recorded as cannot run (`results/MATRIX5/mixtral8x7b/mmlu/finemoe_*.txt`).
 
 Log: `results/PREP/finemoe/smoke.log`.

@@ -19,6 +19,7 @@ Requests: MMLU 24, ShareGPT 24, LongBench 21 on Qwen3-30B; on Mixtral, ShareGPT 
 | FlashMoE* | 26.26 / 21.47 / 684 / 21.3 (over) [2.75x] | 17.35 / 15.46 / 270 / 33.4 (over) [2.60x] | 11.80 / 10.37 / 204 / 43.3 [2.76x] | 3.19 / 2.42 / 110 / 63.1 [1.26x] |
 | DuoServe* | 41.55 / 28.35 / 1887 / 21.2 (over) [4.35x] | 36.03 / 26.38 / 1379 / 32.7 [5.39x] | 32.67 / 25.53 / 1020 / 43.9 [7.64x] | 13.99 / 12.26 / 247 / 65.0 [5.53x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 41.71 / 32.39 / 1331 / 19.6 [4.37x] | 38.81 / 31.08 / 1105 / 31.5 [5.81x] | 40.96 / 35.97 / 712 / 43.1 [9.58x] | 3.51 / 2.50 / 145 / 64.3 [1.39x] |
+| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
 
 Reference: each baseline at its own setting for the nominal budget (not equal memory):
 
@@ -27,6 +28,7 @@ Reference: each baseline at its own setting for the nominal budget (not equal me
 | ZipMoE (own setting) | 29.10 / 19.42 / 1382 / 12.1 | 26.24 / 17.32 / 1273 / 15.3 | 26.06 / 17.10 / 1279 / 17.6 | 24.02 / 15.82 / 1172 / 20.9 | 23.47 / 15.44 / 1147 / 24.1 | 18.20 / 11.74 / 924 / 34.6 | 11.62 / 7.15 / 640 / 46.6 | 6.58 / 3.79 / 399 / 70.9 |
 | FlashMoE* (own setting) | 39.29 / 26.78 / 1788 / 10.2 | 33.71 / 24.87 / 1262 / 13.9 | 30.19 / 23.46 / 961 / 16.9 | 26.80 / 21.63 / 739 / 20.7 | 24.48 / 20.27 / 601 / 23.4 | 16.47 / 14.45 / 288 / 35.7 | 9.78 / 8.57 / 172 / 48.1 | 3.25 / 2.46 / 113 / 63.3 |
 | DuoServe* (own setting) | 58.35 / 29.69 / 4094 / 9.6 | 48.81 / 29.03 / 2825 / 13.9 | 44.05 / 28.88 / 2168 / 17.8 | 41.52 / 28.45 / 1867 / 21.0 | cannot run (oom-under-cap) | cannot run (oom-under-cap) | cannot run (oom-under-cap) | cannot run (oom-under-cap) |
+| MoE-APEX* (bf16: LCU cache + prefetch) (own setting) | 41.89 / 30.42 / 1639 / 10.6 | 41.44 / 31.26 / 1454 / 12.1 | 41.80 / 32.12 / 1383 / 15.5 | 40.40 / 31.09 / 1330 / 22.1 | 41.39 / 32.03 / 1337 / 22.5 | 37.92 / 31.24 / 954 / 35.1 | 40.77 / 37.39 / 482 / 47.0 | 3.48 / 2.46 / 145 / 63.1 |
 
 E7 ablation at 45% (request s relative to PHASOR 6.68 s):
 
@@ -49,6 +51,7 @@ E7 ablation at 45% (request s relative to PHASOR 6.68 s):
 | FlashMoE* | 48.26 / 19.76 / 919 / 22.3 (over) [2.29x] | 27.67 / 13.88 / 445 / 34.0 (over) [2.58x] | 19.24 / 10.04 / 297 / 43.9 [2.65x] | 5.92 / 2.38 / 114 / 63.9 [1.13x] |
 | DuoServe* | 79.10 / 27.62 / 1661 / 20.9 (over) [3.75x] | 54.51 / 25.59 / 933 / 32.9 [5.08x] | 38.43 / 20.74 / 571 / 42.2 [5.29x] | 17.54 / 9.77 / 251 / 65.3 [3.34x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 60.86 / 29.06 / 1025 / 22.0 (over) [2.89x] | 49.20 / 26.92 / 719 / 30.6 [4.58x] | 41.31 / 28.02 / 429 / 42.7 [5.68x] | 7.00 / 2.49 / 145 / 62.8 [1.33x] |
+| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
 
 E7 ablation at 45% (request s relative to PHASOR 10.74 s):
 
@@ -71,6 +74,7 @@ E7 ablation at 45% (request s relative to PHASOR 10.74 s):
 | FlashMoE* | 55.52 / 23.91 / 1020 / 24.1 (over) [2.34x] | 38.49 / 19.02 / 628 / 34.3 (over) [2.34x] | 24.45 / 13.94 / 339 / 45.3 (over) [2.05x] | 8.24 / 4.74 / 113 / 64.5 [1.05x] |
 | DuoServe* | 85.25 / 32.51 / 1701 / 22.4 (over) [3.59x] | 61.52 / 31.52 / 968 / 32.8 [3.74x] | 46.10 / 26.87 / 620 / 45.0 (over) [3.87x] | 29.55 / 20.46 / 293 / 65.8 [3.75x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 63.08 / 35.02 / 905 / 23.7 (over) [2.66x] | 56.06 / 34.57 / 693 / 32.3 [3.40x] | 51.07 / 36.15 / 481 / 44.2 [4.29x] | 9.38 / 4.98 / 142 / 66.0 [1.19x] |
+| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
 
 E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 
@@ -121,6 +125,8 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | ZipMoE | 24.37 / 16.09 / 1182 / 20.4 | 26.83 / 17.68 / 1306 / 16.8 | 27.11 / 17.94 / 1309 / 15.3 | 29.15 / 19.49 / 1380 / 12.0 (>1.4x) |
 | FlashMoE* | 27.47 / 22.13 / 763 / 20.2 | 30.28 / 23.55 / 962 / 16.9 | 33.26 / 24.55 / 1244 / 13.9 | 39.60 / 26.92 / 1811 / 9.2 |
 | DuoServe* | 41.95 / 28.76 / 1884 / 21.1 | 44.47 / 29.13 / 2191 / 18.5 | 48.99 / 29.16 / 2834 / 13.4 | 58.34 / 29.64 / 4100 / 9.9 |
+| MoE-APEX* (bf16: LCU cache + prefetch) | 40.40 / 31.09 / 1330 / 22.1 | 41.80 / 32.12 / 1383 / 15.5 | 41.44 / 31.26 / 1454 / 12.1 | 41.89 / 30.42 / 1639 / 10.6 |
+| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (not-tried) | cannot run (not-tried) | cannot run (not-tried) |
 
 ### E5: PHASOR latency breakdown at 45%
 
@@ -147,11 +153,13 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | MMLU | FlashMoE* | 0.46; 17.35 | 1.39; 22.99 | 1.87; 34.14 |
 | MMLU | DuoServe* | 0.22; 36.03 | 0.73; 44.07 | 1.15; 55.65 |
 | MMLU | MoE-APEX* (bf16: LCU cache + prefetch) | 0.21; 38.81 | 0.74; 43.48 | 1.14; 56.00 |
+| MMLU | FineMoE | - | cannot run | cannot run |
 | ShareGPT | PHASOR | 2.98; 10.74 | 4.59; 27.90 | 4.79; 53.43 |
 | ShareGPT | ZipMoE | 0.68; 47.01 | 1.37; 93.77 | 1.76; 145.45 |
 | ShareGPT | FlashMoE* | 1.16; 27.67 | 1.94; 65.93 | 2.46; 104.09 |
 | ShareGPT | DuoServe* | 0.59; 54.51 | 1.18; 108.77 | 1.40; 182.76 |
 | ShareGPT | MoE-APEX* (bf16: LCU cache + prefetch) | 0.65; 49.20 | 1.28; 100.08 | 1.53; 167.54 |
+| ShareGPT | FineMoE | - | cannot run | cannot run |
 
 ## Mixtral-8x7B bf16
 
@@ -163,6 +171,7 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | ZipMoE | 58.53 / 20.86 / 5382 / 26.7 [1.44x] | 40.64 / 14.20 / 3778 / 45.6 [1.46x] | 25.69 / 10.77 / 2132 / 64.1 [1.50x] | cannot run (host-safety-ceiling) |
 | FlashMoE* | 97.51 / 36.94 / 8653 / 20.7 [2.41x] | 60.41 / 26.84 / 4795 / 41.7 [2.16x] | 32.05 / 17.87 / 2024 / 61.0 [1.88x] | cannot run (host-safety-ceiling) |
 | DuoServe* | 188.93 / 50.90 / 19719 / 25.0 [4.66x] | 138.84 / 42.18 / 13809 / 43.2 [4.97x] | 99.48 / 38.39 / 8727 / 62.2 [5.82x] | cannot run (host-safety-ceiling) |
+| FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
 | Fiddler | cannot run (oom-under-cap) | - | - | - |
 | Mixtral-offloading (2-bit) | 7.65 / 5.10 / 364 / 22.7 [0.19x] | - | - | - |
 

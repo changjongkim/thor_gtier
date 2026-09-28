@@ -21,11 +21,11 @@ Requests: MMLU 24, ShareGPT 24, LongBench 21 on Qwen3-30B; on Mixtral, ShareGPT 
 
 Reference: each baseline at its own setting for the nominal budget (not equal memory):
 
-| system | 25% | 45% | 65% | 108% |
-|---|---|---|---|---|
-| ZipMoE (own setting) | 23.47 / 15.44 / 1147 / 24.1 (over) | 18.20 / 11.74 / 924 / 34.6 (over) | 11.62 / 7.15 / 640 / 46.6 (over) | 6.58 / 3.79 / 399 / 70.9 (over) |
-| FlashMoE* (own setting) | 24.48 / 20.27 / 601 / 23.4 (over) | 16.47 / 14.45 / 288 / 35.7 (over) | 9.78 / 8.57 / 172 / 48.1 (over) | 3.25 / 2.46 / 113 / 63.3 |
-| DuoServe* (own setting) | cannot run (oom-under-cap) | cannot run (oom-under-cap) | cannot run (oom-under-cap) | cannot run (oom-under-cap) |
+| system | 5% | 10% | 15% | 20% | 25% | 45% | 65% | 108% |
+|---|---|---|---|---|---|---|---|---|
+| ZipMoE (own setting) | 29.10 / 19.42 / 1382 / 12.1 | 26.24 / 17.32 / 1273 / 15.3 | 26.06 / 17.10 / 1279 / 17.6 | 24.02 / 15.82 / 1172 / 20.9 | 23.47 / 15.44 / 1147 / 24.1 | 18.20 / 11.74 / 924 / 34.6 | 11.62 / 7.15 / 640 / 46.6 | 6.58 / 3.79 / 399 / 70.9 |
+| FlashMoE* (own setting) | 39.29 / 26.78 / 1788 / 10.2 | 33.71 / 24.87 / 1262 / 13.9 | 30.19 / 23.46 / 961 / 16.9 | 26.80 / 21.63 / 739 / 20.7 | 24.48 / 20.27 / 601 / 23.4 | 16.47 / 14.45 / 288 / 35.7 | 9.78 / 8.57 / 172 / 48.1 | 3.25 / 2.46 / 113 / 63.3 |
+| DuoServe* (own setting) | 58.35 / 29.69 / 4094 / 9.6 | 48.81 / 29.03 / 2825 / 13.9 | 44.05 / 28.88 / 2168 / 17.8 | 41.52 / 28.45 / 1867 / 21.0 | cannot run (oom-under-cap) | cannot run (oom-under-cap) | cannot run (oom-under-cap) | cannot run (oom-under-cap) |
 
 E7 ablation at 45% (request s relative to PHASOR 6.68 s):
 
@@ -97,12 +97,11 @@ which moves the system-wide MemAvailable drop the peak is measured from; their p
 | 25% | LongBench | PHASOR | 3 | 24.07 | 0.28 | 1.1% |
 | 25% | LongBench | FlashMoE* | 3 | 56.33 | 0.70 | 1.2% |
 | 25% | LongBench | DuoServe* | 3 | 86.79 | 1.35 | 1.6% |
-| 45% | MMLU | PHASOR | 2 | 6.97 | 0.42 | 6.0% |
 | 45% | ShareGPT | PHASOR | 2 | 10.91 | 0.25 | 2.3% |
 
 ### Slower SSD at 25% (MMLU; NVMe operational power states)
 
-| system | PS0 (E1) | PS1 (1.212 GiB/s) | PS2 (0.733 GiB/s) |
+| system | PS0 (E1) | PS1 (1.347 GiB/s) | PS2 (0.733 GiB/s) |
 |---|---:|---:|---:|
 | PHASOR | 9.55 / 7.77 / 254 / 19.3 | 26.84 / 23.46 / 483 / 18.8 | 41.75 / 36.83 / 702 / 19.5 |
 | FlashMoE* | 26.26 / 21.47 / 684 / 21.3 | 46.36 / 38.12 / 1178 / 21.7 | 71.18 / 59.10 / 1725 / 21.0 |
@@ -110,10 +109,13 @@ which moves the system-wide MemAvailable drop the peak is measured from; their p
 
 ### E2: small budgets (MMLU, each system at its own setting)
 
+`(>1.4x)`: peak above 1.4 x PHASOR's peak at that budget (stages 7-9 record such a run of
+MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every system).
+
 | system | 20% (11.40 GiB) | 15% (8.55 GiB) | 10% (5.70 GiB) | 5% (2.85 GiB) |
 |---|---|---|---|---|
 | PHASOR | 11.28 / 8.72 / 367 / 16.3 | 13.53 / 9.25 / 611 / 13.4 | 15.28 / 9.91 / 767 / 11.1 | 17.03 / 10.37 / 952 / 7.7 |
-| ZipMoE | 24.37 / 16.09 / 1182 / 20.4 | 26.83 / 17.68 / 1306 / 16.8 | 27.11 / 17.94 / 1309 / 15.3 | 29.15 / 19.49 / 1380 / 12.0 |
+| ZipMoE | 24.37 / 16.09 / 1182 / 20.4 | 26.83 / 17.68 / 1306 / 16.8 | 27.11 / 17.94 / 1309 / 15.3 | 29.15 / 19.49 / 1380 / 12.0 (>1.4x) |
 | FlashMoE* | 27.47 / 22.13 / 763 / 20.2 | 30.28 / 23.55 / 962 / 16.9 | 33.26 / 24.55 / 1244 / 13.9 | 39.60 / 26.92 / 1811 / 9.2 |
 | DuoServe* | 41.95 / 28.76 / 1884 / 21.1 | 44.47 / 29.13 / 2191 / 18.5 | 48.99 / 29.16 / 2834 / 13.4 | 58.34 / 29.64 / 4100 / 9.9 |
 
@@ -161,10 +163,10 @@ which moves the system-wide MemAvailable drop the peak is measured from; their p
 
 Reference: each baseline at its own setting for the nominal budget (not equal memory):
 
-| system | 25% | 45% | 65% | 108% |
-|---|---|---|---|---|
-| ZipMoE (own setting) | 50.77 / 16.31 / 4923 / 35.6 (over) | - | - | - |
-| FlashMoE* (own setting) | 78.52 / 32.08 / 6635 / 29.7 (over) | - | - | - |
+| system | 5% | 10% | 15% | 20% | 25% | 45% | 65% | 108% |
+|---|---|---|---|---|---|---|---|---|
+| ZipMoE (own setting) | - | - | - | - | 50.77 / 16.31 / 4923 / 35.6 | - | - | - |
+| FlashMoE* (own setting) | - | - | - | - | 78.52 / 32.08 / 6635 / 29.7 | - | - | - |
 
 ### ShareGPT
 
@@ -177,6 +179,9 @@ Reference: each baseline at its own setting for the nominal budget (not equal me
 |---|---|---|---|---|
 
 ### E2: small budgets (MMLU, each system at its own setting)
+
+`(>1.4x)`: peak above 1.4 x PHASOR's peak at that budget (stages 7-9 record such a run of
+MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every system).
 
 | system | 20% (17.40 GiB) | 15% (13.05 GiB) | 10% (8.70 GiB) | 5% (4.35 GiB) |
 |---|---|---|---|---|

@@ -1,0 +1,35 @@
+SERVER /home/thor/kcj/llama.cpp/build/bin/llama-server -m /home/thor/kcj/models/gguf_bf16/qwen3_split/Qwen3-30B-A3B-BF16-00001-of-00002.gguf --load-mode mmap --cpu-moe -ngl 999 -c 8280 -np 1 -t 14 --host 127.0.0.1 --port 18080
+0.00.004.915 E ggml_cuda_init: failed to initialize CUDA: no CUDA-capable device is detected
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.007.054 I srv  llama_server: initializing ...
+0.00.007.067 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.007.520 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.009.763 I srv    load_model: loading model '/home/thor/kcj/models/gguf_bf16/qwen3_split/Qwen3-30B-A3B-BF16-00001-of-00002.gguf'
+0.00.468.422 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.536.747 W llama_model_loader: tensor overrides to CPU are used with mmap enabled - consider using --load-mode none for better performance
+0.25.894.804 I cmn          init: llama threadpool init, n_threads = 14
+0.34.334.919 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8448, kv_unified = 'false'
+0.34.346.448 I srv  llama_server: model loaded
+0.34.346.457 I srv  llama_server: listening on http://127.0.0.1:18080
+0.35.071.013 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.35.071.076 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+1.16.551.552 I slot print_timing: id  0 | task 0 | prompt eval time =   15581.56 ms /    11 tokens ( 1416.51 ms per token,     0.71 tokens per second)
+1.16.551.556 I slot print_timing: id  0 | task 0 |        eval time =   25896.67 ms /    24 tokens ( 1125.94 ms per token,     0.89 tokens per second)
+1.16.551.556 I slot print_timing: id  0 | task 0 |       total time =   41478.22 ms /    35 tokens
+1.16.552.440 I slot print_timing: id  0 | task 0 |    graphs reused =         23
+1.16.553.593 I slot      release: id  0 | task 0 | stop processing: n_tokens = 34, truncated = 0
+REQ {"name": "tok0", "prompt_tok": 11, "new_tok": 24, "ttft_s": 15.586049795150757, "tpot_ms": 1125.7878075475278, "request_s": 41.486562967300415}
+1.16.559.364 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 376664043991
+1.16.563.924 I slot launch_slot_: id  0 | task 25 | processing task, is_child = 0
+1.58.690.540 I slot print_timing: id  0 | task 25 | prompt eval time =   14578.90 ms /    12 tokens ( 1214.91 ms per token,     0.82 tokens per second)
+1.58.690.544 I slot print_timing: id  0 | task 25 |        eval time =   27545.86 ms /    24 tokens ( 1197.65 ms per token,     0.83 tokens per second)
+1.58.690.544 I slot print_timing: id  0 | task 25 |       total time =   42124.76 ms /    36 tokens
+1.58.690.546 I slot print_timing: id  0 | task 25 |    graphs reused =         45
+1.58.691.631 I slot      release: id  0 | task 25 | stop processing: n_tokens = 35, truncated = 0
+REQ {"name": "tok1", "prompt_tok": 12, "new_tok": 24, "ttft_s": 14.58575177192688, "tpot_ms": 1197.6478929105012, "request_s": 42.13696908950806}
+1.58.998.953 I srv    operator(): operator(): cleaning up before exit...
+RESULT policy=llamacpp budget=20.00 requests=2 ttft_s=15.0859 tpot_ms=1161.718 request_s=41.8118 peak_gib=20.16 compute=measured
+cgroup_io_read_gib=164.312
+cgroup_cpu_s=1088.2 cgroup_user_s=362.3 cgroup_sys_s=725.9

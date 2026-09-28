@@ -60,7 +60,7 @@ if ! $MPY -c "import moe_infinity,sys; sys.exit(0 if '/envs/moeinf2408/' in moe_
   # its requirements that the t26 venv does not satisfy (transformers >= 4.37.1, < 4.47; pydantic 1)
   timeout 3600 $MPY -m pip install -q "transformers>=4.37.1,<4.47" "pydantic==1.10.12" hjson py-cpuinfo ninja "accelerate<1.3" "optimum<1.24" "setuptools<75" > $P/moeinf2408/pip.log 2>&1
   timeout 3600 $MPY -m pip install -q --no-deps "peft==0.13.2" gekko >> $P/moeinf2408/pip.log 2>&1
-  # build compatibility only (third_party/moeinf2408_build.patch): its log buffer constant assumes x86's
+  # build compatibility only (third_party/moeinf2502_build.patch, where it applies): its log buffer constant assumes x86's
   # 80-bit long double (aarch64: 33 digits), and GCC 13's headers no longer pull <string> in transitively
   ( cd $SRC && git apply --check $R/third_party/moeinf2502_build.patch 2>/dev/null && git apply $R/third_party/moeinf2502_build.patch ) || true
   BUILD_CUDA_EXT=0 timeout 3600 $MPY -m pip install -q --no-deps --no-build-isolation "auto-gptq==0.7.1" >> $P/moeinf2408/pip.log 2>&1
@@ -74,7 +74,7 @@ rec "- Experts stay in its offload store on the SSD and move SSD -> host pool ->
 rec "  (\"Moving sparse parameters to CPU\") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3."
 rec "- Built in its own venv (transformers 4.46.3, < 4.47 as it requires) with build-compatibility fixes only:"
 rec "  \`-include string\` (GCC 13) and its log buffer constant kMaxNumericSize 32 -> 48 (aarch64 long double;"
-rec "  third_party/moeinf2408_build.patch). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time"
+rec "  third_party/moeinf2502_build.patch, where it applies). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time"
 rec "  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio."
 export SCRUB_GLOB="$ck/*.safetensors $OFF/*"
 MI(){ echo "$MPY scripts/sota_serve.py --system moe-infinity --checkpoint $ck --workload results/WORKLOADS/$w.json --offload-dir $OFF"; }

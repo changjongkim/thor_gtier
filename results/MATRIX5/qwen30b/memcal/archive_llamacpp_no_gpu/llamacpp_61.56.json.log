@@ -1,0 +1,8 @@
+budget 61.56 -> peak 59.42 (target 67.16)
+budget 69.30 -> peak 58.70 (target 67.16)
+probe budget 0.50 failed rc=137
+cgroup_io_read_gib=0.000
+cgroup_cpu_s=8.6 cgroup_user_s=3.6 cgroup_sys_s=4.9
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 85: 674543 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 0.50 -> killed/failed (cap 71.02 GiB)
+CAL target=67.16 budget=61.56 peak=59.41843795776367

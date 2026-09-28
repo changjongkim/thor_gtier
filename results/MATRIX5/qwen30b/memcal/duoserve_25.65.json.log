@@ -1,0 +1,10 @@
+probe budget 25.65 failed rc=137
+cgroup_io_read_gib=32.939
+cgroup_cpu_s=62.9 cgroup_user_s=17.5 cgroup_sys_s=45.4
+`torch_dtype` is deprecated! Use `dtype` instead!
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 35: 2395796 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 25.65 -> killed/failed (cap 33.48 GiB)
+budget 15.39 -> peak 25.50 (target 31.41)
+budget 21.30 -> peak 33.65 (target 31.41)
+budget 19.68 -> peak 31.42 (target 31.41)
+CAL target=31.41 budget=19.679370305822932 peak=31.423748016357422

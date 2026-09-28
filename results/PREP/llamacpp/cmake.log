@@ -54,12 +54,12 @@ CMAKE_BUILD_TYPE=Release
 -- Performing Test HAVE_SME
 -- Performing Test HAVE_SME - Failed
 -- Adding CPU backend variant ggml-cpu: -march=armv8-a+crc+lse+rcpc+rdma+dotprod+fp16fml+sb+ssbs+sve2-sm4+sve2-aes+sve2-sha3+sve2-bitperm+i8mm+bf16+flagm+pauth+dotprod+i8mm+sve 
--- Found CUDAToolkit: /usr/local/cuda/targets/sbsa-linux/include (found version "13.2.78") 
+-- Found CUDAToolkit: /usr/local/cuda-13.0/targets/sbsa-linux/include (found version "13.0.48") 
 -- CUDA Toolkit found
--- The CUDA compiler identification is NVIDIA 13.2.78
+-- The CUDA compiler identification is NVIDIA 13.0.48
 -- Detecting CUDA compiler ABI info
 -- Detecting CUDA compiler ABI info - done
--- Check for working CUDA compiler: /usr/local/cuda/bin/nvcc - skipped
+-- Check for working CUDA compiler: /usr/local/cuda-13.0/bin/nvcc - skipped
 -- Detecting CUDA compile features
 -- Detecting CUDA compile features - done
 -- Using CMAKE_CUDA_ARCHITECTURES=110 CMAKE_CUDA_ARCHITECTURES_NATIVE=110-real
@@ -75,19 +75,6 @@ CMAKE_BUILD_TYPE=Release
 -- Performing Test OPENSSL_VERSION_SUPPORTED - Success
 -- OpenSSL found: 3.0.13
 -- Generating embedded license file for target: llama-app
--- Configuring done (7.3s)
-CMake Error at ggml/src/ggml-cuda/CMakeLists.txt:178 (target_link_libraries):
-  Target "ggml-cuda" links to:
-
-    CUDA::cublas
-
-  but the target was not found.  Possible reasons include:
-
-    * There is a typo in the target name.
-    * A find_package call is missing for an IMPORTED target.
-    * An ALIAS target is missing.
-
-
-
+-- Configuring done (7.6s)
 -- Generating done (0.2s)
-CMake Generate step failed.  Build files cannot be regenerated correctly.
+-- Build files have been written to: /home/thor/kcj/llama.cpp/build

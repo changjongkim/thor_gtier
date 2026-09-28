@@ -1,0 +1,17 @@
+SERVER /home/thor/kcj/llama.cpp/build/bin/llama-server -m /home/thor/kcj/models/gguf_bf16/mixtral8x7b_bf16.gguf --load-mode mmap --cpu-moe -ngl 999 -c 8288 -np 1 -t 14 --host 127.0.0.1 --port 18080
+0.00.005.404 E ggml_cuda_init: failed to initialize CUDA: no CUDA-capable device is detected
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.007.532 I srv  llama_server: initializing ...
+0.00.007.546 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.008.016 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.010.227 I srv    load_model: loading model '/home/thor/kcj/models/gguf_bf16/mixtral8x7b_bf16.gguf'
+0.00.095.955 W llama_model_loader: tensor overrides to CPU are used with mmap enabled - consider using --load-mode none for better performance
+0.41.525.281 I cmn          init: llama threadpool init, n_threads = 14
+1.24.312.796 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 8448, kv_unified = 'false'
+1.24.318.425 I srv  llama_server: model loaded
+1.24.318.433 I srv  llama_server: listening on http://127.0.0.1:18080
+1.25.226.048 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+1.25.226.115 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+scripts/in_cgroup.sh: line 1: 605067 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )

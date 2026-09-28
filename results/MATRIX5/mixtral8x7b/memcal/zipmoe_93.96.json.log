@@ -1,0 +1,37 @@
+probe budget 93.96 failed rc=137
+[20260927 16:54:25.265233Z ][3902126 ][INFO  ]Loading index file from  /home/thor/kcj/ZipMoE/offload/mixtral/zipmoe_index - zipmoe_tensor_handle.cpp:45
+[20260927 16:54:25.266297Z ][3902126 ][INFO  ]Index file size  995 - zipmoe_tensor_handle.cpp:51
+[20260927 16:54:26.130209Z ][3902126 ][INFO  ][ZipMoECacheHandle] Applying Cache Pool Planning. - cache.cpp:37
+[20260927 16:54:33.258541Z ][3902126 ][INFO  ]number of full-cache slots:  255 - cache.cpp:114
+[20260927 16:54:33.258557Z ][3902126 ][INFO  ]number of SM-cache slots:  63 - cache.cpp:115
+[Pool] Thread index 0 initialized.
+[Pool] Thread index 2 initialized.
+[Pool] Thread index 3 initialized.[Pool] Thread index 
+6 initialized.
+[Pool] Thread index 4 initialized.
+[Pool] Thread index 1 initialized.
+[Pool] Thread index 5 initialized.
+Arch: mixtralforcausallm
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+[ZipMoE Cache Pool Planning] Loading trace...
+[Coverage To Weight] Converged in 13 iterations.
+Bernoulli probs sum: 3.7302
+Total memory available per layer: 3152774430.72
+Max potential full slots: 8
+[ZipMoE Invocation Modeling] Ratio Full: 0.89 | Avg Delay: 219.3605
+[ZipMoE Cost Modeling]: Smoothed Ratio Full = 0.89,  Cost = 219.36047700154379
+[ZipMoE Cache Pool Planning] Best ratio: 0.89
+[ZipMoE] Loading model from offload_path ...
+cgroup_io_read_gib=5.093
+cgroup_cpu_s=24.0 cgroup_user_s=7.9 cgroup_sys_s=16.1
+scrub: 22 files
+`torch_dtype` is deprecated! Use `dtype` instead!
+`torch_dtype` is deprecated! Use `dtype` instead!
+/home/thor/kcj/envs/zipmoe/lib/python3.12/site-packages/transformers/generation/utils.py:2412: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+HOSTGUARD kill: MemAvailable 12256 MiB < 12 GiB (cgroup charges do not include cudaMalloc)
+/home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 59: 3902126 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 93.96 -> killed/failed (cap 105.46 GiB)
+budget 56.38 -> peak 68.73 (target 99.96)
+budget 87.61 -> peak 99.40 (target 99.96)
+CAL target=99.96 budget=87.6060614929199 peak=99.40475463867188

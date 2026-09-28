@@ -1,0 +1,4 @@
+`torch_dtype` is deprecated! Use `dtype` instead!
+REQ {"name": "mmlu_professional_psychology_0", "prompt_tok": 694, "new_tok": 8, "ttft_s": 19.56502890586853, "tpot_ms": 4282.0396763937815, "request_s": 49.539958238601685, "hits": 120.0, "misses": 584.0, "read_gib": 191.625}
+REQ {"name": "mmlu_professional_psychology_1", "prompt_tok": 682, "new_tok": 8, "ttft_s": 14.484312534332275, "tpot_ms": 4023.3792918069025, "request_s": 42.64872670173645, "hits": 206.0, "misses": 498.0, "read_gib": 163.40625}
+RESULT policy=phasor-hf-phasor budget=21.75 requests=2 batch=1 ttft_s=17.0247 tpot_ms=4152.709 request_s=46.0943 footprint_gib=26.52 peak_gib=26.55 compute=measured

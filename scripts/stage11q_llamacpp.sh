@@ -29,8 +29,8 @@ settle(){ local i=0; until [ $(awk '/^MemAvailable:/{print int($2/1048576)}' /pr
 eval "$(sed -n '/^run(){/,/^}/p; /^capfor(){/,/^}/p' scripts/stage5.sh)"
 eval "$(sed -n '/^cal(){/,/^}/p; /^flag14(){/,/^}/p; /^over14(){/,/^}/p; /^because(){/,/^}/p' scripts/stage_helpers.sh)"
 # SKIP_E2=1: all but Qwen3's E2 (09-29 02:40, user: E2 last); ONLY_E2=1: Qwen3's E2 alone, after stage 12b
-if [ -n "${ONLY_E2:-}" ]; then [ -n "${NOWAIT:-}" ] || until grep -q "=== stage 12b done" "$LOG"; do sleep 120; done
-else [ -n "${NOWAIT:-}" ] || until [ $(grep -c "=== stage 12 done" "$LOG") -ge 2 ]; do sleep 120; done; fi
+if [ -n "${ONLY_E2:-}" ]; then [ -n "${NOWAIT:-}" ] || until grep -q "=== stage 11q done ===" "$LOG"; do sleep 120; done
+else [ -n "${NOWAIT:-}" ] || until grep -q "=== stage 12b done" "$LOG"; do sleep 120; done; fi   # 09-29 02:45 (user): llama.cpp after MoE-Infinity
 exec 9>/tmp/gtier_pipeline.lock; flock 9
 say "=== stage 11q (llama.cpp, Qwen3-30B) start ==="
 free_gb(){ df -BG --output=avail /home/thor/kcj | tail -1 | tr -dc 0-9; }

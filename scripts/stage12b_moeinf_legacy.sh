@@ -115,4 +115,5 @@ git add -f $P/MOE_INFINITY.md $P/moeinf2408 $O/$w/moeinf2408_* $O/memcal/moeinf2
 git commit -q -m "MoE-Infinity (2024-08 release 350f0dd, SSD tier) in the Mixtral MMLU generality check
 
 Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>" && timeout 300 git push -q origin HEAD
+rm -rf "${OFF:?}"; say "stage 12b: removed its offload store (ours, regenerable) for disk"
 say "=== stage 12b done ==="

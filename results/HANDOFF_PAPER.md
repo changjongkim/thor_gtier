@@ -83,7 +83,14 @@ ZipMoE's repeats were dropped (its Qwen3 store had to be rebuilt).
 
 PHASOR stays fastest at every bandwidth (1.7x FlashMoE*, 2.9x DuoServe* at PS2) but slows the most
 (4.4x from PS0 to PS2 vs 2.7x / 2.9x): it moves more bytes per request and is therefore the most
-bandwidth-sensitive. ZipMoE (compressed reads) is pending: stage 6b.
+bandwidth-sensitive.
+
+ZipMoE is not in this table: its Qwen3 store (deleted after stage 5 for Mixtral's disk) could not be rebuilt
+under the host guard (the one-time conversion takes > 100 GiB transiently; the original store was built on
+09-25 before the guard existed). A bound shows it would not change the ordering: over the 24 MMLU requests at
+25% ZipMoE reads 951.9 GiB from the SSD (PHASOR 753.2, FlashMoE* 961.1, DuoServe* 1558.5; cgroup io), so the
+reads alone take >= 951.9 / 1.347 / 24 = 29.4 s per request at PS1 and >= 951.9 / 0.733 / 24 = 54.1 s at PS2,
+both above PHASOR's measured 26.84 s and 41.75 s (even with perfect overlap of compute and I/O).
 
 ## Pending (09-28 14:05)
 

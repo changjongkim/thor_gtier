@@ -26,6 +26,9 @@ trap 'killcg; wait $pid; exit 143' TERM INT
 attempt=0
 while :; do
 attempt=$((attempt+1))
+# BEFORE_EACH: a command run before every attempt (e.g. removing a store a
+# stopped attempt left half-written; ZipMoE refuses to build over one)
+[ -n "${BEFORE_EACH:-}" ] && bash -c "$BEFORE_EACH"
 sudo -n rmdir "$CG" 2>/dev/null
 sudo -n mkdir -p "$CG" || exit 97
 echo "$MAX" | sudo -n tee "$CG/memory.max" >/dev/null

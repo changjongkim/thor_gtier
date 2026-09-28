@@ -75,8 +75,8 @@ wait $pid; rc=$?
 if [ $guard = 2 ]; then
   ext=1; for i in $(seq 1 12); do [ "$(avail)" -ge $((a0 - 8388608)) ] && { ext=0; break; }; sleep 5; done
   if [ $ext = 1 ] && [ $attempt -lt 20 ]; then
-    echo "HOSTPRESSURE (outside this run): MemAvailable $((a/1024)) MiB during the run, $(($(avail)/1024)) MiB a minute after it was stopped, $((a0/1024)) MiB at its start; run restarted when >= 100 GiB is available (attempt $((attempt+1)))" >&2
-    until [ "$(avail)" -ge 104857600 ]; do sleep 30; done
+    echo "HOSTPRESSURE (outside this run): MemAvailable $((a/1024)) MiB during the run, $(($(avail)/1024)) MiB a minute after it was stopped, $((a0/1024)) MiB at its start; run restarted when >= ${SETTLE_GIB:-100} GiB is available (attempt $((attempt+1)))" >&2
+    until [ "$(avail)" -ge $(( ${SETTLE_GIB:-100} * 1048576 )) ]; do sleep 30; done
     continue
   fi
   echo "$gmsg" >&2; guard=1

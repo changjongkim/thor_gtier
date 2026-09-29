@@ -91,6 +91,20 @@ PHASOR's 40.5 s at 25%; its Qwen3 runs after 09-28 23:52 used no GPU (the driver
 apart. Notes: its load mode "auto" disables mmap on an iGPU (forced with --load-mode mmap); the official
 converter needs > 110 GiB for Qwen3-30B's per-expert tensors.
 
+## How to present the added baselines (agreed with the user, 09-29)
+
+- Main comparison rows: PHASOR, ZipMoE (ICML'26), MoE-APEX* (ASPLOS'26), FlashMoE*, DuoServe*.
+- MoE-Infinity (arXiv 2401.14361, `xue2024moeinfinity`; not a venue paper, but ZipMoE compares against it
+  and FineMoE (EuroSys'26) is built on its codebase) and FineMoE: grouped as DRAM-tier designs. In the E1
+  table either as rows marked OOM (exceeds 1.4 x PHASOR's peak) at 25-65%, or, if space is short, only a
+  paragraph/footnote: "designs that keep every expert in host DRAM (MoE-Infinity and FineMoE, built on it)
+  cannot run within the budget on a unified-memory device: measured peak 63.9 GiB (Qwen3-30B) and 99.7 GiB
+  (Mixtral) with an 8 GiB GPU cache; FineMoE's load needs the CPU copy and a 54 GiB pinned expert copy at
+  once." Its 108% numbers (MoE-Infinity 14-20x PHASOR, peak 8-12% above PHASOR's) at most in text, not
+  as a headline factor (the Qwen3 model code is our port). Its 65% runs that exceeded the 1.4x bound are
+  not used.
+- llama.cpp: omitted, or one footnote (Mixtral 25%: 854 s per request vs PHASOR 40.5 s).
+
 ## Repeats (Qwen3-30B, 25%, three runs each, request time; timing only)
 
 | workload | PHASOR | FlashMoE* | DuoServe* |

@@ -19,7 +19,9 @@
 # available again (at most 20 attempts), instead of being reported as not fitting.
 CG=/sys/fs/cgroup/ledger_bench/$1; shift
 MAX=$1; shift
-GUARD_KIB=$(awk -v g="${GUARD_GIB:-12}" 'BEGIN{printf "%d", g*1048576}')
+# 16 GiB (was 12) and a 0.25 s poll (was 0.5): on 09-28 a CPU-only job took MemAvailable from above 12 to
+# 7.9 GiB between two polls and the NVIDIA driver then lost the GPU (GSP unload failed at suspend)
+GUARD_KIB=$(awk -v g="${GUARD_GIB:-16}" 'BEGIN{printf "%d", g*1048576}')
 avail(){ awk '/^MemAvailable:/{print $2}' /proc/meminfo; }
 # RSS (KiB) of the largest process outside this run's cgroup (09-29: an IDE language server that grows
 # and shrinks within a minute made an outside spike look like the run's own)
@@ -87,11 +89,11 @@ while kill -0 $pid 2>/dev/null; do
   fi
   a=$(avail)
   if [ "$a" -lt "$GUARD_KIB" ]; then
-    gmsg="HOSTGUARD kill: MemAvailable $((a/1024)) MiB < ${GUARD_GIB:-12} GiB (cgroup charges do not include cudaMalloc)"
+    gmsg="HOSTGUARD kill: MemAvailable $((a/1024)) MiB < ${GUARD_GIB:-16} GiB (cgroup charges do not include cudaMalloc)"
     o1=$(outside_kib)
     killcg; guard=2; break
   fi
-  sleep 0.5
+  sleep 0.25
 done
 wait $pid; rc=$?
 if [ $guard = 2 ]; then

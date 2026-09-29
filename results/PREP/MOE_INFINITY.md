@@ -72,3 +72,13 @@ stage 11q (`scripts/stage12b_moeinf_legacy.sh`).
   host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
 
 (09-29 02:42: the 350f0dd attempt met a GPU that the driver had lost at 23:52 -- see pipeline.log; not a result, rerun after the GPU is back.)
+
+## Version 350f0dd (2024-08-15): release with an SSD tier (48bb3bc, 2025-02, fails at its first Mixtral request)
+- Experts stay in its offload store on the SSD and move SSD -> host pool -> GPU on demand; the preloading
+  ("Moving sparse parameters to CPU") arrived in c098c15 (2026-02-16). Supports Mixtral, not Qwen3.
+- Built in its own venv (transformers 4.46.3, < 4.47 as it requires) with build-compatibility fixes only:
+  `-include string` (GCC 13) and its log buffer constant kMaxNumericSize 32 -> 48 (aarch64 long double;
+  third_party/moeinf2502_build.patch, where it applies). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time
+  host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
+
+## Version 350f0dd (2024-08, SSD tier), Mixtral-8x7B: does not serve: 

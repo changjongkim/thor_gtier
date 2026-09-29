@@ -83,3 +83,4 @@ ArcherTaskPool destructor
 cgroup_io_read_gib=57.855
 cgroup_cpu_s=17728.9 cgroup_user_s=17444.5 cgroup_sys_s=284.4
 cgroup_peak_gib=60.49
+NORUN budget=4.79 reason=exceeds-1.4x-phasor-peak (peak 98.98 vs 67.16; applied by hand: the retry path of stage 13 had no 1.4x check)

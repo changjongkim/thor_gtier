@@ -77,7 +77,7 @@ E7 ablation at 45% (request s relative to PHASOR 10.74 s):
 | DuoServe* | 85.25 / 32.51 / 1701 / 22.4 (over) [3.59x] | 61.52 / 31.52 / 968 / 32.8 [3.74x] | 46.10 / 26.87 / 620 / 45.0 (over) [3.87x] | 29.55 / 20.46 / 293 / 65.8 [3.75x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 63.08 / 35.02 / 905 / 23.7 (over) [2.66x] | 56.06 / 34.57 / 693 / 32.3 [3.40x] | 51.07 / 36.15 / 481 / 44.2 [4.29x] | 9.38 / 4.98 / 142 / 66.0 [1.19x] |
 | FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
-| MoE-Infinity (2024-08 release, SSD tier) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | 130.39 / 32.30 / 3164 / 99.0 (over) [16.54x] (knob x0.55) |
+| MoE-Infinity (2024-08 release, SSD tier) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (oom-under-cap) |
 
 E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 

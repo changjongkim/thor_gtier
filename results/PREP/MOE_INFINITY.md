@@ -117,3 +117,15 @@ stage 11q (`scripts/stage12b_moeinf_legacy.sh`).
 - Model code added (models/qwen3.py: the Mixtral block with top-k routing and Qwen3's norm_topk_prob; config
   parsing and module wiring); predictor, prefetcher, caching and the SSD tier are the release's. Built with the
   same compatibility flags; venv transformers 4.51.3. Tokens vs stock transformers (2 prompts x 24): identical.
+
+### Qwen3-30B result (350f0dd + Qwen3 port, stage 13, 09-29 12:59-17:18)
+
+- Tokens identical to stock transformers (2 prompts x 24). GPU cache 8 GiB: peak 63.9 GiB (the model is held
+  in host memory as for Mixtral).
+- memcal: no setting within PHASOR's peak at 25/45/65% (19.5/31.4/42.4 GiB); 108%: 8.71 GiB cache, peak 68.2 GiB.
+- E1 (request s, x PHASOR): MMLU 108% 35.9 (14.2x, peak 72.9), ShareGPT 108% 103.7 (19.7x, peak 75.3).
+  25/45%: the smallest cache exceeds 1.4 x PHASOR's peak. 65%: ran to the end but peaked at 63.2 / 66.2 GiB
+  (MMLU / ShareGPT) above the 59.4 GiB bound; LongBench 65% stopped at the bound. LongBench 108%: the
+  calibrated cache and its x0.85/x0.7 retries met the host guard at a long prompt (eager attention); x0.55
+  (4.79 GiB) ran, peak 99.0 GiB > 94.0 = 1.4 x PHASOR's -> not fitting.
+- E3 (45%): no setting within PHASOR's memory. E2 (own setting): does not run at 20% (stopped at its cap).

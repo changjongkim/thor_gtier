@@ -83,7 +83,9 @@ alive at once. Even with the load order changed its steady state (~60 GiB) excee
   memory, later requests read nothing from the SSD); memcal found no setting and the smallest cache
   exceeds 1.4 x PHASOR's peak at 25/45/65%.
 - Qwen3-30B with a Qwen3 port of 350f0dd (model code only; tokens identical to stock): peak 63.9 GiB at an
-  8 GiB cache; stage 13 running (expected: exceeds 1.4x at 25/45/65%, measured at 108%).
+  8 GiB cache. Exceeds 1.4 x PHASOR's peak at 25/45/65% (all workloads) and at LongBench 108% (99.0 GiB;
+  long prompts under its eager attention). Measured: MMLU 108% 35.9 s (14.2x), ShareGPT 108% 103.7 s
+  (19.7x), peaks 8-12% above PHASOR's. E3 at 45% and E2 (from 20%) do not run.
 
 **llama.cpp** (stock, mmap + experts on CPU): dropped from the comparison (user, 09-29: too slow to be a
 meaningful comparison). One valid Mixtral request at a 20 GiB cap: 854 s (TTFT 640 s, TPOT 30.6 s) vs
@@ -136,9 +138,10 @@ under the host guard (the one-time conversion takes > 100 GiB transiently; the o
 reads alone take >= 951.9 / 1.347 / 24 = 29.4 s per request at PS1 and >= 951.9 / 0.733 / 24 = 54.1 s at PS2,
 both above PHASOR's measured 26.84 s and 41.75 s (even with perfect overlap of compute and I/O).
 
-## Pending (09-29 13:30)
+## Status (09-29 17:20)
 
-- Stage 13: MoE-Infinity (350f0dd + Qwen3 port) on Qwen3-30B -- memcal, E1, E3, E2 (running).
+All planned runs are finished. Summary tables: `results/MATRIX5/SUMMARY.md`.
 - Incidents: 09-28 23:52 the GPU was lost after host memory ran out during a CPU-only conversion (driver
-  failed to suspend it; recovered by reboot); runs measured without the GPU are archived. 09-29 13:05 the
-  kernel's OOM killer stopped the IDE language server at 124 GB; the host guard restarted the affected run.
+  failed to suspend it; recovered by reboot; runs measured without the GPU archived). The host guard is now
+  16 GiB with a 0.25 s poll, and in_cgroup.sh re-enables the cgroup controllers after a reboot. 09-29 13:05
+  the kernel's OOM killer stopped the IDE language server at 124 GB; the affected run was restarted.

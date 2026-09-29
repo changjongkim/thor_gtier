@@ -1,8 +1,4 @@
-tee: /sys/fs/cgroup/ledger_bench/prep/memory.max: Permission denied
-cat: /sys/fs/cgroup/ledger_bench/prep/memory.max: No such file or directory
 scrub: 19 files
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
 /home/thor/kcj/envs/moeinf2408/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
   @custom_fwd
 /home/thor/kcj/envs/moeinf2408/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
@@ -12,196 +8,14 @@ scripts/in_cgroup.sh: line 59: [: : integer expression expected
 CUDA extension not installed.
 CUDA extension not installed.
 SPDLOG_LEVEL : (null)
-2026-09-29 11:53:38.471 INFO Create ArcherAioThread for thread: , 0
-2026-09-29 11:53:38.471 INFO Index file, /home/thor/kcj/offload_tmp/mixtral8x7b_2408/archer_index,  does not exist, creating
-2026-09-29 11:53:38.471 INFO Index file size , 0
-2026-09-29 11:53:38.471 INFO Device count , 1
-2026-09-29 11:53:38.471 INFO Enabled peer access for all devices
+2026-09-29 12:05:21.210 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 12:05:21.210 INFO Index file, /home/thor/kcj/offload_tmp/mixtral8x7b_2408/archer_index,  does not exist, creating
+2026-09-29 12:05:21.210 INFO Index file size , 0
+2026-09-29 12:05:21.210 INFO Device count , 1
+2026-09-29 12:05:21.210 INFO Enabled peer access for all devices
 [WARNING] FlashAttention is not available in the current environment. Using default attention.
 Creating model from scratch ...
-Loading checkpoint files:   0%|          | 0/19 [00:00<?, ?it/s]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:   5%|▌         | 1/19 [00:37<11:11, 37.31s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  11%|█         | 2/19 [01:11<10:04, 35.57s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  16%|█▌        | 3/19 [01:53<10:04, 37.76s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  21%|██        | 4/19 [02:26<09:08, 36.54s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  26%|██▋       | 5/19 [02:58<08:21, 35.79s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  32%|███▏      | 6/19 [03:32<07:40, 35.45s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  37%|███▋      | 7/19 [04:05<07:01, 35.12s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  42%|████▏     | 8/19 [04:34<06:17, 34.33s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  47%|████▋     | 9/19 [05:08<05:43, 34.33s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  53%|█████▎    | 10/19 [05:41<05:07, 34.12s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  58%|█████▊    | 11/19 [06:12<04:30, 33.87s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  63%|██████▎   | 12/19 [06:43<03:55, 33.61s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  68%|██████▊   | 13/19 [07:18<03:22, 33.75s/it]awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-awk: cannot open "/sys/fs/cgroup/ledger_bench/prep/memory.stat" (No such file or directory)
-scripts/in_cgroup.sh: line 59: [: : integer expression expected
-Loading checkpoint files:  74%|███████▎  | 14/19 [07:49<02:47, 33.52s/it]Loading checkpoint files:  79%|███████▉  | 15/19 [08:20<02:13, 33.35s/it]Loading checkpoint files:  84%|████████▍ | 16/19 [08:50<01:39, 33.17s/it]Loading checkpoint files:  89%|████████▉ | 17/19 [09:23<01:06, 33.14s/it]CAPTHRASH kill: unreclaimable 4880 MiB >= 97% of the 0 MiB cap for 120 s
-scripts/in_cgroup.sh: line 74: 19549 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
-cgroup_io_read_gib=0.590
-cgroup_cpu_s=572.4 cgroup_user_s=473.1 cgroup_sys_s=99.3
+Loading checkpoint files:   0%|          | 0/19 [00:00<?, ?it/s]Loading checkpoint files:   5%|▌         | 1/19 [00:29<08:46, 29.23s/it]scripts/in_cgroup.sh: line 79: 26159 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+HOSTGUARD kill: MemAvailable 8604 MiB < 12 GiB (cgroup charges do not include cudaMalloc)
+cgroup_io_read_gib=1.675
+cgroup_cpu_s=75.7 cgroup_user_s=68.0 cgroup_sys_s=7.7

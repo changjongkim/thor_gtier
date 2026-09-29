@@ -58,7 +58,8 @@ while kill -0 $pid 2>/dev/null; do
   # (seen: a pinned host LRU at 19 GiB of a 21 GiB cap, no request in 20 min).
   # It cannot run within this memory; stop it rather than wait for the timeout.
   tick=$((tick+1))
-  if [ "$maxb" != max ] && [ $((tick % 10)) = 0 ]; then
+  # (only with a numeric cap: 09-29 12:03 an empty memory.max read made a 0 MiB "cap")
+  if [[ "$maxb" =~ ^[0-9]+$ ]] && [ $((tick % 10)) = 0 ]; then
     u=$(awk '/^anon /{a=$2} /^shmem /{s=$2} END{print a+s}' "$CG/memory.stat")
     if [ "$u" -ge $((maxb / 100 * 97)) ]; then
       [ $pinned_since = 0 ] && pinned_since=$SECONDS

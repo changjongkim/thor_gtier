@@ -81,4 +81,4 @@ stage 11q (`scripts/stage12b_moeinf_legacy.sh`).
   third_party/moeinf2502_build.patch, where it applies). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time
   host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
 
-## Version 350f0dd (2024-08, SSD tier), Mixtral-8x7B: does not serve: 
+(09-29 12:03: that attempt was stopped by a false cap-thrash kill -- the cgroup had no memory controller after the reboot; not a result.)

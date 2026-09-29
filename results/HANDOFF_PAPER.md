@@ -48,18 +48,48 @@ On its own model (Qwen1.5-MoE-A2.7B-Chat) and harness: our runner matches its ha
 20 GB (same prompts, memory). Its paper's caching-vs-LRU/LFU advantage does not reproduce on Thor
 (ZipMoE -1.6% to +10.1% vs LRU/LFU at 10-30 GB).
 
-## Added baselines (queued, 09-28)
+## Added baselines (09-28/29)
 
-- **MoE-APEX\*** (ASPLOS'26, no code released): reimplemented from the paper on the same stack
-  (`baselines_hf/apex_hf.py`): LCU caching (eq. 3-4), adaptive prefetch (p = 2). Evaluated with
-  precision adaptation off (bf16 mode), so outputs equal the original model like every compared system
-  and what is compared is its caching and prefetching -- the same ground on which Mixtral-offloading
-  (2-bit) is set apart. The int2 mixed mode is implemented but not run. Stage 7: memcal + Qwen3 E1.
-- **FineMoE** (EuroSys'26, bib `yu2026finemoe`): released code with a Qwen3-MoE port
-  (`third_party/finemoe_qwen3_sm110.patch`). It loads the checkpoint to CPU and pins every expert in host
-  memory (54 GiB for Qwen3-30B) before its GPU cache; on the unified pool it may not serve at all, in which
-  case `results/PREP/FINEMOE.md` records why (as for MoE-Infinity). Otherwise: token check, expert maps
-  from the other workloads, fidelity against its own measure(), memcal + E1, nominal reference. Stage 8.
+**MoE-APEX\*** (ASPLOS'26, no code; reimplemented from the paper, bf16 mode: LCU caching + adaptive
+prefetch, no precision adaptation). Same prompts, memcal to PHASOR's peak (all budgets within 5%, 108%
+below), no retries needed. Request s (x PHASOR):
+
+| Qwen3-30B | 25% | 45% | 65% | 108% |
+|---|---:|---:|---:|---:|
+| MMLU | 41.7 (4.4x) | 38.8 (5.8x) | 41.0 (9.6x) | 3.5 (1.4x) |
+| ShareGPT | 60.9 (2.9x) | 49.2 (4.6x) | 41.3 (5.7x) | 7.0 (1.3x) |
+| LongBench | 63.1 (2.7x) | 56.1 (3.4x) | 51.1 (4.3x) | 9.4 (1.2x) |
+
+- Mostly between FlashMoE* and DuoServe*; TTFT stays ~27-36 s at 25-65% (prefill fetches experts on
+  demand), so its gap to PHASOR widens with the budget; at 108% the whole model is cached. ShareGPT 25%
+  and LongBench 25% peaks exceed PHASOR's by 13% / 21% (`(over)` in SUMMARY).
+- E3 (45%, tokens/s): MMLU 0.74 (b4) / 1.14 (b8), ShareGPT 1.28 / ~1.5; PHASOR 3.1-4.3x higher.
+- E2 (MMLU, own setting): 40.4 / 41.8 / 41.4 / 41.9 s at 20/15/10/5% (peak 1.09-1.38x PHASOR's, within 1.4x).
+- Own setting (cache = budget), peak / budget: 5% 3.7x, 10% 2.1x, 15% 1.8x, 20% 1.9x, 25% 1.58x,
+  45% 1.37x, 65% 1.27x, 108% 1.02x -> it exceeds the budget at its own setting, like the other baselines.
+- Mixtral MMLU: 98.7 / 83.8 / 60.9 s at 25/45/65% (2.43 / 3.00 / 3.56x PHASOR).
+
+**FineMoE** (EuroSys'26): cannot run on this device (`results/PREP/FINEMOE.md`). Its released code loads
+the checkpoint to CPU and then copies every expert into one pinned host buffer (54 GiB for Qwen3-30B; its
+README asks for 192 GB of host memory); the load met the host guard with the CPU copy and the pinned copy
+alive at once. Even with the load order changed its steady state (~60 GiB) exceeds 1.4 x PHASOR's peak at
+25/45%. A DRAM-tier design, not reconstructed onto an SSD tier (that would no longer be FineMoE).
+
+**MoE-Infinity**: every release keeps all experts in host memory (`results/PREP/MOE_INFINITY.md`).
+- Current release (2026-09): copies every expert into its host pool at load -> host guard.
+- 2025-02 snapshot 48bb3bc: fails at its first Mixtral request (KeyError in its mixtral.py).
+- 2024-08 release 350f0dd (the SSD-tier release ZipMoE compared against; built with compatibility fixes
+  only): Mixtral peak 99.7 GiB at an 8 GiB GPU cache (the first request reads the whole store into host
+  memory, later requests read nothing from the SSD); memcal found no setting and the smallest cache
+  exceeds 1.4 x PHASOR's peak at 25/45/65%.
+- Qwen3-30B with a Qwen3 port of 350f0dd (model code only; tokens identical to stock): peak 63.9 GiB at an
+  8 GiB cache; stage 13 running (expected: exceeds 1.4x at 25/45/65%, measured at 108%).
+
+**llama.cpp** (stock, mmap + experts on CPU): dropped from the comparison (user, 09-29: too slow to be a
+meaningful comparison). One valid Mixtral request at a 20 GiB cap: 854 s (TTFT 640 s, TPOT 30.6 s) vs
+PHASOR's 40.5 s at 25%; its Qwen3 runs after 09-28 23:52 used no GPU (the driver had lost it) and are set
+apart. Notes: its load mode "auto" disables mmap on an iGPU (forced with --load-mode mmap); the official
+converter needs > 110 GiB for Qwen3-30B's per-expert tensors.
 
 ## Repeats (Qwen3-30B, 25%, three runs each, request time; timing only)
 
@@ -92,23 +122,9 @@ under the host guard (the one-time conversion takes > 100 GiB transiently; the o
 reads alone take >= 951.9 / 1.347 / 24 = 29.4 s per request at PS1 and >= 951.9 / 0.733 / 24 = 54.1 s at PS2,
 both above PHASOR's measured 26.84 s and 41.75 s (even with perfect overlap of compute and I/O).
 
-## Pending (09-28 14:05)
+## Pending (09-29 13:30)
 
-Restarted 14:01 in order (`scripts/resume_chain.sh`), nothing else running meanwhile:
-- Stage 6b: ZipMoE store rebuild + its slower-SSD runs.
-- Stage 7: MoE-APEX* (bf16) memcal, E1, E1 retries, E3.
-- Stage 8: FineMoE load test, then (if it serves) tokens, maps, fidelity, memcal, E1, E3, nominal; else
-  PREP/FINEMOE.md.
-- Stage 9 (for Fig. 9/10, 4.1, 4.3): MoE-APEX* and FineMoE E2 at 20/15/10/5% (MMLU,
-  `mmlu/{apex,finemoe}_{0.05..0.20}`), MoE-APEX* at its own setting for 25/45/65/108%
-  (`mmlu/apex_{f}_nominal`; at 5-20% the E2 run is that setting), causes recorded for any E1/E3 cell
-  without a result.
-- E2 is run as for the other systems in stage 5: each system at its own setting (cache = budget), no memcal
-  (the stage-5 E2 cells have `budget_gib` = the budget and peaks above PHASOR's). A run of MoE-APEX* or
-  FineMoE whose peak exceeds 1.4 x PHASOR's is recorded as not fitting (NORUN line; its json is kept).
-  Under the same rule ZipMoE's existing 5% cell (12.0 vs 7.7 GiB, 1.56x) would not fit; SUMMARY's E2 table
-  marks every such cell `(>1.4x)` for the paper to decide.
-- Method note: 13:51-13:52 stage 6b and stage 7's self-test were stopped by the host guard while an IDE
-  language server outside the experiments held 110 GB. `in_cgroup.sh` now tells such a stop from a run that
-  does not fit (after the kill, memory that does not come back = held outside) and reruns it; no result so
-  far was recorded from such a stop.
+- Stage 13: MoE-Infinity (350f0dd + Qwen3 port) on Qwen3-30B -- memcal, E1, E3, E2 (running).
+- Incidents: 09-28 23:52 the GPU was lost after host memory ran out during a CPU-only conversion (driver
+  failed to suspend it; recovered by reboot); runs measured without the GPU are archived. 09-29 13:05 the
+  kernel's OOM killer stopped the IDE language server at 124 GB; the host guard restarted the affected run.

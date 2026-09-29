@@ -1,0 +1,54 @@
+{
+ "system": "moe-infinity",
+ "checkpoint": "/home/thor/kcj/models/qwen3_30b_a3b",
+ "workload": "results/WORKLOADS/mmlu.json",
+ "budget_gib": 1.25,
+ "load_s": 4.7570600509643555,
+ "footprint_gib": 54.06067657470703,
+ "requests": 2,
+ "ttft_s": 45.96677875518799,
+ "tpot_ms": 2740.7909291131155,
+ "request_s": 65.15315330028534,
+ "rows": [
+  {
+   "name": "mmlu_professional_psychology_0",
+   "prompt_tok": 601,
+   "new_tok": 8,
+   "ttft_s": 77.59810829162598,
+   "tpot_ms": 2711.031675338745,
+   "request_s": 96.57626438140869,
+   "read_gib": 46.148197174072266,
+   "out_ids": [
+    356,
+    271,
+    14582,
+    25,
+    576,
+    1429,
+    4185,
+    943
+   ]
+  },
+  {
+   "name": "mmlu_professional_psychology_1",
+   "prompt_tok": 589,
+   "new_tok": 8,
+   "ttft_s": 14.33544921875,
+   "tpot_ms": 2770.5501828874862,
+   "request_s": 33.73004221916199,
+   "read_gib": 0.5712890625,
+   "out_ids": [
+    362,
+    271,
+    14582,
+    25,
+    15920,
+    315,
+    279,
+    2701
+   ]
+  }
+ ],
+ "batch": 1,
+ "peak_gib": 54.273040771484375
+}

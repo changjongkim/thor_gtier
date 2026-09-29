@@ -20,6 +20,7 @@ Requests: MMLU 24, ShareGPT 24, LongBench 21 on Qwen3-30B; on Mixtral, ShareGPT 
 | DuoServe* | 41.55 / 28.35 / 1887 / 21.2 (over) [4.35x] | 36.03 / 26.38 / 1379 / 32.7 [5.39x] | 32.67 / 25.53 / 1020 / 43.9 [7.64x] | 13.99 / 12.26 / 247 / 65.0 [5.53x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 41.71 / 32.39 / 1331 / 19.6 [4.37x] | 38.81 / 31.08 / 1105 / 31.5 [5.81x] | 40.96 / 35.97 / 712 / 43.1 [9.58x] | 3.51 / 2.50 / 145 / 64.3 [1.39x] |
 | FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
+| MoE-Infinity (2024-08 release, SSD tier) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | 35.90 / 15.43 / 2924 / 72.9 (over) [14.20x] |
 
 Reference: each baseline at its own setting for the nominal budget (not equal memory):
 
@@ -52,6 +53,7 @@ E7 ablation at 45% (request s relative to PHASOR 6.68 s):
 | DuoServe* | 79.10 / 27.62 / 1661 / 20.9 (over) [3.75x] | 54.51 / 25.59 / 933 / 32.9 [5.08x] | 38.43 / 20.74 / 571 / 42.2 [5.29x] | 17.54 / 9.77 / 251 / 65.3 [3.34x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 60.86 / 29.06 / 1025 / 22.0 (over) [2.89x] | 49.20 / 26.92 / 719 / 30.6 [4.58x] | 41.31 / 28.02 / 429 / 42.7 [5.68x] | 7.00 / 2.49 / 145 / 62.8 [1.33x] |
 | FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
+| MoE-Infinity (2024-08 release, SSD tier) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | 103.70 / 14.05 / 2892 / 75.3 (over) [19.74x] |
 
 E7 ablation at 45% (request s relative to PHASOR 10.74 s):
 
@@ -75,6 +77,7 @@ E7 ablation at 45% (request s relative to PHASOR 10.74 s):
 | DuoServe* | 85.25 / 32.51 / 1701 / 22.4 (over) [3.59x] | 61.52 / 31.52 / 968 / 32.8 [3.74x] | 46.10 / 26.87 / 620 / 45.0 (over) [3.87x] | 29.55 / 20.46 / 293 / 65.8 [3.75x] (knob x0.7) |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 63.08 / 35.02 / 905 / 23.7 (over) [2.66x] | 56.06 / 34.57 / 693 / 32.3 [3.40x] | 51.07 / 36.15 / 481 / 44.2 [4.29x] | 9.38 / 4.98 / 142 / 66.0 [1.19x] |
 | FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
+| MoE-Infinity (2024-08 release, SSD tier) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | cannot run (exceeds-1.4x-phasor-peak) | 130.39 / 32.30 / 3164 / 99.0 (over) [16.54x] (knob x0.55) |
 
 E7 ablation at 45% (request s relative to PHASOR 16.47 s):
 
@@ -127,6 +130,7 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | DuoServe* | 41.95 / 28.76 / 1884 / 21.1 | 44.47 / 29.13 / 2191 / 18.5 | 48.99 / 29.16 / 2834 / 13.4 | 58.34 / 29.64 / 4100 / 9.9 |
 | MoE-APEX* (bf16: LCU cache + prefetch) | 40.40 / 31.09 / 1330 / 22.1 | 41.80 / 32.12 / 1383 / 15.5 | 41.44 / 31.26 / 1454 / 12.1 | 41.89 / 30.42 / 1639 / 10.6 |
 | FineMoE | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) | cannot run (does-not-serve-on-this-device) |
+| MoE-Infinity (2024-08 release, SSD tier) | cannot run (oom-under-cap) | cannot run (not-tried) | cannot run (not-tried) | cannot run (not-tried) |
 
 ### E5: PHASOR latency breakdown at 45%
 
@@ -154,12 +158,14 @@ MoE-APEX* or FineMoE as not fitting; the mark applies the same rule to every sys
 | MMLU | DuoServe* | 0.22; 36.03 | 0.73; 44.07 | 1.15; 55.65 |
 | MMLU | MoE-APEX* (bf16: LCU cache + prefetch) | 0.21; 38.81 | 0.74; 43.48 | 1.14; 56.00 |
 | MMLU | FineMoE | - | cannot run | cannot run |
+| MMLU | MoE-Infinity (2024-08 release, SSD tier) | - | cannot run | cannot run |
 | ShareGPT | PHASOR | 2.98; 10.74 | 4.59; 27.90 | 4.79; 53.43 |
 | ShareGPT | ZipMoE | 0.68; 47.01 | 1.37; 93.77 | 1.76; 145.45 |
 | ShareGPT | FlashMoE* | 1.16; 27.67 | 1.94; 65.93 | 2.46; 104.09 |
 | ShareGPT | DuoServe* | 0.59; 54.51 | 1.18; 108.77 | 1.40; 182.76 |
 | ShareGPT | MoE-APEX* (bf16: LCU cache + prefetch) | 0.65; 49.20 | 1.28; 100.08 | 1.53; 167.54 |
 | ShareGPT | FineMoE | - | cannot run | cannot run |
+| ShareGPT | MoE-Infinity (2024-08 release, SSD tier) | - | cannot run | cannot run |
 
 ## Mixtral-8x7B bf16
 

@@ -112,3 +112,8 @@ stage 11q (`scripts/stage12b_moeinf_legacy.sh`).
   budget -> recorded as exceeds-1.4x-phasor-peak.
 - Conclusion: MoE-Infinity (every release) keeps all experts in host memory; on the unified pool it cannot
   run within PHASOR's memory at any evaluated Mixtral budget.
+
+## Qwen3-30B: 350f0dd + Qwen3 port (third_party/moeinf2408_qwen3.patch)
+- Model code added (models/qwen3.py: the Mixtral block with top-k routing and Qwen3's norm_topk_prob; config
+  parsing and module wiring); predictor, prefetcher, caching and the SSD tier are the release's. Built with the
+  same compatibility flags; venv transformers 4.51.3. Tokens vs stock transformers (2 prompts x 24): identical.

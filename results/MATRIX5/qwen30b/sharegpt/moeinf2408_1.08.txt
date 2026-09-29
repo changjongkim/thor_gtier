@@ -1,0 +1,88 @@
+scrub: 19 files
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+SPDLOG_LEVEL : (null)
+2026-09-29 15:06:19.409 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 15:06:19.409 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 15:06:19.418 INFO Index file size , 18867
+2026-09-29 15:06:19.418 INFO Device count , 1
+2026-09-29 15:06:19.418 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]Model create:   2%|▏         | 289/18866 [00:00<00:11, 1603.06it/s]Model create:  16%|█▌        | 3047/18866 [00:00<00:01, 13086.28it/s]Model create:  26%|██▌       | 4853/18866 [00:00<00:01, 9541.18it/s] Model create:  42%|████▏     | 7910/18866 [00:00<00:00, 15008.87it/s]Model create:  56%|█████▌    | 10484/18866 [00:00<00:00, 11808.66it/s]Model create:  71%|███████▏  | 13466/18866 [00:01<00:00, 15463.48it/s]Model create:  87%|████████▋ | 16502/18866 [00:01<00:00, 18813.39it/s]Model create: 18875it [00:01, 12517.20it/s]                           The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+Model create: 19010it [00:20, 12517.20it/s]Qwen3MoeConfig {
+  "architectures": [
+    "Qwen3MoeForCausalLM"
+  ],
+  "attention_bias": false,
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "decoder_sparse_step": 1,
+  "eos_token_id": 151645,
+  "head_dim": 128,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": 0.02,
+  "intermediate_size": 6144,
+  "max_position_embeddings": 40960,
+  "max_window_layers": 48,
+  "mlp_only_layers": [],
+  "model_type": "qwen3_moe",
+  "moe_intermediate_size": 768,
+  "norm_topk_prob": true,
+  "num_attention_heads": 32,
+  "num_experts": 128,
+  "num_experts_per_tok": 8,
+  "num_hidden_layers": 48,
+  "num_key_value_heads": 4,
+  "output_router_logits": false,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": null,
+  "rope_theta": 1000000.0,
+  "router_aux_loss_coef": 0.001,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.51.3",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "vocab_size": 151936
+}
+
+REQ {"name": "sg_jKqNBVf_0_t2", "prompt_tok": 1059, "new_tok": 32, "ttft_s": 83.4016170501709, "tpot_ms": 2955.815592119771, "request_s": 175.0327582359314, "read_gib": 53.98849868774414}
+REQ {"name": "sg_jKqNBVf_0_t3", "prompt_tok": 1237, "new_tok": 32, "ttft_s": 14.335838079452515, "tpot_ms": 2918.5127827429, "request_s": 104.81061458587646, "read_gib": 0.369140625}
+REQ {"name": "sg_cSz8Ik6_0_t2", "prompt_tok": 67, "new_tok": 32, "ttft_s": 9.726839780807495, "tpot_ms": 2978.154413161739, "request_s": 102.05058741569519, "read_gib": 0.537109375}
+REQ {"name": "sg_cSz8Ik6_0_t3", "prompt_tok": 391, "new_tok": 32, "ttft_s": 10.914626121520996, "tpot_ms": 2896.9183275776522, "request_s": 100.719966173172, "read_gib": 0.283203125}
+REQ {"name": "sg_zcq8Evp_0_t2", "prompt_tok": 164, "new_tok": 32, "ttft_s": 9.425967931747437, "tpot_ms": 2932.790094806302, "request_s": 100.34334897994995, "read_gib": 0.2041015625}
+REQ {"name": "sg_zcq8Evp_0_t3", "prompt_tok": 223, "new_tok": 32, "ttft_s": 9.425225496292114, "tpot_ms": 2874.3572696562737, "request_s": 98.53123903274536, "read_gib": 0.02913665771484375}
+REQ {"name": "sg_5cVpTKS_0_t2", "prompt_tok": 246, "new_tok": 32, "ttft_s": 10.450556755065918, "tpot_ms": 2877.240034841722, "request_s": 99.64592623710632, "read_gib": 0.263671875}
+REQ {"name": "sg_V4wpuJu_0_t2", "prompt_tok": 614, "new_tok": 32, "ttft_s": 14.022195816040039, "tpot_ms": 2877.8727208414384, "request_s": 103.23709487915039, "read_gib": 0.7119140625}
+REQ {"name": "sg_V4wpuJu_0_t3", "prompt_tok": 1240, "new_tok": 32, "ttft_s": 13.484519720077515, "tpot_ms": 2864.638536207138, "request_s": 102.28904676437378, "read_gib": 0.0791015625}
+REQ {"name": "sg_k7ymHcr_21_t2", "prompt_tok": 1012, "new_tok": 32, "ttft_s": 12.74870753288269, "tpot_ms": 2900.427479897776, "request_s": 102.66272950172424, "read_gib": 0.017578125}
+REQ {"name": "sg_k7ymHcr_21_t3", "prompt_tok": 1797, "new_tok": 32, "ttft_s": 14.220004081726074, "tpot_ms": 2867.3663677707796, "request_s": 103.10907745361328, "read_gib": 0.0263671875}
+REQ {"name": "sg_MuZDUct_0_t2", "prompt_tok": 109, "new_tok": 32, "ttft_s": 8.570942401885986, "tpot_ms": 2871.926676842474, "request_s": 97.6014666557312, "read_gib": 0.0087890625}
+REQ {"name": "sg_MuZDUct_0_t3", "prompt_tok": 377, "new_tok": 32, "ttft_s": 9.624484777450562, "tpot_ms": 2859.596444714454, "request_s": 98.27287292480469, "read_gib": 0.017578125}
+REQ {"name": "sg_CcQ9JCK_25_t2", "prompt_tok": 823, "new_tok": 32, "ttft_s": 11.013789653778076, "tpot_ms": 2849.1539416774626, "request_s": 99.33843183517456, "read_gib": 0.03515625}
+REQ {"name": "sg_9EM9xb8_25_t2", "prompt_tok": 379, "new_tok": 32, "ttft_s": 10.235477685928345, "tpot_ms": 2884.405882127823, "request_s": 99.65287446975708, "read_gib": 0.0}
+REQ {"name": "sg_9EM9xb8_25_t3", "prompt_tok": 1853, "new_tok": 32, "ttft_s": 12.953196287155151, "tpot_ms": 2907.0597156401604, "request_s": 103.07290744781494, "read_gib": 0.0087890625}
+REQ {"name": "sg_f9XBWSi_15_t2", "prompt_tok": 442, "new_tok": 32, "ttft_s": 10.47998833656311, "tpot_ms": 2889.007222267889, "request_s": 100.04005122184753, "read_gib": 0.0}
+REQ {"name": "sg_f9XBWSi_15_t3", "prompt_tok": 759, "new_tok": 32, "ttft_s": 11.22597622871399, "tpot_ms": 2904.593890713107, "request_s": 101.26923680305481, "read_gib": 0.0}
+REQ {"name": "sg_3O3k7Ni_0_t2", "prompt_tok": 260, "new_tok": 32, "ttft_s": 9.708829879760742, "tpot_ms": 2899.255467999366, "request_s": 99.58668661117554, "read_gib": 0.0}
+REQ {"name": "sg_3O3k7Ni_0_t3", "prompt_tok": 798, "new_tok": 32, "ttft_s": 11.521440029144287, "tpot_ms": 2889.6221576198454, "request_s": 101.10030436515808, "read_gib": 0.0087890625}
+REQ {"name": "sg_zZRzzTy_16_t2", "prompt_tok": 199, "new_tok": 32, "ttft_s": 9.00378131866455, "tpot_ms": 2792.9672195065405, "request_s": 95.58656549453735, "read_gib": 0.0}
+REQ {"name": "sg_zZRzzTy_16_t3", "prompt_tok": 393, "new_tok": 32, "ttft_s": 9.880670070648193, "tpot_ms": 2879.646178214781, "request_s": 99.15059494972229, "read_gib": 0.0087890625}
+REQ {"name": "sg_RtCgJK2_47_t2", "prompt_tok": 415, "new_tok": 32, "ttft_s": 10.001838445663452, "tpot_ms": 2898.7689710432487, "request_s": 99.86447525024414, "read_gib": 0.0263671875}
+REQ {"name": "sg_RtCgJK2_47_t3", "prompt_tok": 684, "new_tok": 32, "ttft_s": 10.84201169013977, "tpot_ms": 2931.953714739892, "request_s": 101.73346018791199, "read_gib": 0.0087890625}
+RESULT policy=moe-infinity budget=8.71 requests=24 ttft_s=14.0508 tpot_ms=2891.752 request_s=103.6959 footprint_gib=75.18 peak_gib=75.34
+ArcherTaskPool destructor
+cgroup_io_read_gib=57.525
+cgroup_cpu_s=16259.5 cgroup_user_s=15962.9 cgroup_sys_s=296.5
+cgroup_peak_gib=60.17

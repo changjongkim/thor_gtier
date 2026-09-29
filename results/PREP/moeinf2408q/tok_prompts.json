@@ -1,0 +1,1 @@
+[{"name": "tok0", "prompt": "Explain why the sky is blue in two sentences.", "max_new": 24}, {"name": "tok1", "prompt": "Write a Python function that returns the n-th Fibonacci number.", "max_new": 24}]

@@ -1,0 +1,26 @@
+scrub: 19 files
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:410: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:418: FutureWarning: `torch.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+SPDLOG_LEVEL : (null)
+2026-09-29 14:23:40.904 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 14:23:40.904 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 14:23:40.912 INFO Index file size , 18867
+2026-09-29 14:23:40.913 INFO Device count , 1
+2026-09-29 14:23:40.913 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]Model create:   1%|▏         | 267/18866 [00:00<00:11, 1592.68it/s]Model create:  17%|█▋        | 3222/18866 [00:00<00:01, 14455.21it/s]Model create:  27%|██▋       | 5026/18866 [00:00<00:01, 10230.93it/s]Model create:  43%|████▎     | 8054/18866 [00:00<00:00, 15592.71it/s]Model create:  55%|█████▌    | 10460/18866 [00:00<00:00, 11973.39it/s]Model create:  72%|███████▏  | 13495/18866 [00:00<00:00, 15807.38it/s]Model create:  88%|████████▊ | 16611/18866 [00:01<00:00, 19332.04it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+Model create: 19010it [00:20, 19332.04it/s]                           /home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 109: 112774 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+cgroup_io_read_gib=28.060
+cgroup_cpu_s=275.6 cgroup_user_s=247.3 cgroup_sys_s=28.2
+cgroup_peak_gib=27.81
+NORUN budget=1 reason=exceeds-1.4x-phasor-peak
+NOTE smallest-cache-under-1.4x-phasor-peak (no setting within PHASOR's peak 19.51 GiB)

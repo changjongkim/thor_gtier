@@ -1,0 +1,158 @@
+probe budget 37.05 failed rc=137
+SPDLOG_LEVEL : (null)
+2026-09-29 13:30:28.423 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 13:30:28.423 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 13:30:28.432 INFO Index file size , 18867
+2026-09-29 13:30:28.432 INFO Device count , 1
+2026-09-29 13:30:28.432 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+cgroup_io_read_gib=43.951
+cgroup_cpu_s=396.6 cgroup_user_s=352.4 cgroup_sys_s=44.3
+tom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]
+Model create:   1%|▏         | 267/18866 [00:00<00:12, 1458.88it/s]
+Model create:  16%|█▌        | 3059/18866 [00:00<00:01, 13058.42it/s]
+Model create:  26%|██▌       | 4832/18866 [00:00<00:01, 9295.02it/s] 
+Model create:  41%|████      | 7643/18866 [00:00<00:00, 14110.93it/s]
+Model create:  55%|█████▌    | 10460/18866 [00:00<00:00, 11155.04it/s]
+Model create:  70%|███████   | 13278/18866 [00:01<00:00, 14435.48it/s]
+Model create:  86%|████████▌ | 16135/18866 [00:01<00:00, 17485.94it/s]
+Model create:  97%|█████████▋| 18381/18866 [00:01<00:00, 11412.62it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+
+Model create: 19010it [00:20, 11412.62it/s]                           /home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 109: 72452 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 37.05 -> killed/failed (cap 45.04 GiB)
+probe budget 22.23 failed rc=137
+SPDLOG_LEVEL : (null)
+2026-09-29 13:32:05.975 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 13:32:05.975 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 13:32:05.984 INFO Index file size , 18867
+2026-09-29 13:32:05.984 INFO Device count , 1
+2026-09-29 13:32:05.984 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+cgroup_io_read_gib=43.973
+cgroup_cpu_s=380.5 cgroup_user_s=337.1 cgroup_sys_s=43.4
+.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]
+Model create:   2%|▏         | 289/18866 [00:00<00:11, 1672.83it/s]
+Model create:  18%|█▊        | 3321/18866 [00:00<00:01, 14638.45it/s]
+Model create:  27%|██▋       | 5174/18866 [00:00<00:01, 10426.93it/s]
+Model create:  44%|████▍     | 8298/18866 [00:00<00:00, 15956.19it/s]
+Model create:  56%|█████▌    | 10484/18866 [00:00<00:00, 11862.08it/s]
+Model create:  72%|███████▏  | 13562/18866 [00:00<00:00, 15826.59it/s]
+Model create:  89%|████████▊ | 16718/18866 [00:01<00:00, 19449.13it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+
+Model create: 19010it [00:20, 19449.13it/s]                           /home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 109: 73305 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 22.23 -> killed/failed (cap 45.04 GiB)
+probe budget 13.34 failed rc=137
+SPDLOG_LEVEL : (null)
+2026-09-29 13:33:40.791 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 13:33:40.791 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 13:33:40.800 INFO Index file size , 18867
+2026-09-29 13:33:40.800 INFO Device count , 1
+2026-09-29 13:33:40.800 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+cgroup_io_read_gib=62.661
+cgroup_cpu_s=667.4 cgroup_user_s=502.8 cgroup_sys_s=164.6
+.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]
+Model create:   1%|▏         | 267/18866 [00:00<00:11, 1598.48it/s]
+Model create:  18%|█▊        | 3317/18866 [00:00<00:01, 14919.96it/s]
+Model create:  27%|██▋       | 5177/18866 [00:00<00:01, 10541.54it/s]
+Model create:  44%|████▍     | 8261/18866 [00:00<00:00, 15968.13it/s]
+Model create:  55%|█████▌    | 10460/18866 [00:00<00:00, 11995.42it/s]
+Model create:  72%|███████▏  | 13496/18866 [00:00<00:00, 15883.66it/s]
+Model create:  88%|████████▊ | 16625/18866 [00:01<00:00, 19459.73it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+
+Model create: 19010it [00:20, 19459.73it/s]                           /home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 109: 74147 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 13.34 -> killed/failed (cap 45.04 GiB)
+probe budget 8.00 failed rc=137
+SPDLOG_LEVEL : (null)
+2026-09-29 13:35:52.089 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 13:35:52.089 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 13:35:52.098 INFO Index file size , 18867
+2026-09-29 13:35:52.098 INFO Device count , 1
+2026-09-29 13:35:52.098 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+cgroup_io_read_gib=43.821
+cgroup_cpu_s=379.8 cgroup_user_s=337.5 cgroup_sys_s=42.2
+.cuda.amp.custom_bwd(args...)` is deprecated. Please use `torch.amp.custom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]
+Model create:   2%|▏         | 289/18866 [00:00<00:10, 1715.32it/s]
+Model create:  18%|█▊        | 3334/18866 [00:00<00:01, 14899.18it/s]
+Model create:  28%|██▊       | 5196/18866 [00:00<00:01, 10499.80it/s]
+Model create:  44%|████▍     | 8334/18866 [00:00<00:00, 16056.85it/s]
+Model create:  56%|█████▌    | 10484/18866 [00:00<00:00, 11934.45it/s]
+Model create:  72%|███████▏  | 13592/18866 [00:00<00:00, 15974.09it/s]
+Model create:  89%|████████▉ | 16749/18866 [00:01<00:00, 19586.60it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+
+Model create: 19010it [00:20, 19586.60it/s]                           /home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 109: 75272 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 8.00 -> killed/failed (cap 45.04 GiB)
+probe budget 4.80 failed rc=137
+SPDLOG_LEVEL : (null)
+2026-09-29 13:37:27.098 INFO Create ArcherAioThread for thread: , 0
+2026-09-29 13:37:27.098 INFO Loading index file from , /home/thor/kcj/offload_tmp/qwen30b_2408/archer_index
+2026-09-29 13:37:27.107 INFO Index file size , 18867
+2026-09-29 13:37:27.107 INFO Device count , 1
+2026-09-29 13:37:27.107 INFO Enabled peer access for all devices
+[WARNING] FlashAttention is not available in the current environment. Using default attention.
+Loading model from offload_path ...
+cgroup_io_read_gib=43.846
+cgroup_cpu_s=382.4 cgroup_user_s=340.0 cgroup_sys_s=42.4
+tom_bwd(args..., device_type='cuda')` instead.
+  @custom_bwd
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/auto_gptq/nn_modules/triton_utils/kernels.py:461: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+  @custom_fwd(cast_inputs=torch.float16)
+CUDA extension not installed.
+CUDA extension not installed.
+
+Model create:   0%|          | 0/18866 [00:00<?, ?it/s]
+Model create:   2%|▏         | 289/18866 [00:00<00:11, 1585.54it/s]
+Model create:  16%|█▌        | 3015/18866 [00:00<00:01, 12865.68it/s]
+Model create:  26%|██▌       | 4853/18866 [00:00<00:01, 9356.85it/s] 
+Model create:  40%|████      | 7633/18866 [00:00<00:00, 14074.87it/s]
+Model create:  55%|█████▌    | 10462/18866 [00:00<00:00, 17866.45it/s]
+Model create:  67%|██████▋   | 12659/18866 [00:01<00:00, 11902.34it/s]
+Model create:  82%|████████▏ | 15557/18866 [00:01<00:00, 15289.03it/s]
+Model create:  94%|█████████▍| 17712/18866 [00:01<00:00, 10564.42it/s]The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+/home/thor/kcj/envs/moeinf2408q/lib/python3.12/site-packages/transformers/generation/utils.py:2347: UserWarning: You are calling .generate() with the `input_ids` being on a device type different than your model's device. `input_ids` is on cuda, whereas the model is on cpu. You may experience unexpected behaviors or slower generation. Please make sure that you have put `input_ids` to the correct device by calling for example input_ids = input_ids.to('cpu') before running `.generate()`.
+  warnings.warn(
+
+Model create: 19010it [00:20, 10564.42it/s]                           /home/thor/kcj/thor_gtier/scripts/in_cgroup.sh: line 109: 76779 Killed                  ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98; exec "$@" )
+budget 4.80 -> killed/failed (cap 45.04 GiB)
+CAL target=42.42 budget=None peak=None

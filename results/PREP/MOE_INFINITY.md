@@ -99,3 +99,16 @@ stage 11q (`scripts/stage12b_moeinf_legacy.sh`).
   third_party/moeinf2502_build.patch, where it applies). Caching, prefetching and the data path are unchanged. HOST_MEMORY_RATIO (its build-time
   host pool size, default 0.8 of system memory) = 0.04; memcal calibrates device_memory_ratio.
 - Smoke (2 MMLU prompts, 8 GiB GPU cache): RESULT policy=moe-infinity budget=8.00 requests=2 ttft_s=61.3210 tpot_ms=638.375 request_s=65.7903 footprint_gib=99.63 peak_gib=99.66
+
+### Mixtral-8x7B result (350f0dd, 09-29 12:31-12:59)
+
+- Smoke from its existing offload store, GPU cache 8 GiB (device_memory_ratio honored; host pool 0.04 of
+  system memory, checked in the built binary): 2 MMLU requests, peak 99.7 GiB. The first request reads the
+  whole store (87 GiB) into host memory and later requests read nothing from the SSD: the experts stay
+  resident in host memory, the SSD store is their persistent copy -- the same holding as the current
+  release, loaded on first use instead of at start.
+- memcal at 25/45/65%: every probe down to a 4.7 GiB GPU cache was killed at the cap (1.05 x PHASOR's peak).
+- The smallest cache (1 GiB) under 1.4 x PHASOR's peak (37 / 62 / 87 GiB): killed at the cap at every
+  budget -> recorded as exceeds-1.4x-phasor-peak.
+- Conclusion: MoE-Infinity (every release) keeps all experts in host memory; on the unified pool it cannot
+  run within PHASOR's memory at any evaluated Mixtral budget.

@@ -21,6 +21,22 @@ CG=/sys/fs/cgroup/ledger_bench/$1; shift
 MAX=$1; shift
 GUARD_KIB=$(awk -v g="${GUARD_GIB:-12}" 'BEGIN{printf "%d", g*1048576}')
 avail(){ awk '/^MemAvailable:/{print $2}' /proc/meminfo; }
+# RSS (KiB) of the largest process outside this run's cgroup (09-29: an IDE language server that grows
+# and shrinks within a minute made an outside spike look like the run's own)
+outside_kib(){ python3 - "$CG" <<'PY2'
+import os, sys
+cg = sys.argv[1].replace("/sys/fs/cgroup", "")
+best = 0
+for p in os.listdir("/proc"):
+    if not p.isdigit(): continue
+    try:
+        if cg in open(f"/proc/{p}/cgroup").read(): continue
+        for l in open(f"/proc/{p}/status"):
+            if l.startswith("VmRSS:"): best = max(best, int(l.split()[1])); break
+    except OSError: pass
+print(best)
+PY2
+}
 killcg(){ echo 1 | sudo -n tee "$CG/cgroup.kill" >/dev/null 2>&1; }
 trap 'killcg; wait $pid; exit 143' TERM INT
 attempt=0
@@ -37,7 +53,7 @@ grep -qw memory "$(dirname "$CG")/cgroup.subtree_control" 2>/dev/null || \
 [ -f "$CG/memory.max" ] || { echo "in_cgroup: no memory controller in $CG" >&2; exit 96; }
 echo "$MAX" | sudo -n tee "$CG/memory.max" >/dev/null
 echo 0 | sudo -n tee "$CG/memory.swap.max" >/dev/null 2>&1
-a0=$(avail)
+a0=$(avail); o0=$(outside_kib)
 # the subshell moves itself into the cgroup, then becomes the command; the
 # guard loop below stays outside it so cgroup.kill does not take it down
 ( sudo -n sh -c "echo $BASHPID > $CG/cgroup.procs" || exit 98
@@ -72,6 +88,7 @@ while kill -0 $pid 2>/dev/null; do
   a=$(avail)
   if [ "$a" -lt "$GUARD_KIB" ]; then
     gmsg="HOSTGUARD kill: MemAvailable $((a/1024)) MiB < ${GUARD_GIB:-12} GiB (cgroup charges do not include cudaMalloc)"
+    o1=$(outside_kib)
     killcg; guard=2; break
   fi
   sleep 0.5
@@ -79,6 +96,8 @@ done
 wait $pid; rc=$?
 if [ $guard = 2 ]; then
   ext=1; for i in $(seq 1 12); do [ "$(avail)" -ge $((a0 - 8388608)) ] && { ext=0; break; }; sleep 5; done
+  # an outside process that grew by >= 6 GiB during the run counts as outside pressure even if it shrank again
+  [ $((o1 - o0)) -ge 6291456 ] && ext=1
   if [ $ext = 1 ] && [ $attempt -lt 20 ]; then
     echo "HOSTPRESSURE (outside this run): MemAvailable $((a/1024)) MiB during the run, $(($(avail)/1024)) MiB a minute after it was stopped, $((a0/1024)) MiB at its start; run restarted when >= ${SETTLE_GIB:-100} GiB is available (attempt $((attempt+1)))" >&2
     until [ "$(avail)" -ge $(( ${SETTLE_GIB:-100} * 1048576 )) ]; do sleep 30; done

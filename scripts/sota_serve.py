@@ -22,6 +22,7 @@ ap.add_argument("--budget-gib", type=float, required=True,
 ap.add_argument("--max-prompt", type=int, default=8192)
 ap.add_argument("--max-new", type=int, default=32)
 ap.add_argument("--limit", type=int, default=0)
+ap.add_argument("--batch", type=int, default=1, help="E3: serve requests in groups of this size")
 ap.add_argument("--out", required=True)
 a = ap.parse_args()
 
@@ -64,13 +65,20 @@ if a.system == "moe-infinity":
 load_s = time.time() - t0
 
 rows = []
+if a.batch > 1:
+    sys.path.insert(0, "/home/thor/kcj/thor_gtier/scripts")
+    import batchgen
+    rows = batchgen.serve(lambda input_ids, **kw: model.generate(input_ids, **kw), tok, work, a.batch, a.max_prompt, a.max_new)
+    work = []
 for w in work:
     ids = tok(w["prompt"], return_tensors="pt").input_ids[:, :a.max_prompt].to("cuda:0")
+    # each request's own output length, as every runner (09-29: this runner used max_new for all)
+    new = min(a.max_new, int(w.get("max_new", a.max_new)))
     clk = Clock()
     torch.cuda.synchronize()
     rb0 = read_bytes(); ts = time.time()
     with torch.no_grad():
-        out = model.generate(ids, max_new_tokens=a.max_new, min_new_tokens=a.max_new,
+        out = model.generate(ids, max_new_tokens=new, min_new_tokens=new,
                              do_sample=False, pad_token_id=tok.eos_token_id,
                              streamer=clk)
     torch.cuda.synchronize()
@@ -82,8 +90,8 @@ for w in work:
     tpot = ((gen[-1] - gen[0]) / (len(gen) - 1)) if len(gen) > 1 else 0.0
     rows.append({"name": w["name"], "prompt_tok": int(ids.shape[1]), "new_tok": int(n_new),
                  "ttft_s": ttft, "tpot_ms": tpot * 1e3, "request_s": te - ts,
-                 "read_gib": (read_bytes() - rb0) / 2**30})
-    print(json.dumps(rows[-1]), flush=True)
+                 "read_gib": (read_bytes() - rb0) / 2**30, "out_ids": out[0, ids.shape[1]:].tolist()})
+    print("REQ " + json.dumps({k: v for k, v in rows[-1].items() if k != "out_ids"}), flush=True)
 
 n = len(rows)
 res = {"system": a.system, "checkpoint": a.checkpoint, "workload": a.workload,
@@ -93,7 +101,8 @@ res = {"system": a.system, "checkpoint": a.checkpoint, "workload": a.workload,
        "ttft_s": sum(r["ttft_s"] for r in rows) / n,
        "tpot_ms": sum(r["tpot_ms"] for r in rows) / n,
        "request_s": sum(r["request_s"] for r in rows) / n,
-       "rows": rows}
+       "rows": rows, "batch": a.batch}
+if a.batch > 1: res.update(batchgen.summary(rows))
 res["peak_gib"] = _mw.peak_gib()
 json.dump(res, open(a.out, "w"), indent=1)
 print(f"RESULT policy={a.system} budget={a.budget_gib:.2f} requests={n} "

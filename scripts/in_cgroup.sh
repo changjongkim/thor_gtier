@@ -31,6 +31,10 @@ attempt=$((attempt+1))
 [ -n "${BEFORE_EACH:-}" ] && bash -c "$BEFORE_EACH"
 sudo -n rmdir "$CG" 2>/dev/null
 sudo -n mkdir -p "$CG" || exit 97
+# the parent's controllers are lost on reboot (09-29: memory.max silently absent after one)
+grep -qw memory "$(dirname "$CG")/cgroup.subtree_control" 2>/dev/null || \
+  echo "+cpu +io +memory" | sudo -n tee "$(dirname "$CG")/cgroup.subtree_control" >/dev/null 2>&1
+[ -f "$CG/memory.max" ] || { echo "in_cgroup: no memory controller in $CG" >&2; exit 96; }
 echo "$MAX" | sudo -n tee "$CG/memory.max" >/dev/null
 echo 0 | sudo -n tee "$CG/memory.swap.max" >/dev/null 2>&1
 a0=$(avail)
